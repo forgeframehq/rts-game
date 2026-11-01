@@ -60,6 +60,33 @@
   G.stumpSprite = () => sprite('stump', null);
   G.hasArt = key => !!art[key];
 
+  // ---- animated units ----
+  const CARRY = { wood: '#8a5f34', food: '#c8414a', gold: '#f0c93a', stone: '#c8c6c0' };
+  G.drawUnitArt = function (ctx, u, x, y, z) {
+    const key = 'unit_' + u.type + '_walk';
+    const a = art[key];
+    if (!a) return false;
+    const sp = sprite(key, G.ownerColor(u.owner));
+    const d = a.def, n = d.frames;
+    const moving = u.path.length > 0;
+    let f = 0, bob = 0, tilt = 0;
+    if (moving) f = Math.floor(u.walk * 11) % n;
+    else if (u.working) { const t = G.time * 6 + u.id; bob = Math.abs(Math.sin(t)) * 1.5; tilt = Math.sin(t) * 0.12; f = 4; }
+    const cw = sp.cv.width / n, ch = sp.cv.height;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath(); ctx.ellipse(0, 0, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
+    if (u.hitT) ctx.globalAlpha = 0.7;
+    ctx.scale(u.face * z, z);
+    ctx.translate(0, -bob);
+    if (tilt) ctx.rotate(tilt);
+    ctx.drawImage(sp.cv, f * cw, 0, cw, ch, -d.ax, -d.ay, d.fw, d.fh);
+    if (u.carry && u.carry.amt > 1) { ctx.fillStyle = CARRY[u.carry.res]; ctx.fillRect(-11, -26, 6, 8); ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 0.6; ctx.strokeRect(-11, -26, 6, 8); }
+    ctx.restore();
+    return true;
+  };
+
   G.loadArt = function (done) {
     fetch('assets/manifest.json').then(r => r.json()).then(man => {
       const keys = Object.keys(man);

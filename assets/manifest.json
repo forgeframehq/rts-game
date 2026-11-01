@@ -166,5 +166,13 @@
   "h": 115.2,
   "ax": 43.2,
   "ay": 86.4
+ },
+ "unit_villager_walk": {
+  "file": "assets/units/villager_walk.png",
+  "frames": 8,
+  "fw": 35.96,
+  "fh": 42.63,
+  "ax": 18.41,
+  "ay": 41.86
  }
 }
