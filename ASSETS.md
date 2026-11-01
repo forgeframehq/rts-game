@@ -1,6 +1,6 @@
 # Art Asset Specification
 
-Master spec for all sprites in Crowns & Conquest. Every asset follows these rules so it lines up with the game's grid without manual fixes.
+Master spec for all sprites in Dawn of Dynasties. Every asset follows these rules so it lines up with the game's grid without manual fixes.
 
 ## Global rules
 - **Style:** hand-painted, semi-realistic, matching `house` (the reference sprite).

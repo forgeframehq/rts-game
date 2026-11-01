@@ -1,4 +1,4 @@
-# Crowns & Conquest
+# Dawn of Dynasties
 
 A mobile-first medieval real-time strategy game in the spirit of the classic isometric RTS games.
 Pure HTML5 canvas + JavaScript, no build step, no image files (all art is drawn in code).

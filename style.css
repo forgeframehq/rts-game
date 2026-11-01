@@ -114,3 +114,50 @@ button.big { width: 100%; height: 50px; margin-top: 16px; border-radius: 12px; b
   .sidebtn { width: 42px; height: 42px; }
 }
 @media (max-width: 380px) { .res { padding: 2px 4px; font-size: 12px; } .res span { font-size: 12px; } }
+
+/* ---------- Title screen ---------- */
+.screen.title { padding: 0; justify-content: flex-start; align-items: stretch;
+  background: #120d08 url(assets/ui/title_bg.jpg) 70% center / cover no-repeat; }
+.title-panel { width: min(470px, 100%); min-height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 10px;
+  padding-block: calc(12px + var(--safe-t)) calc(12px + var(--safe-b));
+  padding-left: max(20px, var(--safe-l)); padding-right: 20px;
+  background: linear-gradient(90deg, rgba(12,8,4,0.9) 0%, rgba(12,8,4,0.8) 82%, rgba(12,8,4,0) 100%); }
+.screen.title .title-panel { padding-right: 36px; }
+#logo { width: 100%; max-width: 400px; max-height: 30vh; object-fit: contain; align-self: center; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6)); }
+.pick-label { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); text-align: center; font-family: system-ui, sans-serif; opacity: 0.9; }
+#civs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.civ { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px 4px; border-radius: 12px;
+  border: 1px solid transparent; background: rgba(0,0,0,0.25); transition: transform 0.15s, background 0.15s; }
+.civ img { width: 100%; max-width: 84px; max-height: 15vh; aspect-ratio: 1; object-fit: contain; filter: grayscale(0.55) brightness(0.8); transition: filter 0.15s; }
+.civ span { font-size: 12px; color: var(--muted); }
+.civ.on { border-color: var(--gold); background: rgba(232,196,106,0.14); transform: translateY(-2px); box-shadow: 0 0 18px rgba(232,196,106,0.25); }
+.civ.on img { filter: none; }
+.civ.on span { color: var(--gold); font-weight: bold; }
+.civ:focus-visible, .play:focus-visible, .seg button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#civ-info { min-height: 3.2em; text-align: center; font-family: system-ui, sans-serif; font-size: 13px; color: var(--text); line-height: 1.35; }
+#civ-info b { display: block; font-family: Georgia, serif; font-size: 16px; color: var(--gold); margin-bottom: 2px; }
+#civ-info span { color: var(--muted); }
+.start-row { display: flex; gap: 8px; align-items: stretch; }
+.start-row .seg { flex: 1.4; }
+.play { flex: 1; height: 46px; border-radius: 12px; border: 1px solid var(--gold); background: linear-gradient(#a37f34, #6b511d);
+  font-size: 19px; font-weight: bold; letter-spacing: 0.05em; text-shadow: 0 1px 0 #000; box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+.play:active { transform: scale(0.97); }
+.linkbtn { background: none; border: none; color: var(--muted); font-size: 13px; text-decoration: underline; align-self: center; padding: 4px; font-family: system-ui, sans-serif; }
+#help { z-index: 25; }
+#help ul { text-align: left; padding-left: 18px; margin: 4px 0; font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); line-height: 1.45; }
+#help li b { color: var(--text); }
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .title-panel { gap: 6px; width: min(430px, 56vw); }
+  #logo { max-height: 26vh; }
+  .civ img { max-height: 13vh; }
+  .civ span { font-size: 11px; }
+  #civ-info { font-size: 12px; min-height: 2.8em; }
+  #civ-info b { font-size: 14px; }
+  .play, .start-row .seg button { height: 38px; }
+}
+@media (orientation: portrait) {
+  .screen.title { background-position: 62% top; background-size: auto 58%; align-items: flex-end; }
+  .title-panel { width: 100%; min-height: auto; justify-content: flex-end; padding-top: 34vh;
+    background: linear-gradient(180deg, rgba(12,8,4,0) 0%, rgba(12,8,4,0.85) 30%, rgba(12,8,4,0.97) 60%); }
+}

@@ -11,14 +11,23 @@
 
   // ---------- Start screen ----------
   const civBox = $('civs');
+  function showCiv() {
+    const c = G.CIVS[chosenCiv];
+    $('civ-name').textContent = c.name;
+    $('civ-desc').textContent = c.desc;
+    [...civBox.children].forEach(x => x.classList.toggle('on', x.dataset.civ === chosenCiv));
+  }
   for (const k in G.CIVS) {
-    const c = G.CIVS[k];
     const b = document.createElement('button');
-    b.className = 'civ' + (k === chosenCiv ? ' on' : '');
-    b.innerHTML = `<b>${c.name}</b><small>${c.desc}</small>`;
-    b.onclick = () => { chosenCiv = k; [...civBox.children].forEach(x => x.classList.remove('on')); b.classList.add('on'); };
+    b.className = 'civ'; b.dataset.civ = k;
+    b.setAttribute('aria-label', G.CIVS[k].name);
+    b.innerHTML = `<img src="assets/ui/crest_${k}.png" alt=""><span>${G.CIVS[k].name}</span>`;
+    b.onclick = () => { chosenCiv = k; showCiv(); };
     civBox.appendChild(b);
   }
+  showCiv();
+  $('btn-help').onclick = () => $('help').classList.remove('hidden');
+  $('btn-help-close').onclick = () => $('help').classList.add('hidden');
   $('diff').onclick = e => { const d = e.target.dataset.d; if (!d) return; difficulty = d; [...$('diff').children].forEach(x => x.classList.toggle('on', x === e.target)); };
   function startGame() {
     const others = Object.keys(G.CIVS).filter(k => k !== chosenCiv);

@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1b1610">
-<title>Crowns &amp; Conquest</title>
+<title>Dawn of Dynasties</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -53,27 +53,35 @@
 </div>
 
 <!-- Start screen -->
-<div id="start" class="screen">
-  <div class="card">
-    <h1>Crowns &amp; Conquest</h1>
-    <p class="tag">Build a village. Raise an army. Defend your crown.</p>
-    <h3>Choose your civilization</h3>
+<div id="start" class="screen title">
+  <div class="title-panel">
+    <img id="logo" src="assets/ui/logo.png" alt="Dawn of Dynasties">
+    <div class="pick-label">Choose your dynasty</div>
     <div id="civs"></div>
-    <h3>Opponent difficulty</h3>
-    <div id="diff" class="seg">
-      <button data-d="easy">Easy</button><button data-d="normal" class="on">Normal</button><button data-d="hard">Hard</button>
+    <div id="civ-info"><b id="civ-name"></b><span id="civ-desc"></span></div>
+    <div class="start-row">
+      <div id="diff" class="seg">
+        <button data-d="easy">Easy</button><button data-d="normal" class="on">Normal</button><button data-d="hard">Hard</button>
+      </div>
+      <button id="btn-start" class="play">Play</button>
     </div>
-    <button id="btn-start" class="big">Start Game</button>
-    <details class="help"><summary>How to play</summary>
-      <ul>
-        <li><b>Tap</b> a unit or building to select it. <b>Double-tap</b> a unit to select all of that type on screen.</li>
-        <li>With units selected, <b>tap</b> the ground to move, a resource to gather, an enemy to attack, or a foundation to build.</li>
-        <li><b>Drag</b> to move the camera, <b>pinch</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
-        <li>Villagers gather food, wood, gold and stone. Build Houses for population, then a Barracks, Archery Range and Stable.</li>
-        <li>Destroy every enemy building and unit to win.</li>
-        <li>Desktop: left-click select / drag box, right-click command, WASD or arrow keys pan, wheel zoom.</li>
-      </ul>
-    </details>
+    <button id="btn-help" class="linkbtn">How to play</button>
+  </div>
+</div>
+
+<!-- How to play -->
+<div id="help" class="screen hidden">
+  <div class="card small help">
+    <h2>How to play</h2>
+    <ul>
+      <li><b>Tap</b> a unit or building to select it. <b>Double-tap</b> a unit to select all of that type on screen.</li>
+      <li>With units selected, <b>tap</b> the ground to move, a resource to gather, an enemy to attack, or a foundation to build.</li>
+      <li><b>Drag</b> to move the camera, <b>pinch</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
+      <li>Villagers gather food, wood, gold and stone. Build Houses for population, then a Barracks, Archery Range and Stable.</li>
+      <li>Destroy every enemy building and unit to win.</li>
+      <li>Desktop: left-click select or drag a box, right-click to command, WASD or arrow keys to pan, mouse wheel to zoom.</li>
+    </ul>
+    <button id="btn-help-close" class="big">Got it</button>
   </div>
 </div>
 
