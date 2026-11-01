@@ -53,6 +53,11 @@
     const size = G.BUILDINGS[type].size;
     return sprite('fnd_' + size, null) || baseFoundation(type, stage);
   };
+  const baseRes = G.resSprite;
+  G.resSprite = function (type, v) {
+    return sprite(type === 'tree' ? 'res_tree_' + (v % 4) : 'res_' + type, null) || baseRes(type, v);
+  };
+  G.stumpSprite = () => sprite('stump', null);
   G.hasArt = key => !!art[key];
 
   G.loadArt = function (done) {

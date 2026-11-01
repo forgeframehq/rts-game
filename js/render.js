@@ -129,6 +129,16 @@
     }
     list.sort((a, b) => a.depth - b.depth);
 
+    // stumps left by chopped trees (ground level)
+    const stump = G.stumpSprite && G.stumpSprite();
+    if (stump) for (const d of G.decals || []) {
+      if (!G.isExplored(d.x, d.y)) continue;
+      const s = G.toScreen(d.x, d.y);
+      if (s.x < -60 || s.x > W + 60 || s.y < -60 || s.y > H + 60) continue;
+      ctx.globalAlpha = Math.min(1, d.life / 10);
+      drawSprite(stump, s.x, s.y, z);
+      ctx.globalAlpha = 1;
+    }
     const sel = G.selection || [];
     // farms & ground-level marks first (already sorted low)
     for (const it of list) drawEntity(it.e, it.s, z, sel.includes(it.e));
@@ -202,7 +212,7 @@
       if (selected) selRingTile(e, '#fff');
       const sp = G.resSprite(e.type, e.var);
       const g = G.toScreen(e.tx + 0.5, e.ty + 0.5);
-      drawSprite(sp, g.x, g.y, z * 0.9);
+      drawSprite(sp, g.x, g.y, sp.art ? z : z * 0.9);
       if (selected) hpBar(g.x, g.y - 70 * z, 30, e.amount / G.RES[e.type].amount, true);
       return;
     }

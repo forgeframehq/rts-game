@@ -102,5 +102,69 @@
   "h": 195.31,
   "ax": 113.12,
   "ay": 146.95
+ },
+ "res_tree_0": {
+  "file": "assets/res_tree_0.png",
+  "size": 1,
+  "w": 115.2,
+  "h": 153.6,
+  "ax": 57.6,
+  "ay": 115.2
+ },
+ "res_tree_1": {
+  "file": "assets/res_tree_1.png",
+  "size": 1,
+  "w": 115.2,
+  "h": 153.6,
+  "ax": 57.6,
+  "ay": 115.2
+ },
+ "res_tree_2": {
+  "file": "assets/res_tree_2.png",
+  "size": 1,
+  "w": 115.2,
+  "h": 153.6,
+  "ax": 57.6,
+  "ay": 115.2
+ },
+ "res_tree_3": {
+  "file": "assets/res_tree_3.png",
+  "size": 1,
+  "w": 115.2,
+  "h": 153.6,
+  "ax": 57.6,
+  "ay": 115.2
+ },
+ "res_berry": {
+  "file": "assets/res_berry.png",
+  "size": 1,
+  "w": 96.0,
+  "h": 128.0,
+  "ax": 48.0,
+  "ay": 96.0
+ },
+ "res_gold": {
+  "file": "assets/res_gold.png",
+  "size": 1,
+  "w": 100.8,
+  "h": 134.4,
+  "ax": 50.4,
+  "ay": 100.8
+ },
+ "res_stone": {
+  "file": "assets/res_stone.png",
+  "size": 1,
+  "w": 100.8,
+  "h": 134.4,
+  "ax": 50.4,
+  "ay": 100.8
+ },
+ "stump": {
+  "file": "assets/stump.png",
+  "size": 1,
+  "w": 86.4,
+  "h": 115.2,
+  "ax": 43.2,
+  "ay": 86.4
  }
 }

@@ -89,6 +89,7 @@
     e.dead = true;
     if (e.kind !== 'unit' && e.type !== 'farm') G.setBlock(e, 0);
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
+    if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
       if (e.owner > 0) G.players[e.owner].lost++;
@@ -315,6 +316,7 @@
       if (p.t >= p.dur) { p.done = true; if (t && !t.dead) hit(p.from, t, p.dmg); }
     }
     G.projs = G.projs.filter(p => !p.done);
+    if (G.decals) { for (const d of G.decals) d.life -= dt; if (G.decals.length && G.decals[0].life <= 0) G.decals = G.decals.filter(d => d.life > 0); }
     for (const f of G.effects) f.life -= dt;
     G.effects = G.effects.filter(f => f.life > 0);
     // Cleanup dead

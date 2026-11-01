@@ -27,7 +27,7 @@
 
   G.newGame = function (civ1, civ2, seed) {
     seed = seed || (Math.random() * 1e9) | 0;
-    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = [];
+    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = [];
     G.initMap(seed);
     G.players = { 1: G.makePlayer(1, civ1), 2: G.makePlayer(2, civ2) };
     G.time = 0; G.over = null;

@@ -65,6 +65,36 @@ def remove_background(a):
     return a
 
 
+# Assets drawn exactly to the master spec: 1x1 footprint, 384x512 canvas,
+# footprint centre at (192, 384). No measuring needed. stem -> (game key, display scale)
+SPEC_1X1 = {
+    '01_oak_tree_full': ('res_tree_0', 1.2),
+    '02_oak_tree_variant': ('res_tree_1', 1.2),
+    '03_pine_tree_tall': ('res_tree_2', 1.2),
+    '04_pine_tree_variant': ('res_tree_3', 1.2),
+    '05_berry_bush': ('res_berry', 1.0),
+    '06_gold_ore_deposit': ('res_gold', 1.05),
+    '07_stone_quarry_deposit': ('res_stone', 1.05),
+    '08_tree_stump_chopped': ('stump', 0.9),
+}
+
+
+def process_spec(src_dir, out_dir, keep, manifest):
+    for stem, (key, f) in SPEC_1X1.items():
+        path = os.path.join(src_dir, stem + '.png')
+        if not os.path.exists(path):
+            continue
+        shutil.copy(path, os.path.join(keep, stem + '.png'))
+        im = Image.open(path).convert('RGBA')
+        k = TW / 256.0 * f  # display px per source px
+        out = im.resize((round(im.width * k * OUT_SCALE), round(im.height * k * OUT_SCALE)), Image.LANCZOS)
+        out.save(os.path.join(out_dir, key + '.png'), optimize=True)
+        manifest[key] = {'file': 'assets/' + key + '.png', 'size': 1,
+                         'w': round(im.width * k, 2), 'h': round(im.height * k, 2),
+                         'ax': round(192 * k, 2), 'ay': round(384 * k, 2)}
+        print(f'{key:12s} {out.width}x{out.height}')
+
+
 def process(src_dir, repo):
     out_dir = os.path.join(repo, 'assets')
     keep = os.path.join(out_dir, 'source')
@@ -107,6 +137,7 @@ def process(src_dir, repo):
             'ax': round(cx * disp_scale, 2), 'ay': round(ground_y * disp_scale, 2),
         }
         print(f'{key:12s} {ow}x{oh}  footprint {best_w}px of {w}px')
+    process_spec(src_dir, out_dir, keep, manifest)
     json.dump(manifest, open(manifest_path, 'w'), indent=1)
 
 
