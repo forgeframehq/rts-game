@@ -23,6 +23,10 @@ Pure HTML5 canvas + JavaScript, no build step, no image files (all art is drawn 
 | Press-and-hold then drag to box-select | Drag to box-select |
 | Double-tap a unit: select all of that type | Shift-click to add to selection |
 
+## Plans
+- `ROADMAP.md`: roadmap, unit roster and the reuse plan for art and animation
+- `ASSETS.md`: art specification
+
 ## Code layout
 - `js/data.js` – civs, units, buildings, costs
 - `js/map.js` – map, fog of war, A* pathfinding
