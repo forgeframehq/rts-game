@@ -233,6 +233,7 @@
 
   // ---------- Tap logic ----------
   let lastTap = { t: 0, x: 0, y: 0, id: 0 };
+  let dropped = null; // units deselected by a grass tap, so a quick second tap can move them
   function tap(sx, sy, opts) {
     opts = opts || {};
     const w = G.toWorld(sx, sy);
@@ -280,6 +281,11 @@
     }
     if (target) { select([target], false); return; }
     if (mode === 'move') setMode(null);
+    if (dbl && !target && dropped && now - dropped.t < 400) {   // double-tap grass = move there
+      const us = dropped.units.filter(u => !u.dead && !u.inside); dropped = null;
+      if (us.length) { select(us, false); G.cmdSmart(us, w.x, w.y, null); ping(w.x, w.y, '#fff'); return; }
+    }
+    dropped = units.length ? { units, t: now } : null;
     select([], false);
   }
   const onScreen = e => { const s = G.toScreen(e.x, e.y); return s.x > 0 && s.y > 0 && s.x < G.W && s.y < G.H; };
