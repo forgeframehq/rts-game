@@ -355,8 +355,7 @@
     const wp = u.path[0];
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
     const step = u.def.speed * dt * (G.terrainSpeed || 1);
-    if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1;
-    u.up = (dx + dy) < -0.05;
+    steer(u, dx / (d || 1), dy / (d || 1), dt);
     u.walk += dt;
     u.dist = (u.dist || 0) + Math.min(step, d);
     if (d <= step) { u.x = wp.x; u.y = wp.y; u.path.shift(); return u.path.length === 0; }
@@ -364,6 +363,16 @@
     return false;
   }
 
+  // Smoothed heading: facing only changes when the new direction holds for a moment,
+  // so zig-zags in the path don't make units flip back and forth.
+  function steer(u, nx, ny, dt) {
+    const k = Math.min(1, dt * 7);
+    u.hx = (u.hx === undefined ? nx : u.hx + (nx - u.hx) * k);
+    u.hy = (u.hy === undefined ? ny : u.hy + (ny - u.hy) * k);
+    const sx = u.hx - u.hy, sy = (u.hx + u.hy) / 2; // screen-space direction
+    if (sx > 0.3) u.face = 1; else if (sx < -0.3) u.face = -1;
+    if (sy < -0.22) u.up = true; else if (sy > 0.08) u.up = false;
+  }
   function faceTo(u, t) { const dx = t.x - u.x, dy = t.y - u.y; if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1; }
 
   function findNewResource(u, rtype, lx, ly) {

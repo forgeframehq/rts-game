@@ -112,6 +112,7 @@
       const n = Math.ceil(dt / 0.034);
       for (let i = 0; i < n; i++) G.step(dt / n);
     }
+    G.frameDt = real;
     G.camera.update(real);
     G.render();
     if (G.ui) G.ui.update(real);

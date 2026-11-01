@@ -117,7 +117,12 @@
     else f = Math.floor((G.time + (u.id % 7) * 0.37) * (FPS[anim] || 8));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
-    drawFrame(ctx, key, G.ownerColor(u.owner), f, x, y, z, u.face || 1, u.hitT ? 0.7 : 1);
+    // quick turn: the sprite narrows and flips over ~0.12s instead of snapping
+    const fc = u.face || 1;
+    if (u.fv === undefined) u.fv = fc;
+    u.fv += Math.max(-1, Math.min(1, fc - u.fv)) * Math.min(1, (G.frameDt || 0.016) / 0.06);
+    const fs = Math.sign(u.fv || fc) * Math.max(0.35, Math.abs(u.fv));
+    drawFrame(ctx, key, G.ownerColor(u.owner), f, x, y, z, fs, u.hitT ? 0.7 : 1);
     // carried load: drawn only when there is no dedicated carry animation
     if (u.carry && u.carry.amt > 1 && (legacy || anim === 'walk_se' || anim === 'walk_ne' || anim === 'idle')) {
       ctx.fillStyle = CARRY[u.carry.res];
