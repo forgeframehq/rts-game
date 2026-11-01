@@ -37,7 +37,7 @@
     G.initMap(d.config.seed || 1);
     G.terrain.set(d.terrain); G.explored.set(d.explored);
     G.players = d.players;
-    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = d.decals || [];
+    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = d.decals || []; G.corpses = [];
     let maxId = 0;
     for (const o of d.ents) {
       o.def = o.kind === 'unit' ? G.UNITS[o.type] : o.kind === 'building' ? G.BUILDINGS[o.type] : G.RES[o.type];

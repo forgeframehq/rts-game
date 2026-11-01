@@ -34,7 +34,7 @@
     G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal' };
     G.MAP = G.MAP_SIZES[G.rules.size] || 72;
     N = G.MAP;
-    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = [];
+    G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
     G.setNextId(1);
     G.initMap(seed);
     const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);

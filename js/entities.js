@@ -81,6 +81,7 @@
     e.x = x; e.y = y;
     let hp = def.hp; if (type === 'knight' && mods(owner).knightHp) hp = Math.round(hp * mods(owner).knightHp);
     e.hp = e.maxHp = hp;
+    if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
     e.range = def.range + (type === 'archer' && mods(owner).archerRange ? mods(owner).archerRange : 0);
     return e;
@@ -92,6 +93,7 @@
     if (e.kind !== 'unit' && e.type !== 'farm') G.setBlock(e, 0);
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
     if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
+    if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, owner: e.owner, sex: e.sex, face: e.face, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
       if (e.owner > 0) G.players[e.owner].lost++;
@@ -319,6 +321,7 @@
       if (p.t >= p.dur) { p.done = true; if (t && !t.dead) hit(p.from, t, p.dmg); }
     }
     G.projs = G.projs.filter(p => !p.done);
+    if (G.corpses) { for (const c of G.corpses) c.t += dt; if (G.corpses.length && G.corpses[0].t > 14) G.corpses = G.corpses.filter(c => c.t <= 14); }
     if (G.decals) { for (const d of G.decals) d.life -= dt; if (G.decals.length && G.decals[0].life <= 0) G.decals = G.decals.filter(d => d.life > 0); }
     for (const f of G.effects) f.life -= dt;
     G.effects = G.effects.filter(f => f.life > 0);
@@ -353,6 +356,7 @@
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
     const step = u.def.speed * dt * (G.terrainSpeed || 1);
     if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1;
+    u.up = (dx + dy) < -0.05;
     u.walk += dt;
     if (d <= step) { u.x = wp.x; u.y = wp.y; u.path.shift(); return u.path.length === 0; }
     u.x += dx / d * step; u.y += dy / d * step;

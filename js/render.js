@@ -142,6 +142,7 @@
       drawSprite(stump, s.x, s.y, z);
       ctx.globalAlpha = 1;
     }
+    if (G.drawCorpses) G.drawCorpses(ctx, z);
     const sel = G.selection || [];
     // farms & ground-level marks first (already sorted low)
     for (const it of list) drawEntity(it.e, it.s, z, sel.includes(it.e));
@@ -264,7 +265,7 @@
     }
     if (e.atkAnim > 0) e.atkAnim -= 0.016;
     if (!G.drawUnitArt || !G.drawUnitArt(ctx, e, s.x, s.y, z)) G.drawUnit(ctx, e, s.x, s.y, z * 1.6);
-    if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - (G.hasArt && G.hasArt('unit_' + e.type + '_walk') ? 46 : e.type === 'knight' ? 34 : 28) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
+    if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - ((G.unitArtHeight && G.unitArtHeight(e)) || (e.type === 'knight' ? 34 : 28)) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
   }
 
   function drawGhost(z) {

@@ -61,31 +61,84 @@
   G.hasArt = key => !!art[key];
 
   // ---- animated units ----
+  // Art keys: unit_<civ>_<type>_<sex>_<anim>, falling back to the Britons set, then to the old single walk strip.
   const CARRY = { wood: '#8a5f34', food: '#c8414a', gold: '#f0c93a', stone: '#c8c6c0' };
-  G.drawUnitArt = function (ctx, u, x, y, z) {
-    const key = 'unit_' + u.type + '_walk';
-    const a = art[key];
-    if (!a) return false;
-    const sp = sprite(key, G.ownerColor(u.owner));
-    const d = a.def, n = d.frames;
+  const FPS = { walk_se: 11, walk_ne: 11, carry_wood: 10, carry_ore: 9, carry_food: 10, idle: 5, chop: 9, mine: 9, farm: 8, forage: 8, build: 10, death: 10 };
+  const WORK = { tree: 'chop', gold: 'mine', stone: 'mine', berry: 'forage' };
+  const CARRY_ANIM = { wood: 'carry_wood', gold: 'carry_ore', stone: 'carry_ore', food: 'carry_food' };
+
+  function animKey(u, anim, anySex) {
+    const civ = G.players[u.owner] ? G.players[u.owner].civ : 'britons';
+    const sx = u.sex || 'm';
+    const keys = [`unit_${civ}_${u.type}_${sx}_${anim}`, `unit_britons_${u.type}_${sx}_${anim}`];
+    if (anySex) keys.push(`unit_britons_${u.type}_m_${anim}`, `unit_britons_${u.type}_f_${anim}`);
+    for (const k of keys) if (art[k]) return k;
+    return null;
+  }
+  function pickAnim(u) {
     const moving = u.path.length > 0;
-    let f = 0, bob = 0, tilt = 0;
-    if (moving) f = Math.floor(u.walk * 11) % n;
-    else if (u.working) { const t = G.time * 6 + u.id; bob = Math.abs(Math.sin(t)) * 1.5; tilt = Math.sin(t) * 0.12; f = 4; }
-    const cw = sp.cv.width / n, ch = sp.cv.height;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-    ctx.beginPath(); ctx.ellipse(0, 0, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
-    if (u.hitT) ctx.globalAlpha = 0.7;
-    ctx.scale(u.face * z, z);
-    ctx.translate(0, -bob);
-    if (tilt) ctx.rotate(tilt);
-    ctx.drawImage(sp.cv, f * cw, 0, cw, ch, -d.ax, -d.ay, d.fw, d.fh);
-    if (u.carry && u.carry.amt > 1) { ctx.fillStyle = CARRY[u.carry.res]; ctx.fillRect(-11, -26, 6, 8); ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 0.6; ctx.strokeRect(-11, -26, 6, 8); }
+    if (moving) {
+      if (u.carry && u.carry.amt >= 1 && (u.task.t === 'return' || u.carry.amt >= G.CARRY - 0.01)) return [CARRY_ANIM[u.carry.res], 'walk_se'];
+      return u.up ? ['walk_ne', 'walk_se'] : ['walk_se'];
+    }
+    if (u.working) {
+      const t = u.task;
+      if (t.t === 'gather') return [WORK[t.rtype] || 'chop', 'idle'];
+      if (t.t === 'farm') return ['farm', 'forage', 'idle'];
+      if (t.t === 'build') return ['build', 'idle'];
+      if (t.t === 'attack') return ['chop', 'idle'];
+    }
+    return ['idle', 'walk_se'];
+  }
+  function drawFrame(ctx, key, color, f, x, y, z, face, alpha) {
+    const a = art[key], sp = sprite(key, color), d = a.def;
+    const cw = sp.cv.width / d.frames, ch = sp.cv.height;
+    ctx.save(); ctx.translate(x, y);
+    if (alpha < 1) ctx.globalAlpha = alpha;
+    ctx.scale(face * z, z);
+    ctx.drawImage(sp.cv, (f % d.frames) * cw, 0, cw, ch, -d.ax, -d.ay, d.fw, d.fh);
     ctx.restore();
+  }
+
+  G.drawUnitArt = function (ctx, u, x, y, z) {
+    let key = null, anim = null;
+    const names = pickAnim(u);
+    for (const name of names) { key = animKey(u, name); if (key) { anim = name; break; } }
+    if (!key) for (const name of names) { key = animKey(u, name, true); if (key) { anim = name; break; } }
+    let legacy = false;
+    if (!key) { key = 'unit_' + u.type + '_walk'; if (!art[key]) return false; legacy = true; }
+    const d = art[key].def;
+    const moving = u.path.length > 0;
+    let f = 0;
+    if (legacy) f = moving ? Math.floor(u.walk * 11) % d.frames : 0;
+    else if (moving) f = Math.floor(u.walk * FPS[anim]);
+    else f = Math.floor((G.time + (u.id % 7) * 0.37) * (FPS[anim] || 8));
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
+    drawFrame(ctx, key, G.ownerColor(u.owner), f, x, y, z, u.face || 1, u.hitT ? 0.7 : 1);
+    // carried load: drawn only when there is no dedicated carry animation
+    if (u.carry && u.carry.amt > 1 && (legacy || anim === 'walk_se' || anim === 'walk_ne' || anim === 'idle')) {
+      ctx.fillStyle = CARRY[u.carry.res];
+      ctx.fillRect(x - 11 * z * (u.face || 1), y - 26 * z, 6 * z, 8 * z);
+    }
     return true;
   };
+  G.unitArtHeight = u => (animKey(u, 'idle', true) || animKey(u, 'walk_se', true) || art['unit_' + u.type + '_walk']) ? 46 : 0;
+
+  // corpses: play the death animation once, hold the last frame, then fade
+  G.drawCorpses = function (ctx, z) {
+    for (const c of G.corpses || []) {
+      const key = animKey(c, 'death') || animKey(c, 'death', true);
+      if (!key || !(G.revealAll || G.isVisible(c.x, c.y))) continue;
+      const s = G.toScreen(c.x, c.y);
+      if (s.x < -80 || s.y < -80 || s.x > G.W + 80 || s.y > G.H + 80) continue;
+      const n = art[key].def.frames;
+      const f = Math.min(n - 1, Math.floor(c.t * FPS.death));
+      const alpha = c.t > 10 ? Math.max(0, 1 - (c.t - 10) / 4) : 1;
+      drawFrame(ctx, key, G.ownerColor(c.owner), f, s.x, s.y, z, c.face || 1, alpha);
+    }
+  };
+  G.hasDeathArt = u => !!animKey(u, 'death', true);
 
   G.loadArt = function (done) {
     fetch('assets/manifest.json').then(r => r.json()).then(man => {
