@@ -268,12 +268,18 @@
       }
       select([target], opts.add); return;
     }
-    if (units.length) {
+    if (mode === 'move' && units.length) {
+      const r = G.cmdSmart(units, w.x, w.y, target); setMode(null);
+      ping(target ? target.x : w.x, target ? target.y : w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8');
+      return;
+    }
+    if (units.length && target) {   // tapping a tree, mine, enemy etc. still commands; empty grass deselects
       const r = G.cmdSmart(units, w.x, w.y, target);
       ping(target ? target.x : w.x, target ? target.y : w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8');
       return;
     }
     if (target) { select([target], false); return; }
+    if (mode === 'move') setMode(null);
     select([], false);
   }
   const onScreen = e => { const s = G.toScreen(e.x, e.y); return s.x > 0 && s.y > 0 && s.x < G.W && s.y < G.H; };
@@ -308,7 +314,7 @@
     if (!b) { UI.alert('Not enough resources'); flashCost(G.buildCost(1, gh.type)); setMode(null); return; }
     ping(b.x, b.y, '#8f8');
     if (keep && G.canAfford(1, G.buildCost(1, gh.type))) return; // shift-place multiple
-    setMode(null);
+    setMode(null); select([], false);
   }
   $('place-ok').onclick = () => confirmPlace(false);
   $('place-cancel').onclick = () => setMode(null);
@@ -316,11 +322,12 @@
   function setMode(m) {
     mode = m;
     if (m !== 'place') G.ghost = null;
-    $('place-bar').classList.toggle('hidden', m !== 'place' && m !== 'rally');
-    $('place-ok').classList.toggle('hidden', m === 'rally');
+    $('place-bar').classList.toggle('hidden', m !== 'place' && m !== 'rally' && m !== 'move');
+    $('place-ok').classList.toggle('hidden', m === 'rally' || m === 'move');
+    if (m === 'move') $('place-hint').textContent = 'Tap where to move';
     if (m === 'rally') $('place-hint').textContent = 'Tap where new units should gather';
     $('btn-box').classList.toggle('on', m === 'box');
-    $('panel').classList.toggle('hidden', m === 'place' || m === 'rally' || !G.selection.length);
+    $('panel').classList.toggle('hidden', m === 'place' || m === 'rally' || m === 'move' || !G.selection.length);
     document.body.classList.toggle('has-panel', !$('panel').classList.contains('hidden'));
   }
 
@@ -434,6 +441,7 @@
       if (vils.length) cmds.appendChild(btn('🛡️', 'Garrison', 'Town Center', () => {
         for (const v of vils) { const tc = G.nearest(v, e => e.type === 'towncenter' && G.canGarrison(v, e)); if (tc) G.garrisonTo(v, tc); else { UI.alert('No room in a Town Center'); break; } }
       }));
+      cmds.appendChild(btn('🧭', 'Move', 'then tap map', () => setMode('move')));
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
