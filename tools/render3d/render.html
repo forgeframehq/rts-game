@@ -77,8 +77,8 @@ window.renderAll = async function (cfg) {
   // measure standing height from the first frame of the first requested clip (or bind pose)
   const mixer = new THREE.AnimationMixer(model);
   const clips = {}; for (const c of gltf.animations) clips[c.name] = c;
-  if (cfg.clipsUrl) {   // retarget: borrow clips from another character on the same skeleton (bone names match)
-    const src = await new GLTFLoader().loadAsync(cfg.clipsUrl);
+  for (const cu of [].concat(cfg.clipsUrl || [])) {   // borrow clips from other files on the same skeleton (bone names match)
+    const src = await new GLTFLoader().loadAsync(cu);
     const hipY = r => { let y = 1; r.traverse(o => { if (o.isBone && o.name === 'Hips') y = o.position.y; }); return y; };
     const ratio = hipY(model) / hipY(src.scene);
     for (const c0 of src.animations) {

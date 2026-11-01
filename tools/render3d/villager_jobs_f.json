@@ -11,8 +11,8 @@
   },
   {
    "name": "idle",
-   "clip": "Idle",
-   "frames": 8
+   "clip": "Idle_02",
+   "frames": 16
   },
   {
    "name": "chop",
@@ -35,11 +35,11 @@
   },
   {
    "name": "mine",
-   "clip": "Heavy_Hammer_Swing",
-   "frames": 10,
+   "clip": "Charged_Ground_Slam",
+   "frames": 12,
    "pingpong": true,
-   "start": 0.1,
-   "end": 0.92,
+   "start": 0.15,
+   "end": 0.52,
    "props": [
     {
      "bone": "RightHand",
@@ -50,7 +50,8 @@
       0
      ]
     }
-   ]
+   ],
+   "lockRoot": true
   },
   {
    "name": "build",
@@ -94,7 +95,6 @@
    "name": "forage",
    "clip": "Male_Bend_Over_Pick_Up",
    "frames": 10,
-   "pingpong": true,
    "start": 0.0,
    "end": 0.5,
    "props": [
@@ -113,7 +113,8 @@
      ],
      "scale": 1.2
     }
-   ]
+   ],
+   "pingpong": true
   },
   {
    "name": "carry_wood",
@@ -176,5 +177,8 @@
    "loop": false
   }
  ],
- "clipsUrl": "villager_m_anim.glb"
+ "clipsUrl": [
+  "villager_m_anim.glb",
+  "villager_m_anim2.glb"
+ ]
 }

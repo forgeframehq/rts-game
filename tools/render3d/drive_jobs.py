@@ -18,7 +18,10 @@ async def main(jobs_file, out_dir, model=None, only=None):
                 for k, v in res.items():
                     if 'png' not in v: print(k, v); continue
                     open(f'{out_dir}/{k}.png', 'wb').write(base64.b64decode(v['png'].split(',')[1]))
-                    json.dump({kk: vv for kk, vv in v.items() if kk != 'png'}, open(f'{out_dir}/{k}.json', 'w'))
+                    meta = {kk: vv for kk, vv in v.items() if kk != 'png'}
+                    span = (a.get('end', 1) - a.get('start', 0)) * v.get('duration', 1)
+                    meta['cycle'] = round(span * (2 if a.get('pingpong') else 1), 3)
+                    json.dump(meta, open(f'{out_dir}/{k}.json', 'w'))
                     print(k, v['frames'], 'x', v['dirs'], flush=True)
             if errs: print('ERR', errs[:5])
             await b.close()

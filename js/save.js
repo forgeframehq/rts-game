@@ -16,6 +16,7 @@
     const ents = G.ents.filter(e => !e.dead).map(e => {
       const o = {};
       for (const k in e) if (k !== 'def') o[k] = e[k];
+      if (e.garrison) o.garrison = e.garrison.map(u => { const g = {}; for (const k in u) if (k !== 'def') g[k] = u[k]; return g; });
       return o;
     });
     const data = {
@@ -43,6 +44,7 @@
       o.def = o.kind === 'unit' ? G.UNITS[o.type] : o.kind === 'building' ? G.BUILDINGS[o.type] : G.RES[o.type];
       if (!o.def) continue;
       G.ents.push(o); G.byId.set(o.id, o); maxId = Math.max(maxId, o.id);
+      if (o.garrison) for (const g of o.garrison) { g.def = G.UNITS[g.type]; G.byId.set(g.id, g); maxId = Math.max(maxId, g.id); }
       if (o.kind !== 'unit' && o.type !== 'farm') G.setBlock(o, o.id);
     }
     G.setNextId(maxId + 1);

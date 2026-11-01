@@ -129,7 +129,7 @@
     for (const name of pick3d(u)) { key = key3d(u, name); if (key) { anim = name; break; } }
     if (!key) return false;
     const d = art[key].def, moving = u.path.length > 0;
-    const f = moving ? Math.floor((u.dist || 0) / STRIDE3 * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (FPS3[anim] || 8));
+    const f = moving ? Math.floor((u.dist || 0) / STRIDE3 * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
     drawFrame3(ctx, key, G.ownerColor(u.owner), f, u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);

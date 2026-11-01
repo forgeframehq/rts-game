@@ -38,7 +38,7 @@
       if (e.owner !== p || e.dead) continue;
       if (e.kind === 'unit') pop++;
       else if (e.kind === 'building') {
-        pop += e.queue ? e.queue.length : 0;
+        pop += (e.queue ? e.queue.length : 0) + (e.garrison ? e.garrison.length : 0);
         if (e.built && e.def.pop) cap += (e.type === 'house' && mods(p).housePop) ? mods(p).housePop : e.def.pop;
       }
     }
@@ -87,11 +87,32 @@
     return e;
   };
 
+  // ---- Garrison (AoE2-style): villagers shelter in their Town Center, each one adds an arrow ----
+  G.GARRISON_MAX = 15;
+  G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner && u.type === 'villager'
+    && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
+  G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
+  G.ringBell = function (owner) {
+    for (const u of G.ents) if (!u.dead && u.owner === owner && u.type === 'villager') {
+      const tc = nearest(u, e => e.type === 'towncenter' && G.canGarrison(u, e));
+      if (tc) G.garrisonTo(u, tc);
+    }
+  };
+  G.ungarrison = function (b) {
+    const list = b.garrison || []; b.garrison = [];
+    for (const u of list) {
+      const spot = G.nearestFree(b.x + 1.5, b.y + 1.5, 10) || { x: b.tx, y: b.ty };
+      u.x = spot.x + 0.5 + (Math.random() - 0.5) * 0.4; u.y = spot.y + 0.5 + (Math.random() - 0.5) * 0.4;
+      u.task = { t: 'idle' }; u.path = []; u.inside = 0;
+      G.ents.push(u);
+    }
+  };
   G.kill = function (e) {
     if (e.dead) return;
     e.dead = true;
     if (e.kind !== 'unit' && e.type !== 'farm') G.setBlock(e, 0);
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
+    if (e.kind === 'building' && e.garrison && e.garrison.length) G.ungarrison(e);
     if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
     if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
@@ -283,12 +304,13 @@
         b.cool -= dt;
         if (b.cool <= 0) {
           const t = nearest(b, e => e.kind === 'unit' && G.enemies(e.owner, b.owner), b.def.range);
-          if (t) { fire(b, t); b.cool = b.def.rate; }
+          if (t) { const n = 1 + (b.garrison ? b.garrison.length : 0); for (let i = 0; i < n; i++) fire(b, t); b.cool = b.def.rate; }
         }
       }
     }
     // Units
-    for (const u of G.ents) if (!u.dead && u.kind === 'unit') updateUnit(u, dt);
+    for (const u of G.ents) if (!u.dead && u.kind === 'unit' && !u.inside) updateUnit(u, dt);
+    if (G.ents.some(e => e.entering)) { for (const e of G.ents) delete e.entering; G.ents = G.ents.filter(e => !e.inside); }
     // Separation using a tile bucket grid
     const buckets = new Map();
     for (const u of G.ents) if (!u.dead && u.kind === 'unit') {
@@ -505,6 +527,18 @@
           if (u.pathFor !== f.id || !u.path.length) {
             if (u.repath <= 0 || u.pathFor !== f.id) { u.path = G.findPath(u.x, u.y, rectOf(f), false, 0); u.pathFor = f.id; u.repath = 1; }
           }
+          moveAlong(u, dt);
+        }
+        break;
+      }
+      case 'garrison': {
+        const b = G.byId.get(task.id);
+        if (!b || b.dead || !b.built || (b.garrison || []).length >= b.def.garrison) { u.task = { t: 'idle' }; break; }
+        if (G.edgeDist(u, b) <= 0.8) {
+          if (u.carry) { G.players[u.owner].res[u.carry.res] += Math.round(u.carry.amt); G.players[u.owner].gathered[u.carry.res] += Math.round(u.carry.amt); u.carry = null; }
+          (b.garrison = b.garrison || []).push(u); u.inside = b.id; u.entering = true; u.path = [];
+        } else {
+          if (u.pathFor !== b.id || !u.path.length) { if (u.repath <= 0 || u.pathFor !== b.id) pathTo(u, b, true); }
           moveAlong(u, dt);
         }
         break;

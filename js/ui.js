@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const UI = G.ui = {};
   const ICON = { food: '🍖', wood: '🪵', gold: '🪙', stone: '🪨' };
-  const TASK_TXT = { idle: 'Idle', move: 'Moving', attack: 'Attacking', build: 'Building', farm: 'Farming', return: 'Delivering' };
+  const TASK_TXT = { idle: 'Idle', move: 'Moving', attack: 'Attacking', build: 'Building', farm: 'Farming', return: 'Delivering', garrison: 'Taking shelter' };
   G.selection = [];
   let mode = null; // null | 'place' | 'rally' | 'box'
   let panelKey = '', toastT = 0, idleIdx = 0, mmT = 0, lastAlertT = -99, saveT = 20;
@@ -390,7 +390,8 @@
         if (e.carry && e.carry.amt >= 1) sub += ` · carrying ${Math.floor(e.carry.amt)} ${ICON[e.carry.res]}`;
       } else if (!e.built) sub = `Under construction ${Math.floor(e.progress * 100)}%`;
       else if (e.type === 'farm') sub += ` · ${Math.ceil(e.food)} food left`;
-      else if (e.def.pop) { const pc = G.popOf(e.owner); sub += ` · +${e.type === 'house' && G.CIVS[G.players[e.owner].civ].mods.housePop || e.def.pop} pop`; }
+      if (e.garrison && e.garrison.length) sub += ` · ${e.garrison.length}/${e.def.garrison} inside`;
+      if (e.def.pop) { const pc = G.popOf(e.owner); sub += ` · +${e.type === 'house' && G.CIVS[G.players[e.owner].civ].mods.housePop || e.def.pop} pop`; }
       $('sel-sub').textContent = sub;
       $('sel-hp').style.display = '';
       $('sel-hp').firstChild.style.width = Math.max(0, e.hp / e.maxHp * 100) + '%';
@@ -413,7 +414,7 @@
 
     // commands (rebuilt only when something relevant changes)
     const R = G.players[1].res;
-    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
+    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
     if (!force && key === panelKey) return;
     panelKey = key;
     const cmds = $('cmds'); cmds.innerHTML = '';
@@ -430,6 +431,9 @@
         return;
       }
       if (vils.length) cmds.appendChild(btn('🔨', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
+      if (vils.length) cmds.appendChild(btn('🛡️', 'Garrison', 'Town Center', () => {
+        for (const v of vils) { const tc = G.nearest(v, e => e.type === 'towncenter' && G.canGarrison(v, e)); if (tc) G.garrisonTo(v, tc); else { UI.alert('No room in a Town Center'); break; } }
+      }));
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
@@ -452,6 +456,11 @@
         }, !G.canAfford(1, c)));
       }
       cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
+      if (e.def.garrison && e.owner === 1) {
+        cmds.appendChild(btn('🔔', 'Ring bell', 'all villagers in', () => { G.ringBell(1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
+        const n = (e.garrison || []).length;
+        if (n) cmds.appendChild(btn('🚪', 'Ungarrison', n + ' inside', () => { for (const b of sel) if (b.garrison) G.ungarrison(b); panelKey = ''; }));
+      }
     }
     if (e.kind === 'building' && e.owner === 1) {
       const del = btn('🗑️', 'Delete', '', () => {
