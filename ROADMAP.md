@@ -72,7 +72,30 @@ About 20–30 paid pieces give hundreds of possible units. Every combination is 
 ### 2.5 Team colour
 All art uses pure magenta `#FF00FF` on team-coloured parts (see `ASSETS.md`). The game recolours it per player, so no art is ever made per colour.
 
-### 2.6 Data-driven game
+### 2.6 Free and multiplied assets (no credits)
+**Made in code**
+- Effects as particles: fire and smoke on damaged buildings, dust, weapon sparks, arrows, rubble piles
+- Terrain drawn by code: ground, dirt roads, shallow water, shorelines
+- Construction: the finished building rises bottom-up behind the shared scaffolding as progress grows (no stage images)
+- Damage states: cracks, smoke and flames layered over the normal sprite as HP drops
+
+**Multiplied from existing art**
+- Map themes by recolouring: autumn, winter and desert versions of trees, grass and berries
+- Variety by flipping, scaling and slight tinting of trees, rocks and gold (never buildings, whose lighting would flip)
+- Icons and portraits cut from sprites or rendered from 3D models
+
+**One-time packs, reused everywhere**
+- Props pack: fences, barrels, carts, haystacks, flowers, banners, rocks, scattered by code
+- Terrain pack: cliffs, bridges, dock edges, used on every map and in the campaign
+- Sound: free CC0 libraries (Kenney, Freesound CC0) plus a few voice lines per region, not per unit
+
+**Spending rules**
+- Draft prompts with the cheaper model at low resolution; generate the final only once the prompt is right
+- Fix by reprocessing, never by regenerating: size, alignment, background and colour are fixed by script; originals stay in `assets/source/`
+- Small things (resources, props) at small resolution
+- Test one before making many
+
+### 2.7 Data-driven game
 Units, buildings, dynasties, Ages, upgrades and kits live in data files. Adding a dynasty = data + art, with no engine changes. The same engine, skeletons and tools will power the fantasy game later.
 
 ---
@@ -142,14 +165,15 @@ Rule of thumb: **test one before making many.** Every new kind of asset gets a s
 |---|---|---|
 | 0 | Engine, map, economy, combat, AI, menus, skirmish setup, save/continue | ✅ Done |
 | 0 | Painted buildings, resources, title screen, Britons villagers (2D) | ✅ Done |
-| 1 | **Lock the unit pipeline:** (a) one 3D villager rendered in 8 directions; (b) one modular soldier: 1 body, 2 armour tiers, 2 weapons | Next |
+| 1 | **Lock the unit pipeline:** (a) one 3D villager rendered in 8 directions; (b) one modular soldier: 1 body, 2 armour tiers, 2 weapons | Next (Meshy Pro set up) |
+| 1b | **Free polish:** buildings rise during construction, fire/smoke/rubble damage states, tree and rock variety | Next |
 | 2 | **Core systems:** Ages and upgrades, unique units, King and Queen with Regicide mode, Monk, siege, sound | |
 | 3 | **Content production:** run the pipeline for all dynasties, regions, units and building tiers | |
 | 4 | **Campaign, tutorial mission, polish, performance**; release as installable web app, then Android via Capacitor | |
 | 5 | **Fantasy game** on the same engine, skeletons and tools, with new art and data | |
 
 ### Phase 1 needs
-- Meshy account with API credits and an API key
+- Meshy account (Pro plan ✅) and an API key
 - Allowed domains in Claude settings: `api.meshy.ai`, `assets.meshy.ai`
 - Already set up: Kie (`api.kie.ai`, `tempfile.aiquickdraw.com`)
 
