@@ -327,7 +327,14 @@
       }
       cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
     }
-    if (e.kind === 'building' && e.owner === 1) cmds.appendChild(btn('🗑️', 'Delete', '', () => { if (confirm(`Delete this ${e.def.name}?`)) { G.kill(e); G.onKilled(e); } }));
+    if (e.kind === 'building' && e.owner === 1) {
+      const del = btn('🗑️', 'Delete', '', () => {
+        if (del.dataset.armed) { G.kill(e); G.onKilled(e); return; }
+        del.dataset.armed = '1'; del.querySelector('.lb').textContent = 'Tap again'; del.style.borderColor = 'var(--bad)';
+        setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.querySelector('.lb').textContent = 'Delete'; del.style.borderColor = ''; } }, 2500);
+      });
+      cmds.appendChild(del);
+    }
   }
 
   // ---------- Per-frame UI update ----------
