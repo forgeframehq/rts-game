@@ -91,6 +91,51 @@
     }
     return ['idle', 'walk_se'];
   }
+  // ---- 3D-rendered units: 8 directions (rows) x frames (columns), see tools/render3d ----
+  G.use3d = !/[?&]2d\b/.test(location.search);
+  const FPS3 = { idle: 5, chop: 9, mine: 9, farm: 8, forage: 8, build: 10, death: 10 };
+  const STRIDE3 = 0.95;
+  function key3d(u, a3) {
+    const civ = G.players[u.owner] ? G.players[u.owner].civ : 'britons';
+    const sx = u.sex || 'm';
+    for (const k of [`unit3d_${civ}_${u.type}_${sx}_${a3}`, `unit3d_britons_${u.type}_${sx}_${a3}`]) if (art[k]) return k;
+    return null;
+  }
+  function pick3d(u) {
+    const moving = u.path.length > 0;
+    if (moving) {
+      if (u.carry && u.carry.amt >= 1 && (u.task.t === 'return' || u.carry.amt >= G.CARRY - 0.01)) return [CARRY_ANIM[u.carry.res], 'walk'];
+      return ['walk'];
+    }
+    if (u.working) {
+      const t = u.task;
+      if (t.t === 'gather') return [WORK[t.rtype] || 'chop', 'idle'];
+      if (t.t === 'farm') return ['farm', 'idle'];
+      if (t.t === 'build') return ['build', 'idle'];
+      if (t.t === 'attack') return ['chop', 'idle'];
+    }
+    return ['idle'];
+  }
+  function drawFrame3(ctx, key, color, f, row, x, y, z, alpha) {
+    const a = art[key], sp = sprite(key, color), d = a.def;
+    const cw = sp.cv.width / d.frames, ch = sp.cv.height / d.rows;
+    if (alpha < 1) { ctx.save(); ctx.globalAlpha = alpha; }
+    ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - d.ax * z, y - d.ay * z, d.fw * z, d.fh * z);
+    if (alpha < 1) ctx.restore();
+  }
+  function draw3d(ctx, u, x, y, z) {
+    if (!G.use3d) return false;
+    let key = null, anim = null;
+    for (const name of pick3d(u)) { key = key3d(u, name); if (key) { anim = name; break; } }
+    if (!key) return false;
+    const d = art[key].def, moving = u.path.length > 0;
+    const f = moving ? Math.floor((u.dist || 0) / STRIDE3 * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (FPS3[anim] || 8));
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
+    drawFrame3(ctx, key, G.ownerColor(u.owner), f, u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
+    return true;
+  }
+
   function drawFrame(ctx, key, color, f, x, y, z, face, alpha) {
     const a = art[key], sp = sprite(key, color), d = a.def;
     const cw = sp.cv.width / d.frames, ch = sp.cv.height;
@@ -102,6 +147,7 @@
   }
 
   G.drawUnitArt = function (ctx, u, x, y, z) {
+    if (draw3d(ctx, u, x, y, z)) return true;
     let key = null, anim = null;
     const names = pickAnim(u);
     for (const name of names) { key = animKey(u, name); if (key) { anim = name; break; } }
@@ -130,19 +176,21 @@
     }
     return true;
   };
-  G.unitArtHeight = u => (animKey(u, 'idle', true) || animKey(u, 'walk_se', true) || art['unit_' + u.type + '_walk']) ? 46 : 0;
+  G.unitArtHeight = u => (G.use3d && key3d(u, 'idle')) ? 50 : (animKey(u, 'idle', true) || animKey(u, 'walk_se', true) || art['unit_' + u.type + '_walk']) ? 46 : 0;
 
   // corpses: play the death animation once, hold the last frame, then fade
   G.drawCorpses = function (ctx, z) {
     for (const c of G.corpses || []) {
-      const key = animKey(c, 'death') || animKey(c, 'death', true);
+      const k3 = G.use3d ? key3d(c, 'death') : null;
+      const key = k3 || animKey(c, 'death') || animKey(c, 'death', true);
       if (!key || !(G.revealAll || G.isVisible(c.x, c.y))) continue;
       const s = G.toScreen(c.x, c.y);
       if (s.x < -80 || s.y < -80 || s.x > G.W + 80 || s.y > G.H + 80) continue;
       const n = art[key].def.frames;
       const f = Math.min(n - 1, Math.floor(c.t * FPS.death));
       const alpha = c.t > 10 ? Math.max(0, 1 - (c.t - 10) / 4) : 1;
-      drawFrame(ctx, key, G.ownerColor(c.owner), f, s.x, s.y, z, c.face || 1, alpha);
+      if (k3) drawFrame3(ctx, key, G.ownerColor(c.owner), f, c.dir || 0, s.x, s.y, z, alpha);
+      else drawFrame(ctx, key, G.ownerColor(c.owner), f, s.x, s.y, z, c.face || 1, alpha);
     }
   };
   G.hasDeathArt = u => !!animKey(u, 'death', true);

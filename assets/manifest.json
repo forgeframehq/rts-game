@@ -358,5 +358,203 @@
   "fh": 40.63,
   "ax": 9.29,
   "ay": 40.29
+ },
+ "unit3d_britons_villager_m_build": {
+  "file": "assets/units/unit3d_britons_villager_m_build.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 49.07,
+  "fh": 52.53,
+  "ax": 24.53,
+  "ay": 47.02
+ },
+ "unit3d_britons_villager_m_carry_food": {
+  "file": "assets/units/unit3d_britons_villager_m_carry_food.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 46.4,
+  "ax": 14.67,
+  "ay": 40.35
+ },
+ "unit3d_britons_villager_m_carry_ore": {
+  "file": "assets/units/unit3d_britons_villager_m_carry_ore.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 44.8,
+  "ax": 14.67,
+  "ay": 38.75
+ },
+ "unit3d_britons_villager_m_carry_wood": {
+  "file": "assets/units/unit3d_britons_villager_m_carry_wood.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 44.0,
+  "ax": 14.67,
+  "ay": 37.95
+ },
+ "unit3d_britons_villager_m_chop": {
+  "file": "assets/units/unit3d_britons_villager_m_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 50.67,
+  "fh": 52.53,
+  "ax": 25.33,
+  "ay": 47.02
+ },
+ "unit3d_britons_villager_m_death": {
+  "file": "assets/units/unit3d_britons_villager_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 68.27,
+  "fh": 63.47,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_britons_villager_m_farm": {
+  "file": "assets/units/unit3d_britons_villager_m_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 51.2,
+  "fh": 50.4,
+  "ax": 25.6,
+  "ay": 40.09
+ },
+ "unit3d_britons_villager_m_forage": {
+  "file": "assets/units/unit3d_britons_villager_m_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 28.8,
+  "fh": 42.67,
+  "ax": 14.4,
+  "ay": 37.15
+ },
+ "unit3d_britons_villager_m_idle": {
+  "file": "assets/units/unit3d_britons_villager_m_idle.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 27.73,
+  "fh": 43.73,
+  "ax": 13.87,
+  "ay": 38.22
+ },
+ "unit3d_britons_villager_m_mine": {
+  "file": "assets/units/unit3d_britons_villager_m_mine.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 56.0,
+  "fh": 55.2,
+  "ax": 28.0,
+  "ay": 49.15
+ },
+ "unit3d_britons_villager_m_walk": {
+  "file": "assets/units/unit3d_britons_villager_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 28.27,
+  "fh": 42.13,
+  "ax": 14.13,
+  "ay": 36.89
+ },
+ "unit3d_britons_villager_f_build": {
+  "file": "assets/units/unit3d_britons_villager_f_build.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 49.07,
+  "fh": 50.4,
+  "ax": 24.53,
+  "ay": 46.22
+ },
+ "unit3d_britons_villager_f_carry_food": {
+  "file": "assets/units/unit3d_britons_villager_f_carry_food.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 46.13,
+  "ax": 14.67,
+  "ay": 41.15
+ },
+ "unit3d_britons_villager_f_carry_ore": {
+  "file": "assets/units/unit3d_britons_villager_f_carry_ore.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 44.53,
+  "ax": 14.67,
+  "ay": 39.55
+ },
+ "unit3d_britons_villager_f_carry_wood": {
+  "file": "assets/units/unit3d_britons_villager_f_carry_wood.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 29.33,
+  "fh": 42.67,
+  "ax": 14.67,
+  "ay": 37.69
+ },
+ "unit3d_britons_villager_f_chop": {
+  "file": "assets/units/unit3d_britons_villager_f_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 51.2,
+  "fh": 50.4,
+  "ax": 25.6,
+  "ay": 46.22
+ },
+ "unit3d_britons_villager_f_death": {
+  "file": "assets/units/unit3d_britons_villager_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_britons_villager_f_farm": {
+  "file": "assets/units/unit3d_britons_villager_f_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 49.33,
+  "fh": 48.0,
+  "ax": 24.8,
+  "ay": 40.09
+ },
+ "unit3d_britons_villager_f_forage": {
+  "file": "assets/units/unit3d_britons_villager_f_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 30.4,
+  "fh": 42.67,
+  "ax": 15.2,
+  "ay": 37.69
+ },
+ "unit3d_britons_villager_f_idle": {
+  "file": "assets/units/unit3d_britons_villager_f_idle.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 27.2,
+  "fh": 42.4,
+  "ax": 13.6,
+  "ay": 37.69
+ },
+ "unit3d_britons_villager_f_mine": {
+  "file": "assets/units/unit3d_britons_villager_f_mine.png",
+  "frames": 10,
+  "rows": 8,
+  "fw": 54.67,
+  "fh": 55.2,
+  "ax": 27.47,
+  "ay": 49.15
+ },
+ "unit3d_britons_villager_f_walk": {
+  "file": "assets/units/unit3d_britons_villager_f_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "fw": 26.67,
+  "fh": 41.07,
+  "ax": 13.33,
+  "ay": 36.35
  }
 }

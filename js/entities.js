@@ -93,7 +93,7 @@
     if (e.kind !== 'unit' && e.type !== 'farm') G.setBlock(e, 0);
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
     if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
-    if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, owner: e.owner, sex: e.sex, face: e.face, x: e.x, y: e.y, t: 0 });
+    if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
       if (e.owner > 0) G.players[e.owner].lost++;
@@ -365,6 +365,16 @@
 
   // Smoothed heading: facing only changes when the new direction holds for a moment,
   // so zig-zags in the path don't make units flip back and forth.
+  // 8 screen directions, in the order the 3D sheets are rendered: S SE E NE N NW W SW
+  function setDir(u, sx, sy) {
+    if (Math.abs(sx) + Math.abs(sy) < 1e-3) return;
+    const a = Math.atan2(sx, sy) * 180 / Math.PI;
+    if (u.dir !== undefined) {   // hysteresis: stay put until clearly pointing elsewhere
+      const diff = Math.abs((((a - u.dir * 45) % 360) + 540) % 360 - 180);
+      if (diff < 30) return;
+    }
+    u.dir = ((Math.round(a / 45) % 8) + 8) % 8;
+  }
   function steer(u, nx, ny, dt) {
     const k = Math.min(1, dt * 7);
     u.hx = (u.hx === undefined ? nx : u.hx + (nx - u.hx) * k);
@@ -372,8 +382,9 @@
     const sx = u.hx - u.hy, sy = (u.hx + u.hy) / 2; // screen-space direction
     if (sx > 0.3) u.face = 1; else if (sx < -0.3) u.face = -1;
     if (sy < -0.22) u.up = true; else if (sy > 0.08) u.up = false;
+    setDir(u, sx, sy);
   }
-  function faceTo(u, t) { const dx = t.x - u.x, dy = t.y - u.y; if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1; }
+  function faceTo(u, t) { const dx = t.x - u.x, dy = t.y - u.y; if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1; setDir(u, dx - dy, (dx + dy) / 2); }
 
   function findNewResource(u, rtype, lx, ly) {
     const p = { x: lx, y: ly };

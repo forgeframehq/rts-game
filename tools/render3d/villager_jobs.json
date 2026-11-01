@@ -1,0 +1,179 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "villager_m_anim.glb",
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 8,
+   "lockRoot": true
+  },
+  {
+   "name": "idle",
+   "clip": "Idle",
+   "frames": 8
+  },
+  {
+   "name": "chop",
+   "clip": "Heavy_Hammer_Swing",
+   "frames": 10,
+   "pingpong": true,
+   "start": 0.1,
+   "end": 0.92,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "axe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mine",
+   "clip": "Heavy_Hammer_Swing",
+   "frames": 10,
+   "pingpong": true,
+   "start": 0.1,
+   "end": 0.92,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "pickaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "build",
+   "clip": "Heavy_Hammer_Swing",
+   "frames": 10,
+   "pingpong": true,
+   "start": 0.1,
+   "end": 0.92,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "mallet",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "farm",
+   "clip": "Pull_Radish",
+   "frames": 10,
+   "pingpong": true,
+   "start": 0.0,
+   "end": 0.6,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sickle",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "forage",
+   "clip": "Male_Bend_Over_Pick_Up",
+   "frames": 10,
+   "pingpong": true,
+   "start": 0.0,
+   "end": 0.5,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "basket",
+     "rot": [
+      0,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      -0.03,
+      0.0
+     ],
+     "scale": 1.2
+    }
+   ]
+  },
+  {
+   "name": "carry_wood",
+   "clip": "Carry_Heavy_Object_Walk",
+   "frames": 8,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "Spine01",
+     "tool": "logs",
+     "pos": [
+      -0.018,
+      0.05,
+      0.18
+     ],
+     "scale": 1.35
+    }
+   ]
+  },
+  {
+   "name": "carry_ore",
+   "clip": "Carry_Heavy_Object_Walk",
+   "frames": 8,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "Spine01",
+     "tool": "sack",
+     "pos": [
+      -0.018,
+      0.04,
+      0.18
+     ],
+     "scale": 1.9
+    }
+   ]
+  },
+  {
+   "name": "carry_food",
+   "clip": "Carry_Heavy_Object_Walk",
+   "frames": 8,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "Spine01",
+     "tool": "foodbasket",
+     "pos": [
+      -0.018,
+      0.05,
+      0.2
+     ],
+     "scale": 2.3
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false
+  }
+ ]
+}
