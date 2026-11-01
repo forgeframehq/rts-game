@@ -358,6 +358,7 @@
     if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1;
     u.up = (dx + dy) < -0.05;
     u.walk += dt;
+    u.dist = (u.dist || 0) + Math.min(step, d);
     if (d <= step) { u.x = wp.x; u.y = wp.y; u.path.shift(); return u.path.length === 0; }
     u.x += dx / d * step; u.y += dy / d * step;
     return false;

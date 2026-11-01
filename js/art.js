@@ -64,6 +64,7 @@
   // Art keys: unit_<civ>_<type>_<sex>_<anim>, falling back to the Britons set, then to the old single walk strip.
   const CARRY = { wood: '#8a5f34', food: '#c8414a', gold: '#f0c93a', stone: '#c8c6c0' };
   const FPS = { walk_se: 11, walk_ne: 11, carry_wood: 10, carry_ore: 9, carry_food: 10, idle: 5, chop: 9, mine: 9, farm: 8, forage: 8, build: 10, death: 10 };
+  const STRIDE = 1.15;
   const WORK = { tree: 'chop', gold: 'mine', stone: 'mine', berry: 'forage' };
   const CARRY_ANIM = { wood: 'carry_wood', gold: 'carry_ore', stone: 'carry_ore', food: 'carry_food' };
 
@@ -111,7 +112,8 @@
     const moving = u.path.length > 0;
     let f = 0;
     if (legacy) f = moving ? Math.floor(u.walk * 11) % d.frames : 0;
-    else if (moving) f = Math.floor(u.walk * FPS[anim]);
+    // steps follow distance travelled, so feet don't slide (one full 8-frame cycle per STRIDE tiles)
+    else if (moving) f = Math.floor((u.dist || 0) / STRIDE * d.frames);
     else f = Math.floor((G.time + (u.id % 7) * 0.37) * (FPS[anim] || 8));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
