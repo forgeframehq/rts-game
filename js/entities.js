@@ -1,6 +1,7 @@
 // Entities, economy, unit behaviour and combat.
 (function () {
   let nextId = 1;
+  G.setNextId = n => { nextId = n; };
   G.ents = [];
   G.byId = new Map();
   G.projs = [];
@@ -9,11 +10,12 @@
   const mods = p => G.CIVS[G.players[p].civ].mods;
 
   // ---------- Players & costs ----------
-  G.makePlayer = function (id, civ) {
+  G.makePlayer = function (id, civ, opts) {
+    opts = opts || {};
     const m = G.CIVS[civ].mods;
-    const res = { ...G.START_RES };
+    const res = { ...(G.RES_PRESETS[G.rules.res] || G.START_RES) };
     if (m.startFoodDelta) res.food += m.startFoodDelta;
-    return { id, civ, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
+    return { id, civ, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
   };
 
   G.unitCost = function (p, type) {
@@ -40,7 +42,7 @@
         if (e.built && e.def.pop) cap += (e.type === 'house' && mods(p).housePop) ? mods(p).housePop : e.def.pop;
       }
     }
-    return { pop, cap: Math.min(200, cap) };
+    return { pop, cap: Math.min(G.rules.pop || 200, cap) };
   };
 
   // ---------- Creation ----------
@@ -107,7 +109,8 @@
     const cx = Math.max(t.tx, Math.min(t.tx + s, u.x)), cy = Math.max(t.ty, Math.min(t.ty + s, u.y));
     return Math.hypot(u.x - cx, u.y - cy);
   };
-  G.enemies = (a, b) => a > 0 && b > 0 && a !== b;
+  G.allied = (a, b) => a === b || (a > 0 && b > 0 && G.players[a] && G.players[b] && G.players[a].team > 0 && G.players[a].team === G.players[b].team);
+  G.enemies = (a, b) => a > 0 && b > 0 && !G.allied(a, b);
 
   function nearest(u, pred, maxD) {
     let best = null, bd = maxD || 1e9;

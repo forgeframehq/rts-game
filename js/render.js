@@ -1,6 +1,7 @@
 // Camera and world rendering.
 (function () {
-  const TW = G.TW, TH = G.TH, N = G.MAP;
+  const TW = G.TW, TH = G.TH;
+  let N = G.MAP;
   G.ownerColor = o => G.PLAYER_COLORS[o];
 
   const canvas = document.getElementById('game');
@@ -9,7 +10,7 @@
   let W = 0, H = 0, DPR = 1;
 
   G.resize = function () {
-    DPR = Math.min(2, window.devicePixelRatio || 1);
+    DPR = G.gfxLow ? 1 : Math.min(2, window.devicePixelRatio || 1);
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = W * DPR; canvas.height = H * DPR;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
@@ -47,6 +48,7 @@
   const GT = 16; // texels per tile
   let ground = null, fogCv = null, fogCtx = null, fogImg = null;
   G.buildGround = function () {
+    N = G.MAP;
     ground = document.createElement('canvas');
     ground.width = ground.height = N * GT;
     const g = ground.getContext('2d');
@@ -117,12 +119,13 @@
       if (e.dead) continue;
       const s = G.toScreen(e.x, e.y);
       if (s.x < -margin * z || s.x > W + margin * z || s.y < -margin * z || s.y > H + margin * 1.5 * z) continue;
-      if (e.kind === 'unit' && e.owner !== 1 && !G.isVisible(e.x, e.y)) continue;
+      if (e.kind === 'unit' && !G.allied(1, e.owner) && !G.isVisible(e.x, e.y) && !G.revealAll) continue;
       if (e.kind !== 'unit') {
         const cx = e.tx + (e.size || 1) / 2, cy = e.ty + (e.size || 1) / 2;
         if (!G.isExplored(cx, cy) && !G.revealAll) continue;
-        if (e.kind === 'building' && e.owner === 2 && !G.isVisible(cx, cy) && !e.seen && !G.revealAll) continue;
-        if (e.kind === 'building' && e.owner === 2 && G.isVisible(cx, cy)) e.seen = true;
+        const foe = e.kind === 'building' && !G.allied(1, e.owner);
+        if (foe && !G.isVisible(cx, cy) && !e.seen && !G.revealAll) continue;
+        if (foe && G.isVisible(cx, cy)) e.seen = true;
       }
       const depth = e.kind === 'unit' ? e.x + e.y : e.type === 'farm' ? e.tx + e.ty - 10 : e.tx + e.ty + (e.size || 1) * 1.5 - 0.5;
       list.push({ e, s, depth });
@@ -240,7 +243,7 @@
         ctx.beginPath(); ctx.arc(g.x + 20 * z, g.y - (e.size * 30 + k * 30) * z, (4 + k * 6) * z, 0, 7); ctx.fill();
       }
       const top = g.y - (sp.art ? sp.ay + 6 : e.size * 32 + 30) * z;
-      if (selected || e.hp < e.maxHp * 0.999 || !e.built) {
+      if (selected || e.hp < e.maxHp * 0.999 || !e.built || (G.hpAlways && e.type !== 'farm')) {
         hpBar(g.x, top, 20 + e.size * 14, Math.max(0, e.hp / e.maxHp), own);
         if (!e.built) { ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(g.x - 10 - e.size * 7 - 1, top + 5, 20 + e.size * 14 + 2, 4); ctx.fillStyle = '#5ac8fa'; ctx.fillRect(g.x - 10 - e.size * 7, top + 6, (20 + e.size * 14) * e.progress, 2); }
       }
@@ -261,7 +264,7 @@
     }
     if (e.atkAnim > 0) e.atkAnim -= 0.016;
     G.drawUnit(ctx, e, s.x, s.y, z * 1.6);
-    if (selected || e.hp < e.maxHp) hpBar(s.x, s.y - (e.type === 'knight' ? 34 : 28) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
+    if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - (e.type === 'knight' ? 34 : 28) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
   }
 
   function drawGhost(z) {
@@ -292,7 +295,7 @@
       if (e.dead) continue;
       const x = e.kind === 'unit' ? e.x : e.tx, y = e.kind === 'unit' ? e.y : e.ty;
       if (!G.revealAll && !G.isExplored(x, y)) continue;
-      if (e.kind === 'unit' && e.owner === 2 && !G.isVisible(x, y) && !G.revealAll) continue;
+      if (e.kind === 'unit' && !G.allied(1, e.owner) && !G.isVisible(x, y) && !G.revealAll) continue;
       if (e.kind === 'res') m.fillStyle = e.type === 'tree' ? '#1f4d1a' : e.type === 'gold' ? '#f2cf3a' : e.type === 'stone' ? '#bbb' : '#d14a6a';
       else m.fillStyle = G.ownerColor(e.owner);
       const s = e.kind === 'unit' ? 1.2 : (e.size || 1);

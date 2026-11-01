@@ -52,47 +52,116 @@
   <div id="toast"></div>
 </div>
 
-<!-- Start screen -->
+<!-- Main menu -->
 <div id="start" class="screen title">
   <div class="title-panel">
     <img id="logo" src="assets/ui/logo.png" alt="Dawn of Dynasties">
-    <div class="pick-label">Choose your dynasty</div>
-    <div id="civs"></div>
-    <div id="civ-info"><b id="civ-name"></b><span id="civ-desc"></span></div>
-    <div class="start-row">
-      <div id="diff" class="seg">
-        <button data-d="easy">Easy</button><button data-d="normal" class="on">Normal</button><button data-d="hard">Hard</button>
+    <nav class="mainmenu">
+      <button id="m-continue" class="mbtn primary hidden"><span>Continue</span><small id="m-continue-sub"></small></button>
+      <button id="m-skirmish" class="mbtn primary"><span>Skirmish</span><small>Custom battle against the computer</small></button>
+      <div class="mgrid">
+        <button id="m-campaign" class="mbtn" disabled><span>Campaign</span><small>Coming soon</small></button>
+        <button id="m-dynasties" class="mbtn"><span>Dynasties</span><small>History &amp; bonuses</small></button>
+        <button id="m-learn" class="mbtn"><span>Learn to Play</span><small>Controls &amp; basics</small></button>
+        <button id="m-options" class="mbtn"><span>Options</span><small>Speed, graphics</small></button>
       </div>
-      <button id="btn-start" class="play">Play</button>
+    </nav>
+  </div>
+</div>
+
+<!-- Skirmish setup -->
+<div id="skirmish" class="screen title hidden">
+  <div class="sheet wide">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Skirmish</h2></header>
+    <div class="sheet-body two-col">
+      <section>
+        <h3>Players</h3>
+        <div id="slots"></div>
+      </section>
+      <section class="opts">
+        <div class="opt"><label>Map size</label><div class="seg" data-opt="size"><button data-v="small">Small</button><button data-v="medium" class="on">Medium</button><button data-v="large">Large</button></div></div>
+        <div class="opt"><label>Starting resources</label><div class="seg" data-opt="res"><button data-v="standard" class="on">Standard</button><button data-v="medium">Medium</button><button data-v="high">High</button></div></div>
+        <div class="opt"><label>Population limit</label><div class="seg" data-opt="pop"><button data-v="50">50</button><button data-v="100">100</button><button data-v="150">150</button><button data-v="200" class="on">200</button></div></div>
+        <div class="opt"><label>Map visibility</label><div class="seg" data-opt="reveal"><button data-v="normal" class="on">Normal</button><button data-v="explored">Explored</button><button data-v="all">All visible</button></div></div>
+        <p class="hint" id="rule-hint"></p>
+      </section>
     </div>
-    <button id="btn-help" class="linkbtn">How to play</button>
+    <footer class="sheet-foot"><button id="btn-start" class="play">Start battle</button></footer>
   </div>
 </div>
 
-<!-- How to play -->
-<div id="help" class="screen hidden">
-  <div class="card small help">
-    <h2>How to play</h2>
-    <ul>
-      <li><b>Tap</b> a unit or building to select it. <b>Double-tap</b> a unit to select all of that type on screen.</li>
-      <li>With units selected, <b>tap</b> the ground to move, a resource to gather, an enemy to attack, or a foundation to build.</li>
-      <li><b>Drag</b> to move the camera, <b>pinch</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
-      <li>Villagers gather food, wood, gold and stone. Build Houses for population, then a Barracks, Archery Range and Stable.</li>
-      <li>Destroy every enemy building and unit to win.</li>
-      <li>Desktop: left-click select or drag a box, right-click to command, WASD or arrow keys to pan, mouse wheel to zoom.</li>
-    </ul>
-    <button id="btn-help-close" class="big">Got it</button>
+<!-- Dynasties -->
+<div id="dynasties" class="screen title hidden">
+  <div class="sheet">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Dynasties</h2></header>
+    <div class="sheet-body">
+      <div id="dyn-tabs"></div>
+      <article id="dyn-page">
+        <div class="dyn-top"><img id="dyn-crest" alt=""><div><h3 id="dyn-name"></h3><div id="dyn-role" class="role"></div></div></div>
+        <p id="dyn-history"></p>
+        <h4>Bonuses</h4>
+        <ul id="dyn-bonuses"></ul>
+        <h4>Unique unit</h4>
+        <p class="hint">Arrives with the next update, alongside the Ages system.</p>
+      </article>
+    </div>
   </div>
 </div>
 
-<!-- Menu -->
+<!-- Options -->
+<div id="options" class="screen title hidden">
+  <div class="sheet">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Options</h2></header>
+    <div class="sheet-body">
+      <section class="opts">
+        <div class="opt"><label>Game speed</label><div class="seg" data-pref="speed"><button data-v="1">Normal</button><button data-v="1.5">Fast</button><button data-v="2">Very fast</button></div></div>
+        <div class="opt"><label>Graphics</label><div class="seg" data-pref="gfx"><button data-v="high">Sharp</button><button data-v="low">Battery saver</button></div></div>
+        <div class="opt"><label>Health bars</label><div class="seg" data-pref="hp"><button data-v="damaged">When damaged</button><button data-v="always">Always</button></div></div>
+        <div class="opt"><label>Saved game</label><button id="btn-delsave" class="plain">Delete saved game</button></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- Learn to play -->
+<div id="help" class="screen title hidden">
+  <div class="sheet">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Learn to Play</h2></header>
+    <div class="sheet-body help">
+      <h4>Controls</h4>
+      <ul>
+        <li><b>Tap</b> a unit or building to select it. <b>Double-tap</b> a unit to select all of that type on screen.</li>
+        <li>With units selected, <b>tap</b> the ground to move, a resource to gather, an enemy to attack, or a foundation to build.</li>
+        <li><b>Drag</b> to move the camera, <b>pinch</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
+        <li>Side buttons: 👷 next idle villager, ⚔️ select your army, ⬚ box select, 🏰 jump to your Town Center.</li>
+      </ul>
+      <h4>Your first minutes</h4>
+      <ul>
+        <li>Keep your Town Center making <b>Villagers</b> all game.</li>
+        <li>Send villagers to <b>berries</b> and <b>trees</b>. Build a <b>Mill</b> by the berries and a <b>Lumber Camp</b> by the forest so they walk less.</li>
+        <li>Build a <b>House</b> before you run out of population. Each house adds 5.</li>
+        <li>When berries run out, build <b>Farms</b> around your Town Center or Mill.</li>
+        <li>Add a <b>Barracks</b>, <b>Archery Range</b> and <b>Stable</b>, and mine <b>gold</b> to pay for soldiers.</li>
+      </ul>
+      <h4>Winning fights</h4>
+      <ul>
+        <li><b>Spearmen</b> beat Knights. <b>Archers</b> beat Swordsmen and Spearmen from range. <b>Knights</b> run down Archers.</li>
+        <li><b>Swordsmen</b> are best at knocking down buildings.</li>
+        <li>Destroy every enemy building and unit to win.</li>
+      </ul>
+      <p class="hint">Desktop: left-click to select or drag a box, right-click to command, WASD or arrow keys to pan, mouse wheel to zoom.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Pause menu -->
 <div id="menu" class="screen hidden">
   <div class="card small">
     <h2>Paused</h2>
     <div class="seg" id="speed"><button data-s="1" class="on">1×</button><button data-s="1.5">1.5×</button><button data-s="2">2×</button></div>
     <button id="btn-resume" class="big">Resume</button>
-    <button id="btn-restart">Restart</button>
-    <button id="btn-quit">Main menu</button>
+    <button id="btn-restart">Restart with same settings</button>
+    <button id="btn-quit">Save &amp; quit to menu</button>
   </div>
 </div>
 
@@ -102,6 +171,7 @@
     <h2 id="over-title"></h2>
     <div id="over-stats"></div>
     <button id="btn-again" class="big">Play again</button>
+    <button id="btn-over-menu">Main menu</button>
   </div>
 </div>
 
@@ -113,6 +183,7 @@
 <script src="js/render.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/game.js"></script>
+<script src="js/save.js"></script>
 <script src="js/ui.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 // World setup, main loop, victory.
 (function () {
-  const N = G.MAP;
+  let N = G.MAP;
 
   function cluster(r, type, cx, cy, count, spread) {
     let placed = 0, tries = 0;
@@ -25,50 +25,74 @@
     a = pick(); cluster(r, 'tree', Math.round(cx + Math.cos(a) * 10), Math.round(cy + Math.sin(a) * 10), 22, 2);
   }
 
-  G.newGame = function (civ1, civ2, seed) {
-    seed = seed || (Math.random() * 1e9) | 0;
+  // config: { players: [{ civ, team, ai }], size, res, pop, reveal, seed }
+  // players[0] is always the human. ai is a difficulty ('easy'|'normal'|'hard') for computer players.
+  G.newGame = function (config) {
+    config = config || {};
+    const seed = config.seed || (Math.random() * 1e9) | 0;
+    G.config = { ...config, seed };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal' };
+    G.MAP = G.MAP_SIZES[G.rules.size] || 72;
+    N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = [];
+    G.setNextId(1);
     G.initMap(seed);
-    G.players = { 1: G.makePlayer(1, civ1), 2: G.makePlayer(2, civ2) };
+    const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);
+    G.players = {};
+    slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
     G.time = 0; G.over = null;
     const r = G.mapRng;
-    const starts = [{ p: 1, x: 13, y: N - 16 }, { p: 2, x: N - 16, y: 13 }];
+    const m = Math.round(N * 0.18);
+    // corner spots: bottom-left, top-right, top-left, bottom-right on screen
+    const spots = [{ x: m, y: N - m - 3 }, { x: N - m - 3, y: m }, { x: m, y: m }, { x: N - m - 3, y: N - m - 3 }];
+    const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
     // Town centers first (so resources avoid them)
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
     for (const s of starts) startResources(r, s.x + 1, s.y + 1);
     // Forests and scattered resources across the map, away from starts
     const far = (x, y) => starts.every(s => Math.hypot(x - s.x, y - s.y) > 13);
-    for (let k = 0; k < 22; k++) {
+    const scale = (N * N) / (72 * 72);
+    for (let k = 0; k < Math.round(22 * scale); k++) {
       const x = 3 + Math.floor(r() * (N - 6)), y = 3 + Math.floor(r() * (N - 6));
       if (far(x, y)) cluster(r, 'tree', x, y, 18 + Math.floor(r() * 30), 2);
     }
-    for (let k = 0; k < 8; k++) {
+    for (let k = 0; k < Math.round(8 * scale); k++) {
       const x = 6 + Math.floor(r() * (N - 12)), y = 6 + Math.floor(r() * (N - 12));
       if (far(x, y)) cluster(r, k % 3 === 0 ? 'stone' : k % 3 === 1 ? 'gold' : 'berry', x, y, 5, 1);
     }
     // Starting villagers
     for (const tc of tcs) {
-      const m = G.CIVS[G.players[tc.owner].civ].mods;
-      const n = 3 + (m.extraVils || 0);
+      const md = G.CIVS[G.players[tc.owner].civ].mods;
+      const n = 3 + (md.extraVils || 0);
       for (let i = 0; i < n; i++) {
         const f = G.nearestFree(tc.tx + 1 + (i % 3) - 1, tc.ty + 4 + Math.floor(i / 3), 6);
         G.addUnit('villager', tc.owner, f.x + 0.5, f.y + 0.5);
       }
     }
+    G.revealAll = G.rules.reveal === 'all';
+    if (G.rules.reveal === 'explored') G.explored.fill(1);
     G.updateFog();
-    const tc1 = tcs[0];
-    G.camera.focus(tc1.x, tc1.y + 2);
-    if (G.ai) G.ai.init(2);
+    G.camera.focus(tcs[0].x, tcs[0].y + 2);
+    G.ais = [];
+    for (const id in G.players) {
+      const p = G.players[id];
+      if (!p.ai) continue;
+      const a = G.makeAI(); a.level = p.ai; a.init(+id); G.ais.push(a);
+    }
     if (G.ui) G.ui.reset();
   };
 
+  const hasStuff = p => G.ents.some(x => !x.dead && x.owner === p && (x.kind === 'building' && x.type !== 'farm' || x.kind === 'unit'));
   G.onKilled = function (e) {
-    if (G.over || e.owner === 0) return;
-    for (const p of [1, 2]) {
-      const has = G.ents.some(x => !x.dead && x.owner === p && (x.kind === 'building' && x.type !== 'farm' || x.kind === 'unit'));
-      if (!has) { G.players[p].alive = false; G.over = p === 1 ? 'defeat' : 'victory'; if (G.ui) G.ui.gameOver(G.over); }
-    }
     if (G.ui && G.ui.onKilled) G.ui.onKilled(e);
+    if (G.over || e.owner === 0) return;
+    for (const id in G.players) {
+      const p = G.players[id];
+      if (p.alive && !hasStuff(+id)) { p.alive = false; if (+id !== 1 && G.ui) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`); }
+    }
+    if (!G.players[1].alive) { G.over = 'defeat'; if (G.ui) G.ui.gameOver(G.over); return; }
+    const foes = Object.keys(G.players).filter(id => G.players[id].alive && G.enemies(1, +id));
+    if (!foes.length) { G.over = 'victory'; if (G.ui) G.ui.gameOver(G.over); }
   };
 
   G.speed = 1;
@@ -77,7 +101,7 @@
   G.step = function (dt) {
     G.time += dt;
     G.updateEntities(dt);
-    if (G.ai) G.ai.update(dt);
+    if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
     fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; }
   };
   function frame(t) {

@@ -1,6 +1,6 @@
 // Map generation, blocking grid, fog of war and A* pathfinding.
 (function () {
-  const N = G.MAP;
+  let N = G.MAP;
 
   G.rng = function (seed) {
     let s = seed >>> 0;
@@ -17,6 +17,8 @@
   G.inMap = (x, y) => x >= 0 && y >= 0 && x < N && y < N;
 
   G.initMap = function (seed) {
+    N = G.MAP;
+    gScore = new Float32Array(N * N); parent = new Int32Array(N * N); stamp = new Int32Array(N * N); curStamp = 0;
     G.terrain = new Uint8Array(N * N);   // visual variant 0..3 (grass shades), 4 = dirt
     G.block = new Int32Array(N * N);     // entity id blocking the tile, 0 = free
     G.explored = new Uint8Array(N * N);
@@ -48,7 +50,7 @@
   G.updateFog = function () {
     G.visible.fill(0);
     for (const e of G.ents) {
-      if (e.owner !== 1 || e.dead) continue;
+      if (e.dead || !G.allied(1, e.owner)) continue;
       const los = e.def.los || 4;
       const cx = e.kind === 'building' ? e.tx + e.size / 2 : e.x;
       const cy = e.kind === 'building' ? e.ty + e.size / 2 : e.y;
@@ -72,9 +74,9 @@
     get size() { return this.a.length; }
   }
   const DIRS = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
-  const gScore = new Float32Array(N * N);
-  const parent = new Int32Array(N * N);
-  const stamp = new Int32Array(N * N);
+  let gScore = new Float32Array(N * N);
+  let parent = new Int32Array(N * N);
+  let stamp = new Int32Array(N * N);
   let curStamp = 0;
 
   // rect: target footprint {x0,y0,x1,y1} inclusive. If adjacent=true, goal is any free tile touching the rect.

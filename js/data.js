@@ -5,25 +5,38 @@ G.TW = 64;          // iso tile width (px at zoom 1)
 G.TH = 32;          // iso tile height
 G.MAP = 72;         // map size in tiles
 
-G.PLAYER_COLORS = { 0: '#bbbbbb', 1: '#2f6fd6', 2: '#d63a2f' };
+G.PLAYER_COLORS = { 0: '#bbbbbb', 1: '#2f6fd6', 2: '#d63a2f', 3: '#3aa04a', 4: '#e0a91c' };
+G.PLAYER_COLOR_NAMES = { 1: 'Blue', 2: 'Red', 3: 'Green', 4: 'Yellow' };
 
 G.CIVS = {
   britons: {
+    role: "Archers",
+    history: "The peoples of medieval Britain, from the Anglo-Saxon kingdoms to the England of the Plantagenets. Their archers became the terror of European battlefields: at Crécy (1346) and Agincourt (1415), English longbowmen cut down far larger armies of mounted knights.",
+    bonuses: ["Archers +1 range", "Archers 20% cheaper", "Town Center works 15% faster"],
     name: 'Britons', color: '#2f6fd6',
     desc: 'Archer civ. Archers +1 range and 20% cheaper. Town Center works 15% faster.',
     mods: { archerRange: 1, archerCost: 0.8, tcSpeed: 1.15 }
   },
   franks: {
+    role: "Cavalry",
+    history: "A Germanic people who built the strongest kingdom in post-Roman western Europe. Clovis I united them around 500, and Charlemagne was crowned Emperor of the Romans in 800. Their armoured horsemen grew into the mounted knights of the high Middle Ages.",
+    bonuses: ["Knights +25% HP", "Farms hold 25% more food", "Berries gathered 20% faster"],
     name: 'Franks', color: '#3a8f3a',
     desc: 'Cavalry civ. Knights +25% HP. Farms 25% more food. Berries gathered 20% faster.',
     mods: { knightHp: 1.25, farmFood: 1.25, berryRate: 1.2 }
   },
   byzantines: {
+    role: "Defense",
+    history: "The Eastern Roman Empire, ruled from Constantinople for over a thousand years until 1453. Behind the great Theodosian Walls, the city outlasted wave after wave of sieges, defended by armoured cataphracts and disciplined spearmen.",
+    bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Units heal slowly near the Town Center"],
     name: 'Byzantines', color: '#8a3fb8',
     desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Units heal slowly near Town Center.',
     mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true }
   },
   chinese: {
+    role: "Economy",
+    history: "Under the Tang and Song dynasties, China was the largest and richest state on earth, with vast cities, paper money, printing and gunpowder. Huge populations and a well-run state let its armies field crossbowmen and cavalry in enormous numbers.",
+    bonuses: ["Start with +3 villagers (but −50 food)", "Houses support 10 population", "Villagers 10% cheaper"],
     name: 'Chinese', color: '#d4a017',
     desc: 'Economy civ. Start with +3 villagers but -50 food. Houses support 10 pop. Villagers 10% cheaper.',
     mods: { extraVils: 3, startFoodDelta: -50, housePop: 10, vilCost: 0.9 }
@@ -64,3 +77,11 @@ G.CARRY = 10;
 G.FARM_RATE = 0.33;
 
 G.START_RES = { food: 200, wood: 200, gold: 100, stone: 200 };
+G.RES_PRESETS = {
+  standard: { food: 200, wood: 200, gold: 100, stone: 200 },
+  medium: { food: 500, wood: 500, gold: 300, stone: 300 },
+  high: { food: 1000, wood: 1000, gold: 700, stone: 500 }
+};
+G.MAP_SIZES = { small: 56, medium: 72, large: 96 };
+// Current match rules (set by the skirmish screen).
+G.rules = { size: 'medium', res: 'standard', pop: 200, reveal: 'normal' };

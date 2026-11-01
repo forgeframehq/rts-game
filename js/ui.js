@@ -6,46 +6,162 @@
   const TASK_TXT = { idle: 'Idle', move: 'Moving', attack: 'Attacking', build: 'Building', farm: 'Farming', return: 'Delivering' };
   G.selection = [];
   let mode = null; // null | 'place' | 'rally' | 'box'
-  let chosenCiv = 'britons', difficulty = 'normal';
-  let panelKey = '', toastT = 0, idleIdx = 0, mmT = 0, lastAlertT = -99;
+  let panelKey = '', toastT = 0, idleIdx = 0, mmT = 0, lastAlertT = -99, saveT = 20;
 
-  // ---------- Start screen ----------
-  const civBox = $('civs');
-  function showCiv() {
-    const c = G.CIVS[chosenCiv];
-    $('civ-name').textContent = c.name;
-    $('civ-desc').textContent = c.desc;
-    [...civBox.children].forEach(x => x.classList.toggle('on', x.dataset.civ === chosenCiv));
+  // ---------- Preferences ----------
+  const PREF_KEY = 'dod.prefs.v1';
+  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', setup: null };
+  try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
+  function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
+  function applyPrefs() {
+    G.speed = +prefs.speed || 1;
+    G.gfxLow = prefs.gfx === 'low';
+    G.hpAlways = prefs.hp === 'always';
+    G.resize();
+    [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
+    document.querySelectorAll('[data-pref]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(prefs[seg.dataset.pref]))));
   }
+  document.querySelectorAll('[data-pref]').forEach(seg => seg.addEventListener('click', e => {
+    const v = e.target.closest('button') && e.target.closest('button').dataset.v; if (!v) return;
+    prefs[seg.dataset.pref] = v; savePrefs(); applyPrefs();
+  }));
+
+  // ---------- Screens ----------
+  const SCREENS = ['start', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
+  function show(id) {
+    for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
+    if (id === 'start') refreshContinue();
+  }
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show('start'));
+  function enterGame() {
+    for (const s of SCREENS) $(s).classList.add('hidden');
+    $('hud').classList.remove('hidden');
+    G.paused = false; G.demo = false; saveT = 20;
+  }
+  function toMenu() {
+    if (!G.over) G.saveGame();
+    G.paused = true; G.demo = true;
+    $('hud').classList.add('hidden');
+    show('start');
+  }
+  function refreshContinue() {
+    const s = G.hasSave();
+    $('m-continue').classList.toggle('hidden', !s);
+    $('m-skirmish').classList.toggle('primary', !s);
+    if (s) {
+      const m = Math.floor(s.time / 60);
+      $('m-continue-sub').textContent = `${G.CIVS[s.civ] ? G.CIVS[s.civ].name : ''} · ${m} min played`;
+    }
+  }
+  $('m-continue').onclick = () => {
+    if (G.loadGame()) { G.buildGround(); enterGame(); UI.alert('Game resumed'); }
+    else { UI.alert('Saved game could not be loaded'); refreshContinue(); }
+  };
+  $('m-skirmish').onclick = () => { renderSlots(); show('skirmish'); };
+  $('m-dynasties').onclick = () => { showDyn(dynSel); show('dynasties'); };
+  $('m-learn').onclick = () => show('help');
+  $('m-options').onclick = () => show('options');
+  const delBtn = $('btn-delsave');
+  delBtn.onclick = () => {
+    if (!G.hasSave()) { delBtn.textContent = 'No saved game'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
+    if (delBtn.dataset.armed) { G.clearSave(); delete delBtn.dataset.armed; delBtn.textContent = 'Deleted'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
+    delBtn.dataset.armed = '1'; delBtn.textContent = 'Tap again to delete';
+    setTimeout(() => { if (delBtn.dataset.armed) { delete delBtn.dataset.armed; delBtn.textContent = 'Delete saved game'; } }, 2500);
+  };
+
+  // ---------- Skirmish setup ----------
+  const civOpts = () => `<option value="random">Random</option>` + Object.keys(G.CIVS).map(k => `<option value="${k}">${G.CIVS[k].name}</option>`).join('');
+  const setup = prefs.setup || {
+    slots: [
+      { type: 'human', civ: 'britons', team: 0 },
+      { type: 'ai', civ: 'random', team: 0, ai: 'normal' },
+      { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
+      { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
+    ],
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal'
+  };
+  function renderSlots() {
+    const box = $('slots'); box.innerHTML = '';
+    setup.slots.forEach((sl, i) => {
+      const row = document.createElement('div');
+      row.className = 'slot' + (sl.type === 'closed' ? ' closed' : '');
+      const who = i === 0 ? `<span class="who">You</span>`
+        : `<select data-k="type" aria-label="Player ${i + 1}">${i === 1 ? '' : '<option value="closed">Closed</option>'}<option value="ai">Computer</option></select>`;
+      row.innerHTML = `<i class="dot" style="background:${G.PLAYER_COLORS[i + 1]}"></i>${who}` + (sl.type === 'closed' ? '' :
+        `<img class="mini-crest" src="assets/ui/crest_${sl.civ === 'random' ? 'britons' : sl.civ}.png" alt="" ${sl.civ === 'random' ? 'style="filter:grayscale(1) brightness(.6)"' : ''}>` +
+        `<select data-k="civ" aria-label="Dynasty">${civOpts()}</select>` +
+        `<select data-k="team" aria-label="Team"><option value="0">No team</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option><option value="4">Team 4</option></select>` +
+        (sl.type === 'ai' ? `<select data-k="ai" aria-label="Difficulty"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select>` : ''));
+      row.querySelectorAll('select').forEach(sel => {
+        sel.value = String(sl[sel.dataset.k]);
+        sel.onchange = () => { sl[sel.dataset.k] = sel.dataset.k === 'team' ? +sel.value : sel.value; renderSlots(); };
+      });
+      box.appendChild(row);
+    });
+    document.querySelectorAll('[data-opt]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(setup[seg.dataset.opt]))));
+    validate();
+  }
+  function validate() {
+    const act = setup.slots.map((s, i) => ({ ...s, id: i + 1 })).filter(s => s.type !== 'closed');
+    const me = act[0];
+    const foes = act.filter(s => s.id !== 1 && !(me.team > 0 && s.team === me.team));
+    const ok = foes.length > 0;
+    $('btn-start').disabled = !ok;
+    const big = act.length > 2 && setup.size === 'small';
+    $('rule-hint').textContent = !ok ? 'Everyone is on your team. Put at least one computer player on another team.'
+      : big ? 'Tip: Medium or Large maps give 3–4 players more room.' : `${act.length} players · ${foes.length} ${foes.length === 1 ? 'enemy' : 'enemies'}`;
+  }
+  document.querySelectorAll('[data-opt]').forEach(seg => seg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    setup[seg.dataset.opt] = b.dataset.v; renderSlots();
+  }));
+  let lastConfig = null;
+  function startSkirmish(cfg) {
+    lastConfig = cfg;
+    const used = new Set();
+    const players = cfg.slots.filter(s => s.type !== 'closed').map(s => {
+      let civ = s.civ;
+      if (civ === 'random') { const pool = Object.keys(G.CIVS).filter(k => !used.has(k)); civ = pool[Math.floor(Math.random() * pool.length)] || 'britons'; }
+      used.add(civ);
+      return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
+    });
+    G.clearSave();
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal });
+    G.buildGround();
+    enterGame();
+    const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
+    UI.alert(`You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
+  }
+  $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
+
+  // ---------- Dynasties ----------
+  let dynSel = 'britons';
+  const tabs = $('dyn-tabs');
   for (const k in G.CIVS) {
     const b = document.createElement('button');
     b.className = 'civ'; b.dataset.civ = k;
-    b.setAttribute('aria-label', G.CIVS[k].name);
     b.innerHTML = `<img src="assets/ui/crest_${k}.png" alt=""><span>${G.CIVS[k].name}</span>`;
-    b.onclick = () => { chosenCiv = k; showCiv(); };
-    civBox.appendChild(b);
+    b.onclick = () => showDyn(k);
+    tabs.appendChild(b);
   }
-  showCiv();
-  $('btn-help').onclick = () => $('help').classList.remove('hidden');
-  $('btn-help-close').onclick = () => $('help').classList.add('hidden');
-  $('diff').onclick = e => { const d = e.target.dataset.d; if (!d) return; difficulty = d; [...$('diff').children].forEach(x => x.classList.toggle('on', x === e.target)); };
-  function startGame() {
-    const others = Object.keys(G.CIVS).filter(k => k !== chosenCiv);
-    G.ai.level = difficulty;
-    G.newGame(chosenCiv, others[Math.floor(Math.random() * others.length)]);
-    G.buildGround();
-    $('start').classList.add('hidden'); $('over').classList.add('hidden'); $('menu').classList.add('hidden');
-    $('hud').classList.remove('hidden');
-    G.paused = false;
-    UI.alert(`You are the ${G.CIVS[chosenCiv].name}. Enemy: ${G.CIVS[G.players[2].civ].name}`);
+  function showDyn(k) {
+    dynSel = k; const c = G.CIVS[k];
+    [...tabs.children].forEach(x => x.classList.toggle('on', x.dataset.civ === k));
+    $('dyn-crest').src = `assets/ui/crest_${k}.png`;
+    $('dyn-name').textContent = c.name;
+    $('dyn-role').textContent = c.role + ' dynasty';
+    $('dyn-history').textContent = c.history;
+    $('dyn-bonuses').innerHTML = c.bonuses.map(x => `<li>${x}</li>`).join('');
   }
-  $('btn-start').onclick = startGame;
-  $('btn-again').onclick = () => { $('over').classList.add('hidden'); $('start').classList.remove('hidden'); $('hud').classList.add('hidden'); };
-  $('btn-menu').onclick = () => { G.paused = true; $('menu').classList.remove('hidden'); };
+
+  // ---------- Pause & game over ----------
+  $('btn-again').onclick = () => { if (lastConfig) startSkirmish(lastConfig); else show('start'); };
+  $('btn-over-menu').onclick = () => { $('hud').classList.add('hidden'); G.demo = true; show('start'); };
+  $('btn-menu').onclick = () => { G.paused = true; G.saveGame(); $('menu').classList.remove('hidden'); };
   $('btn-resume').onclick = () => { G.paused = false; $('menu').classList.add('hidden'); };
-  $('btn-restart').onclick = () => { $('menu').classList.add('hidden'); startGame(); };
-  $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); $('hud').classList.add('hidden'); $('start').classList.remove('hidden'); G.paused = true; };
-  $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; G.speed = +s; [...$('speed').children].forEach(x => x.classList.toggle('on', x === e.target)); };
+  $('btn-restart').onclick = () => { $('menu').classList.add('hidden'); if (lastConfig) startSkirmish(lastConfig); else if (G.config) { G.clearSave(); G.newGame({ ...G.config, seed: 0 }); G.buildGround(); enterGame(); } };
+  $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); toMenu(); };
+  $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
   UI.reset = function () { G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
   UI.alert = function (msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
@@ -55,10 +171,11 @@
     const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
     $('over-stats').innerHTML = `Time: ${m}:${String(s).padStart(2, '0')}<br>Enemies defeated: ${p.killed}<br>Units & buildings lost: ${p.lost}<br>` +
       `Gathered: 🍖${p.gathered.food} 🪵${p.gathered.wood} 🪙${p.gathered.gold} 🪨${p.gathered.stone}`;
+    G.clearSave();
     setTimeout(() => $('over').classList.remove('hidden'), 900);
   };
   G.onHit = function (att, t) {
-    if (t.owner === 1 && att.owner === 2 && G.time - lastAlertT > 12) {
+    if (t.owner === 1 && G.enemies(att.owner, 1) && G.time - lastAlertT > 12) {
       const s = G.toScreen(t.x, t.y);
       if (s.x < 0 || s.y < 0 || s.x > G.W || s.y > G.H) { lastAlertT = G.time; UI.alert(t.kind === 'building' ? `⚠️ Your ${t.def.name} is under attack!` : '⚠️ Your units are under attack!'); UI.lastAttack = { x: t.x, y: t.y }; }
     }
@@ -365,6 +482,7 @@
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
       refreshPanel(false);
     }
+    if (!G.paused && !G.over && !G.demo) { saveT -= dt; if (saveT <= 0) { saveT = 20; G.saveGame(); } }
     mmT -= dt;
     if (mmT <= 0) { mmT = 0.4; G.drawMinimap($('minimap')); }
     // keyboard panning
@@ -492,15 +610,17 @@
   mm.addEventListener('pointerup', () => { mmDown = false; });
 
   // pause when the app is hidden
-  document.addEventListener('visibilitychange', () => { if (document.hidden && !$('hud').classList.contains('hidden') && !G.over) { G.paused = true; $('menu').classList.remove('hidden'); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && !$('hud').classList.contains('hidden') && !G.over) { G.paused = true; G.saveGame(); $('menu').classList.remove('hidden'); } });
+  window.addEventListener('pagehide', () => { if (!$('hud').classList.contains('hidden') && !G.over) G.saveGame(); });
 
   // boot: show a living map behind the start screen
-  G.paused = true;
-  G.newGame('britons', 'franks', 7);
+  G.paused = true; G.demo = true;
+  G.newGame({ seed: 7 });
   G.buildGround();
-  G.revealAll = false;
+  applyPrefs();
+  refreshContinue();
   if (G.loadArt) G.loadArt();
   G.start();
   // expose for testing
-  UI._tap = tap; UI._startGame = startGame; UI._select = select; UI._startPlace = startPlace; UI._confirmPlace = confirmPlace; UI._moveGhost = moveGhost;
+  UI._tap = tap; UI._startSkirmish = startSkirmish; UI._setup = setup; UI._show = show; UI._select = select; UI._startPlace = startPlace; UI._confirmPlace = confirmPlace; UI._moveGhost = moveGhost;
 })();

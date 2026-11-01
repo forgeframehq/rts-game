@@ -176,7 +176,7 @@ G.makeAI = function () {
       if (target) {
         G.cmdAttack(army, target);
         for (const u of army) u.task.forced = true;
-        if (G.ui) G.ui.alert('⚠️ Enemy army is attacking!');
+        if (G.ui && target.owner === 1) G.ui.alert('⚠️ Enemy army is attacking!');
       }
     }
     // keep attacking units busy: when their target dies they auto-acquire; idle stragglers rejoin
@@ -188,5 +188,5 @@ G.makeAI = function () {
   };
   return AI;
 };
-G.ai = G.makeAI();
+
 })();
