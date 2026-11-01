@@ -86,6 +86,18 @@ Units, buildings, dynasties, Ages, upgrades and kits live in data files. Adding 
 | Castle | | Crossbowman (upgrade) | Knight | Unique unit, Monk (heals), Battering Ram |
 | Imperial | Champion (upgrade) | | Paladin (upgrade) | Trebuchet |
 
+### Ages: what each one unlocks
+| Age | To advance | New buildings | New units |
+|---|---|---|---|
+| Dark (start) | n/a | Town Center, House, Mill, Lumber Camp, Mining Camp, Farm, Barracks | Villager, Swordsman |
+| Feudal | 500 food + 2 Dark Age buildings | Archery Range, Stable, Blacksmith, Market, Watch Tower, Palisade Wall | Spearman, Archer, Scout Rider |
+| Castle | 800 food, 200 gold + 2 Feudal buildings | Castle, Monastery, Siege Workshop, University, Stone Wall, extra Town Centers | Knight, Unique unit, Monk, Battering Ram, Crossbowman upgrade |
+| Imperial | 1000 food, 800 gold + 2 Castle buildings | Wonder (alternative victory) | Champion and Paladin upgrades, Trebuchet |
+
+Upgrades: Blacksmith (armour and weapons), University (building strength, range), Age-ups (gathering speed). The prototype currently unlocks everything from the start; Phase 2 adds the Ages.
+
+**Reuse:** new units in later Ages are mostly new kit combinations; new building types are one image per region plus their tier upgrade; upgrades need no new art except armour swaps.
+
 ### Unique units
 | Dynasty | Unit | Role |
 |---|---|---|
