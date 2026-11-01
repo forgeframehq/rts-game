@@ -1,0 +1,106 @@
+{
+ "house": {
+  "file": "assets/house.png",
+  "size": 2,
+  "w": 139.24,
+  "h": 142.49,
+  "ax": 68.06,
+  "ay": 110.22
+ },
+ "towncenter": {
+  "file": "assets/towncenter.png",
+  "size": 3,
+  "w": 194.14,
+  "h": 189.2,
+  "ax": 96.49,
+  "ay": 140.87
+ },
+ "barracks": {
+  "file": "assets/barracks.png",
+  "size": 3,
+  "w": 192.33,
+  "h": 183.95,
+  "ax": 96.0,
+  "ay": 135.62
+ },
+ "range": {
+  "file": "assets/range.png",
+  "size": 3,
+  "w": 192.16,
+  "h": 147.94,
+  "ax": 96.0,
+  "ay": 99.79
+ },
+ "stable": {
+  "file": "assets/stable.png",
+  "size": 3,
+  "w": 205.53,
+  "h": 132.12,
+  "ax": 108.54,
+  "ay": 83.79
+ },
+ "mill": {
+  "file": "assets/mill.png",
+  "size": 2,
+  "w": 140.17,
+  "h": 138.35,
+  "ax": 69.01,
+  "ay": 106.13
+ },
+ "lumbercamp": {
+  "file": "assets/lumbercamp.png",
+  "size": 2,
+  "w": 128.12,
+  "h": 117.81,
+  "ax": 64.0,
+  "ay": 85.69
+ },
+ "miningcamp": {
+  "file": "assets/miningcamp.png",
+  "size": 2,
+  "w": 128.6,
+  "h": 121.55,
+  "ax": 64.36,
+  "ay": 89.19
+ },
+ "farm": {
+  "file": "assets/farm.png",
+  "size": 2,
+  "w": 136.0,
+  "h": 108.91,
+  "ax": 67.89,
+  "ay": 74.17
+ },
+ "tower": {
+  "file": "assets/tower.png",
+  "size": 1,
+  "w": 65.13,
+  "h": 177.98,
+  "ax": 32.41,
+  "ay": 161.88
+ },
+ "fnd_1": {
+  "file": "assets/fnd_1.png",
+  "size": 1,
+  "w": 77.51,
+  "h": 64.36,
+  "ax": 39.82,
+  "ay": 47.64
+ },
+ "fnd_2": {
+  "file": "assets/fnd_2.png",
+  "size": 2,
+  "w": 143.09,
+  "h": 117.1,
+  "ax": 71.83,
+  "ay": 84.26
+ },
+ "fnd_3": {
+  "file": "assets/fnd_3.png",
+  "size": 3,
+  "w": 225.69,
+  "h": 195.31,
+  "ax": 113.12,
+  "ay": 146.95
+ }
+}

@@ -217,7 +217,7 @@
       drawSprite(sp, g.x, g.y, z);
       ctx.globalAlpha = 1;
       // mill blades
-      if (e.type === 'mill' && e.built) {
+      if (e.type === 'mill' && e.built && !sp.art) {
         ctx.save(); ctx.translate(g.x - 8 * z, g.y - 62 * z); ctx.rotate(G.time * 1.2);
         ctx.strokeStyle = '#6b4a2e'; ctx.lineWidth = 2 * z; ctx.fillStyle = 'rgba(240,230,210,0.9)';
         for (let k = 0; k < 4; k++) { ctx.rotate(Math.PI / 2); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -22 * z); ctx.stroke(); ctx.fillRect(1 * z, -22 * z, 6 * z, 16 * z); }
@@ -229,7 +229,7 @@
         ctx.fillStyle = `rgba(200,200,200,${0.4 * (1 - k)})`;
         ctx.beginPath(); ctx.arc(g.x + 20 * z, g.y - (e.size * 30 + k * 30) * z, (4 + k * 6) * z, 0, 7); ctx.fill();
       }
-      const top = g.y - (e.size * 32 + 30) * z;
+      const top = g.y - (sp.art ? sp.ay + 6 : e.size * 32 + 30) * z;
       if (selected || e.hp < e.maxHp * 0.999 || !e.built) {
         hpBar(g.x, top, 20 + e.size * 14, Math.max(0, e.hp / e.maxHp), own);
         if (!e.built) { ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(g.x - 10 - e.size * 7 - 1, top + 5, 20 + e.size * 14 + 2, 4); ctx.fillStyle = '#5ac8fa'; ctx.fillRect(g.x - 10 - e.size * 7, top + 6, (20 + e.size * 14) * e.progress, 2); }
@@ -250,7 +250,7 @@
       ctx.beginPath(); ctx.ellipse(s.x, s.y, rr * z, rr * 0.5 * z, 0, 0, 7); ctx.stroke();
     }
     if (e.atkAnim > 0) e.atkAnim -= 0.016;
-    G.drawUnit(ctx, e, s.x, s.y, z * 1.35);
+    G.drawUnit(ctx, e, s.x, s.y, z * 1.6);
     if (selected || e.hp < e.maxHp) hpBar(s.x, s.y - (e.type === 'knight' ? 34 : 28) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
   }
 

@@ -490,6 +490,7 @@
   G.newGame('britons', 'franks', 7);
   G.buildGround();
   G.revealAll = false;
+  if (G.loadArt) G.loadArt();
   G.start();
   // expose for testing
   UI._tap = tap; UI._startGame = startGame; UI._select = select; UI._startPlace = startPlace; UI._confirmPlace = confirmPlace; UI._moveGhost = moveGhost;
