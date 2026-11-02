@@ -1888,5 +1888,29 @@
   "h": 130.73,
   "ax": 98.69,
   "ay": 98.65
+ },
+ "siegeworkshop": {
+  "file": "assets/siegeworkshop.png",
+  "size": 3,
+  "w": 206.01,
+  "h": 179.16,
+  "ax": 103.92,
+  "ay": 130.95
+ },
+ "mediterranean_siegeworkshop": {
+  "file": "assets/mediterranean_siegeworkshop.png",
+  "size": 3,
+  "w": 199.91,
+  "h": 158.68,
+  "ax": 99.75,
+  "ay": 110.47
+ },
+ "eastasian_siegeworkshop": {
+  "file": "assets/eastasian_siegeworkshop.png",
+  "size": 3,
+  "w": 196.92,
+  "h": 149.0,
+  "ax": 96.0,
+  "ay": 100.68
  }
 }

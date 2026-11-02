@@ -189,7 +189,13 @@
     for (const p of G.projs) {
       const k = p.t / p.dur;
       const x = p.from.x + (p.tx - p.from.x) * k, y = p.from.y + (p.ty - p.from.y) * k;
-      const h = (p.z + Math.sin(k * Math.PI) * 1.2) * TH;
+      const h = (p.z + Math.sin(k * Math.PI) * (p.heavy ? 5 : 1.2)) * TH;
+      if (p.heavy) {   // a trebuchet stone lobs high and lands heavy: a boulder, not an arrow
+        const s = G.toScreen(x, y, h);
+        ctx.fillStyle = '#6f6a63'; ctx.beginPath(); ctx.arc(s.x, s.y, 3.4 * z, 0, 7); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.beginPath(); ctx.arc(s.x - z, s.y - z, 1.5 * z, 0, 7); ctx.fill();
+        continue;
+      }
       const a = G.toScreen(x, y, h), b2 = G.toScreen(x - (p.tx - p.from.x) * 0.04, y - (p.ty - p.from.y) * 0.04, h - Math.cos(k * Math.PI) * 3);
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b2.x, b2.y); ctx.stroke();
     }

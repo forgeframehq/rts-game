@@ -279,9 +279,39 @@
     ctx.save(); ctx.translate(x, y); ctx.scale(z * u.face, z);
     if (u.hitT) ctx.globalAlpha = 0.7;
     // shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); const mnt = G.mounted(u);
-    ctx.ellipse(0, 0, mnt ? 10 : 6, mnt ? 4 : 3, 0, 0, 7); ctx.fill();
-    if (mnt) {
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); const mnt = G.mounted(u), sie = u.def && u.def.cls === 'sie';
+    ctx.ellipse(0, 0, sie ? 13 : mnt ? 10 : 6, sie ? 5 : mnt ? 4 : 3, 0, 0, 7); ctx.fill();
+    if (t === 'ram') {
+      // a log under a pitched roof on four wheels; the log drives forward as it strikes
+      const sw = u.atkAnim > 0 ? 1 : 0, roll = (u.dist || 0) * 3;
+      ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = 1.2;
+      for (const wx of [-8, -2, 4, 10]) {
+        ctx.fillStyle = '#5a3f24'; ctx.beginPath(); ctx.arc(wx, -3, 3, 0, 7); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(wx, -3); ctx.lineTo(wx + Math.cos(roll) * 2.6, -3 + Math.sin(roll) * 2.6); ctx.stroke();
+      }
+      ctx.fillStyle = '#6b4a2e'; ctx.fillRect(-11, -9, 23, 4);                    // bed
+      ctx.fillStyle = '#7a5530';                                                  // the ram itself
+      ctx.fillRect(-6 + sw * 4, -14, 20, 4.5);
+      ctx.fillStyle = '#9aa0a8'; ctx.fillRect(13 + sw * 4, -14.5, 3.5, 5.5);      // iron head
+      ctx.fillStyle = '#4a3828';                                                  // roof
+      ctx.beginPath(); ctx.moveTo(-13, -17); ctx.lineTo(0, -24); ctx.lineTo(13, -17); ctx.lineTo(13, -15); ctx.lineTo(-13, -15); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = c; ctx.fillRect(-3, -25, 6, 3);                             // team pennant
+    } else if (t === 'trebuchet') {
+      // a timber frame, a counterweight that drops and an arm that whips over
+      const sw = u.atkAnim > 0 ? 1 : 0, a = -2.1 + sw * 2.4;
+      ctx.strokeStyle = '#6b4a2e'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-9, -2); ctx.lineTo(0, -20); ctx.lineTo(9, -2); ctx.stroke();   // A-frame
+      ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-12, -2); ctx.lineTo(12, -2); ctx.stroke(); // base beam
+      ctx.fillStyle = '#5a3f24';
+      for (const wx of [-7, 7]) { ctx.beginPath(); ctx.arc(wx, -3, 2.6, 0, 7); ctx.fill(); }
+      ctx.save(); ctx.translate(0, -20); ctx.rotate(a);                            // throwing arm
+      ctx.strokeStyle = '#7a5530'; ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -15); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 7); ctx.stroke();
+      ctx.fillStyle = '#4a4238'; ctx.fillRect(-3, 6, 6, 6);                        // counterweight
+      ctx.restore();
+      ctx.fillStyle = c; ctx.fillRect(-2.5, -23, 5, 2.5);
+    } else if (mnt) {
       // horse
       const b = step * 1.5;
       ctx.fillStyle = '#6b4a2e';

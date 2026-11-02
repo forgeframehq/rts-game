@@ -103,6 +103,7 @@ G.makeAI = function () {
     else if (vils.length >= 15 && hasBuilt('barracks') && !has('range')) build('range', home.x, home.y, 5, 2);
     else if (vils.length >= 16 && hasBuilt('range') && !has('blacksmith')) build('blacksmith', home.x, home.y, 6, 2);
     else if (vils.length >= 20 && hasBuilt('range') && !has('stable')) build('stable', home.x, home.y, 6, 2);
+    else if (vils.length >= 24 && age >= 3 && hasBuilt('stable') && !has('siegeworkshop')) build('siegeworkshop', home.x, home.y, 6, 2);
     // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
     else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
              && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);
@@ -227,6 +228,8 @@ G.makeAI = function () {
         // the Castle has no train list of its own: its only unit is the dynasty's unique one
         let opts = G.trainsFor(b).filter(t => G.canTrainType(p, t));
         if (!opts.length) continue;
+        // siege is slow and dear: keep a few to crack buildings, not an army of them
+        if (b.type === 'siegeworkshop' && army.filter(u => u.def.cls === 'sie').length >= 4) continue;
         // counter what the player fields
         const enemyCav = G.ents.filter(e => G.enemies(e.owner, AI.p) && e.kind === 'unit' && G.mounted(e)).length;
         if (b.type === 'barracks') opts = enemyCav > 2 ? ['spearman'] : ['militia', 'spearman'];

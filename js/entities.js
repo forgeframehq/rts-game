@@ -416,7 +416,8 @@
     const d = att.def;
     let dmg;
     if (t.kind === 'building') {
-      dmg = d.ranged ? 1 : Math.max(1, d.atk - 1);
+      // an arrow does nothing to a wall, but a ram or a trebuchet lands its whole blow
+      dmg = d.siege ? d.atk : d.ranged ? 1 : Math.max(1, d.atk - 1);
       if (d.bonus && d.bonus.bld) dmg += d.bonus.bld;
       if (att.kind === 'building') dmg = 1;
     } else {
@@ -449,7 +450,8 @@
   function fire(att, t) {
     const dmg = damage(att, t);
     if (att.def.ranged || att.kind === 'building') {
-      G.projs.push({ x: att.x, y: att.y, z: att.kind === 'building' ? 1.6 : 0.6, tx: t.x, ty: t.y, tid: t.id, from: att, dmg, t: 0, dur: Math.max(0.25, G.dist(att, t) / 9) });
+      const heavy = !!att.def.siege;   // a trebuchet stone lobs slowly and high, not like an arrow
+      G.projs.push({ x: att.x, y: att.y, z: att.kind === 'building' ? 1.6 : 0.6, tx: t.x, ty: t.y, tid: t.id, from: att, dmg, t: 0, heavy, dur: Math.max(0.25, G.dist(att, t) / (heavy ? 4 : 9)) });
     } else hit(att, t, dmg);
   }
 
