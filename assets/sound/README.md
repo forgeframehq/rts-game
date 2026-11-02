@@ -19,11 +19,23 @@ Tracks live in `assets/sound/music/` and are listed under `"music"` in `manifest
 { "music": ["peaceful_1.mp3", "peaceful_2.mp3"] }
 ```
 
-They play in a shuffled order, one after another, for ever, fading in and out so tracks
-run together without a click. Music is streamed from an `<audio>` element rather than
+There are two sets. `"music"` is the peaceful one, played while the town works;
+`"battleMusic"` takes over when **the player** is in a fight — a blow struck by or against
+them. Two AIs scrapping on the far side of the map does not turn it. Twelve seconds after
+the last blow it drifts back to the peaceful set, and the handover is a 3.5-second
+crossfade on a second audio element rather than a cut.
+
+```json
+{ "music": ["peaceful_1.mp3", "peaceful_2.mp3"], "battleMusic": ["battle.mp3"] }
+```
+
+Each set plays in a shuffled order, one after another, for ever, fading in and out so
+tracks run together without a click. Music is streamed from an `<audio>` element rather than
 decoded into the audio graph, because decoding a three-minute track into a buffer costs
 about 60 MB of memory, which is not a thing to spend on a phone. It pauses when the tab
 is hidden.
+
+Keep both sets at the same measured loudness, or the switch jumps.
 
 Prepare a new track with:
 

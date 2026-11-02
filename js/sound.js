@@ -72,7 +72,12 @@
     fetch('assets/sound/manifest.json').then(r => r.ok ? r.json() : null).then(m => {
       if (!m) return;                    // no pack yet: stay silent
       manifest = m;
-      if (m.music && m.music.length) { list = [].concat(m.music); order = shuffle(list.length); at = 0; S.startMusic(); }
+      if (m.music) lists.peace = [].concat(m.music);
+      if (m.battleMusic) lists.battle = [].concat(m.battleMusic);
+      if (lists.peace.length || lists.battle.length) {
+        order.peace = shuffle(lists.peace.length); order.battle = shuffle(lists.battle.length);
+        S.startMusic();
+      }
       for (const key in m) {
         if (!SOUNDS[key]) continue;      // ignore anything the game has no use for
         const files = [].concat(m[key]);
@@ -118,66 +123,108 @@
   // The tracks are normalised to about -24 LUFS by tools/prep_music.py, well under the
   // -16 they are mastered at, and the volume below takes another step off that, so the
   // music sits behind the game rather than over it.
-  let el = null, list = [], order = [], at = 0, fading = null;
+  // Two moods, two playlists, and a crossfade between them: the peaceful set plays while
+  // the town works, and the battle set takes over when the player is in a fight. Two
+  // elements exist so one can come up while the other goes down, rather than cutting.
+  const lists = { peace: [], battle: [] };
+  let deck = [], cur = 0, order = { peace: [], battle: [] }, at = { peace: 0, battle: 0 };
+  let mood = 'peace', fades = [null, null], lastFight = -1e9, moodTimer = null;
   S.musicEnabled = true;
   // 0.75 against files normalised to -24.4 LUFS puts the music out at about -26.9 LUFS:
   // present on a phone speaker, but a clear step under the game. Soft is -31.3.
   S.musicVolume = 0.75;
+  const CALM_AFTER = 12;      // seconds without a blow before the fighting is over
+  const CROSSFADE = 3.5;      // seconds to hand over between moods
 
   function shuffle(n) {              // play in a different order each session
     const a = [...Array(n).keys()];
     for (let i = n - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; }
     return a;
   }
-  function target() { return S.musicEnabled && list.length ? S.musicVolume : 0; }
+  function pick(m) {
+    const l = lists[m].length ? lists[m] : lists.peace;
+    const key = lists[m].length ? m : 'peace';
+    if (!l.length) return null;
+    if (at[key] >= order[key].length) { order[key] = shuffle(l.length); at[key] = 0; }
+    return l[order[key][at[key]++]];
+  }
+  function makeDeck(i) {
+    if (deck[i]) return deck[i];
+    const a = new Audio();
+    a.preload = 'none';
+    a.addEventListener('ended', () => { if (i === cur) play(mood, 1.5); });
+    a.addEventListener('error', () => { if (i === cur) setTimeout(() => play(mood, 1.5), 2000); });
+    deck[i] = a;
+    return a;
+  }
+  // ramp an element's own volume, since music is not in the audio graph
+  function fade(i, to, secs, stop) {
+    const a = deck[i]; if (!a) return;
+    if (fades[i]) clearInterval(fades[i]);
+    const from = a.volume, t0 = performance.now(), ms = Math.max(1, secs * 1000);
+    fades[i] = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / ms);
+      a.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+      if (k >= 1) { clearInterval(fades[i]); fades[i] = null; if (stop) { a.pause(); a.removeAttribute('src'); a.load(); } }
+    }, 50);
+  }
+  function vol() { return S.musicEnabled ? S.musicVolume : 0; }
 
-  function next() {
-    if (!list.length || !S.musicEnabled) return;
-    if (at >= order.length) { order = shuffle(list.length); at = 0; }
-    const file = list[order[at++]];
-    if (!el) {
-      el = new Audio();
-      el.preload = 'none';
-      el.addEventListener('ended', next);
-      el.addEventListener('error', () => setTimeout(next, 2000));   // a bad file skips on
-    }
-    el.src = 'assets/sound/music/' + file;
-    el.volume = 0;
-    const p = el.play();
-    if (p && p.catch) p.catch(() => {});       // refused until a gesture; wake() retries
-    fade(target(), 2.5);
+  // start a track of this mood on the free deck, handing over from whatever is playing
+  function play(m, fadeIn) {
+    if (!S.musicEnabled) return;
+    const file = pick(m); if (!file) return;
+    const other = cur, next = 1 - cur;
+    const a = makeDeck(next);
+    a.src = 'assets/sound/music/' + file;
+    a.volume = 0;
+    const pr = a.play();
+    if (pr && pr.catch) pr.catch(() => {});     // refused until a gesture; wake() retries
+    fade(next, vol(), fadeIn);
+    if (deck[other] && !deck[other].paused) fade(other, 0, fadeIn, true);
+    cur = next;
   }
 
-  // ramp the element's own volume, since it is not in the audio graph
-  function fade(to, secs) {
-    if (!el) return;
-    if (fading) clearInterval(fading);
-    const from = el.volume, t0 = performance.now(), ms = Math.max(1, secs * 1000);
-    fading = setInterval(() => {
-      const k = Math.min(1, (performance.now() - t0) / ms);
-      el.volume = Math.max(0, Math.min(1, from + (to - from) * k));
-      if (k >= 1) { clearInterval(fading); fading = null; if (to === 0 && el) el.pause(); }
-    }, 50);
+  function setMood(m) {
+    if (m === mood) return;
+    mood = m;
+    if (S.musicEnabled && deck.length) play(m, CROSSFADE);
+  }
+  // called from the game whenever the player strikes or is struck
+  S.fighting = function () {
+    lastFight = (typeof G !== 'undefined' && G.time) || (performance.now() / 1000);
+    if (mood !== 'battle' && lists.battle.length) setMood('battle');
+  };
+  function watchMood() {
+    if (moodTimer) return;
+    moodTimer = setInterval(() => {
+      const now = (typeof G !== 'undefined' && G.time) || (performance.now() / 1000);
+      if (mood === 'battle' && now - lastFight > CALM_AFTER) setMood('peace');
+    }, 1000);
   }
 
   S.startMusic = function () {
-    if (!S.musicEnabled || !list.length) return;
-    if (el && el.src && el.paused) { el.play().catch(() => {}); fade(target(), 2.5); return; }
-    if (!el || !el.src) next();
+    if (!S.musicEnabled || !(lists.peace.length || lists.battle.length)) return;
+    watchMood();
+    const a = deck[cur];
+    if (a && a.src) { if (a.paused) { a.play().catch(() => {}); fade(cur, vol(), 2.0); } return; }
+    play(mood, 2.5);
   };
   S.setMusicEnabled = function (on) {
     S.musicEnabled = !!on;
-    if (!on) fade(0, 1.0); else S.startMusic();
+    if (!on) { deck.forEach((a, i) => a && fade(i, 0, 1.0)); }
+    else S.startMusic();
   };
   S.setMusicVolume = function (v) {
     S.musicVolume = v;
-    if (el && !el.paused) fade(target(), 0.4);
+    const a = deck[cur];
+    if (a && !a.paused) fade(cur, vol(), 0.4);
   };
   // a game in a hidden tab should not be playing music at someone
   document.addEventListener('visibilitychange', () => {
-    if (!el) return;
-    if (document.hidden) el.pause();
-    else if (S.musicEnabled && el.src) el.play().catch(() => {});
+    const a = deck[cur]; if (!a) return;
+    if (document.hidden) a.pause();
+    else if (S.musicEnabled && a.src) a.play().catch(() => {});
   });
 
   S.setVolume = function (v) {
@@ -189,9 +236,10 @@
     if (on) S.wake();
   };
   S.loaded = () => ready;
-  S.musicLoaded = () => list.length;
+  S.musicLoaded = () => lists.peace.length + lists.battle.length;
   // what is playing, for the options screen and for checking the mix
-  S.nowPlaying = () => (el && el.src)
-    ? { track: el.src.split('/').pop(), paused: el.paused, volume: +el.volume.toFixed(3) }
+  S.nowPlaying = () => (deck[cur] && deck[cur].src)
+    ? { track: deck[cur].src.split('/').pop(), mood, paused: deck[cur].paused,
+        volume: +deck[cur].volume.toFixed(3) }
     : null;
 })();
