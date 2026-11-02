@@ -167,10 +167,10 @@ Rule of thumb: **test one before making many.** Every new kind of asset gets a s
 |---|---|---|
 | 0 | Engine, map, economy, combat, AI, menus, skirmish setup, save/continue | ✅ Done |
 | 0 | Painted buildings, resources, title screen, Britons villagers (2D) | ✅ Done |
-| 1 | **Lock the unit pipeline:** (a) one 3D villager rendered in 8 directions; (b) one modular soldier: 1 body, 2 armour tiers, 2 weapons | Next (Meshy Pro set up) |
-| 1b | **Free polish:** buildings rise during construction, fire/smoke/rubble damage states, tree and rock variety | Next |
-| 2 | **Core systems:** Ages and upgrades, unique units, King and Queen with Regicide mode, Monk, siege | ✅ Done (sound outstanding) |
-| 3 | **Content production:** run the pipeline for all dynasties, regions, units and building tiers | |
+| 1 | **Lock the unit pipeline:** (a) one 3D villager rendered in 8 directions; (b) one modular soldier: 1 body, 2 armour tiers, 2 weapons | ✅ Done |
+| 1b | **Free polish:** buildings rise during construction, fire/smoke/rubble damage states, tree and rock variety | ✅ Done |
+| 2 | **Core systems:** Ages and upgrades, unique units, King and Queen with Regicide mode, Monk, siege, walls and gates | ✅ Done (sound effects outstanding) |
+| 3 | **Content production:** run the pipeline for all dynasties, regions, units and building tiers | In progress — all four dynasties and three regions done; Dark Age building tier done, Feudal/Castle/Imperial tiers outstanding |
 | 4 | **Campaign, tutorial mission, polish, performance**; release as installable web app, then Android via Capacitor | |
 | 5 | **Fantasy game** on the same engine, skeletons and tools, with new art and data | |
 
@@ -234,3 +234,26 @@ in code, so every mounted unit is free.
 ⚠️ **Meshy deletes tasks after about three days.** Anything newly rigged or animated must
 be pushed to the `models` branch inside that window, or it is gone and must be bought
 again. `setup.sh` restores everything from there.
+
+---
+
+## Building tiers by Age
+
+A building's art can change with the Age, the way it does in Age of Empires. `art.js`
+looks for `<region>_<type>_<tier>` and falls back to the building's default look, so a
+tier can be filled in one building at a time and anything missing simply keeps the look
+it already has.
+
+Tiers are `dark`, `feudal`, `castle`, `imp`. Only `dark` exists so far — house, town
+centre, barracks and mill, in all three regions — which is what gives the opening its
+thatch-and-timber village before Feudal turns the town to stone. Everything else uses its
+default art at every Age, which is the Feudal-and-later look.
+
+To add a tier, name the jobs `<prefix>_<stem>_<tier>` (`med_house_feudal`) and the
+existing pipeline handles the rest:
+
+```
+KIE_KEY=... python3 tools/gen_art.py tools/art_jobs/dark_age.json
+python3 tools/ingest_art.py build/art/dark_age
+python3 -I tools/shrink_sprites.py --apply assets/*_feudal.png
+```
