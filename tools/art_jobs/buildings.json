@@ -1,0 +1,140 @@
+{
+ "out": "build/art/buildings",
+ "jobs": [
+  [
+   "med_house",
+   "house",
+   "Rebuild this as a Byzantine Greek village house: whitewashed plaster over cut stone walls, a low terracotta barrel-tiled roof, round-arched windows with wooden shutters, an outside stone stair to an upper door, and a small vine-shaded porch on stone columns. No half-timbering, no exposed timber frame."
+  ],
+  [
+   "ea_house",
+   "house",
+   "Rebuild this as a Tang-dynasty Chinese village house: timber posts and pale clay-plaster walls, a sweeping grey ceramic tiled roof with upturned eaves and a ridge ornament, lattice paper windows, a low timber verandah, and a small bamboo fence. No half-timbering, no European stonework."
+  ],
+  [
+   "med_town_center",
+   "town_center",
+   "Rebuild this as a Byzantine town hall: a domed brick and stone basilica block with alternating brick and pale stone courses, a shallow lead dome on a drum with round-arched windows, an arcaded loggia along the front on marble columns, and a mosaic panel over the door. No timber framing, no northern European roof."
+  ],
+  [
+   "ea_town_center",
+   "town_center",
+   "Rebuild this as a Tang-dynasty Chinese hall: a raised stone platform, red-lacquered timber columns and bracket sets under deep eaves, a grey glazed tile hipped roof with sweeping upturned corners and ridge beasts, carved lattice screens along the front, and a short flight of steps. No European stonework, no timber framing."
+  ],
+  [
+   "med_barracks",
+   "barracks",
+   "Rebuild this as a Byzantine barracks: a long whitewashed stone hall with blind arcading, small round-arched windows high up, a terracotta tiled roof, a wide arched gateway, and a rack of spears and oval shields against the wall. No half-timbering."
+  ],
+  [
+   "ea_barracks",
+   "barracks",
+   "Rebuild this as a Tang-dynasty Chinese barracks: a long timber hall with red-lacquered posts, pale plaster infill, a grey tiled roof with upturned eaves, a tiled gateway with a plaque, and a rack of polearms and round shields outside. No European stonework."
+  ],
+  [
+   "med_range",
+   "archery_range",
+   "Rebuild this as a Byzantine archery range: an open whitewashed stone shed with a terracotta pentice roof on columns, straw butts with painted targets, racks of composite bows and quivers, and an awning of coarse cloth. No half-timbering."
+  ],
+  [
+   "ea_range",
+   "archery_range",
+   "Rebuild this as a Tang-dynasty Chinese archery range: an open timber pavilion with red posts and a grey upturned-eave roof, straw targets on bamboo frames, racks of crossbows and bundled bolts, and a bamboo screen. No European stonework."
+  ],
+  [
+   "med_stable",
+   "stable",
+   "Rebuild this as a Byzantine stable: a whitewashed stone stable block with arched stall openings, a terracotta tiled roof, a stone water trough, hay under a pentice, and harness hanging on the wall. No half-timbering."
+  ],
+  [
+   "ea_stable",
+   "stable",
+   "Rebuild this as a Tang-dynasty Chinese stable: a timber stable with red posts and pale plaster, a grey tiled roof with upturned eaves, open stalls with carved rails, a stone trough, and bundles of hay. No European stonework."
+  ],
+  [
+   "med_mill",
+   "mill",
+   "Rebuild this as a Byzantine mill: a round whitewashed stone tower mill with a conical terracotta roof and cloth-sailed arms, a stone threshing floor, sacks of grain and a hand quern. No northern European timber windmill."
+  ],
+  [
+   "ea_mill",
+   "mill",
+   "Rebuild this as a Tang-dynasty Chinese mill: a timber water mill with a vertical wooden water wheel on a stone race, red posts, a grey tiled roof with upturned eaves, rice sacks and a treadle husking mortar. No European windmill."
+  ],
+  [
+   "med_lumbercamp",
+   "lumber_camp",
+   "Rebuild this as a Byzantine lumber camp: an open shed of whitewashed stone piers under a terracotta pentice roof, stacked cypress and olive logs, a two-man saw on a trestle, and an axe in a chopping block. No half-timbering."
+  ],
+  [
+   "ea_lumbercamp",
+   "lumber_camp",
+   "Rebuild this as a Tang-dynasty Chinese lumber camp: an open timber shed with red posts and a grey tiled upturned-eave roof, stacked bamboo and pine logs, a long frame saw, and an axe in a block. No European stonework."
+  ],
+  [
+   "med_miningcamp",
+   "mining_camp",
+   "Rebuild this as a Byzantine mining camp: an open whitewashed stone shed under a terracotta pentice roof, a pile of ore, a stone-lined washing trough, pickaxes and baskets, and a small charcoal brazier. No half-timbering."
+  ],
+  [
+   "ea_miningcamp",
+   "mining_camp",
+   "Rebuild this as a Tang-dynasty Chinese mining camp: an open timber shed with red posts and a grey tiled upturned-eave roof, ore baskets on carrying poles, a wooden ore cart, picks, and a small smelting brazier. No European stonework."
+  ],
+  [
+   "med_farm",
+   "farm",
+   "Rebuild this as a Byzantine farm plot: a flat field of ripe wheat in neat rows bordered by a low drystone wall, with an olive tree at one corner and a terracotta water jar. Keep the same flat square field shape and the same footprint."
+  ],
+  [
+   "ea_farm",
+   "farm",
+   "Rebuild this as a Tang-dynasty Chinese farm plot: a flat flooded paddy field in neat rows of green rice shoots, bordered by low earth bunds and a bamboo fence, with a wooden sluice at one corner. Keep the same flat square field shape and the same footprint."
+  ],
+  [
+   "med_tower",
+   "watch_tower",
+   "Rebuild this as a Byzantine watch tower: a tall whitewashed stone tower with brick banding, a round-arched window, machicolations and a flat crenellated top, and a magenta pennant on a staff. No timber hoarding."
+  ],
+  [
+   "ea_tower",
+   "watch_tower",
+   "Rebuild this as a Tang-dynasty Chinese watch tower: a tall timber tower on a stone base, red posts, two tiers of grey tiled upturned eaves, an open railed gallery at the top, and a magenta pennant on a staff. No European crenellations."
+  ],
+  [
+   "med_blacksmith",
+   "blacksmith",
+   "Rebuild this as a Byzantine smithy: a whitewashed stone workshop with a wide arched opening, a terracotta tiled roof, a domed stone forge with a chimney, an anvil, bellows, and finished armour on a rack. No half-timbering."
+  ],
+  [
+   "ea_blacksmith",
+   "blacksmith",
+   "Rebuild this as a Tang-dynasty Chinese smithy: an open timber workshop with red posts, a grey tiled upturned-eave roof, a clay forge with box bellows, an anvil on a stump, a water quenching trough, and blades on a rack. No European stonework."
+  ],
+  [
+   "med_castle",
+   "castle",
+   "Rebuild this as a Byzantine fortress: massive walls in alternating courses of brick and pale stone, tall round towers with shallow tiled conical caps, round-arched windows and a double land wall with a gate, and magenta banners. No northern European square keep, no pointed roofs."
+  ],
+  [
+   "ea_castle",
+   "castle",
+   "Rebuild this as a Tang-dynasty Chinese fortress gatehouse: a massive rammed-earth and grey brick wall base with a tall arched gate, a timber gate tower above with red columns and two tiers of grey tiled upturned eaves, railed galleries, and magenta banners. No European keep, no pointed roofs."
+  ],
+  [
+   "w_siege_workshop",
+   "barracks.png",
+   "Rebuild this as a medieval siege workshop: an open-sided timber workshop under a steep shingled roof on heavy posts, with a half-built battering ram on trestles inside, a saw pit, stacked beams and planks, a rope hoist on a gantry, barrels of pitch, and a carpenter's bench with tools. Half-timbered gable end, same northern European look as the reference."
+  ],
+  [
+   "med_siege_workshop",
+   "mediterranean/barracks.jpg",
+   "Rebuild this as a Byzantine siege workshop: an open-sided workshop of whitewashed stone piers under a terracotta tiled roof, with a half-built battering ram on trestles inside, a saw pit, stacked cypress beams, a rope hoist on a gantry, clay jars of pitch, and a carpenter's bench. No half-timbering."
+  ],
+  [
+   "ea_siege_workshop",
+   "eastasian/barracks.jpg",
+   "Rebuild this as a Tang-dynasty Chinese siege workshop: an open timber workshop with red-lacquered posts under a grey tiled roof with upturned eaves, with a half-built battering ram on trestles inside, a frame saw, stacked timber and bamboo, a rope hoist on a gantry, jars of pitch, and a carpenter's bench. No European stonework."
+  ]
+ ]
+}

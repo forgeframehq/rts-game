@@ -1,14 +1,24 @@
 import asyncio, base64, json, sys, subprocess, os
 from playwright.async_api import async_playwright
 # usage: python3 drive_jobs.py jobs.json out_dir [model_override] [only,names]
+# Needs setup.sh to have put lib/ and the GLBs here first.
+# Browser: Chrome if the machine has it, otherwise whatever Playwright brought with it.
+# Don't hardcode a path — a cloud container usually has only the bundled chromium.
+CHROME = next((p for p in ('/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser')
+               if os.path.exists(p)), None)
 async def main(jobs_file, out_dir, model=None, only=None):
     J = json.load(open(jobs_file)); os.makedirs(out_dir, exist_ok=True)
     here = os.path.dirname(os.path.abspath(__file__))
+    if not os.path.exists(os.path.join(here, 'lib', 'three.module.js')):
+        sys.exit('lib/ is missing — run tools/render3d/setup.sh first')
     srv = subprocess.Popen(['python3', '-m', 'http.server', '8799'], cwd=here, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try:
         await asyncio.sleep(1)
         async with async_playwright() as p:
-            b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
+            launch = {'args': ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader']}
+            if CHROME:
+                launch['executable_path'] = CHROME
+            b = await p.chromium.launch(**launch)
             pg = await b.new_page()
             errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
             await pg.goto('http://localhost:8799/render.html'); await pg.wait_for_function('window.ready === true', timeout=30000)

@@ -182,7 +182,53 @@ Rule of thumb: **test one before making many.** Every new kind of asset gets a s
 ## 6. Tools in this repo
 | Tool | Purpose |
 |---|---|
+| `tools/gen_art.py` | Generate art with Kie, image-to-image from the sprites already in the repo |
+| `tools/art_jobs/*.json` | The prompt sets that made the current art — buildings, siege engines, icons |
+| `tools/ingest_art.py` | Sort generated art into regions and run `process_art.py` over it |
 | `tools/process_art.py` | Building and resource images → aligned, scaled game sprites + `assets/manifest.json` |
 | `tools/process_sheet.py` | AI animation grid sheets → aligned sprite strips (one scale per character) |
 | `tools/process_unit.py` | Horizontal animation strips → sprite strips |
+| `tools/render3d/setup.sh` | Fetch three.js and the rigged models, so a re-render needs no hand assembly |
+| `tools/render3d/drive_jobs.py` | Render a rigged GLB to 8-direction sheets (free: no Meshy credits) |
+| `tools/process_render.py` | 3D render output → game sheets + manifest |
 | `ASSETS.md` | Art specification: projection, scale, canvases, team colour |
+
+### Making art without wasting credits
+The whole point of the pipeline is that a thing is paid for once and used everywhere.
+
+**Images (Kie, ~6 credits each).** Never prompt a building from nothing: generate it
+image-to-image from the matching sprite in `assets/source/`, so the camera angle, the
+footprint and the painted style come along and the prompt only has to describe what
+changes. The prompt sets that worked are in `tools/art_jobs/`; start from them.
+
+```
+KIE_KEY=... python3 tools/gen_art.py tools/art_jobs/buildings.json
+python3 tools/ingest_art.py build/art/buildings
+```
+
+Buildings are made once per **region**, not per dynasty, so another Mediterranean or East
+Asian dynasty inherits the whole set for nothing. Villagers are not made per dynasty at
+all — they are dyed from the shared set at runtime (`G.CIV_LOOK`). Siege is shared by
+everyone: two sprites, however many dynasties there are.
+
+The key is restricted to the GPT Image models. Kie validates input *before* it checks
+authorisation, so an unauthorised model answers 422 about a missing field and looks
+available; only a fully-formed request returns the 401 that tells the truth.
+
+**Animation (Meshy).** Credits are spent only on rigging a model and on generating a
+motion. After that the GLB is yours and every render from it is free, for ever:
+
+```
+bash tools/render3d/setup.sh                                  # three.js + the GLBs
+python3 tools/render3d/drive_jobs.py tools/render3d/j_cata.json out_cata
+python3 tools/process_render.py out_cata unit3d_byzantines_cataphract_m 110
+```
+
+Rig every new model to the **same skeleton** and it inherits the entire motion library at
+no cost — the mounted hit reaction uses `Hit_Reaction_1`, the same clip the swordsman
+already uses, and it serves the Cataphract and all three Knight tiers. The horse is built
+in code, so every mounted unit is free.
+
+⚠️ **Meshy deletes tasks after about three days.** Anything newly rigged or animated must
+be pushed to the `models` branch inside that window, or it is gone and must be bought
+again. `setup.sh` restores everything from there.

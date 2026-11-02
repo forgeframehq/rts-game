@@ -1,0 +1,15 @@
+{
+ "out": "build/art/units",
+ "jobs": [
+  [
+   "unit_ram",
+   "",
+   "A medieval battering ram siege engine: a heavy oak log with an iron ram's-head cap slung on ropes under a steep pitched shingle roof, the whole machine on four solid wooden wheels, a magenta pink pennant on the roof ridge. Seen from the front-left at a true 2:1 isometric angle, pointing to the lower right, the way a unit is drawn in Age of Empires 2."
+  ],
+  [
+   "unit_trebuchet",
+   "",
+   "A medieval trebuchet siege engine: a tall timber A-frame on a heavy beamed base, a long throwing arm raised with a sling, a big boxed stone counterweight hanging at the short end, a winch and rope, a pile of stone shot beside it, a magenta pink pennant on the frame. Seen from the front-left at a true 2:1 isometric angle, facing to the lower right, the way a unit is drawn in Age of Empires 2."
+  ]
+ ]
+}

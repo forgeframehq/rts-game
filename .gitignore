@@ -1,2 +1,10 @@
 __pycache__/
 *.pyc
+
+# render3d working files: three.js, the Meshy GLBs (they live on the `models` branch)
+tools/render3d/lib/
+tools/render3d/node_modules/
+tools/render3d/*.glb
+tools/render3d/package*.json
+# generated art staging
+build/

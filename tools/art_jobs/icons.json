@@ -1,0 +1,41 @@
+{
+ "out": "build/art/icons",
+ "jobs": [
+  [
+   "icon_axethrower",
+   "repo:assets/ui/icons/longbowman.png",
+   "Replace the man with a Frankish axe thrower: a Germanic warrior with a short beard, a simple iron skull cap over fair hair, a green wool tunic under a leather-faced mail shoulder guard, holding a francisca throwing axe \u2014 a short-hafted axe with a broad curved head \u2014 raised by his shoulder ready to throw.",
+   "Keep everything else exactly as the reference: the same head-and-shoulders bust portrait, the same framing, scale and crop of the figure, the same three-quarter turn of the head, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One figure only, no text, no border, no frame."
+  ],
+  [
+   "icon_cataphract",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the knight with a Byzantine cataphract: a horseman armoured head to foot in overlapping iron and gilt lamellar scales, a tall rounded iron helmet with a mail aventail covering the face and neck leaving only the eyes, and a flanged iron mace held upright at his shoulder.",
+   "Keep everything else exactly as the reference: the same head-and-shoulders bust portrait, the same framing, scale and crop of the figure, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One figure only, no text, no border, no frame."
+  ],
+  [
+   "icon_repeater",
+   "repo:assets/ui/icons/longbowman.png",
+   "Replace the man with a Tang-dynasty Chinese repeating crossbowman: black hair tied in a topknot under a wide conical straw hat, a clean-shaven face, a blue-grey quilted jacket with a crossed collar, holding a chu-ko-nu repeating crossbow with its wooden bolt magazine on top and a lever, raised across his chest.",
+   "Keep everything else exactly as the reference: the same head-and-shoulders bust portrait, the same framing, scale and crop of the figure, the same three-quarter turn of the head, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One figure only, no text, no border, no frame."
+  ],
+  [
+   "icon_ram",
+   "repo:assets/ui/icons/stable.png",
+   "Replace the building with a medieval battering ram: a heavy oak log with an iron ram's-head cap slung on ropes under a steep pitched shingle roof, on four solid wooden wheels, with a small blue pennant on the ridge.",
+   "Keep everything else exactly as the reference: the same small isometric object filling the same share of the frame, the same framing and crop, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no ground, no text, no border, no frame."
+  ],
+  [
+   "icon_trebuchet",
+   "repo:assets/ui/icons/stable.png",
+   "Replace the building with a medieval trebuchet: a tall timber A-frame on a beamed base, a long throwing arm raised with a sling, a boxed stone counterweight hanging at the short end, a winch and rope, and a small pile of stone shot, with a small blue pennant on the frame.",
+   "Keep everything else exactly as the reference: the same small isometric object filling the same share of the frame, the same framing and crop, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no ground, no text, no border, no frame."
+  ],
+  [
+   "icon_siegeworkshop",
+   "repo:assets/ui/icons/stable.png",
+   "Replace the building with a medieval siege workshop: an open-sided timber workshop under a steep slate roof on heavy posts, with a half-built battering ram on trestles inside, stacked beams, a rope hoist, and a small blue pennant on the gable.",
+   "Keep everything else exactly as the reference: the same small isometric building filling the same share of the frame, the same framing and crop, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One building only, no text, no border, no frame."
+  ]
+ ]
+}
