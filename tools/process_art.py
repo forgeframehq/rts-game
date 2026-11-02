@@ -96,7 +96,7 @@ def process_spec(src_dir, out_dir, keep, manifest):
         path = os.path.join(src_dir, stem + '.png')
         if not os.path.exists(path):
             continue
-        shutil.copy(path, os.path.join(keep, stem + '.png'))
+        keep_source(path, keep, stem)
         im = Image.open(path).convert('RGBA')
         k = TW / 256.0 * f  # display px per source px
         out = im.resize((round(im.width * k * OUT_SCALE), round(im.height * k * OUT_SCALE)), Image.LANCZOS)
@@ -105,6 +105,21 @@ def process_spec(src_dir, out_dir, keep, manifest):
                          'w': round(im.width * k, 2), 'h': round(im.height * k, 2),
                          'ax': round(192 * k, 2), 'ay': round(384 * k, 2)}
         print(f'{key:12s} {out.width}x{out.height}')
+
+
+def keep_source(path, keep_dir, stem):
+    """Keep the generated original as a reference, but not at 2048px: a few of those
+    outweigh the whole game. Shrunk to 1024 and saved as JPEG it is ~5% of the size and
+    still perfectly good to re-generate or re-process from."""
+    im = Image.open(path).convert('RGBA')
+    if max(im.size) <= 1100 and os.path.getsize(path) < 600_000:
+        shutil.copy(path, os.path.join(keep_dir, stem + '.png'))
+        return
+    if max(im.size) > 1024:
+        im.thumbnail((1024, 1024), Image.LANCZOS)
+    bg = Image.new('RGB', im.size, (255, 255, 255))
+    bg.paste(im, mask=im.split()[3])
+    bg.save(os.path.join(keep_dir, stem + '.jpg'), quality=88, optimize=True)
 
 
 def process(src_dir, repo, region=None):
@@ -118,7 +133,7 @@ def process(src_dir, repo, region=None):
         path = os.path.join(src_dir, stem + '.png')
         if not os.path.exists(path):
             continue
-        shutil.copy(path, os.path.join(keep, stem + '.png'))
+        keep_source(path, keep, stem)
         im = Image.open(path).convert('RGBA')
         a = np.array(im)
         if a[..., 3].min() == 255 or (a[..., 3] == 255).mean() > 0.97:
