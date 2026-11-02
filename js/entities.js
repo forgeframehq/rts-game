@@ -131,7 +131,9 @@
     let pop = 0, cap = 0;
     for (const e of G.ents) {
       if (e.owner !== p || e.dead) continue;
-      if (e.kind === 'unit') pop++;
+      // the King and Queen are given, not trained: they must not eat the first
+      // five places and leave a player pop-capped before the game starts
+      if (e.kind === 'unit') { if (e.def.cls !== 'hero') pop++; }
       else if (e.kind === 'building') {
         pop += (e.queue ? e.queue.length : 0) + (e.garrison ? e.garrison.length : 0);
         if (e.built && e.def.pop) cap += (e.type === 'house' && mods(p).housePop) ? mods(p).housePop : e.def.pop;

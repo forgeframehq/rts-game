@@ -442,7 +442,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp monk pop rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {
