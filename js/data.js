@@ -65,6 +65,7 @@ G.BUILDINGS = {
   barracks:   { name: 'Barracks', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['militia','spearman'], icon: '⚔️' },
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['knight'], icon: '🐎' },
+  blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
   tower:      { name: 'Watch Tower', cost: { wood: 25, stone: 125 }, time: 40, hp: 1020, size: 1, los: 8, atk: 5, range: 7, rate: 2, icon: '🗼' }
 };
 // ---- Ages (AoE2): advance at the Town Center. Each Age needs 2 buildings from the previous one. ----
@@ -72,12 +73,35 @@ G.AGES = [
   null,
   { name: 'Dark Age', short: 'Dark' },
   { name: 'Feudal Age', short: 'Feudal', cost: { food: 500 }, time: 45, needs: ['mill', 'lumbercamp', 'miningcamp', 'barracks'], bonus: 'Unlocks Archery Range, Stable, Watch Tower, Spearman, Archer' },
-  { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower'], bonus: 'Unlocks Knight and unique units. All soldiers +1 attack' },
+  { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Knight and unique units. All soldiers +1 attack' },
   { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['range', 'stable', 'tower', 'barracks'], bonus: 'All soldiers +1 attack, +1 armor. Buildings +20% HP' }
 ];
-G.BUILD_AGE = { tower: 2, range: 2, stable: 2 };
+G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2 };
+// ---- Unit upgrade lines (AoE2): researched at a building, upgrade every unit of that line ----
+// stats are the unit's new values (any field of G.UNITS); tier picks the upgraded look.
+G.UPGRADES = {
+  manatarms:    { name: 'Man-at-Arms',     line: 'militia',    tier: 1, at: 'barracks', age: 2, cost: { food: 100, gold: 40 },   time: 30, stats: { hp: 55, atk: 8, armor: 1 } },
+  longsword:    { name: 'Long Swordsman',  line: 'militia',    tier: 2, at: 'barracks', age: 3, cost: { food: 200, gold: 65 },   time: 40, stats: { hp: 60, atk: 10, armor: 1 } },
+  champion:     { name: 'Champion',        line: 'militia',    tier: 3, at: 'barracks', age: 4, cost: { food: 750, gold: 350 },  time: 60, stats: { hp: 70, atk: 13, armor: 2 } },
+  pikeman:      { name: 'Pikeman',         line: 'spearman',   tier: 1, at: 'barracks', age: 3, cost: { food: 215, gold: 90 },   time: 40, stats: { hp: 55, atk: 5, bonus: { cav: 22 } } },
+  halberdier:   { name: 'Halberdier',      line: 'spearman',   tier: 2, at: 'barracks', age: 4, cost: { food: 300, gold: 600 },  time: 50, stats: { hp: 60, atk: 6, bonus: { cav: 32 } } },
+  crossbow:     { name: 'Crossbowman',     line: 'archer',     tier: 1, at: 'range',    age: 3, cost: { food: 125, gold: 75 },   time: 35, stats: { hp: 35, atk: 5 } },
+  arbalester:   { name: 'Arbalester',      line: 'archer',     tier: 2, at: 'range',    age: 4, cost: { food: 350, gold: 300 },  time: 50, stats: { hp: 40, atk: 6, range: 5 } },
+  elitelongbow: { name: 'Elite Longbowman',line: 'longbowman', tier: 1, at: 'range',    age: 4, cost: { food: 850, gold: 850 },  time: 50, stats: { hp: 40, atk: 7, range: 6 } },
+  cavalier:     { name: 'Cavalier',        line: 'knight',     tier: 1, at: 'stable',   age: 4, cost: { food: 300, gold: 300 },  time: 50, stats: { hp: 120, atk: 12 } },
+  paladin:      { name: 'Paladin',         line: 'knight',     tier: 2, at: 'stable',   age: 4, cost: { food: 1300, gold: 750 }, time: 60, stats: { hp: 160, atk: 14, armor: 3, pierce: 3 } }
+};
+// ---- Blacksmith techs: bonuses for all soldiers ----
+G.TECHS = {
+  forging:     { name: 'Forging',      icon: 'attack',   age: 2, cost: { food: 150 },             time: 30, eff: { melee: 1 } },
+  ironcasting: { name: 'Iron Casting', icon: 'attack',   age: 3, cost: { food: 220, gold: 120 },  time: 40, eff: { melee: 1 }, req: 'forging' },
+  fletching:   { name: 'Fletching',    icon: 'archer',   age: 2, cost: { food: 100, wood: 50 },   time: 30, eff: { ranged: 1, range: 1 } },
+  bodkin:      { name: 'Bodkin Arrow', icon: 'archer',   age: 3, cost: { food: 200, wood: 100 },  time: 40, eff: { ranged: 1, range: 1 }, req: 'fletching' },
+  scalemail:   { name: 'Scale Mail',   icon: 'garrison', age: 2, cost: { food: 100 },             time: 30, eff: { armor: 1 } },
+  chainmail:   { name: 'Chain Mail',   icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail' }
+};
 G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3 };
-G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','tower','towncenter'];
+G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','tower','towncenter'];
 
 G.RES = {
   tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },

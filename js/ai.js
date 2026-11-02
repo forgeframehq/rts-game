@@ -69,7 +69,7 @@ G.makeAI = function () {
     if (!home) return;
 
     // --- Ages: advance once the economy is big enough (pauses villager training, like a real player) ---
-    const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 12, 18, 26];
+    const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 17, 22, 28];
     let saving = false;
     if (tc && tc.built && nxt && !tc.aging && vils.length >= AGE_VILS[age + 1] && !G.ageBlock(p, null)) {
       saving = true;
@@ -82,11 +82,29 @@ G.makeAI = function () {
     const housing = blds.some(b => b.type === 'house' && !b.built);
     if (cap - pop <= 4 && cap < 200 && !housing) build('house', home.x, home.y, 4, 1);
 
+    // --- buildings the next Age needs: build the cheapest missing one ---
+    const blk = nxt && G.ageBlock(p, null);
+    if (blk && blk.startsWith('Needs') && vils.length >= AGE_VILS[age + 1] - 2) {
+      const cost = t => Object.values(G.buildCost(p, t)).reduce((a, b) => a + b, 0);
+      const t = nxt.needs.filter(t => !has(t) && G.canBuildType(p, t)).sort((a, b) => cost(a) - cost(b))[0];
+      if (t) {
+        const near = { mill: 'berry', lumbercamp: 'tree', miningcamp: 'gold' }[t];
+        const r = near && G.nearest(home, e => e.kind === 'res' && e.type === near, 22);
+        build(t, r ? r.x : home.x, r ? r.y : home.y, r ? 1 : 5, 2);
+      }
+    }
     // --- military production buildings ---
     if (vils.length >= 11 && !has('barracks')) build('barracks', home.x, home.y, 5, 2);
     else if (vils.length >= 15 && hasBuilt('barracks') && !has('range')) build('range', home.x, home.y, 5, 2);
+    else if (vils.length >= 16 && hasBuilt('range') && !has('blacksmith')) build('blacksmith', home.x, home.y, 6, 2);
     else if (vils.length >= 20 && hasBuilt('range') && !has('stable')) build('stable', home.x, home.y, 6, 2);
     else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2 && R.stone > 200) build('tower', home.x, home.y, 6, 1);
+    // research: unit upgrades and blacksmith techs when there is spare food/gold (never while saving for an Age)
+    if (!saving && vils.length >= 16) for (const b of blds) {
+      if (!b.built || b.research || (b.queue && b.queue.length)) continue;
+      const opts = G.researchesFor(b).filter(r => !r.why && Object.keys(r.def.cost).every(k => R[k] >= r.def.cost[k] + (k === 'food' ? 150 : 50)));
+      if (opts.length) { G.startResearch(b, opts[0].id); break; }
+    }
 
     // --- drop sites ---
     const nearDrop = (r, kind) => blds.some(b => b.def.drop && b.def.drop.includes(kind) && G.edgeDist(r, b) < 5);
@@ -127,6 +145,7 @@ G.makeAI = function () {
     const want = vils.length < 10 ? { food: 0.55, wood: 0.45, gold: 0, stone: 0 }
       : vils.length < 18 ? { food: 0.45, wood: 0.35, gold: 0.2, stone: 0 }
       : { food: 0.4, wood: 0.3, gold: 0.22, stone: 0.08 };
+    if (saving) for (const k in nxt.cost) if (R[k] < nxt.cost[k]) want[k] = (want[k] || 0) + 0.25;   // gather what the Age costs
     for (const v of vils) {
       if (v.task.t !== 'idle') continue;
       let best = 'food', bestGap = -1e9;
@@ -151,16 +170,17 @@ G.makeAI = function () {
 
     // --- army production ---
     const reserve = saving ? 1e9 : vils.length < AI.cfg.maxVils ? 60 : 0;   // while saving for an Age, keep the food
+    const needBld = nxt && G.ageBlock(p, null) && G.ageBlock(p, null).startsWith('Needs') && vils.length >= AGE_VILS[age + 1] ? 180 : 0;
     if (army.length < AI.cfg.armyCap && pop < cap) {
       for (const b of blds) {
-        if (!b.built || !b.def.trains || b.type === 'towncenter' || b.queue.length >= 2) continue;
+        if (!b.built || !b.def.trains || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
         let opts = b.def.trains;
         // counter what the player fields
         const enemyCav = G.ents.filter(e => G.enemies(e.owner, AI.p) && e.type === 'knight').length;
         if (b.type === 'barracks') opts = enemyCav > 2 ? ['spearman'] : ['militia', 'spearman'];
         const type = opts[Math.floor(Math.random() * opts.length)];
         const cost = G.unitCost(p, type);
-        if (Object.keys(cost).every(k => R[k] - (k === 'food' ? reserve : 0) >= cost[k])) G.train(b, type);
+        if (Object.keys(cost).every(k => R[k] - (k === 'food' ? reserve : k === 'wood' ? needBld : 0) >= cost[k])) G.train(b, type);
       }
     }
     // rally army near home

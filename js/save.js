@@ -41,10 +41,10 @@
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = d.decals || []; G.corpses = [];
     let maxId = 0;
     for (const o of d.ents) {
-      o.def = o.kind === 'unit' ? G.UNITS[o.type] : o.kind === 'building' ? G.BUILDINGS[o.type] : G.RES[o.type];
+      o.def = o.kind === 'unit' ? (G.UNITS[o.type] && G.unitDef(o.owner, o.type)) : o.kind === 'building' ? G.BUILDINGS[o.type] : G.RES[o.type];
       if (!o.def) continue;
       G.ents.push(o); G.byId.set(o.id, o); maxId = Math.max(maxId, o.id);
-      if (o.garrison) for (const g of o.garrison) { g.def = G.UNITS[g.type]; G.byId.set(g.id, g); maxId = Math.max(maxId, g.id); }
+      if (o.garrison) for (const g of o.garrison) { g.def = G.unitDef(g.owner, g.type); G.byId.set(g.id, g); maxId = Math.max(maxId, g.id); }
       if (o.kind !== 'unit' && o.type !== 'farm') G.setBlock(o, o.id);
     }
     G.setNextId(maxId + 1);

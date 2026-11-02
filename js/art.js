@@ -99,7 +99,11 @@
     const civ = G.players[u.owner] ? G.players[u.owner].civ : 'britons';
     const sx = u.sex || 'm';
     const reg = G.REGION[civ] || 'western';   // soldiers are shared per region, like AoE2
-    for (const k of [`unit3d_${civ}_${u.type}_${sx}_${a3}`, `unit3d_${reg}_${u.type}_${sx}_${a3}`, `unit3d_britons_${u.type}_${sx}_${a3}`, `unit3d_western_${u.type}_${sx}_${a3}`]) if (art[k]) return k;
+    const tier = (u.def && u.def.tier) || 0;    // upgraded look (Man-at-Arms, Pikeman, ...); falls back to the best lower tier
+    for (let t = tier; t >= 0; t--) {
+      const sfx = t ? `${sx}_t${t}_${a3}` : `${sx}_${a3}`;
+      for (const k of [`unit3d_${civ}_${u.type}_${sfx}`, `unit3d_${reg}_${u.type}_${sfx}`, `unit3d_britons_${u.type}_${sfx}`, `unit3d_western_${u.type}_${sfx}`]) if (art[k]) return k;
+    }
     return null;
   }
   function pick3d(u) {

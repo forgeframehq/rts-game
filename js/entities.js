@@ -15,7 +15,7 @@
     const m = G.CIVS[civ].mods;
     const res = { ...(G.RES_PRESETS[G.rules.res] || G.START_RES) };
     if (m.startFoodDelta) res.food += m.startFoodDelta;
-    return { id, civ, age: 1, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
+    return { id, civ, age: 1, up: {}, techs: {}, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
   };
 
   // ---------- Ages ----------
@@ -45,6 +45,68 @@
     const p = G.players[tc.owner], to = tc.aging.to; tc.aging = null; p.age = to;
     if (to === 4) for (const e of G.ents) if (e.owner === tc.owner && e.kind === 'building' && !e.dead) { e.maxHp = Math.round(e.maxHp * 1.2); e.hp = Math.round(e.hp * 1.2); }
     if (G.onAgeUp) G.onAgeUp(tc.owner, to);
+  }
+
+  // ---------- Upgrades & techs ----------
+  G.tierOf = (p, line) => (G.players[p] && G.players[p].up && G.players[p].up[line]) || 0;
+  const defCache = new Map();
+  // the unit definition for this player's current upgrade (cached; units point at it)
+  G.unitDef = function (p, type) {
+    const tier = G.tierOf(p, type), k = p + '|' + type + '|' + tier;
+    let d = defCache.get(k);
+    if (!d) {
+      d = { ...G.UNITS[type] };
+      for (const id in G.UPGRADES) { const u = G.UPGRADES[id]; if (u.line === type && u.tier <= tier) { Object.assign(d, u.stats); d.name = u.name; } }
+      d.tier = tier; defCache.set(k, d);
+    }
+    return d;
+  };
+  G.techBonus = function (p) {
+    const b = { melee: 0, ranged: 0, range: 0, armor: 0, pierce: 0 }, t = (G.players[p] && G.players[p].techs) || {};
+    for (const id in t) if (t[id] && G.TECHS[id]) for (const k in G.TECHS[id].eff) b[k] += G.TECHS[id].eff[k];
+    return b;
+  };
+  // what a building can research right now: [{ id, kind: 'up'|'tech', def, why }]
+  G.researchesFor = function (b) {
+    const p = b.owner, pl = G.players[p], out = [];
+    if (!pl) return out;
+    pl.up = pl.up || {}; pl.techs = pl.techs || {};   // games saved before upgrades existed
+    for (const id in G.UPGRADES) {
+      const u = G.UPGRADES[id];
+      if (u.at !== b.type || G.tierOf(p, u.line) !== u.tier - 1) continue;
+      if (!G.trainsFor(b).includes(u.line)) continue;
+      out.push({ id, kind: 'up', def: u, why: G.ageOf(p) < u.age ? G.AGES[u.age].short + ' Age' : null });
+    }
+    if (b.type === 'blacksmith') for (const id in G.TECHS) {
+      const t = G.TECHS[id]; if (pl.techs[id] || (t.req && !pl.techs[t.req])) continue;
+      out.push({ id, kind: 'tech', def: t, why: G.ageOf(p) < t.age ? G.AGES[t.age].short + ' Age' : null });
+    }
+    return out;
+  };
+  G.startResearch = function (b, id) {
+    if (!b.built || b.dead || b.research || b.aging) return false;
+    const r = G.researchesFor(b).find(x => x.id === id); if (!r || r.why) return false;
+    if (G.ents.some(e => !e.dead && e.owner === b.owner && e.research && e.research.id === id)) return false;
+    if (!G.pay(b.owner, r.def.cost)) return 'res';
+    b.research = { id, kind: r.kind, t: 0, cost: r.def.cost };
+    return true;
+  };
+  G.cancelResearch = function (b) { if (b.research) { G.refund(b.owner, b.research.cost); b.research = null; } };
+  function finishResearch(b) {
+    const r = b.research, pl = G.players[b.owner]; b.research = null;
+    if (r.kind === 'up') {
+      const u = G.UPGRADES[r.id]; pl.up[u.line] = u.tier;
+      for (const e of G.ents) if (!e.dead && e.owner === b.owner && e.type === u.line) {   // upgrade units already in the field
+        const nd = G.unitDef(b.owner, u.line), f = e.hp / e.maxHp;
+        e.def = nd; e.maxHp = nd.hp; e.hp = Math.max(1, Math.round(nd.hp * f)); e.range = nd.range + G.techBonus(b.owner).range * (nd.ranged ? 1 : 0) + ((u.line === 'archer' || u.line === 'longbowman') && mods(b.owner).archerRange ? mods(b.owner).archerRange : 0);
+      }
+      if (G.onResearched) G.onResearched(b.owner, u.name);
+    } else {
+      pl.techs[r.id] = true;
+      const tb = G.techBonus(b.owner);
+      for (const e of G.ents) if (!e.dead && e.owner === b.owner && e.kind === 'unit' && e.def.ranged) e.range = e.def.range + tb.range + ((e.type === 'archer' || e.type === 'longbowman') && mods(b.owner).archerRange ? mods(b.owner).archerRange : 0);
+      if (G.onResearched) G.onResearched(b.owner, G.TECHS[r.id].name);
+    }
   }
 
   G.unitCost = function (p, type) {
@@ -105,14 +167,14 @@
   };
 
   G.addUnit = function (type, owner, x, y) {
-    const def = G.UNITS[type];
+    const def = G.unitDef(owner, type);
     const e = base('unit', type, owner, def);
     e.x = x; e.y = y;
     let hp = def.hp; if (type === 'knight' && mods(owner).knightHp) hp = Math.round(hp * mods(owner).knightHp);
     e.hp = e.maxHp = hp;
     if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
-    e.range = def.range + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0);
+    e.range = def.range + (def.ranged ? G.techBonus(owner).range : 0) + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0);
     return e;
   };
 
@@ -143,7 +205,7 @@
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
     if (e.kind === 'building' && e.garrison && e.garrison.length) G.ungarrison(e);
     if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
-    if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
+    if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, def: { tier: (e.def && e.def.tier) || 0 }, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
       if (e.owner > 0) G.players[e.owner].lost++;
@@ -280,7 +342,7 @@
   G.train = function (b, type) {
     if (!b.built || b.dead) return false;
     if (!G.trainsFor(b).includes(type) || !G.canTrainType(b.owner, type)) return false;
-    if (b.aging) return 'busy';
+    if (b.aging || b.research) return 'busy';
     const cost = G.unitCost(b.owner, type);
     const { pop, cap } = G.popOf(b.owner);
     if (pop >= cap) return 'pop';
@@ -303,8 +365,11 @@
       if (d.bonus && d.bonus.bld) dmg += d.bonus.bld;
       if (att.kind === 'building') dmg = 1;
     } else {
-      const aa = att.kind === 'unit' && att.type !== 'villager' ? (G.ageOf(att.owner) >= 3 ? 1 : 0) + (G.ageOf(att.owner) >= 4 ? 1 : 0) : 0;
-      const ta = t.kind === 'unit' && t.type !== 'villager' && G.ageOf(t.owner) >= 4 ? 1 : 0;
+      const soldier = att.kind === 'unit' && att.type !== 'villager';
+      const tbA = soldier ? G.techBonus(att.owner) : null;
+      const aa = soldier ? (G.ageOf(att.owner) >= 3 ? 1 : 0) + (G.ageOf(att.owner) >= 4 ? 1 : 0) + (d.ranged ? tbA.ranged : tbA.melee) : 0;
+      const tSold = t.kind === 'unit' && t.type !== 'villager', tbT = tSold ? G.techBonus(t.owner) : null;
+      const ta = tSold ? (G.ageOf(t.owner) >= 4 ? 1 : 0) + (d.ranged || att.kind === 'building' ? tbT.pierce : tbT.armor) : 0;
       const arm = (d.ranged || att.kind === 'building' ? t.def.pierce : t.def.armor) + ta;
       dmg = Math.max(1, d.atk + aa - arm);
       if (d.bonus && d.bonus[t.def.cls]) dmg += d.bonus[t.def.cls];
@@ -341,11 +406,15 @@
       if (b.dead || b.kind !== 'building') continue;
       if (b.hitT) b.hitT = Math.max(0, b.hitT - dt);
       if (!b.built) continue;
-      if (b.aging) {
+      if (b.research) {
+        b.research.t += dt * (G.fastTrain || 1);
+        const rd = b.research.kind === 'up' ? G.UPGRADES[b.research.id] : G.TECHS[b.research.id];
+        if (b.research.t >= rd.time) finishResearch(b);
+      } else if (b.aging) {
         const speed = mods(b.owner).tcSpeed || 1;
         b.aging.t += dt * speed * (G.fastTrain || 1);
         if (b.aging.t >= G.AGES[b.aging.to].time) finishAge(b);
-      } else if (b.queue.length) {
+      } else if (b.queue.length && !b.research) {
         const q = b.queue[0], def = G.UNITS[q.type];
         const speed = (b.type === 'towncenter' && mods(b.owner).tcSpeed) ? mods(b.owner).tcSpeed : 1;
         const { pop, cap } = G.popOf(b.owner);

@@ -198,6 +198,7 @@
   G.onDeposit = function (u, c) {
     if (u.owner === 1 && G.isVisible(u.x, u.y)) G.effects.push({ t: 'text', x: u.x, y: u.y, text: `+${Math.round(c.amt)} ${ICON[c.res]}`, col: '#fff', life: 1.2 });
   };
+  G.onResearched = function (p, name) { if (p === 1) { UI.alert(`⚒ ${name} researched!`); panelKey = ''; } };
   G.onAgeUp = function (p, to) {
     if (p === 1) UI.alert(`🎉 You reached the ${G.AGES[to].name}! ${G.AGES[to].bonus}`);
     else UI.alert(`${G.PLAYER_COLOR_NAMES[p] || 'Enemy'} (${G.CIVS[G.players[p].civ].name}) reached the ${G.AGES[to].name}`);
@@ -407,7 +408,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {
@@ -469,6 +470,7 @@
       } else if (!e.built) sub = `Under construction ${Math.floor(e.progress * 100)}%`;
       else if (e.type === 'farm') sub += ` · ${Math.ceil(e.food)} food left`;
       if (e.aging) sub += ` · ${G.AGES[e.aging.to].name} ${Math.floor(e.aging.t / G.AGES[e.aging.to].time * 100)}%`;
+      if (e.research) { const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id]; sub += ` · ${rd.name} ${Math.floor(e.research.t / rd.time * 100)}%`; }
       if (e.garrison && e.garrison.length) sub += ` · ${e.garrison.length}/${e.def.garrison} inside`;
       if (e.def.pop) { const pc = G.popOf(e.owner); sub += ` · +${e.type === 'house' && G.CIVS[G.players[e.owner].civ].mods.housePop || e.def.pop} pop`; }
       $('sel-sub').textContent = sub;
@@ -493,7 +495,7 @@
 
     // commands (rebuilt only when something relevant changes)
     const R = G.players[1].res;
-    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + (e.aging ? 1 : 0) + G.ageOf(1) + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
+    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + (e.aging ? 1 : 0) + G.ageOf(1) + (e.research ? e.research.id : '') + JSON.stringify(G.players[1].up || {}) + Object.keys(G.players[1].techs || {}).length + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
     if (!force && key === panelKey) return;
     panelKey = key;
     const cmds = $('cmds'); cmds.innerHTML = '';
@@ -528,17 +530,33 @@
       for (const t of G.trainsFor(e)) {
         const c = G.unitCost(1, t);
         if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
-        cmds.appendChild(btn('i:' + t, G.UNITS[t].name, costTxt(c), () => {
+        cmds.appendChild(btn('i:' + t, G.unitDef(1, t).name, costTxt(c), () => {
           for (const b of sel) {
             const r = G.train(b, t);
             if (r === 'pop') { UI.alert('Need more houses!'); break; }
-            if (r === 'busy') { UI.alert('Town Center is advancing to the next Age'); break; }
+            if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); break; }
             if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); break; }
           }
           panelKey = '';
         }, !G.canAfford(1, c)));
       }
       cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
+      if (e.owner === 1 && e.built) {
+        if (e.research) {
+          const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id];
+          cmds.appendChild(btn('⏹', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
+        } else for (const r of G.researchesFor(e)) {
+          const ic = r.kind === 'up' ? 'i:' + r.def.line + (r.why ? '|lock' : '') : 'i:' + r.def.icon + (r.why ? '|lock' : '');
+          const b = btn(ic, r.def.name, r.why || costTxt(r.def.cost), () => {
+            if (r.why) { UI.alert(`${r.def.name} needs the ${G.AGES[r.def.age].name}`); return; }
+            const ok = G.startResearch(e, r.id);
+            if (ok === 'res') { UI.alert('Not enough resources'); flashCost(r.def.cost); }
+            else if (!ok) UI.alert('Already researching');
+            panelKey = '';
+          }, !!r.why || !G.canAfford(1, r.def.cost));
+          b.classList.add('research'); cmds.appendChild(b);
+        }
+      }
       if (e.type === 'towncenter' && e.owner === 1) {
         const nx = G.AGES[G.ageOf(1) + 1];
         if (e.aging) cmds.appendChild(btn('⏹', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
