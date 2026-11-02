@@ -14,10 +14,18 @@
   };
 
   G.idx = (x, y) => y * N + x;
-  G.inMap = (x, y) => x >= 0 && y >= 0 && x < N && y < N;
+  // Playable area. In screen space d = x - y runs left/right and s = x + y runs up/down.
+  // Diamond maps use the whole grid (a = b = N); rectangle maps keep |d| <= a and |s - N| <= b,
+  // which is a rectangle aligned with the screen, about 1.2 : 1 wide, so no black corners show.
+  G.view = { a: N, b: N, rect: false };
+  const inRect = (x, y) => { const d = x - y, s = x + y + 1 - N; return d >= -G.view.a && d <= G.view.a - 0 && s >= -G.view.b && s <= G.view.b; };
+  G.inPlay = (x, y) => !G.view.rect || inRect(x, y);
+  G.inMap = (x, y) => x >= 0 && y >= 0 && x < N && y < N && (!G.view.rect || inRect(x, y));
 
   G.initMap = function (seed) {
     N = G.MAP;
+    const rect = !!G.rules && G.rules.shape === 'rect';   // old saves have no shape: they were diamonds
+    G.view = rect ? { a: Math.floor(N * 0.375), b: Math.floor(N * 0.625), rect: true } : { a: N, b: N, rect: false };
     gScore = new Float32Array(N * N); parent = new Int32Array(N * N); stamp = new Int32Array(N * N); curStamp = 0;
     G.terrain = new Uint8Array(N * N);   // visual variant 0..3 (grass shades), 4 = dirt
     G.block = new Int32Array(N * N);     // entity id blocking the tile, 0 = free

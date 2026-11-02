@@ -31,8 +31,8 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal' };
-    G.MAP = G.MAP_SIZES[G.rules.size] || 72;
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect' };
+    G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
     G.setNextId(1);
@@ -42,22 +42,37 @@
     slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
     G.time = 0; G.over = null;
     const r = G.mapRng;
-    const m = Math.round(N * 0.18);
     // corner spots: bottom-left, top-right, top-left, bottom-right on screen
-    const spots = [{ x: m, y: N - m - 3 }, { x: N - m - 3, y: m }, { x: m, y: m }, { x: N - m - 3, y: N - m - 3 }];
+    let spots;
+    if (G.view.rect) {
+      // corners of the screen rectangle, pulled in so each base has room around it
+      const A = G.view.a, B = G.view.b, ia = Math.round(A * 0.62), ib = Math.round(B * 0.62);
+      const at = (d, s) => ({ x: Math.round((s + N + d) / 2) - 1, y: Math.round((s + N - d) / 2) - 1 });
+      spots = [at(-ia, ib), at(ia, -ib), at(-ia, -ib), at(ia, ib)];
+    } else {
+      const m = Math.round(N * 0.18);
+      spots = [{ x: m, y: N - m - 3 }, { x: N - m - 3, y: m }, { x: m, y: m }, { x: N - m - 3, y: N - m - 3 }];
+    }
     const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
     // Town centers first (so resources avoid them)
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
     for (const s of starts) startResources(r, s.x + 1, s.y + 1);
     // Forests and scattered resources across the map, away from starts
     const far = (x, y) => starts.every(s => Math.hypot(x - s.x, y - s.y) > 13);
-    const scale = (N * N) / (72 * 72);
+    // random points inside the playable area
+    const playArea = G.view.rect ? 2 * G.view.a * G.view.b : N * N;
+    const scale = playArea / (72 * 72);
+    const rnd = (pad) => {
+      if (!G.view.rect) return { x: pad + Math.floor(r() * (N - pad * 2)), y: pad + Math.floor(r() * (N - pad * 2)) };
+      const d = (r() * 2 - 1) * (G.view.a - pad), s = (r() * 2 - 1) * (G.view.b - pad);
+      return { x: Math.round((s + N + d) / 2), y: Math.round((s + N - d) / 2) };
+    };
     for (let k = 0; k < Math.round(22 * scale); k++) {
-      const x = 3 + Math.floor(r() * (N - 6)), y = 3 + Math.floor(r() * (N - 6));
+      const { x, y } = rnd(3);
       if (far(x, y)) cluster(r, 'tree', x, y, 18 + Math.floor(r() * 30), 2);
     }
     for (let k = 0; k < Math.round(8 * scale); k++) {
-      const x = 6 + Math.floor(r() * (N - 12)), y = 6 + Math.floor(r() * (N - 12));
+      const { x, y } = rnd(6);
       if (far(x, y)) cluster(r, k % 3 === 0 ? 'stone' : k % 3 === 1 ? 'gold' : 'berry', x, y, 5, 1);
     }
     // Starting villagers

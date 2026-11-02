@@ -91,8 +91,9 @@
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect'
   };
+  if (!setup.shape) setup.shape = 'rect';
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
     setup.slots.forEach((sl, i) => {
@@ -139,7 +140,7 @@
       return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
     });
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect' });
     G.buildGround();
     enterGame();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
@@ -619,7 +620,7 @@
       const d = Math.hypot(a.x - b.x, a.y - b.y);
       const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
       const before = G.toWorld(gesture.mx, gesture.my);
-      G.camera.zoom = Math.max(0.45, Math.min(2.2, gesture.z * d / gesture.d));
+      G.camera.zoom = Math.max(G.minZoom || 0.45, Math.min(2.2, gesture.z * d / gesture.d));
       // keep pinch midpoint anchored, and pan with midpoint movement
       const after = G.toWorld(gesture.mx, gesture.my);
       const pb = G.iso(before.x, before.y), pa = G.iso(after.x, after.y);
@@ -651,7 +652,7 @@
   cv.addEventListener('wheel', e => {
     e.preventDefault();
     const before = G.toWorld(e.clientX, e.clientY);
-    G.camera.zoom = Math.max(0.45, Math.min(2.2, G.camera.zoom * Math.pow(0.999, e.deltaY)));
+    G.camera.zoom = Math.max(G.minZoom || 0.45, Math.min(2.2, G.camera.zoom * Math.pow(0.999, e.deltaY)));
     const after = G.toWorld(e.clientX, e.clientY);
     const pb = G.iso(before.x, before.y), pa = G.iso(after.x, after.y);
     G.camera.x += pb.x - pa.x; G.camera.y += pb.y - pa.y;

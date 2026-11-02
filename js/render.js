@@ -27,6 +27,18 @@
       this.x += this.vx * dt; this.y += this.vy * dt;
       const fr = Math.pow(0.02, dt); this.vx *= fr; this.vy *= fr;
       if (Math.abs(this.vx) < 2) this.vx = 0; if (Math.abs(this.vy) < 2) this.vy = 0;
+      if (G.view && G.view.rect) {
+        // rectangle maps: keep the whole screen inside the map (plus a thin strip of the forest edge)
+        const A = G.view.a * TW / 2, y0 = (N - G.view.b) * TH / 2, y1 = (N + G.view.b) * TH / 2, edge = 1.2 * TH;
+        G.minZoom = Math.max(0.45, W / (2 * A + 2 * edge), H / (y1 - y0 + 2 * edge));
+        if (this.zoom < G.minZoom) this.zoom = G.minZoom;
+        const hw = W / 2 / this.zoom, hh = H / 2 / this.zoom;
+        const lx = -A - edge + hw, hx = A + edge - hw, ly = y0 - edge + hh, hy = y1 + edge - hh;
+        this.x = lx > hx ? 0 : Math.max(lx, Math.min(hx, this.x));
+        this.y = ly > hy ? N * TH / 2 : Math.max(ly, Math.min(hy, this.y));
+        return;
+      }
+      G.minZoom = 0.45;
       // clamp to map diamond bounds
       const maxX = N * TW / 2, maxY = N * TH;
       this.x = Math.max(-maxX, Math.min(maxX, this.x));
@@ -46,7 +58,7 @@
 
   // ---------- Ground texture in tile space (drawn with an iso transform) ----------
   const GT = 16; // texels per tile
-  let ground = null, fogCv = null, fogCtx = null, fogImg = null;
+  let ground = null, fogCv = null, fogCtx = null, fogImg = null, borderRef = null;
   G.buildGround = function () {
     N = G.MAP;
     ground = document.createElement('canvas');
@@ -67,6 +79,24 @@
       g.fillStyle = r() < 0.5 ? 'rgba(40,70,20,0.35)' : 'rgba(170,200,110,0.25)';
       g.fillRect(x, y, 1 + r() * 2, 1 + r() * 2);
     }
+    // rectangle maps: the land past the edge is dark forest floor with a decorative tree line
+    G.deco = []; borderRef = null;
+    if (G.view && G.view.rect) {
+      const A = G.view.a, B = G.view.b, rr = G.rng(777);
+      borderRef = new Int32Array(N * N).fill(-1);
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        if (G.inPlay(x, y)) continue;
+        const d = x - y, s = x + y + 1 - N;
+        const out = Math.max(Math.abs(d) - A, Math.abs(s) - B);          // how far past the edge
+        g.fillStyle = `rgba(18,32,12,${Math.min(0.78, 0.35 + out * 0.06)})`; g.fillRect(x * GT, y * GT, GT, GT);
+        // nearest playable tile (for fog)
+        let dc = Math.max(-A, Math.min(A, d)), sc = Math.max(-B, Math.min(B, s));
+        let nx = Math.round((sc + N - 1 + dc) / 2), ny = Math.round((sc + N - 1 - dc) / 2);
+        for (let k = 0; k < 4 && !G.inPlay(nx, ny); k++) { nx += Math.sign(N / 2 - nx); ny += Math.sign(N / 2 - ny); }
+        if (nx >= 0 && ny >= 0 && nx < N && ny < N) borderRef[G.idx(x, y)] = G.idx(nx, ny);
+        if (out <= 5 && rr() < (out <= 2 ? 0.75 : 0.45)) G.deco.push({ x: x + 0.3 + rr() * 0.4, y: y + 0.3 + rr() * 0.4, v: Math.floor(rr() * 4) });
+      }
+    }
     // darker patches under forests
     for (const e of G.ents) if (e.kind === 'res' && e.type === 'tree') {
       g.fillStyle = 'rgba(30,50,15,0.35)'; g.beginPath(); g.arc((e.tx + 0.5) * GT, (e.ty + 0.5) * GT, GT * 0.9, 0, 7); g.fill();
@@ -84,7 +114,9 @@
   function updateFogImage() {
     const d = fogImg.data;
     for (let i = 0; i < N * N; i++) {
-      const a = G.visible[i] ? 0 : G.explored[i] ? 110 : 255;
+      const j = borderRef && borderRef[i] >= 0 ? borderRef[i] : i;   // the forest edge takes the fog of the land next to it
+      let a = G.visible[j] ? 0 : G.explored[j] ? 110 : 255;
+      if (j !== i) a = Math.max(a, 60);
       d[i * 4] = 10; d[i * 4 + 1] = 12; d[i * 4 + 2] = 18; d[i * 4 + 3] = a;
     }
     fogCtx.putImageData(fogImg, 0, 0);
@@ -130,6 +162,11 @@
       const depth = e.kind === 'unit' ? e.x + e.y : e.type === 'farm' ? e.tx + e.ty - 10 : e.tx + e.ty + (e.size || 1) * 1.5 - 0.5;
       list.push({ e, s, depth });
     }
+    if (G.deco && G.resSprite) for (const d of G.deco) {
+      const s = G.toScreen(d.x, d.y);
+      if (s.x < -margin * z || s.x > W + margin * z || s.y < -margin * z || s.y > H + margin * 1.5 * z) continue;
+      list.push({ deco: d, s, depth: d.x + d.y + 0.5 });
+    }
     list.sort((a, b) => a.depth - b.depth);
 
     // stumps left by chopped trees (ground level)
@@ -145,7 +182,7 @@
     if (G.drawCorpses) G.drawCorpses(ctx, z);
     const sel = G.selection || [];
     // farms & ground-level marks first (already sorted low)
-    for (const it of list) drawEntity(it.e, it.s, z, sel.includes(it.e));
+    for (const it of list) { if (it.deco) { const sp = G.resSprite('tree', it.deco.v); if (sp) drawSprite(sp, it.s.x, it.s.y, z); } else drawEntity(it.e, it.s, z, sel.includes(it.e)); }
 
     // projectiles
     ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = 1.4 * z;
@@ -284,14 +321,17 @@
 
   // ---------- Minimap ----------
   G.drawMinimap = function (mc) {
+    const want = G.view.rect ? [132, 110] : [160, 80];   // minimap matches the map's shape
+    if (mc.width !== want[0]) { mc.width = want[0]; mc.height = want[1]; mc.style.width = want[0] + 'px'; mc.style.height = want[1] + 'px'; }
     const m = mc.getContext('2d');
     const w = mc.width, h = mc.height;
     m.setTransform(1, 0, 0, 1, 0, 0);
     m.clearRect(0, 0, w, h);
-    // diamond transform: tile (x,y) -> minimap
-    const sx = w / N / 2, sy = h / N / 2;
-    m.setTransform(sx, sy, -sx, sy, w / 2, 0);
-    m.fillStyle = '#4f7a30'; m.fillRect(0, 0, N, N);
+    // tile (x,y) -> minimap; the playable area (diamond or rectangle) fills the minimap
+    const A = G.view.a, B = G.view.b, sx = w / (2 * A), sy = h / (2 * B);
+    m.setTransform(sx, sy, -sx, sy, A * sx, -(N - B) * sy);
+    m.fillStyle = G.view.rect ? '#22361a' : '#4f7a30'; m.fillRect(0, 0, N, N);
+    if (G.view.rect) { m.save(); m.setTransform(1, 0, 0, 1, 0, 0); m.fillStyle = '#4f7a30'; m.fillRect(0, 0, w, h); m.restore(); }
     for (const e of G.ents) {
       if (e.dead) continue;
       const x = e.kind === 'unit' ? e.x : e.tx, y = e.kind === 'unit' ? e.y : e.ty;
@@ -308,13 +348,13 @@
     const corners = [G.toWorld(0, 0), G.toWorld(W, 0), G.toWorld(W, H), G.toWorld(0, H)];
     m.strokeStyle = '#fff'; m.lineWidth = 1;
     m.beginPath();
-    corners.forEach((c, i) => { const px = (c.x - c.y) * sx + w / 2, py = (c.x + c.y) * sy; i ? m.lineTo(px, py) : m.moveTo(px, py); });
+    corners.forEach((c, i) => { const px = (c.x - c.y + A) * sx, py = (c.x + c.y - (N - B)) * sy; i ? m.lineTo(px, py) : m.moveTo(px, py); });
     m.closePath(); m.stroke();
   };
   G.minimapToWorld = function (mc, mx, my) {
     const w = mc.clientWidth, h = mc.clientHeight;
-    const sx = w / N / 2, sy = h / N / 2;
-    const a = (mx - w / 2) / sx, b = my / sy; // a = x - y, b = x + y
+    const A = G.view.a, B = G.view.b, sx = w / (2 * A), sy = h / (2 * B);
+    const a = mx / sx - A, b = my / sy + (N - B); // a = x - y, b = x + y
     return { x: (a + b) / 2, y: (b - a) / 2 };
   };
 })();

@@ -96,5 +96,7 @@ G.RES_PRESETS = {
   high: { food: 1000, wood: 1000, gold: 700, stone: 500 }
 };
 G.MAP_SIZES = { small: 56, medium: 72, large: 96 };
+// Rectangle maps: a bigger grid with a screen-aligned playable rectangle (about the same land area).
+G.MAP_SIZES_RECT = { small: 82, medium: 105, large: 140 };
 // Current match rules (set by the skirmish screen).
-G.rules = { size: 'medium', res: 'standard', pop: 200, reveal: 'normal' };
+G.rules = { size: 'medium', res: 'standard', pop: 200, reveal: 'normal', shape: 'rect' };
