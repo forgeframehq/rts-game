@@ -10,13 +10,25 @@
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', setup: null };
+  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
+  // Screen orientation: the game plays in both. Locking works where the browser allows it
+  // (Android in full screen or as an installed app); elsewhere the phone's own rotation decides.
+  function lockOrientation() {
+    const o = screen.orientation;
+    if (!o) return;
+    if (prefs.orient === 'auto') { try { o.unlock(); } catch (e) { /* not supported */ } return; }
+    const go = () => o.lock(prefs.orient).catch(() => { /* needs full screen or unsupported */ });
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen && G.inGame)
+      document.documentElement.requestFullscreen().then(go).catch(go);
+    else go();
+  }
   function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
   function applyPrefs() {
     G.speed = +prefs.speed || 1;
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
+    lockOrientation();
     G.resize();
     [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
     document.querySelectorAll('[data-pref]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(prefs[seg.dataset.pref]))));
@@ -37,10 +49,11 @@
     for (const s of SCREENS) $(s).classList.add('hidden');
     $('hud').classList.remove('hidden');
     G.paused = false; G.demo = false; saveT = 20;
+    G.inGame = true; if (prefs.orient !== 'auto') lockOrientation();
   }
   function toMenu() {
     if (!G.over) G.saveGame();
-    G.paused = true; G.demo = true;
+    G.paused = true; G.demo = true; G.inGame = false;
     $('hud').classList.add('hidden');
     show('start');
   }
@@ -183,6 +196,11 @@
   };
   G.onDeposit = function (u, c) {
     if (u.owner === 1 && G.isVisible(u.x, u.y)) G.effects.push({ t: 'text', x: u.x, y: u.y, text: `+${Math.round(c.amt)} ${ICON[c.res]}`, col: '#fff', life: 1.2 });
+  };
+  G.onAgeUp = function (p, to) {
+    if (p === 1) UI.alert(`🎉 You reached the ${G.AGES[to].name}! ${G.AGES[to].bonus}`);
+    else UI.alert(`${G.PLAYER_COLOR_NAMES[p] || 'Enemy'} (${G.CIVS[G.players[p].civ].name}) reached the ${G.AGES[to].name}`);
+    panelKey = '';
   };
   UI.onKilled = function (e) { if (G.selection.includes(e)) { G.selection = G.selection.filter(x => x !== e); panelKey = ''; } };
 
@@ -392,6 +410,7 @@
         if (e.carry && e.carry.amt >= 1) sub += ` · carrying ${Math.floor(e.carry.amt)} ${ICON[e.carry.res]}`;
       } else if (!e.built) sub = `Under construction ${Math.floor(e.progress * 100)}%`;
       else if (e.type === 'farm') sub += ` · ${Math.ceil(e.food)} food left`;
+      if (e.aging) sub += ` · ${G.AGES[e.aging.to].name} ${Math.floor(e.aging.t / G.AGES[e.aging.to].time * 100)}%`;
       if (e.garrison && e.garrison.length) sub += ` · ${e.garrison.length}/${e.def.garrison} inside`;
       if (e.def.pop) { const pc = G.popOf(e.owner); sub += ` · +${e.type === 'house' && G.CIVS[G.players[e.owner].civ].mods.housePop || e.def.pop} pop`; }
       $('sel-sub').textContent = sub;
@@ -416,7 +435,7 @@
 
     // commands (rebuilt only when something relevant changes)
     const R = G.players[1].res;
-    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
+    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + (e.aging ? 1 : 0) + G.ageOf(1) + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
     if (!force && key === panelKey) return;
     panelKey = key;
     const cmds = $('cmds'); cmds.innerHTML = '';
@@ -428,6 +447,7 @@
       if (vils.length && buildMenu) {
         for (const t of G.VIL_BUILDS) {
           const c = G.buildCost(1, t);
+          if (!G.canBuildType(1, t)) { cmds.appendChild(btn('🔒', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
           cmds.appendChild(btn(G.BUILDINGS[t].icon, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
         }
         cmds.appendChild(btn('↩', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
@@ -449,16 +469,32 @@
     if (e.kind === 'building' && e.built && e.def.trains) {
       for (const t of G.trainsFor(e)) {
         const c = G.unitCost(1, t);
+        if (!G.canTrainType(1, t)) { cmds.appendChild(btn('🔒', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
         cmds.appendChild(btn(G.UNITS[t].icon, G.UNITS[t].name, costTxt(c), () => {
           for (const b of sel) {
             const r = G.train(b, t);
             if (r === 'pop') { UI.alert('Need more houses!'); break; }
+            if (r === 'busy') { UI.alert('Town Center is advancing to the next Age'); break; }
             if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); break; }
           }
           panelKey = '';
         }, !G.canAfford(1, c)));
       }
       cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
+      if (e.type === 'towncenter' && e.owner === 1) {
+        const nx = G.AGES[G.ageOf(1) + 1];
+        if (e.aging) cmds.appendChild(btn('⏹', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
+        else if (nx) {
+          const why = G.ageBlock(1, e);
+          cmds.appendChild(btn('⬆️', nx.short + ' Age', why ? 'locked' : costTxt(nx.cost), () => {
+            const r = G.advanceAge(e);
+            if (r === 'res') { UI.alert('Not enough resources'); flashCost(nx.cost); }
+            else if (!r) UI.alert(G.ageBlock(1, e) || 'Cannot advance now');
+            else UI.alert(`Advancing to the ${nx.name}…`);
+            panelKey = '';
+          }, !!why || !G.canAfford(1, nx.cost)));
+        }
+      }
       if (e.def.garrison && e.owner === 1) {
         cmds.appendChild(btn('🔔', 'Ring bell', 'all villagers in', () => { G.ringBell(1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
         const n = (e.garrison || []).length;
@@ -489,7 +525,7 @@
       $('r-pop').lastChild.textContent = `${pc.pop}/${pc.cap}`;
       $('r-pop').style.color = pc.pop >= pc.cap ? '#ff8a7a' : '';
       const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
-      $('clock').textContent = `${m}:${String(s).padStart(2, '0')}`;
+      $('clock').textContent = `${G.AGES[G.ageOf(1)].short} · ${m}:${String(s).padStart(2, '0')}`;
       const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
       refreshPanel(false);

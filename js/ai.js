@@ -68,8 +68,15 @@ G.makeAI = function () {
     const home = tc || blds[0] || vils[0];
     if (!home) return;
 
+    // --- Ages: advance once the economy is big enough (pauses villager training, like a real player) ---
+    const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 12, 18, 26];
+    let saving = false;
+    if (tc && tc.built && nxt && !tc.aging && vils.length >= AGE_VILS[age + 1] && !G.ageBlock(p, null)) {
+      saving = true;
+      if (!tc.queue.length && G.canAfford(p, nxt.cost)) G.advanceAge(tc);
+    }
     // --- villagers ---
-    if (tc && tc.built && vils.length + tc.queue.length < AI.cfg.maxVils && tc.queue.length < 2) G.train(tc, 'villager');
+    if (tc && tc.built && !tc.aging && !saving && vils.length + tc.queue.length < AI.cfg.maxVils && tc.queue.length < 2) G.train(tc, 'villager');
 
     // --- houses ---
     const housing = blds.some(b => b.type === 'house' && !b.built);
@@ -143,7 +150,7 @@ G.makeAI = function () {
     }
 
     // --- army production ---
-    const reserve = vils.length < AI.cfg.maxVils ? 60 : 0;
+    const reserve = saving ? 1e9 : vils.length < AI.cfg.maxVils ? 60 : 0;   // while saving for an Age, keep the food
     if (army.length < AI.cfg.armyCap && pop < cap) {
       for (const b of blds) {
         if (!b.built || !b.def.trains || b.type === 'towncenter' || b.queue.length >= 2) continue;

@@ -30,7 +30,7 @@ button { font-family: inherit; color: var(--text); cursor: pointer; }
 .res b { font-variant-numeric: tabular-nums; font-family: system-ui, sans-serif; font-weight: 600; }
 .res.flash { animation: flash 0.6s; }
 @keyframes flash { 0%,100% { background: rgba(0,0,0,0.3); } 50% { background: rgba(255,60,50,0.7); } }
-#clock { margin-left: auto; font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+#clock { white-space: nowrap; margin-left: auto; font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .iconbtn { background: none; border: 1px solid var(--line); border-radius: 6px; font-size: 18px; width: 34px; height: 30px; }
 
 /* ---------- Side buttons ---------- */

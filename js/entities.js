@@ -15,8 +15,37 @@
     const m = G.CIVS[civ].mods;
     const res = { ...(G.RES_PRESETS[G.rules.res] || G.START_RES) };
     if (m.startFoodDelta) res.food += m.startFoodDelta;
-    return { id, civ, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
+    return { id, civ, age: 1, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
   };
+
+  // ---------- Ages ----------
+  G.ageOf = p => (G.players[p] && G.players[p].age) || 1;
+  G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1);
+  G.canTrainType = (p, type) => G.ageOf(p) >= (G.UNIT_AGE[type] || 1);
+  // what still blocks advancing: returns null if ready, else a short reason
+  G.ageBlock = function (p, tc) {
+    const a = G.ageOf(p), next = G.AGES[a + 1];
+    if (!next) return 'Max Age';
+    if (G.ents.some(e => e.owner === p && e.aging && !e.dead)) return 'Advancing…';
+    const have = new Set(G.ents.filter(e => !e.dead && e.owner === p && e.kind === 'building' && e.built).map(e => e.type));
+    const got = next.needs.filter(t => have.has(t)).length;
+    if (got < 2) return `Needs 2 of: ${next.needs.map(t => G.BUILDINGS[t].name).join(', ')}`;
+    if (tc && tc.queue.length) return 'Town Center busy';
+    return null;
+  };
+  G.advanceAge = function (tc) {
+    const p = tc.owner, next = G.AGES[G.ageOf(p) + 1];
+    if (!next || G.ageBlock(p, tc)) return false;
+    if (!G.pay(p, next.cost)) return 'res';
+    tc.aging = { t: 0, to: G.ageOf(p) + 1, cost: next.cost };
+    return true;
+  };
+  G.cancelAge = function (tc) { if (tc.aging) { G.refund(tc.owner, tc.aging.cost); tc.aging = null; } };
+  function finishAge(tc) {
+    const p = G.players[tc.owner], to = tc.aging.to; tc.aging = null; p.age = to;
+    if (to === 4) for (const e of G.ents) if (e.owner === tc.owner && e.kind === 'building' && !e.dead) { e.maxHp = Math.round(e.maxHp * 1.2); e.hp = Math.round(e.hp * 1.2); }
+    if (G.onAgeUp) G.onAgeUp(tc.owner, to);
+  }
 
   G.unitCost = function (p, type) {
     const m = mods(p), base = G.UNITS[type].cost, c = {};
@@ -226,6 +255,7 @@
 
   G.placeBuilding = function (owner, type, tx, ty, builders) {
     const def = G.BUILDINGS[type];
+    if (!G.canBuildType(owner, type)) return null;
     if (!G.areaFree(tx, ty, def.size)) return null;
     // keep units from being trapped: no own units standing in footprint is fine, they get pushed out
     const cost = G.buildCost(owner, type);
@@ -249,7 +279,8 @@
   };
   G.train = function (b, type) {
     if (!b.built || b.dead) return false;
-    if (!G.trainsFor(b).includes(type)) return false;
+    if (!G.trainsFor(b).includes(type) || !G.canTrainType(b.owner, type)) return false;
+    if (b.aging) return 'busy';
     const cost = G.unitCost(b.owner, type);
     const { pop, cap } = G.popOf(b.owner);
     if (pop >= cap) return 'pop';
@@ -272,8 +303,10 @@
       if (d.bonus && d.bonus.bld) dmg += d.bonus.bld;
       if (att.kind === 'building') dmg = 1;
     } else {
-      const arm = d.ranged || att.kind === 'building' ? t.def.pierce : t.def.armor;
-      dmg = Math.max(1, d.atk - arm);
+      const aa = att.kind === 'unit' && att.type !== 'villager' ? (G.ageOf(att.owner) >= 3 ? 1 : 0) + (G.ageOf(att.owner) >= 4 ? 1 : 0) : 0;
+      const ta = t.kind === 'unit' && t.type !== 'villager' && G.ageOf(t.owner) >= 4 ? 1 : 0;
+      const arm = (d.ranged || att.kind === 'building' ? t.def.pierce : t.def.armor) + ta;
+      dmg = Math.max(1, d.atk + aa - arm);
       if (d.bonus && d.bonus[t.def.cls]) dmg += d.bonus[t.def.cls];
     }
     return dmg;
@@ -308,7 +341,11 @@
       if (b.dead || b.kind !== 'building') continue;
       if (b.hitT) b.hitT = Math.max(0, b.hitT - dt);
       if (!b.built) continue;
-      if (b.queue.length) {
+      if (b.aging) {
+        const speed = mods(b.owner).tcSpeed || 1;
+        b.aging.t += dt * speed * (G.fastTrain || 1);
+        if (b.aging.t >= G.AGES[b.aging.to].time) finishAge(b);
+      } else if (b.queue.length) {
         const q = b.queue[0], def = G.UNITS[q.type];
         const speed = (b.type === 'towncenter' && mods(b.owner).tcSpeed) ? mods(b.owner).tcSpeed : 1;
         const { pop, cap } = G.popOf(b.owner);

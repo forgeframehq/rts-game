@@ -67,6 +67,16 @@ G.BUILDINGS = {
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['knight'], icon: '🐎' },
   tower:      { name: 'Watch Tower', cost: { wood: 25, stone: 125 }, time: 40, hp: 1020, size: 1, los: 8, atk: 5, range: 7, rate: 2, icon: '🗼' }
 };
+// ---- Ages (AoE2): advance at the Town Center. Each Age needs 2 buildings from the previous one. ----
+G.AGES = [
+  null,
+  { name: 'Dark Age', short: 'Dark' },
+  { name: 'Feudal Age', short: 'Feudal', cost: { food: 500 }, time: 45, needs: ['mill', 'lumbercamp', 'miningcamp', 'barracks'], bonus: 'Unlocks Archery Range, Stable, Watch Tower, Spearman, Archer' },
+  { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower'], bonus: 'Unlocks Knight and unique units. All soldiers +1 attack' },
+  { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['range', 'stable', 'tower', 'barracks'], bonus: 'All soldiers +1 attack, +1 armor. Buildings +20% HP' }
+];
+G.BUILD_AGE = { tower: 2, range: 2, stable: 2 };
+G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3 };
 G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','tower','towncenter'];
 
 G.RES = {
