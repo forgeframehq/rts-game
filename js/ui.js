@@ -251,6 +251,18 @@
   }
 
   function ping(x, y, col) { G.effects.push({ t: 'ping', x, y, col, life: 0.6 }); }
+  function outline(e, col) { if (e && !e.dead && e.kind !== 'unit') G.effects.push({ t: 'target', id: e.id, col, life: 0.9 }); }
+  // Acknowledge an order: ping the ground and outline the tree/farm/building it landed on,
+  // so a tap that did nothing is never silent.
+  function cmdFx(r, x, y) {
+    const t = G.cmdTarget;
+    if (r === 'farm-busy') { UI.alert('Every farm is already being worked'); outline(t, '#f5c242'); return; }
+    const col = r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8';
+    outline(t, col);
+    const on = t && !t.dead && t.kind !== 'unit';
+    ping(on ? t.x : x, on ? t.y : y, col);
+    if (r === 'gather-moved') UI.alert('That farm is taken — sent to the nearest free one');
+  }
 
   // ---------- Tap logic ----------
   let lastTap = { t: 0, x: 0, y: 0, id: 0 };
@@ -270,7 +282,7 @@
     lastTap = { t: now, x: sx, y: sy, id: target ? target.id : 0 };
 
     if (opts.command) { // right click
-      if (units.length) { const r = G.cmdSmart(units, w.x, w.y, target); ping(w.x, w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8'); }
+      if (units.length) { const r = G.cmdSmart(units, w.x, w.y, target); cmdFx(r, w.x, w.y); }
       else if (G.selection[0] && G.selection[0].kind === 'building' && G.selection[0].owner === 1 && G.selection[0].def.trains) {
         G.selection[0].rally = { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }; ping(w.x, w.y, '#fff');
       }
@@ -281,7 +293,7 @@
       // villagers + own foundation/farm/damaged building => work on it
       const vils = units.filter(u => u.type === 'villager');
       if (target.kind === 'building' && vils.length && !G.selection.includes(target) && (!target.built || target.hp < target.maxHp || target.type === 'farm')) {
-        G.cmdSmart(vils, target.x, target.y, target); ping(target.x, target.y, '#8f8'); return;
+        const r = G.cmdSmart(vils, target.x, target.y, target); cmdFx(r, target.x, target.y); return;
       }
       if (dbl && target.kind === 'unit') { // select all of this type on screen
         const same = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === target.type && onScreen(e));
@@ -291,7 +303,7 @@
     }
     if (units.length) {   // tap anywhere = command (move, gather, attack); use the Deselect button to clear
       const r = G.cmdSmart(units, w.x, w.y, target);
-      ping(target ? target.x : w.x, target ? target.y : w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8');
+      cmdFx(r, w.x, w.y);
       return;
     }
     if (target) { select([target], false); return; }

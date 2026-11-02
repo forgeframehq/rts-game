@@ -208,6 +208,15 @@
         const k = 1 - f.life / 0.6;
         ctx.strokeStyle = f.col; ctx.lineWidth = 2; ctx.globalAlpha = 1 - k;
         ctx.beginPath(); ctx.ellipse(s.x, s.y, (6 + k * 14) * z, (3 + k * 7) * z, 0, 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
+      } else if (f.t === 'target') {
+        // outline the tile the command landed on, so a tap on a tree or farm is visibly acknowledged
+        const e = G.byId.get(f.id);
+        if (e && !e.dead && e.tx != null) {
+          const k = 1 - f.life / 0.9;                 // 0 at the tap, 1 as it fades
+          ctx.globalAlpha = f.life < 0.3 ? f.life / 0.3 : 1;
+          selRingTile(e, f.col, 3.2 - 1.6 * k);
+          ctx.globalAlpha = 1;
+        }
       }
     }
 
@@ -241,10 +250,10 @@
     ctx.drawImage(sp.cv, x - sp.ax * z, y - sp.ay * z, sp.w * z, sp.h * z);
   }
 
-  function selRingTile(e, col) {
+  function selRingTile(e, col, width) {
     const s = e.size || 1;
     const a = G.toScreen(e.tx, e.ty), b = G.toScreen(e.tx + s, e.ty), c = G.toScreen(e.tx + s, e.ty + s), d = G.toScreen(e.tx, e.ty + s);
-    ctx.strokeStyle = col; ctx.lineWidth = 1.6;
+    ctx.strokeStyle = col; ctx.lineWidth = width || 1.6;
     ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.stroke();
   }
 

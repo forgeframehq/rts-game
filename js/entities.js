@@ -292,8 +292,32 @@
   };
 
   // Context-sensitive command (what a tap / right-click on something does).
+  // A farm takes one worker. It counts as busy while another villager is working
+  // it OR walking to it, so two villagers never get sent to the same plot.
+  G.farmBusy = function (f, except) {
+    for (const u of G.ents) {
+      if (u.dead || u.kind !== 'unit' || u === except) continue;
+      if (u.task.t === 'farm' && u.task.id === f.id) return true;
+      if (u.task.t === 'build' && u.task.id === f.id && u.task.then === 'farm') return true;
+    }
+    return false;
+  };
+  G.freeFarmNear = function (x, y, owner, except) {
+    let best = null, bd = Infinity;
+    for (const e of G.ents) {
+      if (e.dead || e.kind !== 'building' || e.type !== 'farm' || e.owner !== owner) continue;
+      if (G.farmBusy(e, except)) continue;
+      const d = (e.x - x) ** 2 + (e.y - y) ** 2;
+      if (d < bd) { bd = d; best = e; }
+    }
+    return best;
+  };
+
+  // G.cmdTarget is the entity actually acted on, which is not always the one
+  // tapped (a busy farm hands off to the nearest free one). The UI outlines it.
   G.cmdSmart = function (units, x, y, t) {
     units = units.filter(u => u.kind === 'unit' && !u.dead);
+    G.cmdTarget = t || null;
     if (!units.length) return null;
     if (t && !t.dead) {
       if (G.enemies(t.owner, units[0].owner)) { G.cmdAttack(units, t); return 'attack'; }
@@ -305,8 +329,19 @@
       if (t.kind === 'building' && t.owner === units[0].owner) {
         const vils = units.filter(u => u.type === 'villager');
         if (vils.length) {
+          // a farm only ever needs one villager, building it included
+          if (t.type === 'farm') {
+            const who = vils.slice(0, 1);
+            let f = t;
+            if (G.farmBusy(t, who[0])) {
+              f = G.freeFarmNear(who[0].x, who[0].y, t.owner, who[0]);
+              if (!f) { G.cmdTarget = t; return 'farm-busy'; }
+            }
+            G.cmdTarget = f;
+            G.cmdFarm(who, f);   // the farm task builds it first when unbuilt
+            return f === t ? 'gather' : 'gather-moved';
+          }
           if (!t.built || t.hp < t.maxHp) { G.cmdBuild(vils, t); return 'build'; }
-          if (t.type === 'farm') { G.cmdFarm(vils.slice(0, 1), t); return 'gather'; }
           if (t.def.drop) { G.cmdDeposit(vils, t); return 'move'; }
         }
       }
@@ -635,7 +670,16 @@
         const f = G.byId.get(task.id);
         if (!f || f.dead) { u.atFarm = false; if (u.carry && u.carry.amt > 0) goDrop(u); else u.task = { t: 'idle' }; break; }
         if (!f.built) { u.task = { t: 'build', id: f.id, then: 'farm' }; break; }
-        if (f.farmer && f.farmer !== u.id) { const o = G.byId.get(f.farmer); if (o && !o.dead && o.task.t === 'farm' && o.task.id === f.id) { u.task = { t: 'idle' }; break; } }
+        if (f.farmer && f.farmer !== u.id) {
+          const o = G.byId.get(f.farmer);
+          if (o && !o.dead && o.task.t === 'farm' && o.task.id === f.id) {
+            // someone got here first: take the nearest free plot rather than standing idle
+            const alt = G.freeFarmNear(u.x, u.y, u.owner, u);
+            u.task = alt ? { t: 'farm', id: alt.id } : { t: 'idle' };
+            u.path = []; u.pathFor = 0;
+            break;
+          }
+        }
         f.farmer = u.id;
         if (u.carry && u.carry.amt >= G.CARRY) { u.atFarm = false; goDrop(u); break; }
         const inside = u.x >= f.tx && u.x <= f.tx + f.size && u.y >= f.ty && u.y <= f.ty + f.size;
