@@ -365,11 +365,29 @@
   };
 
   // ---------- Command panel ----------
-  function costTxt(c) { return Object.keys(c).map(k => ICON[k] + c[k]).join(' '); }
+  // ---- painted icons (assets/ui/icons) ----
+  const ICONP = 'assets/ui/icons/';
+  const ICONS = new Set('ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
+  const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
+  function iconHTML(ic) {
+    if (ic && ic.startsWith('i:')) {
+      const [n, lock] = ic.slice(2).split('|');
+      if (ICONS.has(n)) return `<img class="ico${lock ? ' locked' : ''}" src="${ICONP}${n}.png" alt="" draggable="false">` + (lock ? '<span class="lock">🔒</span>' : '');
+      return `<span class="glyph">${(G.UNITS[n] || G.BUILDINGS[n] || {}).icon || '?'}</span>`;
+    }
+    const n = EMOJI_ICON[ic];
+    return n ? `<img class="ico" src="${ICONP}${n}.png" alt="" draggable="false">` : `<span class="glyph">${ic}</span>`;
+  }
+  G.iconHTML = iconHTML;
+  function selIcon(e) {
+    if (e.kind === 'res') return iconHTML('i:' + { tree: 'wood', berry: 'food', gold: 'gold', stone: 'stone' }[e.type]);
+    return iconHTML('i:' + (e.type === 'villager' && e.sex === 'f' ? 'villager_f' : e.type));
+  }
+  function costTxt(c) { return Object.keys(c).map(k => `<img class="ci" src="${ICONP}${k}.png" alt="${k}">${c[k]}`).join(' '); }
   function btn(ic, lb, cs, fn, poor) {
     const b = document.createElement('button');
     b.className = 'cmd' + (poor ? ' poor' : '');
-    b.innerHTML = `<span class="ic">${ic}</span><span class="lb">${lb}</span>${cs ? `<span class="cs">${cs}</span>` : ''}`;
+    b.innerHTML = `<span class="ic">${iconHTML(ic)}</span><span class="lb">${lb}</span>${cs ? `<span class="cs">${cs}</span>` : ''}`;
     b.onclick = e => { e.stopPropagation(); fn(); };
     return b;
   }
@@ -385,19 +403,19 @@
     // info
     if (sel.length > 1) {
       const counts = {}; sel.forEach(u => counts[u.type] = (counts[u.type] || 0) + 1);
-      $('sel-icon').textContent = e.def.icon || '⚔️';
+      $('sel-icon').innerHTML = selIcon(e);
       $('sel-name').textContent = `${sel.length} selected`;
       $('sel-sub').textContent = Object.keys(counts).map(k => `${counts[k]} ${(G.UNITS[k] || G.BUILDINGS[k]).name}`).join(', ');
       const hp = sel.reduce((a, u) => a + u.hp, 0) / sel.reduce((a, u) => a + u.maxHp, 0);
       $('sel-hp').firstChild.style.width = (hp * 100) + '%';
       $('sel-hp').style.display = '';
     } else if (e.kind === 'res') {
-      $('sel-icon').textContent = { tree: '🌲', berry: '🫐', gold: '🪙', stone: '🪨' }[e.type];
+      $('sel-icon').innerHTML = selIcon(e);
       $('sel-name').textContent = e.def.name;
       $('sel-sub').textContent = `${Math.ceil(e.amount)} ${e.rtype} left`;
       $('sel-hp').style.display = 'none';
     } else {
-      $('sel-icon').textContent = e.def.icon || '?';
+      $('sel-icon').innerHTML = selIcon(e);
       const civ = G.CIVS[G.players[e.owner].civ].name;
       $('sel-name').textContent = e.def.name + (own ? '' : ` (${civ})`);
       let sub = `HP ${Math.ceil(e.hp)}/${e.maxHp}`;
@@ -425,7 +443,7 @@
       if (q.dataset.k !== key + e.id) {
         q.dataset.k = key + e.id; q.innerHTML = '';
         e.queue.forEach((it, i) => {
-          const d = document.createElement('button'); d.className = 'qitem'; d.innerHTML = G.UNITS[it.type].icon + (i === 0 ? '<span class="prog"></span>' : '');
+          const d = document.createElement('button'); d.className = 'qitem'; d.innerHTML = iconHTML('i:' + it.type) + (i === 0 ? '<span class="prog"></span>' : '');
           d.onclick = () => { G.cancelTrain(e, i); panelKey = ''; };
           q.appendChild(d);
         });
@@ -447,8 +465,8 @@
       if (vils.length && buildMenu) {
         for (const t of G.VIL_BUILDS) {
           const c = G.buildCost(1, t);
-          if (!G.canBuildType(1, t)) { cmds.appendChild(btn('🔒', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
-          cmds.appendChild(btn(G.BUILDINGS[t].icon, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
+          if (!G.canBuildType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
+          cmds.appendChild(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
         }
         cmds.appendChild(btn('↩', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
@@ -469,8 +487,8 @@
     if (e.kind === 'building' && e.built && e.def.trains) {
       for (const t of G.trainsFor(e)) {
         const c = G.unitCost(1, t);
-        if (!G.canTrainType(1, t)) { cmds.appendChild(btn('🔒', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
-        cmds.appendChild(btn(G.UNITS[t].icon, G.UNITS[t].name, costTxt(c), () => {
+        if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
+        cmds.appendChild(btn('i:' + t, G.UNITS[t].name, costTxt(c), () => {
           for (const b of sel) {
             const r = G.train(b, t);
             if (r === 'pop') { UI.alert('Need more houses!'); break; }
@@ -525,7 +543,7 @@
       $('r-pop').lastChild.textContent = `${pc.pop}/${pc.cap}`;
       $('r-pop').style.color = pc.pop >= pc.cap ? '#ff8a7a' : '';
       const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
-      $('clock').textContent = `${G.AGES[G.ageOf(1)].short} · ${m}:${String(s).padStart(2, '0')}`;
+      $('clock').innerHTML = `<b>${G.AGES[G.ageOf(1)].short}</b><span>${m}:${String(s).padStart(2, '0')}</span>`;
       const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
       refreshPanel(false);

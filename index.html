@@ -8,6 +8,8 @@
 <meta name="theme-color" content="#1b1610">
 <title>Dawn of Dynasties</title>
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,27 +18,27 @@
 <!-- HUD -->
 <div id="hud" class="hidden">
   <div id="topbar">
-    <div class="res" id="r-food"><span>🍖</span><b>0</b></div>
-    <div class="res" id="r-wood"><span>🪵</span><b>0</b></div>
-    <div class="res" id="r-gold"><span>🪙</span><b>0</b></div>
-    <div class="res" id="r-stone"><span>🪨</span><b>0</b></div>
-    <div class="res" id="r-pop"><span>👥</span><b>0/0</b></div>
+    <div class="res" id="r-food"><img src="assets/ui/icons/food.png" alt="food"><b>0</b></div>
+    <div class="res" id="r-wood"><img src="assets/ui/icons/wood.png" alt="wood"><b>0</b></div>
+    <div class="res" id="r-gold"><img src="assets/ui/icons/gold.png" alt="gold"><b>0</b></div>
+    <div class="res" id="r-stone"><img src="assets/ui/icons/stone.png" alt="stone"><b>0</b></div>
+    <div class="res" id="r-pop"><img src="assets/ui/icons/pop.png" alt="pop"><b>0/0</b></div>
     <div id="clock">0:00</div>
-    <button id="btn-menu" class="iconbtn" aria-label="Menu">☰</button>
+    <button id="btn-menu" class="iconbtn" aria-label="Menu"><img src="assets/ui/icons/gear.png" alt=""></button>
   </div>
 
   <div id="side">
-    <button id="btn-idle" class="sidebtn" aria-label="Next idle villager">👷<i id="idle-count">0</i></button>
-    <button id="btn-army" class="sidebtn" aria-label="Select army">⚔️</button>
-    <button id="btn-box" class="sidebtn" aria-label="Box select">⬚</button>
-    <button id="btn-home" class="sidebtn" aria-label="Go to Town Center">🏰</button>
+    <button id="btn-idle" class="sidebtn" aria-label="Next idle villager"><img src="assets/ui/icons/idle.png" alt=""><i id="idle-count">0</i></button>
+    <button id="btn-army" class="sidebtn" aria-label="Select army"><img src="assets/ui/icons/army.png" alt=""></button>
+    <button id="btn-box" class="sidebtn" aria-label="Box select"><img src="assets/ui/icons/box.png" alt=""></button>
+    <button id="btn-home" class="sidebtn" aria-label="Go to Town Center"><img src="assets/ui/icons/home.png" alt=""></button>
   </div>
 
   <canvas id="minimap" width="160" height="80"></canvas>
 
   <div id="panel" class="hidden">
     <div id="sel-info">
-      <div id="sel-icon">👷</div>
+      <div id="sel-icon"></div>
       <div id="sel-text"><div id="sel-name"></div><div id="sel-sub"></div><div id="sel-hp"><i></i></div></div>
     </div>
     <div id="queue"></div>
@@ -74,11 +76,12 @@
   <div class="sheet wide">
     <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Skirmish</h2></header>
     <div class="sheet-body two-col">
-      <section>
-        <h3>Players</h3>
+      <section class="frame">
+        <h3 class="ribbon">Players</h3>
         <div id="slots"></div>
       </section>
-      <section class="opts">
+      <section class="opts frame">
+        <h3 class="ribbon">Battle settings</h3>
         <div class="opt"><label>Map size</label><div class="seg" data-opt="size"><button data-v="small">Small</button><button data-v="medium" class="on">Medium</button><button data-v="large">Large</button></div></div>
         <div class="opt"><label>Starting resources</label><div class="seg" data-opt="res"><button data-v="standard" class="on">Standard</button><button data-v="medium">Medium</button><button data-v="high">High</button></div></div>
         <div class="opt"><label>Population limit</label><div class="seg" data-opt="pop"><button data-v="50">50</button><button data-v="100">100</button><button data-v="150">150</button><button data-v="200" class="on">200</button></div></div>
@@ -86,7 +89,7 @@
         <p class="hint" id="rule-hint"></p>
       </section>
     </div>
-    <footer class="sheet-foot"><button id="btn-start" class="play">Start battle</button></footer>
+    <footer class="sheet-foot"><button id="btn-start" class="play grand">Start Battle</button></footer>
   </div>
 </div>
 
