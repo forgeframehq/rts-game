@@ -1,0 +1,114 @@
+{
+ "height": 110,
+ "frame": 256,
+ "model": "knight_rig.glb",
+ "mount": true,
+ "clipsUrl": [
+  "villager_m_anim.glb",
+  "villager_m_anim2.glb",
+  "combat_anim.glb",
+  "sit_anim.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Chair_Sit_Idle_M",
+   "upper": "Chair_Sit_Idle_M",
+   "gait": "gallop",
+   "frames": 8,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "stride": 1.6
+  },
+  {
+   "name": "idle",
+   "clip": "Chair_Sit_Idle_M",
+   "upper": "Chair_Sit_Idle_M",
+   "gait": "idle",
+   "frames": 12,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "clip": "Chair_Sit_Idle_M",
+   "upper": "Right_Hand_Sword_Slash",
+   "gait": "attack",
+   "frames": 10,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Chair_Sit_Idle_M",
+   "upper": "Chair_Sit_Idle_M",
+   "gait": "death",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "hit",
+   "clip": "Chair_Sit_Idle_M",
+   "upper": "Hit_Reaction_1",
+   "gait": "idle",
+   "frames": 8,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "start": 0.0,
+   "end": 0.8,
+   "lockRoot": true
+  }
+ ],
+ "horse": {
+  "barding": 0,
+  "coat": 11105340,
+  "mane": 4863264
+ }
+}

@@ -54,6 +54,7 @@ G.UNITS = {
   spearman: { name: 'Spearman', cost: { food: 35, wood: 25 }, time: 11, hp: 45, atk: 4, range: 0.7, rate: 2, armor: 0, pierce: 0, speed: 1.5, los: 4, icon: '🔱', cls: 'inf', bonus: { cav: 15 } },
   archer:   { name: 'Archer', cost: { wood: 25, gold: 45 }, time: 14, hp: 30, atk: 4, range: 4, rate: 2, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🏹', cls: 'arc', ranged: true, bonus: { inf: 2 } },
   longbowman: { name: 'Longbowman', cost: { wood: 35, gold: 40 }, time: 15, hp: 35, atk: 6, range: 5, rate: 2, armor: 0, pierce: 1, speed: 1.4, los: 7, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 2 } },
+  scout:    { name: 'Scout Rider', cost: { food: 80 }, time: 30, hp: 45, atk: 3, range: 0.7, rate: 2, armor: 0, pierce: 2, speed: 3.2, los: 11, icon: '🏇', cls: 'cav', bonus: { mon: 6 } },
   knight:   { name: 'Knight', cost: { food: 60, gold: 75 }, time: 18, hp: 100, atk: 10, range: 0.7, rate: 1.8, armor: 2, pierce: 2, speed: 2.4, los: 5, icon: '🐎', cls: 'cav' },
   // ---- unique units (one per dynasty, trained at the Castle) ----
   axethrower: { name: 'Axe Thrower', cost: { food: 55, gold: 25 }, time: 15, hp: 50, atk: 7, range: 3, rate: 2, armor: 1, pierce: 1, speed: 1.5, los: 6, icon: '🪓', cls: 'inf', ranged: true, bonus: { bld: 4 } },
@@ -62,6 +63,7 @@ G.UNITS = {
   // ---- siege: shared by every dynasty. siege:true means the full attack lands on
   // buildings instead of the single point a bow would do, so walls actually come down.
   ram:        { name: 'Battering Ram', cost: { wood: 160 }, time: 36, hp: 175, atk: 2, range: 0.6, rate: 5, armor: 0, pierce: 10, speed: 0.55, los: 3, icon: '🐏', cls: 'sie', siege: true, bonus: { bld: 48 } },
+  monk:       { name: 'Monk', cost: { gold: 100 }, time: 25, hp: 30, atk: 0, range: 0, rate: 2, armor: 0, pierce: 0, speed: 1.0, los: 9, icon: '✝️', cls: 'mon', heal: 2.0, healRange: 4 },
   trebuchet:  { name: 'Trebuchet', cost: { wood: 200, gold: 160 }, time: 50, hp: 150, atk: 10, range: 12, rate: 10, armor: 1, pierce: 2, speed: 0.5, los: 14, icon: '🪨', cls: 'sie', ranged: true, siege: true, bonus: { bld: 190 } }
 };
 
@@ -75,8 +77,9 @@ G.BUILDINGS = {
   farm:       { name: 'Farm', cost: { wood: 60 }, time: 10, hp: 480, size: 2, los: 1, farm: 175, reseed: 25, icon: '🟫' },
   barracks:   { name: 'Barracks', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['militia','spearman'], icon: '⚔️' },
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
-  stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['knight'], icon: '🐎' },
+  stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['scout','knight'], icon: '🐎' },
   blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
+  monastery:  { name: 'Monastery', cost: { wood: 175 }, time: 40, hp: 1050, size: 3, los: 6, trains: ['monk'], icon: '✝️' },
   siegeworkshop: { name: 'Siege Workshop', cost: { wood: 200 }, time: 40, hp: 1050, size: 3, los: 5, trains: ['ram','trebuchet'], icon: '⚙️' },
   castle:     { name: 'Castle', cost: { stone: 350 }, time: 80, hp: 3000, size: 4, los: 9, garrison: 20, atk: 11, range: 8, rate: 2, icon: '🏯' },
   tower:      { name: 'Watch Tower', cost: { wood: 25, stone: 125 }, time: 40, hp: 1020, size: 1, los: 8, atk: 5, range: 7, rate: 2, icon: '🗼' }
@@ -85,11 +88,11 @@ G.BUILDINGS = {
 G.AGES = [
   null,
   { name: 'Dark Age', short: 'Dark' },
-  { name: 'Feudal Age', short: 'Feudal', cost: { food: 500 }, time: 45, needs: ['mill', 'lumbercamp', 'miningcamp', 'barracks'], bonus: 'Unlocks Archery Range, Stable, Watch Tower, Spearman, Archer' },
-  { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Castle, Siege Workshop, Knight, Battering Ram and unique units. All soldiers +1 attack' },
+  { name: 'Feudal Age', short: 'Feudal', cost: { food: 500 }, time: 45, needs: ['mill', 'lumbercamp', 'miningcamp', 'barracks'], bonus: 'Unlocks Archery Range, Stable, Watch Tower, Spearman, Archer, Scout Rider' },
+  { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Castle, Siege Workshop, Monastery, Knight, Battering Ram, Monk and unique units. All soldiers +1 attack' },
   { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['castle'], bonus: 'Unlocks the Trebuchet. All soldiers +1 attack, +1 armor. Buildings +20% HP' }
 ];
-G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3 };
+G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3, monastery: 3 };
 // ---- Unit upgrade lines (AoE2): researched at a building, upgrade every unit of that line ----
 // stats are the unit's new values (any field of G.UNITS); tier picks the upgraded look.
 G.UPGRADES = {
@@ -116,8 +119,8 @@ G.TECHS = {
   scalemail:   { name: 'Scale Mail',   icon: 'garrison', age: 2, cost: { food: 100 },             time: 30, eff: { armor: 1 } },
   chainmail:   { name: 'Chain Mail',   icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail' }
 };
-G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, ram: 3, trebuchet: 4 };
-G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','siegeworkshop','castle','tower','towncenter'];
+G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, ram: 3, trebuchet: 4, monk: 3 };
+G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','siegeworkshop','monastery','castle','tower','towncenter'];
 
 G.RES = {
   tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },

@@ -283,7 +283,7 @@
     });
   };
   G.cmdAttack = function (units, t) {
-    for (const u of units) if (u.kind === 'unit') { u.task = { t: 'attack', id: t.id, forced: true }; u.path = []; u.pathFor = 0; }
+    for (const u of units) if (u.kind === 'unit' && !u.def.heal) { u.task = { t: 'attack', id: t.id, forced: true }; u.path = []; u.pathFor = 0; }
   };
   G.cmdGather = function (units, r) {
     for (const u of units) if (u.type === 'villager') { u.task = { t: 'gather', id: r.id, rtype: r.type, lx: r.x, ly: r.y }; u.path = []; u.pathFor = 0; }
@@ -438,7 +438,7 @@
     if (t.hp <= 0) { if (att.owner > 0) G.players[att.owner].killed++; G.kill(t); return; }
     // Retaliate / alert
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
-      if (t.type !== 'villager') t.task = { t: 'attack', id: att.id };
+      if (t.type !== 'villager' && !t.def.heal) t.task = { t: 'attack', id: att.id };
       else if (att.kind === 'unit' && att.def.cls !== 'cav' && t.hp < t.maxHp * 0.4) {
         // flee toward town center
         const tc = nearest(t, e => e.type === 'towncenter' && e.owner === t.owner && e.built);
@@ -607,6 +607,22 @@
       const tc = nearest(u, e => e.type === 'towncenter' && e.owner === u.owner && e.built, 6);
       if (tc) u.hp = Math.min(u.maxHp, u.hp + dt * 0.8);
     }
+    // A Monk tends the nearest wounded man he can reach, as long as he is standing still:
+    // he picks one and stays with him until he is whole, rather than flitting between them.
+    if (u.def.heal && !u.path.length) {
+      let t = u.healing && G.byId.get(u.healing);
+      if (!t || t.dead || t.hp >= t.maxHp || G.dist(u, t) > u.def.healRange) {
+        t = nearest(u, e => e.kind === 'unit' && e !== u && e.owner === u.owner
+          && e.hp < e.maxHp && !e.def.heal, u.def.healRange);
+        u.healing = t ? t.id : 0;
+      }
+      if (t) {
+        u.working = true;
+        t.hp = Math.min(t.maxHp, t.hp + dt * u.def.heal);
+        u.healT = (u.healT || 0) - dt;
+        if (u.healT <= 0) { u.healT = 0.5; G.effects.push({ t: 'heal', x: t.x, y: t.y, life: 0.6 }); }
+      }
+    }
     const task = u.task;
     switch (task.t) {
       case 'idle': {
@@ -638,7 +654,7 @@
         const t = G.byId.get(task.id);
         if (!t || t.dead) {
           // look for another enemy nearby
-          const n = u.type === 'villager' ? null : nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);
+          const n = (u.type === 'villager' || u.def.heal) ? null : nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);
           if (n) u.task = { t: 'attack', id: n.id, home: task.home }; else u.task = { t: 'idle' };
           u.path = [];
           break;

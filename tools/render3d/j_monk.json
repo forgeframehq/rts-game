@@ -1,0 +1,87 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "villager_m_anim.glb",
+ "clipsUrl": [
+  "villager_m_anim2.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 12,
+   "lockRoot": true,
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "cross"
+    },
+    {
+     "bone": "Head",
+     "tool": "cowl",
+     "pos": [
+      0,
+      0.03,
+      0
+     ]
+    },
+    {
+     "bone": "Hips",
+     "tool": "habit"
+    }
+   ]
+  },
+  {
+   "name": "idle",
+   "clip": "Idle_02",
+   "frames": 16,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "cross"
+    },
+    {
+     "bone": "Head",
+     "tool": "cowl",
+     "pos": [
+      0,
+      0.03,
+      0
+     ]
+    },
+    {
+     "bone": "Hips",
+     "tool": "habit"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "cross"
+    },
+    {
+     "bone": "Head",
+     "tool": "cowl",
+     "pos": [
+      0,
+      0.03,
+      0
+     ]
+    },
+    {
+     "bone": "Hips",
+     "tool": "habit"
+    }
+   ]
+  }
+ ]
+}

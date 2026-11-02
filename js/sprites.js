@@ -191,6 +191,16 @@
       // hay
       ctx.fillStyle = '#e3c75d'; ctx.beginPath(); ctx.ellipse(-50, 12, 9, 6, 0, 0, 7); ctx.fill();
     },
+    // Anything without a drawer of its own — Blacksmith, Castle, Siege Workshop,
+    // Monastery — falls back to this, so a sprite that fails to load costs the player a
+    // plain building rather than a crash.
+    generic(ctx, c, _d, size) {
+      const hw = (size || 3) * TW / 2 - 8, h = 14 + (size || 3) * 5;
+      box(ctx, hw, h, STONE[0], STONE[1], STONE[2]); stoneTex(ctx, hw, h);
+      gable(ctx, hw - 4, h, 16 + (size || 3) * 3, sh(c, 0.7), sh(c, 0.55));
+      door(ctx, -4, h - 2, 12, 15);
+      flag(ctx, 0, -hw / 2 - h - 20, 12, c);
+    },
     tower(ctx, c) {
       const hw = TW / 2 - 6;
       box(ctx, hw, 64, STONE[0], STONE[1], STONE[2]); stoneTex(ctx, hw, 64);
@@ -209,7 +219,7 @@
     return make(key, w, h, w / 2, h - size * TH / 2 - 14, ctx => {
       // soft shadow
       ctx.fillStyle = 'rgba(0,0,0,0.18)'; diamond(ctx, size * TW / 2 + 2, size * TH / 2 + 1, -2); ctx.fill();
-      BDRAW[type](ctx, c, type === 'farm' ? { food: G.BUILDINGS.farm.farm * (1 - (farmStage || 0) / 3) } : null);
+      (BDRAW[type] || BDRAW.generic)(ctx, c, type === 'farm' ? { food: G.BUILDINGS.farm.farm * (1 - (farmStage || 0) / 3) } : null, size);
     });
   };
 
@@ -311,6 +321,18 @@
       ctx.fillStyle = '#4a4238'; ctx.fillRect(-3, 6, 6, 6);                        // counterweight
       ctx.restore();
       ctx.fillStyle = c; ctx.fillRect(-2.5, -23, 5, 2.5);
+    } else if (t === 'monk') {
+      // a robed figure with no legs showing, a tonsure, and a cross he raises as he heals
+      const sw = u.working ? (0.5 + 0.5 * Math.sin(G.time * 4 + u.id)) : 0;
+      ctx.fillStyle = '#6d5a3f';
+      ctx.beginPath(); ctx.moveTo(-5, -1); ctx.lineTo(-3.5, -15); ctx.lineTo(3.5, -15); ctx.lineTo(5, -1); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = c; ctx.fillRect(-4.2, -9, 8.4, 2.4);                       // girdle
+      ctx.fillStyle = '#e0b48a'; ctx.beginPath(); ctx.arc(0, -17.5, 2.9, 0, 7); ctx.fill();
+      ctx.fillStyle = '#8b7355'; ctx.beginPath(); ctx.arc(0, -18.6, 2.9, Math.PI, 0); ctx.fill();   // tonsure
+      ctx.strokeStyle = '#c9a65c'; ctx.lineWidth = 1.2;                           // cross
+      const cy = -13 - sw * 4;
+      ctx.beginPath(); ctx.moveTo(5.5, cy + 4); ctx.lineTo(5.5, cy - 4);
+      ctx.moveTo(3.4, cy - 1.6); ctx.lineTo(7.6, cy - 1.6); ctx.stroke();
     } else if (mnt) {
       // horse
       const b = step * 1.5;

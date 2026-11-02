@@ -24,7 +24,7 @@ STEMS = {
     "range": "archery_range", "stable": "stable", "mill": "mill",
     "lumbercamp": "lumber_camp", "miningcamp": "mining_camp", "farm": "farm",
     "farm_spent": "farm_spent", "tower": "watch_tower", "blacksmith": "blacksmith",
-    "castle": "castle", "siege_workshop": "siege_workshop",
+    "castle": "castle", "siege_workshop": "siege_workshop", "monastery": "monastery",
 }
 
 

@@ -112,6 +112,27 @@ const TOOLS = {
     } return g; },
   foodbasket() { const g = TOOLS.basket(); g.scale.setScalar(1.6);
     for (let i = 0; i < 7; i++) { const w = cyl(0.004, 0.09, WHEAT, 4); w.position.set(-0.03 + i * 0.01, 0.08, 0.01 * (i % 3)); w.rotation.z = (i - 3) * 0.08; g.add(w); } return g; },
+  // ---- the Monk: a habit, a thrown-back cowl and a processional cross, so the shared
+  // villager body serves as a monk without a model of its own ----
+  cross() { const g = new THREE.Group();   // tall enough to read at game zoom
+    const h = cyl(0.010, 0.60, DARKWOOD); h.position.y = 0.16; g.add(h);
+    const up = box(0.022, 0.20, 0.022, GOLD); up.position.y = 0.47; g.add(up);
+    const ar = box(0.115, 0.022, 0.022, GOLD); ar.position.y = 0.50; g.add(ar);
+    const boss = new THREE.Mesh(new THREE.SphereGeometry(0.019, 8, 6), GOLD); boss.position.y = 0.50; g.add(boss);
+    return g; },
+  cowl() { const g = new THREE.Group();   // a hood pushed back off the face, not a bag over it
+    const c = new THREE.Mesh(new THREE.SphereGeometry(0.079, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.55), M(0x6d5a3f, 0.95));
+    c.scale.set(1, 1.02, 1.2); c.position.set(0, 0.012, -0.022); g.add(c);
+    const roll = new THREE.Mesh(new THREE.TorusGeometry(0.072, 0.019, 6, 16), M(0x5d4c34, 0.95));
+    roll.rotation.x = Math.PI / 2; roll.position.set(0, -0.045, -0.035); g.add(roll);
+    return g; },
+  habit() { const g = new THREE.Group();
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.20, 0.58, 16, 1, true), M(0x6d5a3f, 0.95));
+    r.material.side = THREE.DoubleSide; r.position.y = -0.26; g.add(r);
+    const cord = new THREE.Mesh(new THREE.TorusGeometry(0.108, 0.009, 5, 18),
+      new THREE.MeshStandardMaterial({ color: 0xff00ff, roughness: 0.9 }));
+    cord.rotation.x = Math.PI / 2; g.add(cord);
+    return g; },
 };
 function attachProp(model, h, spec) {
   if (!spec) return null;

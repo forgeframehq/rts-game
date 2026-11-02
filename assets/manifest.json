@@ -1984,5 +1984,103 @@
   "fh": 69.09,
   "ax": 35.64,
   "ay": 59.75
+ },
+ "unit3d_western_scout_m_attack": {
+  "file": "assets/units/unit3d_western_scout_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 76.0,
+  "ax": 34.91,
+  "ay": 67.03
+ },
+ "unit3d_western_scout_m_death": {
+  "file": "assets/units/unit3d_western_scout_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 86.91,
+  "ax": 46.55,
+  "ay": 60.84
+ },
+ "unit3d_western_scout_m_hit": {
+  "file": "assets/units/unit3d_western_scout_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 66.18,
+  "ax": 35.64,
+  "ay": 56.84
+ },
+ "unit3d_western_scout_m_idle": {
+  "file": "assets/units/unit3d_western_scout_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 71.27,
+  "fh": 66.55,
+  "ax": 35.64,
+  "ay": 57.21
+ },
+ "unit3d_western_scout_m_walk": {
+  "file": "assets/units/unit3d_western_scout_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 71.27,
+  "ax": 36.73,
+  "ay": 58.66
+ },
+ "unit3d_britons_monk_m_death": {
+  "file": "assets/units/unit3d_britons_monk_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_britons_monk_m_idle": {
+  "file": "assets/units/unit3d_britons_monk_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 49.07,
+  "fh": 42.4,
+  "ax": 24.53,
+  "ay": 37.69
+ },
+ "unit3d_britons_monk_m_walk": {
+  "file": "assets/units/unit3d_britons_monk_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 33.07,
+  "fh": 46.4,
+  "ax": 16.53,
+  "ay": 37.42
+ },
+ "monastery": {
+  "file": "assets/monastery.png",
+  "size": 3,
+  "w": 192.75,
+  "h": 181.31,
+  "ax": 96.64,
+  "ay": 133.2
+ },
+ "eastasian_monastery": {
+  "file": "assets/eastasian_monastery.png",
+  "size": 3,
+  "w": 250.73,
+  "h": 215.82,
+  "ax": 114.73,
+  "ay": 167.57
  }
 }

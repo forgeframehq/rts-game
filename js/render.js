@@ -210,6 +210,13 @@
       } else if (f.t === 'text') {
         ctx.globalAlpha = Math.min(1, f.life); ctx.fillStyle = f.col; ctx.font = `bold ${12 * Math.max(0.8, z)}px sans-serif`; ctx.textAlign = 'center';
         ctx.fillText(f.text, s.x, s.y - (40 + (1.2 - f.life) * 25) * z); ctx.globalAlpha = 1;
+      } else if (f.t === 'heal') {
+        // a soft cross of light rising off the man being tended
+        const k = 1 - f.life / 0.6, a = (1 - k) * 0.85;
+        const y = s.y - (16 + k * 16) * z, r = 5 * z;
+        ctx.strokeStyle = `rgba(255,244,190,${a})`; ctx.lineWidth = 2.2 * z;
+        ctx.beginPath(); ctx.moveTo(s.x, y - r); ctx.lineTo(s.x, y + r);
+        ctx.moveTo(s.x - r * 0.62, y - r * 0.25); ctx.lineTo(s.x + r * 0.62, y - r * 0.25); ctx.stroke();
       } else if (f.t === 'ping') {
         const k = 1 - f.life / 0.6;
         ctx.strokeStyle = f.col; ctx.lineWidth = 2; ctx.globalAlpha = 1 - k;
