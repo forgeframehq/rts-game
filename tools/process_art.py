@@ -33,9 +33,11 @@ ASSETS = {
     'farm': ('farm', 2, 1.0),
     'watch_tower': ('tower', 1, 1.0),
     'blacksmith': ('blacksmith', 3, 1.0),
+    'castle': ('castle', 4, 1.0),
     'construction_site_1x1': ('fnd_1', 1, 1.0),
     'construction_site_2x2': ('fnd_2', 2, 1.0),
     'construction_site_3x3': ('fnd_3', 3, 1.0),
+    'construction_site_4x4': ('fnd_4', 4, 1.0),
 }
 
 

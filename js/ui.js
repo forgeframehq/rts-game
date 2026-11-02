@@ -420,7 +420,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('blacksmith ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith castle ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {
@@ -526,9 +526,19 @@
         return;
       }
       if (vils.length) cmds.appendChild(btn('🔨', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
-      if (vils.length) cmds.appendChild(btn('🛡️', 'Garrison', 'Town Center', () => {
-        for (const v of vils) { const tc = G.nearest(v, e => e.type === 'towncenter' && G.canGarrison(v, e)); if (tc) G.garrisonTo(v, tc); else { UI.alert('No room in a Town Center'); break; } }
-      }));
+      // villagers shelter in a Town Center or Castle; soldiers only in a Castle
+      const canHide = units.filter(u => G.ents.some(e => !e.dead && e.owner === 1 && G.canGarrison(u, e)));
+      if (canHide.length) {
+        const hasCastle = G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'castle' && e.built);
+        cmds.appendChild(btn('🛡️', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager') ? 'Castle' : 'Town Center', () => {
+          let full = 0;
+          for (const u of canHide) {
+            const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter') && G.canGarrison(u, e));
+            if (b) G.garrisonTo(u, b); else full++;
+          }
+          if (full) UI.alert(hasCastle ? 'No room left inside' : 'No room in a Town Center');
+        }));
+      }
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }

@@ -28,8 +28,12 @@
     if (!next) return 'Max Age';
     if (G.ents.some(e => e.owner === p && e.aging && !e.dead)) return 'Advancing…';
     const have = new Set(G.ents.filter(e => !e.dead && e.owner === p && e.kind === 'building' && e.built).map(e => e.type));
+    // most Ages ask for any 2 of a list; an Age may also name a single building (Imperial wants a Castle)
+    const want = Math.min(2, next.needs.length);
     const got = next.needs.filter(t => have.has(t)).length;
-    if (got < 2) return `Needs 2 of: ${next.needs.map(t => G.BUILDINGS[t].name).join(', ')}`;
+    if (got < want) return next.needs.length === 1
+      ? `Needs a ${G.BUILDINGS[next.needs[0]].name}`
+      : `Needs ${want} of: ${next.needs.map(t => G.BUILDINGS[t].name).join(', ')}`;
     if (tc && tc.queue.length) return 'Town Center busy';
     return null;
   };
@@ -180,7 +184,10 @@
 
   // ---- Garrison (AoE2-style): villagers shelter in their Town Center, each one adds an arrow ----
   G.GARRISON_MAX = 15;
-  G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner && u.type === 'villager'
+  // Villagers shelter anywhere that takes a garrison; a Castle takes soldiers too,
+  // and every unit inside adds an arrow to what the building shoots.
+  G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner
+    && (u.type === 'villager' || b.type === 'castle')
     && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
   G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
   G.ringBell = function (owner) {
@@ -299,6 +306,8 @@
       if (u.dead || u.kind !== 'unit' || u === except) continue;
       if (u.task.t === 'farm' && u.task.id === f.id) return true;
       if (u.task.t === 'build' && u.task.id === f.id && u.task.then === 'farm') return true;
+      // still theirs while they walk a full load back to the mill
+      if (u.task.t === 'return' && u.task.back && u.task.back.t === 'farm' && u.task.back.id === f.id) return true;
     }
     return false;
   };

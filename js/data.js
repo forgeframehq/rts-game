@@ -16,7 +16,7 @@ G.CIVS = {
     name: 'Britons', color: '#2f6fd6',
     desc: 'Archer civ. Archers +1 range and 20% cheaper. Town Center works 15% faster.',
     mods: { archerRange: 1, archerCost: 0.8, tcSpeed: 1.15 },
-    unique: { type: 'longbowman', at: 'range', text: 'Longbowman — trained at the Archery Range. Out-ranges every other archer (5 tiles, +1 from the Britons bonus) and hits harder. The bowmen of Crécy and Agincourt.' }
+    unique: { type: 'longbowman', at: 'castle', text: 'Longbowman — trained at the Castle. Out-ranges every other archer (5 tiles, +1 from the Britons bonus) and hits harder. The bowmen of Crécy and Agincourt.' }
   },
   franks: {
     role: "Cavalry",
@@ -66,6 +66,7 @@ G.BUILDINGS = {
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['knight'], icon: '🐎' },
   blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
+  castle:     { name: 'Castle', cost: { stone: 350 }, time: 80, hp: 3000, size: 4, los: 9, garrison: 20, atk: 11, range: 8, rate: 2, icon: '🏯' },
   tower:      { name: 'Watch Tower', cost: { wood: 25, stone: 125 }, time: 40, hp: 1020, size: 1, los: 8, atk: 5, range: 7, rate: 2, icon: '🗼' }
 };
 // ---- Ages (AoE2): advance at the Town Center. Each Age needs 2 buildings from the previous one. ----
@@ -74,9 +75,9 @@ G.AGES = [
   { name: 'Dark Age', short: 'Dark' },
   { name: 'Feudal Age', short: 'Feudal', cost: { food: 500 }, time: 45, needs: ['mill', 'lumbercamp', 'miningcamp', 'barracks'], bonus: 'Unlocks Archery Range, Stable, Watch Tower, Spearman, Archer' },
   { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Knight and unique units. All soldiers +1 attack' },
-  { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['range', 'stable', 'tower', 'barracks'], bonus: 'All soldiers +1 attack, +1 armor. Buildings +20% HP' }
+  { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['castle'], bonus: 'All soldiers +1 attack, +1 armor. Buildings +20% HP' }
 ];
-G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2 };
+G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3 };
 // ---- Unit upgrade lines (AoE2): researched at a building, upgrade every unit of that line ----
 // stats are the unit's new values (any field of G.UNITS); tier picks the upgraded look.
 G.UPGRADES = {
@@ -87,7 +88,7 @@ G.UPGRADES = {
   halberdier:   { name: 'Halberdier',      line: 'spearman',   tier: 2, at: 'barracks', age: 4, cost: { food: 300, gold: 600 },  time: 50, stats: { hp: 60, atk: 6, bonus: { cav: 32 } } },
   crossbow:     { name: 'Crossbowman',     line: 'archer',     tier: 1, at: 'range',    age: 3, cost: { food: 125, gold: 75 },   time: 35, stats: { hp: 35, atk: 5 } },
   arbalester:   { name: 'Arbalester',      line: 'archer',     tier: 2, at: 'range',    age: 4, cost: { food: 350, gold: 300 },  time: 50, stats: { hp: 40, atk: 6, range: 5 } },
-  elitelongbow: { name: 'Elite Longbowman',line: 'longbowman', tier: 1, at: 'range',    age: 4, cost: { food: 850, gold: 850 },  time: 50, stats: { hp: 40, atk: 7, range: 6 } },
+  elitelongbow: { name: 'Elite Longbowman',line: 'longbowman', tier: 1, at: 'castle',   age: 4, cost: { food: 850, gold: 850 },  time: 50, stats: { hp: 40, atk: 7, range: 6 } },
   cavalier:     { name: 'Cavalier',        line: 'knight',     tier: 1, at: 'stable',   age: 4, cost: { food: 300, gold: 300 },  time: 50, stats: { hp: 120, atk: 12 } },
   paladin:      { name: 'Paladin',         line: 'knight',     tier: 2, at: 'stable',   age: 4, cost: { food: 1300, gold: 750 }, time: 60, stats: { hp: 160, atk: 14, armor: 3, pierce: 3 } }
 };
@@ -101,7 +102,7 @@ G.TECHS = {
   chainmail:   { name: 'Chain Mail',   icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail' }
 };
 G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3 };
-G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','tower','towncenter'];
+G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','castle','tower','towncenter'];
 
 G.RES = {
   tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },

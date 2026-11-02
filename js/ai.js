@@ -70,8 +70,11 @@ G.makeAI = function () {
 
     // --- Ages: advance once the economy is big enough (pauses villager training, like a real player) ---
     const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 17, 22, 28];
+    // how big an economy to want before advancing — never more villagers than this level
+    // will ever train, or an easier opponent waits for an economy it cannot build and stalls
+    const ageVils = n => Math.min(AGE_VILS[n] || 0, AI.cfg.maxVils);
     let saving = false;
-    if (tc && tc.built && nxt && !tc.aging && vils.length >= AGE_VILS[age + 1] && !G.ageBlock(p, null)) {
+    if (tc && tc.built && nxt && !tc.aging && vils.length >= ageVils(age + 1) && !G.ageBlock(p, null)) {
       saving = true;
       if (!tc.queue.length && G.canAfford(p, nxt.cost)) G.advanceAge(tc);
     }
@@ -84,10 +87,12 @@ G.makeAI = function () {
 
     // --- buildings the next Age needs: build the cheapest missing one ---
     const blk = nxt && G.ageBlock(p, null);
-    if (blk && blk.startsWith('Needs') && vils.length >= AGE_VILS[age + 1] - 2) {
+    if (blk && blk.startsWith('Needs')) {
       const cost = t => Object.values(G.buildCost(p, t)).reduce((a, b) => a + b, 0);
       const t = nxt.needs.filter(t => !has(t) && G.canBuildType(p, t)).sort((a, b) => cost(a) - cost(b))[0];
-      if (t) {
+      // build it once the economy is big enough, or the moment it is simply affordable —
+      // waiting on a villager count this level never reaches would stall the Age forever
+      if (t && (vils.length >= ageVils(age + 1) - 2 || G.canAfford(p, G.buildCost(p, t)))) {
         const near = { mill: 'berry', lumbercamp: 'tree', miningcamp: 'gold' }[t];
         const r = near && G.nearest(home, e => e.kind === 'res' && e.type === near, 22);
         build(t, r ? r.x : home.x, r ? r.y : home.y, r ? 1 : 5, 2);
@@ -98,7 +103,9 @@ G.makeAI = function () {
     else if (vils.length >= 15 && hasBuilt('barracks') && !has('range')) build('range', home.x, home.y, 5, 2);
     else if (vils.length >= 16 && hasBuilt('range') && !has('blacksmith')) build('blacksmith', home.x, home.y, 6, 2);
     else if (vils.length >= 20 && hasBuilt('range') && !has('stable')) build('stable', home.x, home.y, 6, 2);
-    else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2 && R.stone > 200) build('tower', home.x, home.y, 6, 1);
+    // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
+    else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
+             && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);
     // research: unit upgrades and blacksmith techs when there is spare food/gold (never while saving for an Age)
     if (!saving && vils.length >= 16) for (const b of blds) {
       if (!b.built || b.research || (b.queue && b.queue.length)) continue;
@@ -146,6 +153,14 @@ G.makeAI = function () {
       : vils.length < 18 ? { food: 0.45, wood: 0.35, gold: 0.2, stone: 0 }
       : { food: 0.4, wood: 0.3, gold: 0.22, stone: 0.08 };
     if (saving) for (const k in nxt.cost) if (R[k] < nxt.cost[k]) want[k] = (want[k] || 0) + 0.25;   // gather what the Age costs
+    // gather what a missing Age-requirement building costs too — the Castle is a lot of stone,
+    // and nothing else in the build order sends villagers to the quarry in bulk. Only while the
+    // Age is actually held up by a building, or it would mine stone forever for a tower it doesn't need.
+    if (blk && blk.startsWith('Needs')) for (const t of nxt.needs) {
+      if (has(t) || !G.canBuildType(p, t)) continue;
+      const c = G.buildCost(p, t);
+      for (const k in c) if (R[k] < c[k]) want[k] = (want[k] || 0) + 0.3;
+    }
     for (const v of vils) {
       if (v.task.t !== 'idle') continue;
       let best = 'food', bestGap = -1e9;
@@ -170,7 +185,7 @@ G.makeAI = function () {
 
     // --- army production ---
     const reserve = saving ? 1e9 : vils.length < AI.cfg.maxVils ? 60 : 0;   // while saving for an Age, keep the food
-    const needBld = nxt && G.ageBlock(p, null) && G.ageBlock(p, null).startsWith('Needs') && vils.length >= AGE_VILS[age + 1] ? 180 : 0;
+    const needBld = nxt && G.ageBlock(p, null) && G.ageBlock(p, null).startsWith('Needs') && vils.length >= ageVils(age + 1) ? 180 : 0;
     if (army.length < AI.cfg.armyCap && pop < cap) {
       for (const b of blds) {
         if (!b.built || !b.def.trains || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
