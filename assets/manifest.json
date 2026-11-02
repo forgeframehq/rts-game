@@ -2415,5 +2415,101 @@
   "fh": 50.67,
   "ax": 17.87,
   "ay": 41.69
+ },
+ "house_dark": {
+  "file": "assets/house_dark.png",
+  "size": 2,
+  "w": 146.78,
+  "h": 134.06,
+  "ax": 70.97,
+  "ay": 101.76
+ },
+ "towncenter_dark": {
+  "file": "assets/towncenter_dark.png",
+  "size": 3,
+  "w": 295.62,
+  "h": 255.39,
+  "ax": 170.67,
+  "ay": 207.09
+ },
+ "barracks_dark": {
+  "file": "assets/barracks_dark.png",
+  "size": 3,
+  "w": 241.79,
+  "h": 214.83,
+  "ax": 136.32,
+  "ay": 166.59
+ },
+ "mill_dark": {
+  "file": "assets/mill_dark.png",
+  "size": 2,
+  "w": 154.83,
+  "h": 182.06,
+  "ax": 77.12,
+  "ay": 149.66
+ },
+ "mediterranean_house_dark": {
+  "file": "assets/mediterranean_house_dark.png",
+  "size": 2,
+  "w": 132.05,
+  "h": 98.67,
+  "ax": 67.9,
+  "ay": 66.53
+ },
+ "mediterranean_towncenter_dark": {
+  "file": "assets/mediterranean_towncenter_dark.png",
+  "size": 3,
+  "w": 247.52,
+  "h": 180.95,
+  "ax": 142.78,
+  "ay": 132.69
+ },
+ "mediterranean_barracks_dark": {
+  "file": "assets/mediterranean_barracks_dark.png",
+  "size": 3,
+  "w": 213.33,
+  "h": 154.83,
+  "ax": 111.62,
+  "ay": 106.61
+ },
+ "mediterranean_mill_dark": {
+  "file": "assets/mediterranean_mill_dark.png",
+  "size": 2,
+  "w": 139.31,
+  "h": 102.7,
+  "ax": 75.16,
+  "ay": 70.55
+ },
+ "eastasian_house_dark": {
+  "file": "assets/eastasian_house_dark.png",
+  "size": 2,
+  "w": 139.95,
+  "h": 135.54,
+  "ax": 70.42,
+  "ay": 103.39
+ },
+ "eastasian_towncenter_dark": {
+  "file": "assets/eastasian_towncenter_dark.png",
+  "size": 3,
+  "w": 212.11,
+  "h": 156.86,
+  "ax": 108.07,
+  "ay": 108.65
+ },
+ "eastasian_barracks_dark": {
+  "file": "assets/eastasian_barracks_dark.png",
+  "size": 3,
+  "w": 239.35,
+  "h": 198.42,
+  "ax": 117.65,
+  "ay": 149.71
+ },
+ "eastasian_mill_dark": {
+  "file": "assets/eastasian_mill_dark.png",
+  "size": 2,
+  "w": 145.58,
+  "h": 165.83,
+  "ax": 73.17,
+  "ay": 133.64
  }
 }

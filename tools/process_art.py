@@ -122,8 +122,9 @@ def keep_source(path, keep_dir, stem):
     bg.save(os.path.join(keep_dir, stem + '.jpg'), quality=88, optimize=True)
 
 
-def process(src_dir, repo, region=None):
+def process(src_dir, repo, region=None, tier=None):
     pre = region + '_' if region else ''
+    suf = '_' + tier if tier else ''   # Age tier: house_dark, mediterranean_mill_dark
     out_dir = os.path.join(repo, 'assets')
     keep = os.path.join(out_dir, 'source', region) if region else os.path.join(out_dir, 'source')
     os.makedirs(keep, exist_ok=True)
@@ -133,7 +134,7 @@ def process(src_dir, repo, region=None):
         path = os.path.join(src_dir, stem + '.png')
         if not os.path.exists(path):
             continue
-        keep_source(path, keep, stem)
+        keep_source(path, keep, stem + suf)
         im = Image.open(path).convert('RGBA')
         a = np.array(im)
         if a[..., 3].min() == 255 or (a[..., 3] == 255).mean() > 0.97:
@@ -156,20 +157,21 @@ def process(src_dir, repo, region=None):
         disp_scale = size * TW * fudge / best_w  # display px per source px
         ow, oh = max(1, round(w * disp_scale * OUT_SCALE)), max(1, round(h * disp_scale * OUT_SCALE))
         out = Image.fromarray(a).resize((ow, oh), Image.LANCZOS)
-        fname = pre + key + '.png'
+        fname = pre + key + suf + '.png'
         out.save(os.path.join(out_dir, fname), optimize=True)
-        manifest[pre + key] = {
+        manifest[pre + key + suf] = {
             'file': 'assets/' + fname,
             'size': size,
             'w': round(w * disp_scale, 2), 'h': round(h * disp_scale, 2),
             'ax': round(cx * disp_scale, 2), 'ay': round(ground_y * disp_scale, 2),
         }
-        print(f'{pre + key:24s} {ow}x{oh}  footprint {best_w}px of {w}px')
-    if not region:          # trees, ore and bushes are shared by every region
+        print(f'{pre + key + suf:24s} {ow}x{oh}  footprint {best_w}px of {w}px')
+    if not region and not tier:   # trees, ore and bushes are shared by every region
         process_spec(src_dir, out_dir, keep, manifest)
     json.dump(manifest, open(manifest_path, 'w'), indent=1)
 
 
 if __name__ == '__main__':
     process(sys.argv[1], os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            sys.argv[2] if len(sys.argv) > 2 else None)
+            sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] != '-' else None,
+            sys.argv[3] if len(sys.argv) > 3 else None)

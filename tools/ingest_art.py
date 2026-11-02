@@ -28,22 +28,26 @@ STEMS = {
 }
 
 
+TIERS = ["dark", "feudal", "castle", "imp"]   # Age tiers; a plain name is the default look
+
+
 def main(src):
     stage = os.path.join(src, "_stage")
     shutil.rmtree(stage, ignore_errors=True)
-    for pre, region in REGIONS.items():
-        d = os.path.join(stage, region or "western")
-        os.makedirs(d, exist_ok=True)
-        n = 0
-        for gen, stem in STEMS.items():
-            f = os.path.join(src, f"{pre}_{gen}.png")
-            if os.path.exists(f):
-                shutil.copy(f, os.path.join(d, stem + ".png")); n += 1
-        if not n:
-            continue
-        print(f"{region or 'western'}: {n} file(s)")
-        cmd = [sys.executable, os.path.join(HERE, "process_art.py"), d] + ([region] if region else [])
-        subprocess.run(cmd, cwd=REPO, check=True)
+    for tier in [None] + TIERS:
+        for pre, region in REGIONS.items():
+            d = os.path.join(stage, (region or "western") + ("_" + tier if tier else ""))
+            os.makedirs(d, exist_ok=True)
+            n = 0
+            for gen, stem in STEMS.items():
+                f = os.path.join(src, f"{pre}_{gen}" + (f"_{tier}" if tier else "") + ".png")
+                if os.path.exists(f):
+                    shutil.copy(f, os.path.join(d, stem + ".png")); n += 1
+            if not n:
+                continue
+            print(f"{region or 'western'}{'/' + tier if tier else ''}: {n} file(s)")
+            cmd = [sys.executable, os.path.join(HERE, "process_art.py"), d, region or "-"] + ([tier] if tier else [])
+            subprocess.run(cmd, cwd=REPO, check=True)
 
 
 if __name__ == "__main__":

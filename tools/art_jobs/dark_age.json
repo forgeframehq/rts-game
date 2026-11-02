@@ -1,0 +1,67 @@
+{
+ "out": "build/art/dark_age",
+ "jobs": [
+  [
+   "w_house_dark",
+   "house",
+   "Rebuild this as a Dark Age Anglo-Saxon peasant dwelling: a steep roof of thick golden thatch sweeping almost to the ground, walls of wattle and daub (mud plaster over woven hazel) between rough unsquared oak posts, a plain plank door, no glazed windows, a low turf bank around the base, firewood stacked against one wall. Poorer and rougher than the reference. No cut stone, no brick, no roof tiles, no neat half-timbering."
+  ],
+  [
+   "w_town_center_dark",
+   "town_center",
+   "Rebuild this as a Dark Age Saxon chieftain's mead hall: one long timber hall under a steep thatched roof, walls of rough vertical oak planks, carved beast-head finials on the gable ends, a plank door under a small porch on two posts, woodsmoke rising from a roof louvre, a hitching rail outside. No cut stone, no masonry tower, no roof tiles, no plaster."
+  ],
+  [
+   "w_barracks_dark",
+   "barracks",
+   "Rebuild this as a Dark Age Saxon warrior hall: a low thatched longhouse of rough timber planks, round wooden shields hung along the wall, a rack of ash spears by the door, a muddy yard with a scarred sparring post. No cut stone, no masonry, no roof tiles."
+  ],
+  [
+   "w_mill_dark",
+   "mill",
+   "Rebuild this as a Dark Age Saxon granary: a small thatched timber store raised on staddle stones with a plank ladder up to its door, rough log walls, sheaves of straw and a hand quern beside it, a wicker basket of grain. No windmill, no canvas sails, no masonry tower, no roof tiles."
+  ],
+
+  [
+   "med_house_dark",
+   "house",
+   "Rebuild this as a Dark Age Greek peasant house: rough undressed fieldstone walls laid in mud mortar, a flat roof of reeds and packed clay over timber beams, a plain timber door, one small square unglazed window, clay storage jars and a woodpile outside. Poorer and rougher than the reference. No whitewashed plaster, no terracotta barrel tiles, no dressed stone, no arches, no columns."
+  ],
+  [
+   "med_town_center_dark",
+   "town_center",
+   "Rebuild this as a Dark Age Greek village hall: a plain rectangular hall of rough fieldstone and mud-brick under a low timber-and-reed roof, a simple porch on rough posts, a small wooden cross over the door, a stone well beside it. No dome, no banded brick courses, no marble columns, no arcade, no mosaic, no tiled roof."
+  ],
+  [
+   "med_barracks_dark",
+   "barracks",
+   "Rebuild this as a Dark Age Greek muster hall: rough fieldstone and mud-brick walls under a flat reed-and-clay roof, spears and oval shields propped against the wall, a dirt yard with a straw target. No arches, no tiled roof, no dressed stone."
+  ],
+  [
+   "med_mill_dark",
+   "mill",
+   "Rebuild this as a Dark Age Greek granary: a squat store of rough fieldstone under a flat reed-and-clay roof, a timber door, woven baskets and clay amphorae of grain outside, a stone hand mill. No windmill, no sails, no tiled roof, no arches."
+  ],
+
+  [
+   "ea_house_dark",
+   "house",
+   "Rebuild this as a Dark Age Chinese peasant house: rammed-earth walls, a steep roof of thick straw thatch, rough timber corner posts, a plain plank door, a low woven bamboo fence, a clay water jar and a bundle of firewood outside. Poorer and rougher than the reference. No grey ceramic roof tiles, no upturned eaves, no lattice paper windows, no painted or lacquered timber."
+  ],
+  [
+   "ea_town_center_dark",
+   "town_center",
+   "Rebuild this as a Dark Age Chinese village hall: a timber-framed hall with rammed-earth walls under a broad straw-thatched roof, a plain open verandah on rough unpainted wooden posts, a drum on a stand by the door, a packed-earth forecourt. No ceramic tiles, no upturned eaves, no ridge ornaments, no red lacquered columns, no stone platform."
+  ],
+  [
+   "ea_barracks_dark",
+   "barracks",
+   "Rebuild this as a Dark Age Chinese muster yard: a long low hall of rammed earth and rough timber under straw thatch, a rack of spears and bamboo bows outside, a packed-earth training ground with a wooden post. No ceramic tiles, no upturned eaves, no painted timber."
+  ],
+  [
+   "ea_mill_dark",
+   "mill",
+   "Rebuild this as a Dark Age Chinese granary: a round raised granary of rammed earth and woven bamboo under a conical straw-thatch roof, standing on a low stone footing, baskets of millet and a winnowing fan beside it. No ceramic tiles, no upturned eaves, no windmill."
+  ]
+ ]
+}
