@@ -97,11 +97,15 @@
     return cv;
   }
 
-  // A dynasty dyes a sprite only when it is borrowing another dynasty's art: the moment
-  // its own sheet exists (unit3d_franks_villager_…), that art is used as painted.
+  // Everything built on the shared villager body — villagers, the King, the Queen, the
+  // Monk — is painted once and dyed per dynasty here. A dynasty dyes a sprite only when it
+  // is borrowing another dynasty's art: the moment its own sheet exists
+  // (unit3d_franks_villager_…), that art is used as painted.
+  const DYED = ['_villager_', '_king_', '_queen_', '_monk_'];
   function lookFor(key, civ) {
     const l = civ && G.CIV_LOOK && G.CIV_LOOK[civ];
-    return (l && key.indexOf('_villager_') > 0 && key.indexOf('_' + civ + '_') < 0) ? l : null;
+    if (!l || key.indexOf('_' + civ + '_') > 0) return null;
+    return DYED.some(k => key.indexOf(k) > 0) ? l : null;
   }
   function sprite(key, color, civ) {
     const a = art[key];

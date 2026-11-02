@@ -126,6 +126,30 @@ const TOOLS = {
     const roll = new THREE.Mesh(new THREE.TorusGeometry(0.072, 0.019, 6, 16), M(0x5d4c34, 0.95));
     roll.rotation.x = Math.PI / 2; roll.position.set(0, -0.045, -0.035); g.add(roll);
     return g; },
+  // ---- the King and Queen: a crown and a mantle on the shared villager body ----
+  crown() { const g = new THREE.Group();
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.067, 0.067, 0.030, 16, 1, true), GOLD);
+    band.material.side = THREE.DoubleSide; band.position.y = 0.012; g.add(band);
+    for (let i = 0; i < 6; i++) {           // fleurons around the band
+      const a = i * Math.PI / 3;
+      const pt = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.055, 6), GOLD);
+      pt.position.set(Math.cos(a) * 0.063, 0.048, Math.sin(a) * 0.063); g.add(pt);
+      const jw = new THREE.Mesh(new THREE.SphereGeometry(0.011, 6, 5),
+        new THREE.MeshStandardMaterial({ color: 0xff00ff, roughness: 0.5 }));
+      jw.position.set(Math.cos(a) * 0.066, 0.014, Math.sin(a) * 0.066); g.add(jw);
+    }
+    return g; },
+  mantle() { const g = TOOLS.cape(); g.scale.set(1.15, 1.25, 1.1);   // longer, trimmed cloak
+    const trim = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.012, 5, 16, Math.PI), GOLD);
+    trim.rotation.x = Math.PI / 2; trim.position.y = 0.02; g.add(trim);
+    return g; },
+  gown() { const g = new THREE.Group();     // a long court gown for the Queen
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.24, 0.62, 16, 1, true), M(0x5a4a6b, 0.9));
+    r.material.side = THREE.DoubleSide; r.position.y = -0.28; g.add(r);
+    const belt = new THREE.Mesh(new THREE.TorusGeometry(0.112, 0.011, 5, 18),
+      new THREE.MeshStandardMaterial({ color: 0xff00ff, roughness: 0.6 }));
+    belt.rotation.x = Math.PI / 2; g.add(belt);
+    return g; },
   habit() { const g = new THREE.Group();
     const r = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.20, 0.58, 16, 1, true), M(0x6d5a3f, 0.95));
     r.material.side = THREE.DoubleSide; r.position.y = -0.26; g.add(r);

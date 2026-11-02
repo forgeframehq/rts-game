@@ -31,7 +31,7 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect' };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect', mode: config.mode || 'conquest' };
     G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
@@ -56,6 +56,11 @@
     const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
     // Town centers first (so resources avoid them)
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
+    // Regicide: each player is given a King to guard and a Queen to keep his men on their feet
+    if (G.rules.mode === 'regicide') for (const s of starts) {
+      G.addUnit('king', s.p, s.x + 2.5, s.y + 3.2);
+      G.addUnit('queen', s.p, s.x + 3.4, s.y + 2.6);
+    }
     for (const s of starts) startResources(r, s.x + 1, s.y + 1);
     // Forests and scattered resources across the map, away from starts
     const far = (x, y) => starts.every(s => Math.hypot(x - s.x, y - s.y) > 13);
@@ -98,12 +103,24 @@
   };
 
   const hasStuff = p => G.ents.some(x => !x.dead && x.owner === p && (x.kind === 'building' && x.type !== 'farm' || x.kind === 'unit'));
+  // in Regicide the King is the whole game: lose him and it is over, town or no town
+  const kingDown = p => G.rules && G.rules.mode === 'regicide'
+    && !G.ents.some(x => !x.dead && x.owner === p && x.type === 'king');
   G.onKilled = function (e) {
     if (G.ui && G.ui.onKilled) G.ui.onKilled(e);
     if (G.over || e.owner === 0) return;
     for (const id in G.players) {
       const p = G.players[id];
-      if (p.alive && !hasStuff(+id)) { p.alive = false; if (+id !== 1 && G.ui) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`); }
+      if (!p.alive) continue;
+      const lostKing = kingDown(+id);
+      if (!hasStuff(+id) || lostKing) {
+        p.alive = false;
+        if (G.ui) {
+          const who = +id === 1 ? 'Your' : `${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]})`;
+          if (lostKing) G.ui.alert(+id === 1 ? '👑 Your King has fallen!' : `👑 ${who} King has fallen!`);
+          else if (+id !== 1) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`);
+        }
+      }
     }
     if (!G.players[1].alive) { G.over = 'defeat'; if (G.ui) G.ui.gameOver(G.over); return; }
     const foes = Object.keys(G.players).filter(id => G.players[id].alive && G.enemies(1, +id));

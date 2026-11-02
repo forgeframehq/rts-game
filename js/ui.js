@@ -91,9 +91,10 @@
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest'
   };
   if (!setup.shape) setup.shape = 'rect';
+  if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
     setup.slots.forEach((sl, i) => {
@@ -140,11 +141,12 @@
       return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
     });
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect' });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest' });
     G.buildGround();
     enterGame();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
-    UI.alert(`You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
+    UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: guard your King, kill theirs. ' : '')
+      + `You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
   }
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
 
@@ -440,7 +442,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally ram range repeater siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp monk pop rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {

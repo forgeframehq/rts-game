@@ -177,6 +177,7 @@
     let hp = def.hp; if (type === 'knight' && mods(owner).knightHp) hp = Math.round(hp * mods(owner).knightHp);
     e.hp = e.maxHp = hp;
     if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
+    if (type === 'queen') e.sex = 'f';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
     e.range = def.range + (def.ranged ? G.techBonus(owner).range : 0) + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0);
     return e;

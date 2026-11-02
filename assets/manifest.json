@@ -2082,5 +2082,95 @@
   "h": 215.82,
   "ax": 114.73,
   "ay": 167.57
+ },
+ "unit3d_britons_king_m_attack": {
+  "file": "assets/units/unit3d_britons_king_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 1.5,
+  "fw": 55.47,
+  "fh": 58.13,
+  "ax": 27.73,
+  "ay": 48.89
+ },
+ "unit3d_britons_king_m_death": {
+  "file": "assets/units/unit3d_britons_king_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 66.13,
+  "ax": 34.13,
+  "ay": 48.35
+ },
+ "unit3d_britons_king_m_hit": {
+  "file": "assets/units/unit3d_britons_king_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.6,
+  "fh": 51.2,
+  "ax": 16.8,
+  "ay": 45.42
+ },
+ "unit3d_britons_king_m_idle": {
+  "file": "assets/units/unit3d_britons_king_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.87,
+  "ax": 18.4,
+  "ay": 45.15
+ },
+ "unit3d_britons_king_m_walk": {
+  "file": "assets/units/unit3d_britons_king_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.53,
+  "fh": 46.4,
+  "ax": 24.27,
+  "ay": 40.89
+ },
+ "unit3d_britons_queen_f_death": {
+  "file": "assets/units/unit3d_britons_queen_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 48.09
+ },
+ "unit3d_britons_queen_f_idle": {
+  "file": "assets/units/unit3d_britons_queen_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 32.0,
+  "fh": 46.67,
+  "ax": 16.0,
+  "ay": 40.35
+ },
+ "unit3d_britons_queen_f_walk": {
+  "file": "assets/units/unit3d_britons_queen_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 27.2,
+  "fh": 46.93,
+  "ax": 13.6,
+  "ay": 40.62
+ },
+ "mediterranean_monastery": {
+  "file": "assets/mediterranean_monastery.png",
+  "size": 3,
+  "w": 201.86,
+  "h": 189.06,
+  "ax": 102.5,
+  "ay": 140.85
  }
 }

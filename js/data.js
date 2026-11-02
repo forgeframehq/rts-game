@@ -63,6 +63,9 @@ G.UNITS = {
   // ---- siege: shared by every dynasty. siege:true means the full attack lands on
   // buildings instead of the single point a bow would do, so walls actually come down.
   ram:        { name: 'Battering Ram', cost: { wood: 160 }, time: 36, hp: 175, atk: 2, range: 0.6, rate: 5, armor: 0, pierce: 10, speed: 0.55, los: 3, icon: '🐏', cls: 'sie', siege: true, bonus: { bld: 48 } },
+  // ---- heroes: one each per player in Regicide, never trained ----
+  king:       { name: 'King', cost: {}, time: 0, hp: 150, atk: 6, range: 0.7, rate: 2, armor: 3, pierce: 3, speed: 0.95, los: 7, icon: '👑', cls: 'hero' },
+  queen:      { name: 'Queen', cost: {}, time: 0, hp: 110, atk: 0, range: 0, rate: 2, armor: 2, pierce: 2, speed: 1.05, los: 8, icon: '👸', cls: 'hero', heal: 1.4, healRange: 3 },
   monk:       { name: 'Monk', cost: { gold: 100 }, time: 25, hp: 30, atk: 0, range: 0, rate: 2, armor: 0, pierce: 0, speed: 1.0, los: 9, icon: '✝️', cls: 'mon', heal: 2.0, healRange: 4 },
   trebuchet:  { name: 'Trebuchet', cost: { wood: 200, gold: 160 }, time: 50, hp: 150, atk: 10, range: 12, rate: 10, armor: 1, pierce: 2, speed: 0.5, los: 14, icon: '🪨', cls: 'sie', ranged: true, siege: true, bonus: { bld: 190 } }
 };

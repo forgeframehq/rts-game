@@ -1,0 +1,166 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "villager_m_anim.glb",
+ "clipsUrl": [
+  "villager_m_anim2.glb",
+  "combat_anim.glb",
+  "combat2_anim.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 12,
+   "lockRoot": true,
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1,
+   "props": [
+    {
+     "bone": "Head",
+     "tool": "crown",
+     "pos": [
+      0,
+      0.165,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "mantle"
+    },
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "idle",
+   "clip": "Idle_02",
+   "frames": 16,
+   "props": [
+    {
+     "bone": "Head",
+     "tool": "crown",
+     "pos": [
+      0,
+      0.165,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "mantle"
+    },
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "Head",
+     "tool": "crown",
+     "pos": [
+      0,
+      0.165,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "mantle"
+    },
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "clip": "Right_Hand_Sword_Slash",
+   "frames": 10,
+   "props": [
+    {
+     "bone": "Head",
+     "tool": "crown",
+     "pos": [
+      0,
+      0.165,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "mantle"
+    },
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "hit",
+   "clip": "Hit_Reaction_1",
+   "frames": 8,
+   "props": [
+    {
+     "bone": "Head",
+     "tool": "crown",
+     "pos": [
+      0,
+      0.165,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "mantle"
+    },
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "start": 0,
+   "end": 0.8,
+   "lockRoot": true
+  }
+ ]
+}
