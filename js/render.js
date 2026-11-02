@@ -313,10 +313,15 @@
     ctx.globalAlpha = 0.6;
     drawSprite(G.buildingSprite(gh.type, 1), g.x, g.y, z);
     ctx.globalAlpha = 1;
-    const s = def.size;
-    ctx.fillStyle = ok ? 'rgba(80,220,100,0.25)' : 'rgba(255,60,50,0.35)';
-    const a = G.toScreen(gh.tx, gh.ty), b = G.toScreen(gh.tx + s, gh.ty), c = G.toScreen(gh.tx + s, gh.ty + s), d = G.toScreen(gh.tx, gh.ty + s);
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill();
+    // colour every tile of the footprint, so a hidden blocker is easy to spot
+    const s = def.size, explored = G.isExplored(gh.tx + s / 2, gh.ty + s / 2);
+    for (let j = 0; j < s; j++) for (let i = 0; i < s; i++) {
+      const x = gh.tx + i, y = gh.ty + j, free = G.isFree(x, y) && explored;
+      ctx.fillStyle = free ? 'rgba(80,220,100,0.32)' : 'rgba(255,50,40,0.55)';
+      const a = G.toScreen(x, y), b = G.toScreen(x + 1, y), c = G.toScreen(x + 1, y + 1), d = G.toScreen(x, y + 1);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = free ? 'rgba(200,255,200,0.35)' : 'rgba(255,200,190,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+    }
   }
 
   // ---------- Minimap ----------

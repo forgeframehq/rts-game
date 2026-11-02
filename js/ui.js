@@ -314,7 +314,7 @@
     const c = G.toWorld(G.W / 2, G.H * 0.45);
     const s = G.BUILDINGS[type].size;
     G.ghost = { type, tx: Math.floor(c.x - s / 2 + 0.5), ty: Math.floor(c.y - s / 2 + 0.5) };
-    $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap map to position`;
+    $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap the map to move it`;
   }
   function moveGhost(sx, sy) {
     if (!G.ghost) return;
@@ -323,7 +323,19 @@
   }
   function confirmPlace(keep) {
     const gh = G.ghost; if (!gh) return;
-    if (!gh.ok) { UI.alert("Can't build there"); return; }
+    if (!gh.ok) {   // nudge to the nearest open spot instead of just refusing
+      const s = G.BUILDINGS[gh.type].size;
+      const fits = (x, y) => G.areaFree(x, y, s) && G.isExplored(x + s / 2, y + s / 2);
+      for (let r = 1; r <= 5; r++) {
+        let best = null, bd = 1e9;
+        for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
+          if (Math.max(Math.abs(i), Math.abs(j)) !== r || !fits(gh.tx + i, gh.ty + j)) continue;
+          const d = i * i + j * j; if (d < bd) { bd = d; best = [i, j]; }
+        }
+        if (best) { gh.tx += best[0]; gh.ty += best[1]; gh.ok = true; UI.alert('Moved to the nearest open spot. Tap Build again'); return; }
+      }
+      UI.alert("No room here. Something is in the way (red tiles)"); return;
+    }
     const b = G.placeBuilding(1, gh.type, gh.tx, gh.ty, ownUnits().filter(u => u.type === 'villager'));
     if (!b) { UI.alert('Not enough resources'); flashCost(G.buildCost(1, gh.type)); setMode(null); return; }
     ping(b.x, b.y, '#8f8');

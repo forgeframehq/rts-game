@@ -377,3 +377,8 @@ button.big { background: url(assets/ui/button.png) center / 100% 100% no-repeat;
 body.mm-off #minimap { display: none; }
 #btn-map img { object-fit: contain; padding: 3px; }
 @media (orientation: portrait) { #minimap { transform: scale(0.82); transform-origin: left bottom; } }
+
+/* placement bar: one tidy row */
+#place-bar { width: min(420px, calc(100vw - 24px)); justify-content: space-between; }
+#place-hint { flex: 1; min-width: 0; font-size: 12px; line-height: 1.25; color: #e9d7ae; font-family: var(--heading); font-weight: 700; }
+.okbtn { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
