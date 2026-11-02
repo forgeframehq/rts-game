@@ -366,10 +366,33 @@
     const v = idle[idleIdx++ % idle.length];
     select([v], false); G.camera.focus(v.x, v.y);
   };
+  // Army button: 1st tap selects every soldier and jumps to the biggest group;
+  // more taps within a few seconds cycle through the other groups (soldiers within ~6 tiles of each other).
+  let armyCycle = { t: -99, i: 0 };
+  function armyGroups(a) {
+    const left = a.slice(), groups = [];
+    while (left.length) {
+      const g = [left.pop()];
+      for (let k = 0; k < g.length; k++) for (let j = left.length - 1; j >= 0; j--)
+        if (Math.hypot(left[j].x - g[k].x, left[j].y - g[k].y) < 6) g.push(left.splice(j, 1)[0]);
+      groups.push(g);
+    }
+    return groups.sort((p, q) => q.length - p.length);
+  }
+  const focusGroup = g => { let x = 0, y = 0; for (const u of g) { x += u.x; y += u.y; } G.camera.focus(x / g.length, y / g.length); };
   $('btn-army').onclick = () => {
     const a = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager');
-    if (!a.length) { UI.alert('No military units yet'); return; }
-    select(a, false);
+    if (!a.length) { UI.alert('No soldiers yet'); return; }
+    const groups = armyGroups(a), now = performance.now();
+    if (now - armyCycle.t > 4000) {
+      armyCycle = { t: now, i: 0 };
+      select(a, false); focusGroup(groups[0]);
+      UI.alert(groups.length > 1 ? `${a.length} soldiers in ${groups.length} groups. Tap again for the next group` : `${a.length} soldiers`);
+    } else {
+      armyCycle.t = now; armyCycle.i = (armyCycle.i + 1) % groups.length;
+      const g = groups[armyCycle.i]; select(g, false); focusGroup(g);
+      UI.alert(`Group ${armyCycle.i + 1} of ${groups.length}: ${g.length} soldier${g.length > 1 ? 's' : ''}`);
+    }
   };
   $('btn-box').onclick = () => setMode(mode === 'box' ? null : 'box');
   // minimap on/off (remembered)
@@ -563,6 +586,8 @@
       $('clock').innerHTML = `<b>${G.AGES[G.ageOf(1)].short}</b><span>${m}:${String(s).padStart(2, '0')}</span>`;
       const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
+      const na = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager').length;
+      const ac = $('army-count'); ac.textContent = na || ''; ac.classList.toggle('zero', !na);
       refreshPanel(false);
     }
     if (!G.paused && !G.over && !G.demo) { saveT -= dt; if (saveT <= 0) { saveT = 20; G.saveGame(); } }

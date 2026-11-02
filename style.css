@@ -382,3 +382,5 @@ body.mm-off #minimap { display: none; }
 #place-bar { width: min(420px, calc(100vw - 24px)); justify-content: space-between; }
 #place-hint { flex: 1; min-width: 0; font-size: 12px; line-height: 1.25; color: #e9d7ae; font-family: var(--heading); font-weight: 700; }
 .okbtn { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+
+.sidebtn i.blue { background: #2f6fd6; }
