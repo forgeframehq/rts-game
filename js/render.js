@@ -297,6 +297,22 @@
   // ---- damage: cracks, then smoke, then flame, layered over the ordinary sprite ----
   // No damaged art is made for any building; this is drawn over whatever is there, so it
   // works for every building in every region, including ones that do not exist yet.
+  // which sides of a wall tile have a wall of the same side carrying on: 1 N, 2 E, 4 S, 8 W
+  function wallMask(e) {
+    let m = 0;
+    const at = (dx, dy) => {
+      const b = G.block[G.idx(e.tx + dx, e.ty + dy)];
+      if (!b) return false;
+      const n = G.byId.get(b);
+      return !!(n && n.def && n.def.wall && G.allied(n.owner, e.owner));
+    };
+    if (at(0, -1)) m |= 1;
+    if (at(1, 0)) m |= 2;
+    if (at(0, 1)) m |= 4;
+    if (at(-1, 0)) m |= 8;
+    return m;
+  }
+
   const burning = [];
   // Damage, layered over the ordinary sprite: soot on the body, smoke off the roof, and
   // flame at the eaves once it is nearly down. Anchored to the sprite, so it sits on the
@@ -391,7 +407,8 @@
       const g = G.toScreen(e.tx + e.size / 2, e.ty + e.size / 2);
       let sp;
       if (e.built) sp = G.buildingSprite(e.type, e.owner, e.type !== 'farm' ? 0
-        : e.food <= 0 ? 'spent' : Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)));
+        : e.food <= 0 ? 'spent' : Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)),
+        e.def.wall ? wallMask(e) : 0);
       else sp = G.foundationSprite(e.type, Math.min(3, Math.floor(e.progress * 4)));
       if (e.hitT) ctx.globalAlpha = 0.85;
       drawSprite(sp, g.x, g.y, z);

@@ -99,6 +99,107 @@
   const PLASTER = ['#efe4cc', '#d8c9a8', '#bfae8a'];
 
   // ---- buildings ----
+  // One wall piece, drawn along whichever diagonals its neighbours sit on, so a run of
+  // them reads as a single wall. Drawn rather than painted because walls must tile
+  // seamlessly in every combination, which is a lot of art for something this repetitive.
+  function wallPiece(ctx, c, mask, kind) {
+    const half = TW / 2 - 1;
+    const H = kind === 'wood' ? 26 : 36;                       // how tall it stands
+    const pal = kind === 'wood'
+      ? { lit: '#a98351', sun: '#8a663c', shade: '#664828', line: '#4a331c', top: '#b89260' }
+      : { lit: '#b9b2a4', sun: '#968f83', shade: '#6d675e', line: '#514c45', top: '#c8c1b4' };
+    // the stretch running towards one neighbour; dx/dy point at it
+    const run = (dx, dy) => {
+      const ex = dx * half, ey = dy * half / 2;
+      const sunny = dx * dy < 0;                                // the two iso axes catch
+      const face = sunny ? pal.sun : pal.shade;                 // different light
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, 0); ctx.lineTo(ex, ey); ctx.lineTo(ex, ey - H); ctx.lineTo(0, -H);
+      ctx.closePath();
+      ctx.fillStyle = face; ctx.fill();
+      ctx.clip();
+      if (kind === 'wood') {                                    // upright palings
+        ctx.strokeStyle = pal.line; ctx.lineWidth = 1;
+        for (let t = 0.12; t < 1; t += 0.16) {
+          ctx.beginPath();
+          ctx.moveTo(ex * t, ey * t + 1); ctx.lineTo(ex * t, ey * t - H);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = pal.lit; ctx.lineWidth = 2;           // the rail holding them
+        ctx.beginPath();
+        ctx.moveTo(0, -H * 0.55); ctx.lineTo(ex, ey - H * 0.55); ctx.stroke();
+      } else {                                                  // courses of block
+        ctx.strokeStyle = pal.line; ctx.lineWidth = 1;
+        for (let r = 1; r < 4; r++) {
+          const y = -H * r / 4;
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(ex, ey + y); ctx.stroke();
+          const off = r % 2 ? 0.25 : 0.5;                       // staggered joints
+          for (let t = off; t < 1; t += 0.5) {
+            ctx.beginPath();
+            ctx.moveTo(ex * t, ey * t + y); ctx.lineTo(ex * t, ey * t + y + H / 4);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+      ctx.beginPath();                                          // the walkway on top
+      ctx.moveTo(0, -H); ctx.lineTo(ex, ey - H);
+      ctx.lineTo(ex, ey - H - 5); ctx.lineTo(0, -H - 5);
+      ctx.closePath();
+      ctx.fillStyle = pal.top; ctx.fill();
+      if (kind !== 'wood') {                                    // crenellations
+        ctx.fillStyle = pal.lit;
+        for (let t = 0.14; t < 0.95; t += 0.28) {
+          ctx.fillRect(ex * t - 3, ey * t - H - 11, 6, 7);
+          ctx.fillStyle = pal.sun;
+          ctx.fillRect(ex * t - 3, ey * t - H - 5, 6, 2);
+          ctx.fillStyle = pal.lit;
+        }
+      }
+    };
+    ctx.fillStyle = 'rgba(0,0,0,.22)';                          // sat on the ground
+    ctx.beginPath();
+    ctx.ellipse(2, 2, half * 0.8, half * 0.42, 0, 0, 7);
+    ctx.fill();
+    const n = mask & 1, e = mask & 2, so = mask & 4, w = mask & 8;
+    if (!mask) { run(1, -1); run(-1, 1); }        // standing alone: show a short stretch
+    if (n) run(1, -1);
+    if (so) run(-1, 1);
+    if (e) run(1, 1);
+    if (w) run(-1, -1);
+    // the post where the wall turns, ends or stands alone
+    ctx.fillStyle = pal.top;
+    ctx.beginPath();
+    ctx.moveTo(0, -H - 10); ctx.lineTo(11, -H - 4); ctx.lineTo(0, -H + 2); ctx.lineTo(-11, -H - 4);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = pal.shade;
+    ctx.beginPath();
+    ctx.moveTo(-11, -H - 4); ctx.lineTo(0, -H + 2); ctx.lineTo(0, -H + 10); ctx.lineTo(-11, -H + 4);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = pal.sun;
+    ctx.beginPath();
+    ctx.moveTo(11, -H - 4); ctx.lineTo(0, -H + 2); ctx.lineTo(0, -H + 10); ctx.lineTo(11, -H + 4);
+    ctx.closePath(); ctx.fill();
+    if (kind === 'gate') {
+      ctx.fillStyle = pal.top;                                  // towers either side
+      ctx.fillRect(-20, -H - 16, 9, 20); ctx.fillRect(11, -H - 16, 9, 20);
+      ctx.fillStyle = pal.shade;
+      ctx.fillRect(-20, -H - 16, 9, 4); ctx.fillRect(11, -H - 16, 9, 4);
+      ctx.fillStyle = '#1d1510';                                // the dark of the archway
+      ctx.beginPath(); ctx.ellipse(0, -11, 9, 15, 0, Math.PI, 0); ctx.fill();
+      ctx.fillRect(-9, -11, 18, 11);
+      ctx.fillStyle = '#6b4a2e';                                // doors, standing open
+      ctx.fillRect(-10, -24, 4, 23); ctx.fillRect(6, -24, 4, 23);
+      ctx.fillStyle = '#8a6440';
+      ctx.fillRect(-10, -24, 4, 2); ctx.fillRect(6, -24, 4, 2);
+      ctx.fillStyle = c;                                        // banner over the gate
+      ctx.fillRect(-5, -H - 24, 10, 13);
+      ctx.fillStyle = 'rgba(0,0,0,.25)';
+      ctx.fillRect(0, -H - 24, 5, 13);
+    }
+  }
+
   const BDRAW = {
     towncenter(ctx, c) {
       const hw = 3 * TW / 2 - 6;
@@ -201,6 +302,11 @@
       door(ctx, -4, h - 2, 12, 15);
       flag(ctx, 0, -hw / 2 - h - 20, 12, c);
     },
+    // A wall segment works out its own shape from the neighbours it finds, so a run of
+    // them reads as one wall rather than a row of posts. mask bits: 1 N, 2 E, 4 S, 8 W.
+    palisade(ctx, c, _d, _size, mask) { wallPiece(ctx, c, mask || 0, 'wood'); },
+    stonewall(ctx, c, _d, _size, mask) { wallPiece(ctx, c, mask || 0, 'stone'); },
+    gate(ctx, c, _d, _size, mask) { wallPiece(ctx, c, mask || 0, 'gate'); },
     tower(ctx, c) {
       const hw = TW / 2 - 6;
       box(ctx, hw, 64, STONE[0], STONE[1], STONE[2]); stoneTex(ctx, hw, 64);
@@ -211,15 +317,15 @@
     }
   };
 
-  G.buildingSprite = function (type, owner, farmStage) {
+  G.buildingSprite = function (type, owner, farmStage, mask) {
     const size = G.BUILDINGS[type].size;
     const c = G.ownerColor(owner);
     const w = size * TW + 40, h = size * TH + 140;
-    const key = type + '|' + c + '|' + (farmStage || 0);
+    const key = type + '|' + c + '|' + (farmStage || 0) + '|' + (mask || 0);
     return make(key, w, h, w / 2, h - size * TH / 2 - 14, ctx => {
       // soft shadow
       ctx.fillStyle = 'rgba(0,0,0,0.18)'; diamond(ctx, size * TW / 2 + 2, size * TH / 2 + 1, -2); ctx.fill();
-      (BDRAW[type] || BDRAW.generic)(ctx, c, type === 'farm' ? { food: G.BUILDINGS.farm.farm * (1 - (farmStage || 0) / 3) } : null, size);
+      (BDRAW[type] || BDRAW.generic)(ctx, c, type === 'farm' ? { food: G.BUILDINGS.farm.farm * (1 - (farmStage || 0) / 3) } : null, size, mask);
     });
   };
 

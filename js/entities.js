@@ -259,9 +259,9 @@
   function pathTo(u, t, adjacent) {
     if (t.kind === 'unit') {
       const tx = t.x | 0, ty = t.y | 0;
-      u.path = G.findPath(u.x, u.y, { x0: tx, y0: ty, x1: tx, y1: ty }, false, 0);
+      u.path = G.findPath(u.x, u.y, { x0: tx, y0: ty, x1: tx, y1: ty }, false, 0, u.owner);
     } else {
-      u.path = G.findPath(u.x, u.y, rectOf(t), adjacent, t.type === 'farm' ? 0 : t.id);
+      u.path = G.findPath(u.x, u.y, rectOf(t), adjacent, t.type === 'farm' ? 0 : t.id, u.owner);
     }
     u.pathFor = t.id; u.repath = 1.2;
   }
@@ -288,7 +288,7 @@
       const f = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
       if (!G.isFree(tx | 0, ty | 0)) { tx = f.x + 0.5; ty = f.y + 0.5; }
       u.task = { t: 'move', x: tx, y: ty, gs };
-      u.path = G.findPath(u.x, u.y, { x0: tx | 0, y0: ty | 0, x1: tx | 0, y1: ty | 0 }, false, 0);
+      u.path = G.findPath(u.x, u.y, { x0: tx | 0, y0: ty | 0, x1: tx | 0, y1: ty | 0 }, false, 0, u.owner);
       if (u.path.length) u.path[u.path.length - 1] = { x: tx, y: ty };
     });
   };
@@ -453,7 +453,7 @@
       else if (att.kind === 'unit' && att.def.cls !== 'cav' && t.hp < t.maxHp * 0.4) {
         // flee toward town center
         const tc = nearest(t, e => e.type === 'towncenter' && e.owner === t.owner && e.built);
-        if (tc) { t.task = { t: 'move', x: tc.x, y: tc.y + tc.size / 2 + 0.6 }; t.path = G.findPath(t.x, t.y, rectOf(tc), true, tc.id); }
+        if (tc) { t.task = { t: 'move', x: tc.x, y: tc.y + tc.size / 2 + 0.6 }; t.path = G.findPath(t.x, t.y, rectOf(tc), true, tc.id, t.owner); }
       }
     }
     const W = { militia: 'sword', king: 'sword', spearman: 'spear', knight: 'sword', scout: 'spear',
@@ -534,7 +534,7 @@
       const moving = u.path.length > 0;
       const k = moving ? 0.3 : 1;
       const nx = u.x + px * k, ny = u.y + py * k;
-      if (G.isFree(nx | 0, ny | 0)) { u.x = nx; u.y = ny; }
+      if (G.freeFor(nx | 0, ny | 0, u.owner)) { u.x = nx; u.y = ny; }
     }
     // Projectiles
     for (const p of G.projs) {
@@ -660,7 +660,7 @@
           if (Math.hypot(task.x - u.x, task.y - u.y) < 0.6 || task.tries > 2) { u.task = { t: 'idle' }; break; }
           if (u.repath <= 0) {
             task.tries = (task.tries || 0) + 1;
-            u.path = G.findPath(u.x, u.y, { x0: task.x | 0, y0: task.y | 0, x1: task.x | 0, y1: task.y | 0 }, false, 0);
+            u.path = G.findPath(u.x, u.y, { x0: task.x | 0, y0: task.y | 0, x1: task.x | 0, y1: task.y | 0 }, false, 0, u.owner);
             u.repath = 0.5;
             if (!u.path.length) { u.task = { t: 'idle' }; break; }
           }
@@ -761,7 +761,7 @@
         } else {
           u.atFarm = false;
           if (u.pathFor !== f.id || !u.path.length) {
-            if (u.repath <= 0 || u.pathFor !== f.id) { u.path = G.findPath(u.x, u.y, rectOf(f), false, 0); u.pathFor = f.id; u.repath = 1; }
+            if (u.repath <= 0 || u.pathFor !== f.id) { u.path = G.findPath(u.x, u.y, rectOf(f), false, 0, u.owner); u.pathFor = f.id; u.repath = 1; }
           }
           moveAlong(u, dt);
         }
@@ -810,7 +810,7 @@
         } else {
           if (u.pathFor !== b.id || !u.path.length) {
             if (u.repath <= 0 || u.pathFor !== b.id) {
-              if (b.type === 'farm') { u.path = G.findPath(u.x, u.y, rectOf(b), false, 0); u.pathFor = b.id; u.repath = 1; }
+              if (b.type === 'farm') { u.path = G.findPath(u.x, u.y, rectOf(b), false, 0, u.owner); u.pathFor = b.id; u.repath = 1; }
               else pathTo(u, b, true);
             }
           }

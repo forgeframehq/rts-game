@@ -128,7 +128,9 @@
     const r = regionOf(owner);
     return (r !== 'western' && art[r + '_' + type]) ? r + '_' + type : type;
   };
-  G.buildingSprite = function (type, owner, farmStage) {
+  G.buildingSprite = function (type, owner, farmStage, mask) {
+    // walls are drawn in code from their neighbours, so they never take painted art
+    if (G.BUILDINGS[type] && G.BUILDINGS[type].wall) return baseBuilding(type, owner, farmStage, mask);
     const key = bldKey(type, owner);
     // a spent field gets its own harvested art so you can see at a glance what needs sowing
     if (type === 'farm' && farmStage === 'spent') {

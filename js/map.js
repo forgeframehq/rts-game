@@ -40,6 +40,18 @@
   };
 
   G.isFree = (x, y) => G.inMap(x, y) && G.block[G.idx(x, y)] === 0;
+  // A gate is a hole in your own wall: your men and your allies walk through it, the enemy
+  // has to break it down. Everything else that blocks a tile blocks everyone.
+  G.openTo = function (blockId, owner) {
+    if (!blockId || !owner) return false;
+    const e = G.byId && G.byId.get(blockId);
+    return !!(e && e.def && e.def.gate && e.built && !e.dead && G.allied(e.owner, owner));
+  };
+  G.freeFor = (x, y, owner) => {
+    if (!G.inMap(x, y)) return false;
+    const b = G.block[G.idx(x, y)];
+    return b === 0 || G.openTo(b, owner);
+  };
 
   G.areaFree = function (x, y, size) {
     for (let j = 0; j < size; j++) for (let i = 0; i < size; i++) if (!G.isFree(x + i, y + j)) return false;
@@ -88,14 +100,14 @@
   let curStamp = 0;
 
   // rect: target footprint {x0,y0,x1,y1} inclusive. If adjacent=true, goal is any free tile touching the rect.
-  G.findPath = function (sx, sy, rect, adjacent, ignoreId) {
+  G.findPath = function (sx, sy, rect, adjacent, ignoreId, owner) {
     sx = Math.max(0, Math.min(N - 1, sx | 0)); sy = Math.max(0, Math.min(N - 1, sy | 0));
     curStamp++;
     const tcx = (rect.x0 + rect.x1) / 2, tcy = (rect.y0 + rect.y1) / 2;
     const isGoal = (x, y) => adjacent
       ? x >= rect.x0 - 1 && x <= rect.x1 + 1 && y >= rect.y0 - 1 && y <= rect.y1 + 1 && !(x >= rect.x0 && x <= rect.x1 && y >= rect.y0 && y <= rect.y1)
       : x >= rect.x0 && x <= rect.x1 && y >= rect.y0 && y <= rect.y1;
-    const free = (x, y) => { if (!G.inMap(x, y)) return false; const b = G.block[G.idx(x, y)]; return b === 0 || b === ignoreId; };
+    const free = (x, y) => { if (!G.inMap(x, y)) return false; const b = G.block[G.idx(x, y)]; return b === 0 || b === ignoreId || G.openTo(b, owner); };
     const h = (x, y) => { const dx = Math.abs(x - tcx), dy = Math.abs(y - tcy); return Math.max(dx, dy) + 0.414 * Math.min(dx, dy); };
     const heap = new Heap();
     const si = G.idx(sx, sy);
@@ -120,27 +132,27 @@
     const path = [];
     while (end !== -1 && end !== si) { path.push({ x: (end % N) + 0.5, y: Math.floor(end / N) + 0.5 }); end = parent[end]; }
     path.reverse();
-    return smooth(sx + 0.5, sy + 0.5, path, ignoreId);
+    return smooth(sx + 0.5, sy + 0.5, path, ignoreId, owner);
   };
 
-  function lineFree(x0, y0, x1, y1, ignoreId) {
+  function lineFree(x0, y0, x1, y1, ignoreId, owner) {
     const d = Math.hypot(x1 - x0, y1 - y0), steps = Math.ceil(d * 3);
     for (let s = 1; s <= steps; s++) {
       const t = s / steps;
       for (const o of [-0.3, 0.3]) {
         const x = Math.floor(x0 + (x1 - x0) * t + o), y = Math.floor(y0 + (y1 - y0) * t + o);
         if (!G.inMap(x, y)) return false;
-        const b = G.block[G.idx(x, y)]; if (b !== 0 && b !== ignoreId) return false;
+        const b = G.block[G.idx(x, y)]; if (b !== 0 && b !== ignoreId && !G.openTo(b, owner)) return false;
       }
     }
     return true;
   }
-  function smooth(sx, sy, path, ignoreId) {
+  function smooth(sx, sy, path, ignoreId, owner) {
     if (path.length < 3) return path;
     const out = []; let ax = sx, ay = sy, i = 0;
     while (i < path.length) {
       let j = path.length - 1;
-      while (j > i && !lineFree(ax, ay, path[j].x, path[j].y, ignoreId)) j--;
+      while (j > i && !lineFree(ax, ay, path[j].x, path[j].y, ignoreId, owner)) j--;
       out.push(path[j]); ax = path[j].x; ay = path[j].y; i = j + 1;
     }
     return out;
