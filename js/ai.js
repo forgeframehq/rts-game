@@ -69,7 +69,7 @@ G.makeAI = function () {
     if (!home) return;
 
     // --- Ages: advance once the economy is big enough (pauses villager training, like a real player) ---
-    const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 17, 22, 28];
+    const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 13, 19, 25];
     // how big an economy to want before advancing — never more villagers than this level
     // will ever train, or an easier opponent waits for an economy it cannot build and stalls
     const ageVils = n => Math.min(AGE_VILS[n] || 0, AI.cfg.maxVils);
@@ -82,8 +82,11 @@ G.makeAI = function () {
     if (tc && tc.built && !tc.aging && !saving && vils.length + tc.queue.length < AI.cfg.maxVils && tc.queue.length < 2) G.train(tc, 'villager');
 
     // --- houses ---
-    const housing = blds.some(b => b.type === 'house' && !b.built);
-    if (cap - pop <= 4 && cap < 200 && !housing) build('house', home.x, home.y, 4, 1);
+    // One house at a time was a bottleneck: a single builder walking out to the edge of
+    // town took long enough that the Town Center sat pop-capped and idle waiting for it.
+    const housing = blds.filter(b => b.type === 'house' && !b.built).length;
+    const tight = cap - pop <= 6 && cap < 200;
+    if (tight && housing < (cap - pop <= 2 ? 2 : 1)) build('house', home.x, home.y, 4, 2);
 
     // --- buildings the next Age needs: build the cheapest missing one ---
     const blk = nxt && G.ageBlock(p, null);
@@ -221,8 +224,16 @@ G.makeAI = function () {
     }
 
     // --- army production ---
-    const reserve = saving ? 1e9 : vils.length < AI.cfg.maxVils ? 60 : 0;   // while saving for an Age, keep the food
     const needBld = nxt && G.ageBlock(p, null) && G.ageBlock(p, null).startsWith('Needs') && vils.length >= ageVils(age + 1) ? 180 : 0;
+    // How much of each resource not to spend on soldiers. While saving for an Age this has to
+    // cover EVERY resource that Age costs, not just the food: an army that drinks the gold as
+    // fast as it is mined will sit in Feudal forever on a granary full of food it cannot use.
+    const keep = k => {
+      if (saving && nxt.cost[k]) return nxt.cost[k];
+      if (k === 'food') return vils.length < AI.cfg.maxVils ? 60 : 0;
+      if (k === 'wood') return needBld;
+      return 0;
+    };
     if (army.length < AI.cfg.armyCap && pop < cap) {
       for (const b of blds) {
         if (!b.built || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
@@ -238,7 +249,7 @@ G.makeAI = function () {
         if (b.type === 'barracks') opts = enemyCav > 2 ? ['spearman'] : ['militia', 'spearman'];
         const type = opts[Math.floor(Math.random() * opts.length)];
         const cost = G.unitCost(p, type);
-        if (Object.keys(cost).every(k => R[k] - (k === 'food' ? reserve : k === 'wood' ? needBld : 0) >= cost[k])) G.train(b, type);
+        if (Object.keys(cost).every(k => R[k] - keep(k) >= cost[k])) G.train(b, type);
       }
     }
     // rally army near home

@@ -124,9 +124,19 @@
   // buildings are made once per region (western / mediterranean / eastasian) and fall back to the western set
   const civOf = owner => (G.players[owner] && G.players[owner].civ) || null;
   const regionOf = owner => (G.players[owner] && G.REGION[G.players[owner].civ]) || 'western';
+  // Buildings change with the Age, the way they do in Age of Empires: a Dark Age town is
+  // thatch and rough timber, and the same plot is stone once you reach Feudal. Art for a
+  // tier is optional — a building with none simply keeps its default look at every Age,
+  // so new tier art can be dropped in one building at a time without touching this.
+  const AGE_TIER = [null, 'dark', 'feudal', 'castle', 'imp'];
   const bldKey = (type, owner) => {
-    const r = regionOf(owner);
-    return (r !== 'western' && art[r + '_' + type]) ? r + '_' + type : type;
+    const r = regionOf(owner), west = r === 'western';
+    const tier = AGE_TIER[(G.players[owner] && G.players[owner].age) || 1];
+    const tries = [];
+    if (tier) { if (!west) tries.push(r + '_' + type + '_' + tier); tries.push(type + '_' + tier); }
+    if (!west) tries.push(r + '_' + type);
+    for (const k of tries) if (art[k]) return k;
+    return type;
   };
   G.buildingSprite = function (type, owner, farmStage, mask) {
     // walls are drawn in code from their neighbours, so they never take painted art
