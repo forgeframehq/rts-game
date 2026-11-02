@@ -1944,5 +1944,45 @@
   "fh": 58.5,
   "ax": 25.58,
   "ay": 58.31
+ },
+ "unit3d_byzantines_cataphract_m_hit": {
+  "file": "assets/units/unit3d_byzantines_cataphract_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 68.0,
+  "ax": 35.64,
+  "ay": 58.66
+ },
+ "unit3d_western_knight_m_hit": {
+  "file": "assets/units/unit3d_western_knight_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_western_knight_m_t1_hit": {
+  "file": "assets/units/unit3d_western_knight_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 69.09,
+  "ax": 35.64,
+  "ay": 59.75
+ },
+ "unit3d_western_knight_m_t2_hit": {
+  "file": "assets/units/unit3d_western_knight_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 69.09,
+  "ax": 35.64,
+  "ay": 59.75
  }
 }

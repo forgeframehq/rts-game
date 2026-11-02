@@ -303,7 +303,7 @@
 
     if (opts.command) { // right click
       if (units.length) { const r = G.cmdSmart(units, w.x, w.y, target); cmdFx(r, w.x, w.y); }
-      else if (G.selection[0] && G.selection[0].kind === 'building' && G.selection[0].owner === 1 && G.selection[0].def.trains) {
+      else if (G.selection[0] && G.selection[0].kind === 'building' && G.selection[0].owner === 1 && G.trainsFor(G.selection[0]).length) {
         G.selection[0].rally = { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }; ping(w.x, w.y, '#fff');
       }
       return;
@@ -440,7 +440,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('blacksmith castle ageup archer army attack barracks bell box build clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally range spearman stable stone stop tower towncenter ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp pop rally ram range repeater siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {
@@ -579,7 +579,7 @@
         panelKey = '';
       }, !G.canAfford(1, rc)));
     }
-    if (e.kind === 'building' && e.built && e.def.trains) {
+    if (e.kind === 'building' && e.built && G.trainsFor(e).length) {
       for (const t of G.trainsFor(e)) {
         const c = G.unitCost(1, t);
         if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
