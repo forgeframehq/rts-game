@@ -30,6 +30,9 @@
       const v = prefs.sound === undefined ? 'full' : prefs.sound;
       G.sound.setEnabled(v !== 'off');
       G.sound.setVolume(v === 'quiet' ? 0.35 : 0.75);
+      const mv = prefs.music === undefined ? 'normal' : prefs.music;
+      G.sound.setMusicEnabled(mv !== 'off');
+      G.sound.setMusicVolume(mv === 'soft' ? 0.45 : 0.75);
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';

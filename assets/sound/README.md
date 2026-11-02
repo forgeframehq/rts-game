@@ -12,6 +12,32 @@ empty folder is a valid state and a missing or broken file is simply never heard
    cheapest way to stop a sound wearing out:
    `"sword": ["sword_1.ogg", "sword_2.ogg", "sword_3.ogg"]`
 
+## Music
+Tracks live in `assets/sound/music/` and are listed under `"music"` in `manifest.json`:
+
+```json
+{ "music": ["peaceful_1.mp3", "peaceful_2.mp3"] }
+```
+
+They play in a shuffled order, one after another, for ever, fading in and out so tracks
+run together without a click. Music is streamed from an `<audio>` element rather than
+decoded into the audio graph, because decoding a three-minute track into a buffer costs
+about 60 MB of memory, which is not a thing to spend on a phone. It pauses when the tab
+is hidden.
+
+Prepare a new track with:
+
+```
+python3 tools/prep_music.py peaceful path/to/track.mp3
+python3 tools/prep_music.py --check          # what is in the game now, and how loud
+```
+
+That strips the cover art, normalises to **-24 LUFS** with a -2 dBTP ceiling, fades the
+first two and last four seconds, and re-encodes at 112k. Music arrives mastered for
+listening — around -16 LUFS — which sits on top of the game rather than under it; -24 is
+the step down, and the in-game volume takes another, so Normal plays at about -26.9 LUFS
+and Soft at -31.3. If that is still too present, lower `S.musicVolume` in `js/sound.js`.
+
 ## Format
 `.ogg` is smallest and plays everywhere that matters; `.mp3` and `.wav` also work. Keep
 them short — most of these are under a second — and mono is fine. The game plays each at a
