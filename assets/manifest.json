@@ -1696,5 +1696,197 @@
   "fh": 70.55,
   "ax": 36.73,
   "ay": 57.93
+ },
+ "mediterranean_house": {
+  "file": "assets/mediterranean_house.png",
+  "size": 2,
+  "w": 133.98,
+  "h": 121.42,
+  "ax": 69.91,
+  "ay": 89.35
+ },
+ "eastasian_house": {
+  "file": "assets/eastasian_house.png",
+  "size": 2,
+  "w": 137.86,
+  "h": 103.39,
+  "ax": 69.38,
+  "ay": 71.32
+ },
+ "mediterranean_towncenter": {
+  "file": "assets/mediterranean_towncenter.png",
+  "size": 3,
+  "w": 194.92,
+  "h": 198.96,
+  "ax": 97.12,
+  "ay": 150.51
+ },
+ "mediterranean_barracks": {
+  "file": "assets/mediterranean_barracks.png",
+  "size": 3,
+  "w": 268.22,
+  "h": 219.29,
+  "ax": 167.26,
+  "ay": 171.02
+ },
+ "mediterranean_range": {
+  "file": "assets/mediterranean_range.png",
+  "size": 3,
+  "w": 214.77,
+  "h": 168.36,
+  "ax": 111.11,
+  "ay": 120.14
+ },
+ "mediterranean_stable": {
+  "file": "assets/mediterranean_stable.png",
+  "size": 3,
+  "w": 248.28,
+  "h": 168.83,
+  "ax": 142.85,
+  "ay": 120.32
+ },
+ "mediterranean_mill": {
+  "file": "assets/mediterranean_mill.png",
+  "size": 2,
+  "w": 154.46,
+  "h": 212.69,
+  "ax": 64.0,
+  "ay": 180.58
+ },
+ "mediterranean_lumbercamp": {
+  "file": "assets/mediterranean_lumbercamp.png",
+  "size": 2,
+  "w": 130.87,
+  "h": 95.98,
+  "ax": 64.72,
+  "ay": 63.85
+ },
+ "mediterranean_farm": {
+  "file": "assets/mediterranean_farm.png",
+  "size": 2,
+  "w": 171.99,
+  "h": 134.98,
+  "ax": 86.35,
+  "ay": 102.71
+ },
+ "mediterranean_tower": {
+  "file": "assets/mediterranean_tower.png",
+  "size": 1,
+  "w": 75.26,
+  "h": 202.42,
+  "ax": 37.63,
+  "ay": 186.01
+ },
+ "mediterranean_blacksmith": {
+  "file": "assets/mediterranean_blacksmith.png",
+  "size": 3,
+  "w": 201.72,
+  "h": 159.93,
+  "ax": 100.76,
+  "ay": 111.52
+ },
+ "mediterranean_castle": {
+  "file": "assets/mediterranean_castle.png",
+  "size": 4,
+  "w": 270.44,
+  "h": 211.45,
+  "ax": 135.97,
+  "ay": 147.32
+ },
+ "eastasian_towncenter": {
+  "file": "assets/eastasian_towncenter.png",
+  "size": 3,
+  "w": 219.43,
+  "h": 182.49,
+  "ax": 109.05,
+  "ay": 134.05
+ },
+ "eastasian_barracks": {
+  "file": "assets/eastasian_barracks.png",
+  "size": 3,
+  "w": 265.07,
+  "h": 209.45,
+  "ax": 167.31,
+  "ay": 161.32
+ },
+ "eastasian_range": {
+  "file": "assets/eastasian_range.png",
+  "size": 3,
+  "w": 247.91,
+  "h": 202.3,
+  "ax": 131.19,
+  "ay": 154.18
+ },
+ "eastasian_stable": {
+  "file": "assets/eastasian_stable.png",
+  "size": 3,
+  "w": 252.57,
+  "h": 182.48,
+  "ax": 114.79,
+  "ay": 134.35
+ },
+ "eastasian_mill": {
+  "file": "assets/eastasian_mill.png",
+  "size": 2,
+  "w": 135.48,
+  "h": 132.64,
+  "ax": 64.0,
+  "ay": 100.49
+ },
+ "eastasian_miningcamp": {
+  "file": "assets/eastasian_miningcamp.png",
+  "size": 2,
+  "w": 154.99,
+  "h": 130.48,
+  "ax": 83.08,
+  "ay": 98.4
+ },
+ "eastasian_farm": {
+  "file": "assets/eastasian_farm.png",
+  "size": 2,
+  "w": 205.58,
+  "h": 136.88,
+  "ax": 103.81,
+  "ay": 104.68
+ },
+ "eastasian_tower": {
+  "file": "assets/eastasian_tower.png",
+  "size": 1,
+  "w": 76.87,
+  "h": 137.49,
+  "ax": 38.54,
+  "ay": 121.35
+ },
+ "eastasian_blacksmith": {
+  "file": "assets/eastasian_blacksmith.png",
+  "size": 3,
+  "w": 238.12,
+  "h": 229.29,
+  "ax": 116.82,
+  "ay": 181.17
+ },
+ "eastasian_castle": {
+  "file": "assets/eastasian_castle.png",
+  "size": 4,
+  "w": 258.8,
+  "h": 295.55,
+  "ax": 130.65,
+  "ay": 231.4
+ },
+ "mediterranean_miningcamp": {
+  "file": "assets/mediterranean_miningcamp.png",
+  "size": 2,
+  "w": 150.87,
+  "h": 124.84,
+  "ax": 77.22,
+  "ay": 92.67
+ },
+ "eastasian_lumbercamp": {
+  "file": "assets/eastasian_lumbercamp.png",
+  "size": 2,
+  "w": 165.34,
+  "h": 130.73,
+  "ax": 98.69,
+  "ay": 98.65
  }
 }

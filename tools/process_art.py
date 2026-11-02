@@ -1,6 +1,10 @@
 """Turn source building art into game-ready sprites.
 
-Usage: python3 tools/process_art.py <folder with source PNGs>
+Usage: python3 tools/process_art.py <folder with source PNGs> [region]
+
+With a region (mediterranean, eastasian) the sprites are saved under that region's
+name - mediterranean_house, eastasian_barracks - which the game prefers for the
+dynasties of that region, falling back to the shared western set.
 
 - Removes baked white/checkerboard backgrounds.
 - Finds the building's footprint (widest part of its base) and ground point.
@@ -101,9 +105,10 @@ def process_spec(src_dir, out_dir, keep, manifest):
         print(f'{key:12s} {out.width}x{out.height}')
 
 
-def process(src_dir, repo):
+def process(src_dir, repo, region=None):
+    pre = region + '_' if region else ''
     out_dir = os.path.join(repo, 'assets')
-    keep = os.path.join(out_dir, 'source')
+    keep = os.path.join(out_dir, 'source', region) if region else os.path.join(out_dir, 'source')
     os.makedirs(keep, exist_ok=True)
     manifest_path = os.path.join(out_dir, 'manifest.json')
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {}
@@ -134,18 +139,20 @@ def process(src_dir, repo):
         disp_scale = size * TW * fudge / best_w  # display px per source px
         ow, oh = max(1, round(w * disp_scale * OUT_SCALE)), max(1, round(h * disp_scale * OUT_SCALE))
         out = Image.fromarray(a).resize((ow, oh), Image.LANCZOS)
-        fname = key + '.png'
+        fname = pre + key + '.png'
         out.save(os.path.join(out_dir, fname), optimize=True)
-        manifest[key] = {
+        manifest[pre + key] = {
             'file': 'assets/' + fname,
             'size': size,
             'w': round(w * disp_scale, 2), 'h': round(h * disp_scale, 2),
             'ax': round(cx * disp_scale, 2), 'ay': round(ground_y * disp_scale, 2),
         }
-        print(f'{key:12s} {ow}x{oh}  footprint {best_w}px of {w}px')
-    process_spec(src_dir, out_dir, keep, manifest)
+        print(f'{pre + key:24s} {ow}x{oh}  footprint {best_w}px of {w}px')
+    if not region:          # trees, ore and bushes are shared by every region
+        process_spec(src_dir, out_dir, keep, manifest)
     json.dump(manifest, open(manifest_path, 'w'), indent=1)
 
 
 if __name__ == '__main__':
-    process(sys.argv[1], os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    process(sys.argv[1], os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            sys.argv[2] if len(sys.argv) > 2 else None)

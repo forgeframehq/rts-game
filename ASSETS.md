@@ -65,5 +65,36 @@ One sheet per unit, facing south-east (the game mirrors it). Rows in this order,
 Villager adds rows for chop, mine, farm and build (6 frames each).
 Files: `unit_villager.png`, `unit_swordsman.png`, `unit_spearman.png`, `unit_archer.png`, `unit_knight.png`
 
+## Regional buildings
+Buildings are made once per region, not once per dynasty. The regions are `western`
+(Britons, Franks), `mediterranean` (Byzantines) and `eastasian` (Chinese), set by
+`G.REGION` in `js/data.js`.
+
+The western set is the plain `house.png`, `barracks.png` and so on above. A region's own
+art is the same name under that region's prefix — `mediterranean_house`,
+`eastasian_barracks` — and the game prefers it automatically, falling back to the western
+set wherever a region has no art of its own. Adding a region's buildings needs no code
+change.
+
+Generate each one image-to-image from the matching western sprite in `assets/source/`, so
+the camera angle, footprint width and painted style carry over and only the architecture
+changes. Then process it with the region named:
+
+```
+python3 tools/process_art.py <folder of source PNGs> mediterranean
+```
+
+That measures each footprint, scales it to the grid, writes `assets/<region>_<key>.png`,
+keeps the original under `assets/source/<region>/` and adds the anchors to the manifest.
+
+## Villager dress
+Villagers are painted once, for the Britons, and dyed for the other dynasties at runtime
+(`dye()` in `js/art.js`, colours in `G.CIV_LOOK` in `js/data.js`). Each dynasty gets a
+tunic colour, a second colour below the waist, its own hair and its own skin tone; the
+face, hands and hair are found per frame, and magenta is left alone for the team colour.
+
+So no villager art ships per dynasty. If a dynasty is later given villager sheets of its
+own (`unit3d_franks_villager_m_idle` and friends), the dye stops applying to it by itself.
+
 ## Where files go
 Put finished files in `assets/` in this repo using the file names above.
