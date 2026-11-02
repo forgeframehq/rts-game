@@ -171,18 +171,22 @@
 
     // stumps left by chopped trees (ground level)
     const stump = G.stumpSprite && G.stumpSprite();
-    if (stump) for (const d of G.decals || []) {
+    for (const d of G.decals || []) {
       if (!G.isExplored(d.x, d.y)) continue;
       const s = G.toScreen(d.x, d.y);
-      if (s.x < -60 || s.x > W + 60 || s.y < -60 || s.y > H + 60) continue;
+      if (s.x < -90 || s.x > W + 90 || s.y < -90 || s.y > H + 90) continue;
       ctx.globalAlpha = Math.min(1, d.life / 10);
-      drawSprite(stump, s.x, s.y, z);
+      if (d.t === 'rubble') drawRubble(d, s, z);
+      else if (stump) drawSprite(stump, s.x, s.y, z);
       ctx.globalAlpha = 1;
     }
     if (G.drawCorpses) G.drawCorpses(ctx, z);
     const sel = G.selection || [];
     // farms & ground-level marks first (already sorted low)
+    burning.length = 0;
     for (const it of list) { if (it.deco) { const sp = G.resSprite('tree', it.deco.v); if (sp) drawSprite(sp, it.s.x, it.s.y, z); } else drawEntity(it.e, it.s, z, sel.includes(it.e)); }
+    // smoke and flame last, so a tree in front cannot wipe out a burning roof behind it
+    for (const d of burning) damageOver(d[0], d[1], d[2], d[3]);
 
     // projectiles
     ctx.strokeStyle = '#3a2a1a'; ctx.lineWidth = 1.4 * z;
@@ -263,6 +267,96 @@
     ctx.drawImage(sp.cv, x - sp.ax * z, y - sp.ay * z, sp.w * z, sp.h * z);
   }
 
+  // what is left where a building stood: broken stone and a scorch, drawn in code
+  function drawRubble(d, s, z) {
+    const rng = G.rng((d.id || 1) * 131), sz = (d.size || 2);
+    ctx.save();
+    ctx.globalAlpha *= 0.85;
+    ctx.fillStyle = 'rgba(38,30,22,0.5)';
+    ctx.beginPath(); ctx.ellipse(s.x, s.y, sz * 15 * z, sz * 7.5 * z, 0, 0, 7); ctx.fill();
+    for (let i = 0; i < 5 + sz * 3; i++) {
+      const a = rng() * 7, r = rng() * sz * 13 * z;
+      const x = s.x + Math.cos(a) * r, y = s.y + Math.sin(a) * r * 0.5;
+      const w = (2.5 + rng() * 4) * z, h = w * 0.7;
+      ctx.fillStyle = ['#8d867c', '#6f6963', '#a39b8f'][i % 3];
+      ctx.beginPath();
+      ctx.moveTo(x - w, y); ctx.lineTo(x - w * 0.4, y - h); ctx.lineTo(x + w * 0.7, y - h * 0.8);
+      ctx.lineTo(x + w, y); ctx.closePath(); ctx.fill();
+    }
+    // a few charred beams
+    ctx.strokeStyle = '#3a2a1c'; ctx.lineWidth = 1.6 * z;
+    for (let i = 0; i < 3; i++) {
+      const a = rng() * 7, r = rng() * sz * 9 * z;
+      const x = s.x + Math.cos(a) * r, y = s.y + Math.sin(a) * r * 0.5, l = (6 + rng() * 9) * z, ang = rng() * 3;
+      ctx.beginPath(); ctx.moveTo(x - Math.cos(ang) * l, y - Math.sin(ang) * l * 0.5);
+      ctx.lineTo(x + Math.cos(ang) * l, y + Math.sin(ang) * l * 0.5); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // ---- damage: cracks, then smoke, then flame, layered over the ordinary sprite ----
+  // No damaged art is made for any building; this is drawn over whatever is there, so it
+  // works for every building in every region, including ones that do not exist yet.
+  const burning = [];
+  // Damage, layered over the ordinary sprite: soot on the body, smoke off the roof, and
+  // flame at the eaves once it is nearly down. Anchored to the sprite, so it sits on the
+  // building rather than at a guessed height — a watch tower and a farm are not alike.
+  function damageOver(e, g, z, sp) {
+    const k = Math.max(0, Math.min(1, 1 - e.hp / e.maxHp));   // 0 whole, 1 nearly down
+    if (k < 0.28) return;
+    const rng = G.rng(e.id * 7919);
+    const halfW = (sp ? sp.w * 0.34 : e.size * G.TW * 0.4) * z;
+    const roof = g.y - (sp ? sp.ay * 0.82 : 30) * z;          // near the top of the art
+    const body = g.y - (sp ? sp.ay * 0.38 : 14) * z;          // mid wall
+    // soot
+    const marks = 2 + Math.floor(k * 4);
+    for (let i = 0; i < marks; i++) {
+      const bx = g.x + (rng() - 0.5) * halfW * 1.8;
+      const by = body + (rng() - 0.5) * (body - roof) * 0.9;
+      const r = (6 + rng() * 10) * z * (0.7 + k);
+      const a = Math.min(0.45, (k - 0.26) * 0.7);
+      const grd = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+      grd.addColorStop(0, 'rgba(22,16,12,' + a.toFixed(3) + ')');
+      grd.addColorStop(1, 'rgba(22,16,12,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(bx, by, r, 0, 7); ctx.fill();
+    }
+    if (k < 0.45) return;
+    // smoke, rising off the roof and drifting
+    const puffs = 4 + Math.floor(k * 5);
+    for (let i = 0; i < puffs; i++) {
+      const t = (G.time * 0.3 + i / puffs + (e.id % 13) * 0.077) % 1;
+      const px = g.x + Math.sin(i * 2.1 + e.id) * halfW * 0.5 + t * 16 * z;
+      const py = roof - 4 * z - t * 62 * z;
+      const r = (7 + t * 26) * z;
+      const a = (1 - t) * 0.62 * Math.min(1, (k - 0.42) * 4);
+      const col = k > 0.72 ? '74,68,62' : '186,180,170';
+      const grd = ctx.createRadialGradient(px, py, 0, px, py, r);
+      grd.addColorStop(0, 'rgba(' + col + ',' + a.toFixed(3) + ')');
+      grd.addColorStop(1, 'rgba(' + col + ',0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill();
+    }
+    if (k < 0.72) return;
+    // flame along the eaves
+    const fl = 6;
+    for (let i = 0; i < fl; i++) {
+      const ph = (G.time * 2.6 + i * 0.37) % 1;
+      const fx = g.x + ((i / (fl - 1)) - 0.5) * halfW * 1.5 + Math.sin(G.time * 3 + i) * 2 * z;
+      const fy = roof + (14 - ph * 11) * z;
+      const h = (9 + Math.sin(G.time * 5 + i * 2) * 3) * z * (0.6 + 0.6 * (1 - ph));
+      ctx.globalAlpha = 0.5 + 0.45 * (1 - ph);
+      ctx.fillStyle = ph < 0.35 ? '#ffd863' : ph < 0.7 ? '#f3861f' : '#c33c17';
+      ctx.beginPath();
+      ctx.moveTo(fx, fy - h);
+      ctx.quadraticCurveTo(fx + 3.5 * z, fy - h * 0.35, fx + 2.2 * z, fy);
+      ctx.quadraticCurveTo(fx, fy + 1.5 * z, fx - 2.2 * z, fy);
+      ctx.quadraticCurveTo(fx - 3.5 * z, fy - h * 0.35, fx, fy - h);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
   function selRingTile(e, col, width) {
     const s = e.size || 1;
     const a = G.toScreen(e.tx, e.ty), b = G.toScreen(e.tx + s, e.ty), c = G.toScreen(e.tx + s, e.ty + s), d = G.toScreen(e.tx, e.ty + s);
@@ -275,7 +369,19 @@
       if (selected) selRingTile(e, '#fff');
       const sp = G.resSprite(e.type, e.var);
       const g = G.toScreen(e.tx + 0.5, e.ty + 0.5);
-      drawSprite(sp, g.x, g.y, sp.art ? z : z * 0.9);
+      // A forest of identical trees reads as wallpaper. There are four tree sprites and
+      // one of each rock, so the variety comes from the draw instead: every resource is
+      // mirrored, sized and shaded a little by its own id, which costs no art at all.
+      const v = (e.id * 2654435761) >>> 0;
+      const flip = (v & 1) ? -1 : 1;
+      const scale = 0.88 + ((v >>> 1) & 31) / 31 * 0.26;
+      const shade = 0.9 + ((v >>> 6) & 15) / 15 * 0.2;
+      const zz = (sp.art ? z : z * 0.9) * scale;
+      ctx.save();
+      if (shade !== 1) ctx.filter = 'brightness(' + shade.toFixed(2) + ')';
+      if (flip < 0) { ctx.translate(g.x * 2, 0); ctx.scale(-1, 1); }
+      drawSprite(sp, g.x, g.y, zz);
+      ctx.restore();
       if (selected) hpBar(g.x, g.y - 70 * z, 30, e.amount / G.RES[e.type].amount, true);
       return;
     }
@@ -289,7 +395,22 @@
       else sp = G.foundationSprite(e.type, Math.min(3, Math.floor(e.progress * 4)));
       if (e.hitT) ctx.globalAlpha = 0.85;
       drawSprite(sp, g.x, g.y, z);
+      // under construction: the finished building rises out of the scaffolding, revealed
+      // from the ground up as the work goes on. No stage art — one clip of the real sprite.
+      if (!e.built && e.progress > 0.04) {
+        const fin = G.buildingSprite(e.type, e.owner, e.type === 'farm' ? 0 : undefined);
+        if (fin) {
+          const top = g.y - fin.ay * z, full = fin.h * z, shown = full * Math.min(1, e.progress);
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(g.x - fin.ax * z - 2, top + full - shown, fin.w * z + 4, shown + 2);
+          ctx.clip();
+          drawSprite(fin, g.x, g.y, z);
+          ctx.restore();
+        }
+      }
       ctx.globalAlpha = 1;
+      if (e.built && e.hp < e.maxHp * 0.74 && e.type !== 'farm') burning.push([e, g, z, sp]);
       // mill blades
       if (e.type === 'mill' && e.built && !sp.art) {
         ctx.save(); ctx.translate(g.x - 8 * z, g.y - 62 * z); ctx.rotate(G.time * 1.2);

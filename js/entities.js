@@ -218,6 +218,9 @@
     if (e.kind === 'building' && e.queue) for (const q of e.queue) G.refund(e.owner, q.cost);
     if (e.kind === 'building' && e.garrison && e.garrison.length) G.ungarrison(e);
     if (e.kind === 'res' && e.type === 'tree' && G.decals) G.decals.push({ x: e.x, y: e.y, life: 150 });
+    // a building that falls leaves its stones on the ground for a good while
+    if (e.kind === 'building' && e.type !== 'farm' && G.decals)
+      G.decals.push({ t: 'rubble', x: e.tx + e.size / 2, y: e.ty + e.size / 2, size: e.size, id: e.id, life: 240 });
     if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, def: { tier: (e.def && e.def.tier) || 0 }, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
