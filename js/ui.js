@@ -10,7 +10,7 @@
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null };
+  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal' };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
   // (Android in full screen or as an installed app); elsewhere the phone's own rotation decides.
@@ -39,7 +39,7 @@
   }));
 
   // ---------- Screens ----------
-  const SCREENS = ['start', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
+  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
   function show(id) {
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
     if (id === 'start') refreshContinue();
@@ -148,16 +148,24 @@
   }
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
 
-  // Quick Match: no setup screen. One opponent, high resources, so you are fighting
-  // within a couple of minutes instead of gathering for ten. Keeps your last civ.
-  $('m-quick').onclick = () => startSkirmish({
-    slots: [
-      { type: 'human', civ: (prefs.setup && prefs.setup.slots[0].civ) || 'britons', team: 0 },
-      { type: 'ai', civ: 'random', team: 0, ai: 'normal' },
-      { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
-      { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
-    ],
-    size: 'medium', res: 'high', pop: '200', reveal: 'normal', shape: 'rect'
+  // Quick Match: pick a difficulty and go. One opponent, high resources, so you are
+  // fighting within a couple of minutes instead of gathering for ten. Keeps your last civ.
+  $('m-quick').onclick = () => {
+    const lvl = prefs.quickAI || 'normal';
+    document.querySelectorAll('#quick .qd').forEach(b => b.classList.toggle('primary', b.dataset.ai === lvl));
+    show('quick');
+  };
+  document.querySelectorAll('#quick .qd').forEach(b => b.onclick = () => {
+    prefs.quickAI = b.dataset.ai; savePrefs();
+    startSkirmish({
+      slots: [
+        { type: 'human', civ: (prefs.setup && prefs.setup.slots[0].civ) || 'britons', team: 0 },
+        { type: 'ai', civ: 'random', team: 0, ai: b.dataset.ai },
+        { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
+        { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
+      ],
+      size: 'medium', res: 'high', pop: '200', reveal: 'normal', shape: 'rect'
+    });
   });
 
   // ---------- Dynasties ----------
