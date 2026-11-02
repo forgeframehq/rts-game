@@ -124,6 +124,8 @@
     ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - d.ax * z, y - d.ay * z, d.fw * z, d.fh * z);
     if (alpha < 1) ctx.restore();
   }
+  // where in each attack animation the blow lands (0..1)
+  const IMPACT = { militia: { attack: 0.5, attack2: 0.4 }, spearman: { attack: 0.55, attack2: 0.35 }, archer: { attack: 0.92 }, longbowman: { attack: 0.92 }, knight: { attack: 0.45 } };
   function drawShadow(ctx, x, y, z) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill(); }
   function draw3d(ctx, u, x, y, z) {
     if (!G.use3d) return false;
@@ -131,12 +133,28 @@
     for (const name of pick3d(u)) { key = key3d(u, name); if (key) { anim = name; break; } }
     if (!key) return false;
     const d = art[key].def, moving = u.path.length > 0;
-    // attacks: the swing is locked to the real hit, so the blade lands when damage is dealt
-    const IMPACT = { attack: 0.55 };
+    // ---- combat: swing locked to the real hit, combat stance between swings, flinch / block when struck ----
     if (anim === 'attack' && !moving) {
-      const rate = u.def.rate || 2, ph = ((rate - Math.max(0, u.cool)) / rate + (u.def.ranged ? 0.62 : IMPACT.attack)) % 1;
-      drawShadow(ctx, x, y, z); drawFrame3(ctx, key, G.ownerColor(u.owner), Math.floor(ph * d.frames), u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
-      return true;
+      const rate = u.def.rate || 2, cool = Math.max(0, u.cool);
+      if (u.lastCool !== undefined && cool > u.lastCool + 0.01) u.swingN = (u.swingN || 0) + 1;   // a new strike was dealt
+      u.lastCool = cool;
+      const k2 = (u.swingN || 0) % 2 && key3d(u, 'attack2');
+      const sk = k2 || key, sd = art[sk].def;
+      const imp = (IMPACT[u.type] || {})[k2 ? 'attack2' : 'attack'] || (u.def.ranged ? 0.9 : 0.55);
+      const T = Math.min(rate * 0.95, sd.cycle || 1), e = rate - cool;
+      let ph = -1;
+      if (e < (1 - imp) * T) ph = imp + e / T;            // follow-through after the hit
+      else if (cool <= imp * T) ph = imp - cool / T;      // wind-up into the next hit
+      drawShadow(ctx, x, y, z);
+      if (ph >= 0) { drawFrame3(ctx, sk, G.ownerColor(u.owner), Math.min(sd.frames - 1, Math.floor(ph * sd.frames)), u.dir || 0, x, y, z, 1); return true; }
+      const hk = u.hurtT > 0 && (((u.id + (u.swingN || 0)) % 3 === 0 && key3d(u, 'block')) || key3d(u, 'hit'));
+      if (hk) { const hd = art[hk].def; drawFrame3(ctx, hk, G.ownerColor(u.owner), Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
+      const rk = key3d(u, 'ready') || key3d(u, 'idle');
+      if (rk) { const rd = art[rk].def; drawFrame3(ctx, rk, G.ownerColor(u.owner), Math.floor((G.time + (u.id % 7) * 0.37) * Math.min(14, Math.max(7, rd.frames / (rd.cycle || 1.6)))), u.dir || 0, x, y, z, 1); return true; }
+    }
+    if (!moving && u.hurtT > 0 && u.type !== 'villager') {
+      const hk = key3d(u, 'hit');
+      if (hk) { const hd = art[hk].def; drawShadow(ctx, x, y, z); drawFrame3(ctx, hk, G.ownerColor(u.owner), Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
     }
     const f = moving ? Math.floor((u.dist || 0) / (d.stride || STRIDE3) * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';

@@ -5,13 +5,14 @@
  "clipsUrl": [
   "villager_m_anim.glb",
   "villager_m_anim2.glb",
-  "combat_anim.glb"
+  "combat_anim.glb",
+  "combat2_anim.glb"
  ],
  "anims": [
   {
    "name": "walk",
    "clip": "Spear_Walk",
-   "frames": 8,
+   "frames": 12,
    "lockRoot": true,
    "props": [
     {
@@ -23,31 +24,15 @@
       0
      ]
     }
-   ]
+   ],
+   "start": 0,
+   "end": 1,
+   "stride": 1.45
   },
   {
    "name": "idle",
    "clip": "Idle_02",
    "frames": 16,
-   "props": [
-    {
-     "bone": "RightHand",
-     "tool": "spear",
-     "rot": [
-      1.5708,
-      0,
-      0
-     ]
-    }
-   ]
-  },
-  {
-   "name": "attack",
-   "clip": "Thrust_Slash",
-   "frames": 10,
-   "start": 0,
-   "end": 1,
-   "lockRoot": true,
    "props": [
     {
      "bone": "RightHand",
@@ -76,6 +61,80 @@
      ]
     }
    ]
+  },
+  {
+   "name": "attack",
+   "clip": "Thrust_Slash",
+   "frames": 12,
+   "start": 0.15,
+   "end": 0.75,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "attack2",
+   "clip": "Triple_Combo_Attack",
+   "frames": 12,
+   "start": 0.2,
+   "end": 0.65,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "ready",
+   "clip": "Combat_Stance",
+   "frames": 12,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "hit",
+   "clip": "Hit_Reaction_1",
+   "frames": 8,
+   "start": 0,
+   "end": 0.8,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "spear",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    }
+   ],
+   "lockRoot": true
   }
  ]
 }

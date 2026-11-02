@@ -360,6 +360,10 @@
     select(a, false);
   };
   $('btn-box').onclick = () => setMode(mode === 'box' ? null : 'box');
+  // minimap on/off (remembered)
+  function applyMap() { document.body.classList.toggle('mm-off', !!prefs.mmOff); $('btn-map').classList.toggle('on', !prefs.mmOff); }
+  $('btn-map').onclick = () => { prefs.mmOff = !prefs.mmOff; savePrefs(); applyMap(); };
+  applyMap();
   $('btn-home').onclick = () => {
     const tc = G.ents.find(e => !e.dead && e.owner === 1 && e.type === 'towncenter') || G.ents.find(e => !e.dead && e.owner === 1);
     if (tc) G.camera.focus(tc.x, tc.y);
@@ -671,7 +675,7 @@
   // minimap: tap/drag to move camera
   const mm = $('minimap');
   let mmDown = false;
-  const mmGo = e => { const r = mm.getBoundingClientRect(); const w = G.minimapToWorld(mm, e.clientX - r.left, e.clientY - r.top); G.camera.focus(w.x, w.y); };
+  const mmGo = e => { const r = mm.getBoundingClientRect(); const k = mm.clientWidth / r.width; const w = G.minimapToWorld(mm, (e.clientX - r.left) * k, (e.clientY - r.top) * k); G.camera.focus(w.x, w.y); };
   mm.addEventListener('pointerdown', e => { mmDown = true; mm.setPointerCapture(e.pointerId); mmGo(e); });
   mm.addEventListener('pointermove', e => { if (mmDown) mmGo(e); });
   mm.addEventListener('pointerup', () => { mmDown = false; });

@@ -313,7 +313,7 @@
   }
   function hit(att, t, dmg) {
     if (t.dead) return;
-    t.hp -= dmg; t.hitT = 0.2;
+    t.hp -= dmg; t.hitT = 0.2; if (t.kind === 'unit') t.hurtT = 0.6;
     if (t.hp <= 0) { if (att.owner > 0) G.players[att.owner].killed++; G.kill(t); return; }
     // Retaliate / alert
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
@@ -472,6 +472,7 @@
 
   function updateUnit(u, dt) {
     if (u.hitT) u.hitT = Math.max(0, u.hitT - dt);
+    if (u.hurtT) u.hurtT = Math.max(0, u.hurtT - dt);
     u.cool -= dt;
     u.repath -= dt;
     u.working = false;

@@ -1,0 +1,38 @@
+<!doctype html><script type="module">
+import * as THREE from './lib/three.module.js';
+import { GLTFLoader } from './lib/loaders/GLTFLoader.js';
+window.go = async (model, files, names) => {
+  const L = new GLTFLoader(), g = await L.loadAsync(model); const clips = {};
+  for (const f of files) for (const c of (await L.loadAsync(f)).animations) clips[c.name] = c;
+  const mixer = new THREE.AnimationMixer(g.scene);
+  const box = new THREE.Box3().setFromObject(g.scene); const h = box.max.y - box.min.y;
+  const foot = g.scene.getObjectByName('LeftFoot'), hips = g.scene.getObjectByName('Hips');
+  const out = {};
+  for (const n of names) {
+    const c = clips[n]; mixer.stopAllAction(); const a = mixer.clipAction(c); a.play();
+    const S = 400, ys = [], zs = [], xs = [];
+    for (let i = 0; i <= S; i++) {
+      mixer.setTime(c.duration * i / S); g.scene.updateMatrixWorld(true);
+      const p = new THREE.Vector3(), q = new THREE.Vector3(); foot.getWorldPosition(p); hips.getWorldPosition(q);
+      ys.push(p.y); zs.push(p.z - q.z); xs.push(p.x - q.x);
+    }
+    // period: autocorrelation of foot height
+    const m = ys.reduce((s, v) => s + v, 0) / ys.length, d = ys.map(v => v - m);
+    let best = 0, bestLag = 0;
+    for (let lag = 20; lag < S * 0.9; lag++) { let s = 0; for (let i = 0; i + lag <= S; i++) s += d[i] * d[i + lag]; s /= (S + 1 - lag); if (s > best * 1.02 || (bestLag && lag > bestLag * 1.8 && s > best * 0.97 && false)) { if (s > best) { best = s; bestLag = lag; } } }
+    // first strong peak instead of global max
+    let first = 0; const ac = [];
+    for (let lag = 0; lag < S * 0.9; lag++) { let s = 0; for (let i = 0; i + lag <= S; i++) s += d[i] * d[i + lag]; ac.push(s / (S + 1 - lag)); }
+    for (let lag = 15; lag < ac.length - 1; lag++) if (ac[lag] > ac[lag - 1] && ac[lag] >= ac[lag + 1] && ac[lag] > ac[0] * 0.6) { first = lag; break; }
+    const period = c.duration * first / S;
+    // stance speed: foot moves backward relative to hips while low
+    const minY = Math.min(...ys), thr = minY + (Math.max(...ys) - minY) * 0.15;
+    let sp = [], dt = c.duration / S;
+    for (let i = 1; i <= S; i++) if (ys[i] < thr && ys[i - 1] < thr) sp.push(Math.hypot(zs[i] - zs[i - 1], xs[i] - xs[i - 1]) / dt);
+    sp.sort((a, b) => a - b); const speed = sp.length ? sp[Math.floor(sp.length / 2)] : 0;
+    out[n] = { dur: +c.duration.toFixed(2), period: +period.toFixed(3), speedH: +(speed / h).toFixed(3), strideH: +(speed * period / h).toFixed(3) };
+  }
+  return out;
+};
+window.ready = true;
+</script>

@@ -21,3 +21,10 @@ The horse is built and animated in code (`buildHorse` / `poseHorse` in render.ht
 so it is free and shared by every mounted unit. Set `"mount": true` in a jobs file; each anim gives `gait`, the rider's lower-body
 clip (`Chair_Sit_Idle_M` from sit_anim.glb) and an `upper` clip for the arms (e.g. `Right_Hand_Sword_Slash`). `stride` = tiles per walk cycle.
 Rigged models and motion files are backed up on the `models` branch (Meshy deletes tasks after ~3 days).
+
+## Walk cycles and combat (v2)
+Walk clips are in-place and some hold several step cycles (Casual_Walk = 3). Render ONE cycle (`end` = period / duration)
+and set `stride` = tiles per cycle, so feet don't slide. `gait.html` measures the period (foot-height autocorrelation).
+Measured: Casual_Walk 1.395 s ≈ 1.10 tiles, Carry_Heavy_Object_Walk 2.178 s ≈ 1.17, Spear_Walk 1.07 s ≈ 1.45.
+Soldiers have `attack` + `attack2` (alternated), `ready` (combat stance between swings), `hit`, and `block` (shield units).
+The game times each swing so the blow lands on the real hit (IMPACT table in js/art.js). Extra motions: combat2_anim.glb.

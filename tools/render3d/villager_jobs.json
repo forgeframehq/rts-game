@@ -6,8 +6,11 @@
   {
    "name": "walk",
    "clip": "Casual_Walk",
-   "frames": 8,
-   "lockRoot": true
+   "frames": 12,
+   "lockRoot": true,
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1
   },
   {
    "name": "idle",
@@ -119,7 +122,7 @@
   {
    "name": "carry_wood",
    "clip": "Carry_Heavy_Object_Walk",
-   "frames": 8,
+   "frames": 12,
    "lockRoot": true,
    "props": [
     {
@@ -132,12 +135,15 @@
      ],
      "scale": 1.35
     }
-   ]
+   ],
+   "start": 0,
+   "end": 0.3351,
+   "stride": 1.17
   },
   {
    "name": "carry_ore",
    "clip": "Carry_Heavy_Object_Walk",
-   "frames": 8,
+   "frames": 12,
    "lockRoot": true,
    "props": [
     {
@@ -150,12 +156,15 @@
      ],
      "scale": 1.9
     }
-   ]
+   ],
+   "start": 0,
+   "end": 0.3351,
+   "stride": 1.17
   },
   {
    "name": "carry_food",
    "clip": "Carry_Heavy_Object_Walk",
-   "frames": 8,
+   "frames": 12,
    "lockRoot": true,
    "props": [
     {
@@ -168,7 +177,10 @@
      ],
      "scale": 2.3
     }
-   ]
+   ],
+   "start": 0,
+   "end": 0.3351,
+   "stride": 1.17
   },
   {
    "name": "death",
