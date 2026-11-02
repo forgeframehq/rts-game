@@ -1,0 +1,39 @@
+{
+ "click": "click.ogg",
+ "select": "select.ogg",
+ "command": "command.ogg",
+ "error": "error.ogg",
+ "chop": [
+  "chop.ogg"
+ ],
+ "mine": "mine.ogg",
+ "farm": "farm.ogg",
+ "build": "build.ogg",
+ "place": "place.ogg",
+ "complete": "complete.ogg",
+ "sword": [
+  "sword.ogg"
+ ],
+ "spear": "spear.ogg",
+ "bow": [
+  "bow.ogg"
+ ],
+ "bolt": "bolt.ogg",
+ "axethrow": "axethrow.ogg",
+ "ram": "ram.ogg",
+ "trebuchet": "trebuchet.ogg",
+ "stonehit": "stonehit.ogg",
+ "die": [
+  "die.ogg"
+ ],
+ "buildingdown": "buildingdown.ogg",
+ "heal": "heal.ogg",
+ "train": "train.ogg",
+ "research": "research.ogg",
+ "ageup": "ageup.ogg",
+ "bell": "bell.ogg",
+ "attacked": "attacked.ogg",
+ "kingdown": "kingdown.ogg",
+ "victory": "victory.ogg",
+ "defeat": "defeat.ogg"
+}

@@ -26,6 +26,11 @@
   function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
   function applyPrefs() {
     G.speed = +prefs.speed || 1;
+    if (G.sound) {
+      const v = prefs.sound === undefined ? 'full' : prefs.sound;
+      G.sound.setEnabled(v !== 'off');
+      G.sound.setVolume(v === 'quiet' ? 0.35 : 0.75);
+    }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
     lockOrientation();
@@ -33,10 +38,20 @@
     [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
     document.querySelectorAll('[data-pref]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(prefs[seg.dataset.pref]))));
   }
+  document.addEventListener('click', e => {
+    if (G.sound && e.target.closest('button')) G.sound.play('click');
+  }, true);
   document.querySelectorAll('[data-pref]').forEach(seg => seg.addEventListener('click', e => {
     const v = e.target.closest('button') && e.target.closest('button').dataset.v; if (!v) return;
     prefs[seg.dataset.pref] = v; savePrefs(); applyPrefs();
   }));
+
+  // a phone will not play anything until the player has touched the screen, so the first
+  // gesture of the session is what starts the audio
+  ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {
+    if (G.sound) G.sound.wake();
+    ['pointerdown', 'keydown'].forEach(e2 => window.removeEventListener(e2, wake));
+  }, { once: false }));
 
   // ---------- Screens ----------
   const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
@@ -201,8 +216,10 @@
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
   UI.reset = function () { G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
-  UI.alert = function (msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
+  UI.alert = function (msg) {
+    if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
   UI.gameOver = function (res) {
+    if (G.sound) G.sound.play(res === 'victory' ? 'victory' : 'defeat');
     const p = G.players[1];
     $('over-title').textContent = res === 'victory' ? '👑 Victory!' : '💀 Defeat';
     const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
@@ -214,13 +231,13 @@
   G.onHit = function (att, t) {
     if (t.owner === 1 && G.enemies(att.owner, 1) && G.time - lastAlertT > 12) {
       const s = G.toScreen(t.x, t.y);
-      if (s.x < 0 || s.y < 0 || s.x > G.W || s.y > G.H) { lastAlertT = G.time; UI.alert(t.kind === 'building' ? `⚠️ Your ${t.def.name} is under attack!` : '⚠️ Your units are under attack!'); UI.lastAttack = { x: t.x, y: t.y }; }
+      if (s.x < 0 || s.y < 0 || s.x > G.W || s.y > G.H) { lastAlertT = G.time; if (G.sound) G.sound.play('attacked'); UI.alert(t.kind === 'building' ? `⚠️ Your ${t.def.name} is under attack!` : '⚠️ Your units are under attack!'); UI.lastAttack = { x: t.x, y: t.y }; }
     }
   };
   G.onDeposit = function (u, c) {
     if (u.owner === 1 && G.isVisible(u.x, u.y)) G.effects.push({ t: 'text', x: u.x, y: u.y, text: `+${Math.round(c.amt)} ${ICON[c.res]}`, col: '#fff', life: 1.2 });
   };
-  G.onResearched = function (p, name) { if (p === 1) { UI.alert(`⚒ ${name} researched!`); panelKey = ''; } };
+  G.onResearched = function (p, name) { if (p === 1) { if (G.sound) G.sound.play('research'); UI.alert(`⚒ ${name} researched!`); panelKey = ''; } };
   G.onAgeUp = function (p, to) {
     if (p === 1) UI.alert(`🎉 You reached the ${G.AGES[to].name}! ${G.AGES[to].bonus}`);
     else UI.alert(`${G.PLAYER_COLOR_NAMES[p] || 'Enemy'} (${G.CIVS[G.players[p].civ].name}) reached the ${G.AGES[to].name}`);
@@ -240,6 +257,7 @@
     if (G.selection.length > 1 && G.selection.some(e => e.kind === 'unit')) G.selection = G.selection.filter(e => e.kind === 'unit');
     if (G.selection.length > 1 && G.selection.every(e => e.kind === 'building')) G.selection = G.selection.filter(e => e.type === G.selection[0].type);
     panelKey = ''; refreshPanel(true);
+    if (G.sound && G.selection.length) G.sound.play('select');
   }
   const ownUnits = () => G.selection.filter(e => e.kind === 'unit' && e.owner === 1);
 
@@ -272,7 +290,7 @@
     return null;
   }
 
-  function ping(x, y, col) { G.effects.push({ t: 'ping', x, y, col, life: 0.6 }); }
+  function ping(x, y, col) { G.effects.push({ t: 'ping', x, y, col, life: 0.6 }); if (G.sound) G.sound.play('command'); }
   function outline(e, col) { if (e && !e.dead && e.kind !== 'unit') G.effects.push({ t: 'target', id: e.id, col, life: 0.9 }); }
   // Acknowledge an order: ping the ground and outline the tree/farm/building it landed on,
   // so a tap that did nothing is never silent.
@@ -442,7 +460,7 @@
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   function iconHTML(ic) {
     if (ic && ic.startsWith('i:')) {

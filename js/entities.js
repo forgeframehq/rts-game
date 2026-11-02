@@ -1,6 +1,7 @@
 // Entities, economy, unit behaviour and combat.
 (function () {
   let nextId = 1;
+  const snd = (k, x, y) => G.sound && G.sound.play(k, x, y);
   G.setNextId = n => { nextId = n; };
   G.ents = [];
   G.byId = new Map();
@@ -48,6 +49,7 @@
   function finishAge(tc) {
     const p = G.players[tc.owner], to = tc.aging.to; tc.aging = null; p.age = to;
     if (to === 4) for (const e of G.ents) if (e.owner === tc.owner && e.kind === 'building' && !e.dead) { e.maxHp = Math.round(e.maxHp * 1.2); e.hp = Math.round(e.hp * 1.2); }
+    if (tc.owner === 1) snd('ageup');
     if (G.onAgeUp) G.onAgeUp(tc.owner, to);
   }
 
@@ -194,6 +196,7 @@
     && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
   G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
   G.ringBell = function (owner) {
+    if (owner === 1) snd('bell');
     for (const u of G.ents) if (!u.dead && u.owner === owner && u.type === 'villager') {
       const tc = nearest(u, e => e.type === 'towncenter' && G.canGarrison(u, e));
       if (tc) G.garrisonTo(u, tc);
@@ -221,6 +224,7 @@
       if (e.owner > 0) G.players[e.owner].lost++;
     }
     G.byId.delete(e.id);
+    snd(e.kind === 'building' ? 'buildingdown' : e.type === 'king' ? 'kingdown' : 'die', e.x, e.y);
     if (G.onKilled) G.onKilled(e);
   };
 
@@ -386,6 +390,7 @@
     for (const u of G.ents) if (u.kind === 'unit' && !u.dead && u.x >= tx && u.x < tx + def.size && u.y >= ty && u.y < ty + def.size) {
       const f = G.nearestFree(u.x, u.y, 6); if (f) { u.x = f.x + 0.5; u.y = f.y + 0.5; u.path = []; }
     }
+    if (owner === 1) snd('place', b.x, b.y);
     if (builders && builders.length) G.cmdBuild(builders, b);
     return b;
   };
@@ -448,12 +453,17 @@
         if (tc) { t.task = { t: 'move', x: tc.x, y: tc.y + tc.size / 2 + 0.6 }; t.path = G.findPath(t.x, t.y, rectOf(tc), true, tc.id); }
       }
     }
+    const W = { militia: 'sword', king: 'sword', spearman: 'spear', knight: 'sword', scout: 'spear',
+      cataphract: 'sword', archer: 'bow', longbowman: 'bow', repeater: 'bolt', axethrower: 'axethrow',
+      ram: 'ram', trebuchet: 'stonehit' };
+    snd(W[att.type] || (att.kind === 'building' ? 'bow' : 'sword'), t.x, t.y);
     if (G.onHit) G.onHit(att, t);
   }
   function fire(att, t) {
     const dmg = damage(att, t);
     if (att.def.ranged || att.kind === 'building') {
-      const heavy = !!att.def.siege;   // a trebuchet stone lobs slowly and high, not like an arrow
+      const heavy = !!att.def.siege;
+      if (att.type === 'trebuchet') snd('trebuchet', att.x, att.y);   // a trebuchet stone lobs slowly and high, not like an arrow
       G.projs.push({ x: att.x, y: att.y, z: att.kind === 'building' ? 1.6 : 0.6, tx: t.x, ty: t.y, tid: t.id, from: att, dmg, t: 0, heavy, dur: Math.max(0.25, G.dist(att, t) / (heavy ? 4 : 9)) });
     } else hit(att, t, dmg);
   }
@@ -482,7 +492,7 @@
         if (!blocked) b.qt += dt * speed * (G.fastTrain || 1);
         b.housed = blocked;
         if (b.qt >= def.time) {
-          b.qt = 0; b.queue.shift();
+          b.qt = 0; b.queue.shift(); if (b.owner === 1) snd('train');
           spawn(b, q.type);
         }
       } else b.housed = false;
@@ -623,7 +633,7 @@
         u.working = true;
         t.hp = Math.min(t.maxHp, t.hp + dt * u.def.heal);
         u.healT = (u.healT || 0) - dt;
-        if (u.healT <= 0) { u.healT = 0.5; G.effects.push({ t: 'heal', x: t.x, y: t.y, life: 0.6 }); }
+        if (u.healT <= 0) { u.healT = 0.5; G.effects.push({ t: 'heal', x: t.x, y: t.y, life: 0.6 }); snd('heal', t.x, t.y); }
       }
     }
     const task = u.task;
@@ -687,6 +697,7 @@
         task.lx = r.x; task.ly = r.y;
         if (G.edgeDist(u, r) <= 0.75) {
           u.path = []; faceTo(u, r); u.working = true;
+          snd({ tree: 'chop', gold: 'mine', stone: 'mine', berry: 'farm' }[r.rtype] || 'chop', u.x, u.y);
           if (u.carry && u.carry.res !== r.rtype) u.carry = null;
           if (!u.carry) u.carry = { res: r.rtype, amt: 0 };
           let rate = G.RES[r.type].rate * (G.fastGather || 1);
@@ -782,11 +793,12 @@
         if (b.built && b.hp >= b.maxHp) { afterBuild(u, b); break; }
         if (G.edgeDist(u, b) <= 0.8 || (b.type === 'farm' && u.x >= b.tx && u.x <= b.tx + b.size && u.y >= b.ty && u.y <= b.ty + b.size)) {
           u.path = []; faceTo(u, b); u.working = true;
+          snd('build', u.x, u.y);
           if (!b.built) {
             const inc = dt / b.def.time * (G.fastBuild || 1);
             b.progress = Math.min(1, b.progress + inc);
             b.hp = Math.min(b.maxHp, b.hp + inc * b.maxHp);
-            if (b.progress >= 1) { b.built = true; b.hp = Math.max(b.hp, b.maxHp * 0.999); if (G.onBuilt) G.onBuilt(b); }
+            if (b.progress >= 1) { b.built = true; b.hp = Math.max(b.hp, b.maxHp * 0.999); snd('complete', b.x, b.y); if (G.onBuilt) G.onBuilt(b); }
           } else {
             b.hp = Math.min(b.maxHp, b.hp + dt * b.maxHp / b.def.time * 0.5); // repair
           }

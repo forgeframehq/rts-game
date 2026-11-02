@@ -122,6 +122,8 @@ Upgrades: Blacksmith (armour and weapons), University (building strength, range)
 **Reuse:** new units in later Ages are mostly new kit combinations; new building types are one image per region plus their tier upgrade; upgrades need no new art except armour swaps.
 
 ### Unique units
+All four are in the game, trained at the Castle, each with an Elite upgrade.
+
 | Dynasty | Unit | Role |
 |---|---|---|
 | Britons | Longbowman | Longest-range archer |
@@ -131,8 +133,8 @@ Upgrades: Blacksmith (armour and weapons), University (building strength, range)
 
 ### King and Queen
 - **King:** central to the **Regicide** game mode, where you lose if your King dies. Tough but slow and weak in combat, so you guard him while hunting the enemy's.
-- **Queen:** proposed as a **support hero** who heals or boosts nearby troops, so bringing her into battle is a risk-and-reward choice. *(To confirm.)*
-- Each dynasty has its own King and Queen look, also used on the Dynasties pages and in the campaign.
+- **Queen:** a **support hero** who heals nearby troops a little faster than a Monk, so bringing her into battle is a risk-and-reward choice. Built, and she takes no population.
+- Each dynasty has its own King and Queen look. They are the shared villager body with a crown, mantle and gown as props, dyed per dynasty like the villagers, so the set cost no Meshy credits rather than the eight models first budgeted.
 
 ### Effects
 Arrows and bolts (done), weapon clash sparks, dust, buildings burning when damaged and crumbling to rubble. Blood is optional with an on/off setting, which helps app store age ratings.
@@ -167,7 +169,7 @@ Rule of thumb: **test one before making many.** Every new kind of asset gets a s
 | 0 | Painted buildings, resources, title screen, Britons villagers (2D) | ✅ Done |
 | 1 | **Lock the unit pipeline:** (a) one 3D villager rendered in 8 directions; (b) one modular soldier: 1 body, 2 armour tiers, 2 weapons | Next (Meshy Pro set up) |
 | 1b | **Free polish:** buildings rise during construction, fire/smoke/rubble damage states, tree and rock variety | Next |
-| 2 | **Core systems:** Ages and upgrades, unique units, King and Queen with Regicide mode, Monk, siege, sound | |
+| 2 | **Core systems:** Ages and upgrades, unique units, King and Queen with Regicide mode, Monk, siege | ✅ Done (sound outstanding) |
 | 3 | **Content production:** run the pipeline for all dynasties, regions, units and building tiers | |
 | 4 | **Campaign, tutorial mission, polish, performance**; release as installable web app, then Android via Capacitor | |
 | 5 | **Fantasy game** on the same engine, skeletons and tools, with new art and data | |
