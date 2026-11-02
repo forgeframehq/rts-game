@@ -698,5 +698,86 @@
   "fh": 43.2,
   "ax": 19.73,
   "ay": 37.95
+ },
+ "unit3d_western_knight_m_attack": {
+  "file": "assets/units/unit3d_western_knight_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_western_knight_m_death": {
+  "file": "assets/units/unit3d_western_knight_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 83.64,
+  "ax": 46.55,
+  "ay": 57.57
+ },
+ "unit3d_western_knight_m_idle": {
+  "file": "assets/units/unit3d_western_knight_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 71.27,
+  "fh": 66.18,
+  "ax": 35.64,
+  "ay": 56.84
+ },
+ "unit3d_western_knight_m_walk": {
+  "file": "assets/units/unit3d_western_knight_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 70.18,
+  "ax": 36.73,
+  "ay": 57.57
+ },
+ "unit3d_britons_longbowman_m_attack": {
+  "file": "assets/units/unit3d_britons_longbowman_m_attack.png",
+  "frames": 14,
+  "rows": 8,
+  "cycle": 5,
+  "fw": 52.53,
+  "fh": 54.4,
+  "ax": 26.13,
+  "ay": 49.15
+ },
+ "unit3d_britons_longbowman_m_death": {
+  "file": "assets/units/unit3d_britons_longbowman_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 62.93,
+  "ax": 34.13,
+  "ay": 46.22
+ },
+ "unit3d_britons_longbowman_m_idle": {
+  "file": "assets/units/unit3d_britons_longbowman_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 53.07,
+  "fh": 42.93,
+  "ax": 26.4,
+  "ay": 38.22
+ },
+ "unit3d_britons_longbowman_m_walk": {
+  "file": "assets/units/unit3d_britons_longbowman_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 4.133,
+  "fw": 46.93,
+  "fh": 43.47,
+  "ax": 23.47,
+  "ay": 38.22
  }
 }

@@ -152,6 +152,7 @@
     $('dyn-role').textContent = c.role + ' dynasty';
     $('dyn-history').textContent = c.history;
     $('dyn-bonuses').innerHTML = c.bonuses.map(x => `<li>${x}</li>`).join('');
+    $('dyn-unique').textContent = c.unique ? c.unique.text : 'Arrives with the next update, alongside the Ages system.';
   }
 
   // ---------- Pause & game over ----------
@@ -233,7 +234,6 @@
 
   // ---------- Tap logic ----------
   let lastTap = { t: 0, x: 0, y: 0, id: 0 };
-  let dropped = null; // units deselected by a grass tap, so a quick second tap can move them
   function tap(sx, sy, opts) {
     opts = opts || {};
     const w = G.toWorld(sx, sy);
@@ -269,23 +269,12 @@
       }
       select([target], opts.add); return;
     }
-    if (mode === 'move' && units.length) {
-      const r = G.cmdSmart(units, w.x, w.y, target); setMode(null);
-      ping(target ? target.x : w.x, target ? target.y : w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8');
-      return;
-    }
-    if (units.length && target) {   // tapping a tree, mine, enemy etc. still commands; empty grass deselects
+    if (units.length) {   // tap anywhere = command (move, gather, attack); use the Deselect button to clear
       const r = G.cmdSmart(units, w.x, w.y, target);
       ping(target ? target.x : w.x, target ? target.y : w.y, r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8');
       return;
     }
     if (target) { select([target], false); return; }
-    if (mode === 'move') setMode(null);
-    if (dbl && !target && dropped && now - dropped.t < 400) {   // double-tap grass = move there
-      const us = dropped.units.filter(u => !u.dead && !u.inside); dropped = null;
-      if (us.length) { select(us, false); G.cmdSmart(us, w.x, w.y, null); ping(w.x, w.y, '#fff'); return; }
-    }
-    dropped = units.length ? { units, t: now } : null;
     select([], false);
   }
   const onScreen = e => { const s = G.toScreen(e.x, e.y); return s.x > 0 && s.y > 0 && s.x < G.W && s.y < G.H; };
@@ -431,6 +420,7 @@
     if (!force && key === panelKey) return;
     panelKey = key;
     const cmds = $('cmds'); cmds.innerHTML = '';
+    cmds.appendChild(btn('✖', 'Deselect', '', () => { buildMenu = false; select([], false); }));
     if (!own) return;
     const units = sel.filter(x => x.kind === 'unit');
     if (units.length) {
@@ -447,7 +437,6 @@
       if (vils.length) cmds.appendChild(btn('🛡️', 'Garrison', 'Town Center', () => {
         for (const v of vils) { const tc = G.nearest(v, e => e.type === 'towncenter' && G.canGarrison(v, e)); if (tc) G.garrisonTo(v, tc); else { UI.alert('No room in a Town Center'); break; } }
       }));
-      cmds.appendChild(btn('🧭', 'Move', 'then tap map', () => setMode('move')));
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
@@ -458,7 +447,7 @@
       return;
     }
     if (e.kind === 'building' && e.built && e.def.trains) {
-      for (const t of e.def.trains) {
+      for (const t of G.trainsFor(e)) {
         const c = G.unitCost(1, t);
         cmds.appendChild(btn(G.UNITS[t].icon, G.UNITS[t].name, costTxt(c), () => {
           for (const b of sel) {

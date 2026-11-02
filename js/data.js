@@ -15,7 +15,8 @@ G.CIVS = {
     bonuses: ["Archers +1 range", "Archers 20% cheaper", "Town Center works 15% faster"],
     name: 'Britons', color: '#2f6fd6',
     desc: 'Archer civ. Archers +1 range and 20% cheaper. Town Center works 15% faster.',
-    mods: { archerRange: 1, archerCost: 0.8, tcSpeed: 1.15 }
+    mods: { archerRange: 1, archerCost: 0.8, tcSpeed: 1.15 },
+    unique: { type: 'longbowman', at: 'range', text: 'Longbowman — trained at the Archery Range. Out-ranges every other archer (5 tiles, +1 from the Britons bonus) and hits harder. The bowmen of Crécy and Agincourt.' }
   },
   franks: {
     role: "Cavalry",
@@ -49,6 +50,7 @@ G.UNITS = {
   militia:  { name: 'Swordsman', cost: { food: 60, gold: 20 }, time: 12, hp: 50, atk: 7, range: 0.6, rate: 2, armor: 1, pierce: 1, speed: 1.5, los: 4, icon: '⚔️', cls: 'inf', bonus: { bld: 3 } },
   spearman: { name: 'Spearman', cost: { food: 35, wood: 25 }, time: 11, hp: 45, atk: 4, range: 0.7, rate: 2, armor: 0, pierce: 0, speed: 1.5, los: 4, icon: '🔱', cls: 'inf', bonus: { cav: 15 } },
   archer:   { name: 'Archer', cost: { wood: 25, gold: 45 }, time: 14, hp: 30, atk: 4, range: 4, rate: 2, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🏹', cls: 'arc', ranged: true, bonus: { inf: 2 } },
+  longbowman: { name: 'Longbowman', cost: { wood: 35, gold: 40 }, time: 15, hp: 35, atk: 6, range: 5, rate: 2, armor: 0, pierce: 1, speed: 1.4, los: 7, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 2 } },
   knight:   { name: 'Knight', cost: { food: 60, gold: 75 }, time: 18, hp: 100, atk: 10, range: 0.7, rate: 1.8, armor: 2, pierce: 2, speed: 2.4, los: 5, icon: '🐎', cls: 'cav' }
 };
 

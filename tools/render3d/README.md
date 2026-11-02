@@ -15,3 +15,9 @@ Jobs: `j_sword.json` (swordsman = militia), `j_spear.json`, `j_arch.json`. Clip 
 Sheets are keyed `unit3d_<region>_<type>_m_<anim>`; the game picks civ → region (G.REGION) → western.
 Meshy tasks: swordsman rig 01a19992-1133-71cc-949b-c03879b6b74a, spearman rig 01a19991-50c5-7199-ab91-5075d788442c,
 archer rig 01a19991-e26f-71e4-ba0f-8027471760c5, villager rig 01a198d6-99b7-7528-9e92-210d14997b34.
+
+## Cavalry
+The horse is built and animated in code (`buildHorse` / `poseHorse` in render.html: idle, walk, gallop, attack rear-up, death topple),
+so it is free and shared by every mounted unit. Set `"mount": true` in a jobs file; each anim gives `gait`, the rider's lower-body
+clip (`Chair_Sit_Idle_M` from sit_anim.glb) and an `upper` clip for the arms (e.g. `Right_Hand_Sword_Slash`). `stride` = tiles per walk cycle.
+Rigged models and motion files are backed up on the `models` branch (Meshy deletes tasks after ~3 days).

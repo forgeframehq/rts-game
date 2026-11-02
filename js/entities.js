@@ -83,7 +83,7 @@
     e.hp = e.maxHp = hp;
     if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
-    e.range = def.range + (type === 'archer' && mods(owner).archerRange ? mods(owner).archerRange : 0);
+    e.range = def.range + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0);
     return e;
   };
 
@@ -240,8 +240,16 @@
     return b;
   };
 
+  // a building's train list plus the owner's unique unit (e.g. Britons Longbowman at the Archery Range)
+  G.trainsFor = function (b) {
+    const list = (b.def.trains || []).slice();
+    const civ = G.players[b.owner] && G.CIVS[G.players[b.owner].civ];
+    if (civ && civ.unique && civ.unique.at === b.type) list.push(civ.unique.type);
+    return list;
+  };
   G.train = function (b, type) {
     if (!b.built || b.dead) return false;
+    if (!G.trainsFor(b).includes(type)) return false;
     const cost = G.unitCost(b.owner, type);
     const { pop, cap } = G.popOf(b.owner);
     if (pop >= cap) return 'pop';

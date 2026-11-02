@@ -54,7 +54,7 @@ def main(rdir, prefix, standing_px=150.0, only=None):
         sheet.save(os.path.join(out_dir, key + '.png'), optimize=True)
         ax, ay = meta['anchor']['x'] - x0, meta['anchor']['y'] - y0
         man[key] = {'file': f'assets/units/{key}.png', 'frames': n, 'rows': rows,
-                    'cycle': meta.get('cycle'), 'fw': round(cw * k, 2), 'fh': round(ch * k, 2), 'ax': round(ax * k, 2), 'ay': round(ay * k, 2)}
+                    'cycle': meta.get('cycle'), **({'stride': meta['stride']} if meta.get('stride') else {}), 'fw': round(cw * k, 2), 'fh': round(ch * k, 2), 'ax': round(ax * k, 2), 'ay': round(ay * k, 2)}
         print(f'{key}: {n}x{rows} frames, {ow}x{oh}px, cell {cw * k:.0f}x{ch * k:.0f}')
     json.dump(man, open(man_path, 'w'), indent=1)
 

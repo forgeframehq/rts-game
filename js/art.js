@@ -138,7 +138,7 @@
       drawShadow(ctx, x, y, z); drawFrame3(ctx, key, G.ownerColor(u.owner), Math.floor(ph * d.frames), u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
       return true;
     }
-    const f = moving ? Math.floor((u.dist || 0) / STRIDE3 * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
+    const f = moving ? Math.floor((u.dist || 0) / (d.stride || STRIDE3) * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
     drawFrame3(ctx, key, G.ownerColor(u.owner), f, u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
@@ -185,7 +185,7 @@
     }
     return true;
   };
-  G.unitArtHeight = u => (G.use3d && key3d(u, 'idle')) ? 50 : (animKey(u, 'idle', true) || animKey(u, 'walk_se', true) || art['unit_' + u.type + '_walk']) ? 46 : 0;
+  G.unitArtHeight = u => (G.use3d && key3d(u, 'idle')) ? Math.max(46, art[key3d(u, 'idle')].def.ay + 4) : (animKey(u, 'idle', true) || animKey(u, 'walk_se', true) || art['unit_' + u.type + '_walk']) ? 46 : 0;
 
   // corpses: play the death animation once, hold the last frame, then fade
   G.drawCorpses = function (ctx, z) {
