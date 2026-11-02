@@ -148,6 +148,18 @@
   }
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
 
+  // Quick Match: no setup screen. One opponent, high resources, so you are fighting
+  // within a couple of minutes instead of gathering for ten. Keeps your last civ.
+  $('m-quick').onclick = () => startSkirmish({
+    slots: [
+      { type: 'human', civ: (prefs.setup && prefs.setup.slots[0].civ) || 'britons', team: 0 },
+      { type: 'ai', civ: 'random', team: 0, ai: 'normal' },
+      { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
+      { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
+    ],
+    size: 'medium', res: 'high', pop: '200', reveal: 'normal', shape: 'rect'
+  });
+
   // ---------- Dynasties ----------
   let dynSel = 'britons';
   const tabs = $('dyn-tabs');
