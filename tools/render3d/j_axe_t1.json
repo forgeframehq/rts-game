@@ -1,0 +1,335 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "swordsman_rig.glb",
+ "clipsUrl": [
+  "villager_m_anim.glb",
+  "villager_m_anim2.glb",
+  "combat_anim.glb",
+  "combat2_anim.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 12,
+   "lockRoot": true,
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "idle",
+   "clip": "Idle_02",
+   "frames": 16,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "clip": "Right_Hand_Sword_Slash",
+   "frames": 12,
+   "start": 0.05,
+   "end": 0.75,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "attack2",
+   "clip": "Double_Combo_Attack",
+   "frames": 12,
+   "start": 0.08,
+   "end": 0.6,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "ready",
+   "clip": "Combat_Stance",
+   "frames": 12,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  },
+  {
+   "name": "hit",
+   "clip": "Hit_Reaction_1",
+   "frames": 8,
+   "start": 0,
+   "end": 0.8,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0.35
+     ],
+     "scale": 1.4
+    },
+    {
+     "bone": "LeftHand",
+     "tool": "throwaxe",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ],
+     "scale": 1.15
+    },
+    {
+     "bone": "Head",
+     "tool": "kettle",
+     "pos": [
+      0,
+      0.1,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron"
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron"
+    }
+   ]
+  }
+ ]
+}
