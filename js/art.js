@@ -98,7 +98,8 @@
   function key3d(u, a3) {
     const civ = G.players[u.owner] ? G.players[u.owner].civ : 'britons';
     const sx = u.sex || 'm';
-    for (const k of [`unit3d_${civ}_${u.type}_${sx}_${a3}`, `unit3d_britons_${u.type}_${sx}_${a3}`]) if (art[k]) return k;
+    const reg = G.REGION[civ] || 'western';   // soldiers are shared per region, like AoE2
+    for (const k of [`unit3d_${civ}_${u.type}_${sx}_${a3}`, `unit3d_${reg}_${u.type}_${sx}_${a3}`, `unit3d_britons_${u.type}_${sx}_${a3}`, `unit3d_western_${u.type}_${sx}_${a3}`]) if (art[k]) return k;
     return null;
   }
   function pick3d(u) {
@@ -112,7 +113,7 @@
       if (t.t === 'gather') return [WORK[t.rtype] || 'chop', 'idle'];
       if (t.t === 'farm') return ['farm', 'idle'];
       if (t.t === 'build') return ['build', 'idle'];
-      if (t.t === 'attack') return ['chop', 'idle'];
+      if (t.t === 'attack') return ['attack', 'chop', 'idle'];
     }
     return ['idle'];
   }
@@ -123,12 +124,20 @@
     ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - d.ax * z, y - d.ay * z, d.fw * z, d.fh * z);
     if (alpha < 1) ctx.restore();
   }
+  function drawShadow(ctx, x, y, z) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill(); }
   function draw3d(ctx, u, x, y, z) {
     if (!G.use3d) return false;
     let key = null, anim = null;
     for (const name of pick3d(u)) { key = key3d(u, name); if (key) { anim = name; break; } }
     if (!key) return false;
     const d = art[key].def, moving = u.path.length > 0;
+    // attacks: the swing is locked to the real hit, so the blade lands when damage is dealt
+    const IMPACT = { attack: 0.55 };
+    if (anim === 'attack' && !moving) {
+      const rate = u.def.rate || 2, ph = ((rate - Math.max(0, u.cool)) / rate + (u.def.ranged ? 0.62 : IMPACT.attack)) % 1;
+      drawShadow(ctx, x, y, z); drawFrame3(ctx, key, G.ownerColor(u.owner), Math.floor(ph * d.frames), u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
+      return true;
+    }
     const f = moving ? Math.floor((u.dist || 0) / STRIDE3 * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();

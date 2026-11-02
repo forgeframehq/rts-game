@@ -578,5 +578,125 @@
   "fh": 41.07,
   "ax": 13.33,
   "ay": 36.35
+ },
+ "unit3d_western_militia_m_attack": {
+  "file": "assets/units/unit3d_western_militia_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 1.5,
+  "fw": 54.4,
+  "fh": 56.27,
+  "ax": 27.2,
+  "ay": 47.55
+ },
+ "unit3d_western_militia_m_death": {
+  "file": "assets/units/unit3d_western_militia_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_western_militia_m_idle": {
+  "file": "assets/units/unit3d_western_militia_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.07,
+  "ax": 18.4,
+  "ay": 44.62
+ },
+ "unit3d_western_militia_m_walk": {
+  "file": "assets/units/unit3d_western_militia_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 4.133,
+  "fw": 48.53,
+  "fh": 42.13,
+  "ax": 24.27,
+  "ay": 37.15
+ },
+ "unit3d_western_spearman_m_attack": {
+  "file": "assets/units/unit3d_western_spearman_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 3,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_death": {
+  "file": "assets/units/unit3d_western_spearman_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_idle": {
+  "file": "assets/units/unit3d_western_spearman_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 45.33,
+  "fh": 54.13,
+  "ax": 22.67,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_walk": {
+  "file": "assets/units/unit3d_western_spearman_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 1.067,
+  "fw": 54.93,
+  "fh": 46.4,
+  "ax": 27.47,
+  "ay": 37.15
+ },
+ "unit3d_western_archer_m_attack": {
+  "file": "assets/units/unit3d_western_archer_m_attack.png",
+  "frames": 14,
+  "rows": 8,
+  "cycle": 5,
+  "fw": 46.4,
+  "fh": 54.4,
+  "ax": 23.2,
+  "ay": 49.15
+ },
+ "unit3d_western_archer_m_death": {
+  "file": "assets/units/unit3d_western_archer_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 62.13,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_western_archer_m_idle": {
+  "file": "assets/units/unit3d_western_archer_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 46.93,
+  "fh": 42.67,
+  "ax": 23.47,
+  "ay": 38.22
+ },
+ "unit3d_western_archer_m_walk": {
+  "file": "assets/units/unit3d_western_archer_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 4.133,
+  "fw": 39.73,
+  "fh": 43.2,
+  "ax": 19.73,
+  "ay": 37.95
  }
 }

@@ -159,15 +159,27 @@
   }
 
   // ---------- Commands ----------
+  // AoE2-style formation: a line facing the way the group travels. Melee in front, archers behind,
+  // villagers last; a mixed army marches at the pace of its slowest unit so it arrives together.
+  const RANK = { inf: 0, cav: 0, arc: 1, vil: 2 };
   G.cmdMove = function (units, x, y) {
-    const n = units.length, cols = Math.ceil(Math.sqrt(n));
-    units.forEach((u, i) => {
-      if (u.kind !== 'unit') return;
-      const ox = (i % cols) - (cols - 1) / 2, oy = Math.floor(i / cols) - (cols - 1) / 2;
-      let tx = x + ox * 0.9, ty = y + oy * 0.9;
+    units = units.filter(u => u.kind === 'unit');
+    const n = units.length; if (!n) return;
+    let cx = 0, cy = 0; for (const u of units) { cx += u.x; cy += u.y; } cx /= n; cy /= n;
+    let fx = x - cx, fy = y - cy; const fl = Math.hypot(fx, fy) || 1; fx /= fl; fy /= fl;   // forward
+    const rx = -fy, ry = fx;                                                              // right
+    const sorted = units.slice().sort((a, b) => (RANK[a.def.cls] || 0) - (RANK[b.def.cls] || 0) || a.id - b.id);
+    const cols = n <= 3 ? n : Math.max(3, Math.ceil(Math.sqrt(n * 2)));
+    const rows = Math.ceil(n / cols), gap = 0.85;
+    const military = units.some(u => u.type !== 'villager') && n > 1;
+    const gs = military ? Math.min(...units.map(u => u.def.speed)) : 0;
+    sorted.forEach((u, i) => {
+      const row = Math.floor(i / cols), inRow = Math.min(cols, n - row * cols), col = i % cols;
+      const ox = (col - (inRow - 1) / 2) * gap, oy = -(row - (rows - 1) / 2) * gap;   // row 0 at the front
+      let tx = x + rx * ox + fx * oy, ty = y + ry * ox + fy * oy;
       const f = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
       if (!G.isFree(tx | 0, ty | 0)) { tx = f.x + 0.5; ty = f.y + 0.5; }
-      u.task = { t: 'move', x: tx, y: ty };
+      u.task = { t: 'move', x: tx, y: ty, gs };
       u.path = G.findPath(u.x, u.y, { x0: tx | 0, y0: ty | 0, x1: tx | 0, y1: ty | 0 }, false, 0);
       if (u.path.length) u.path[u.path.length - 1] = { x: tx, y: ty };
     });
@@ -376,7 +388,7 @@
     if (!u.path.length) return true;
     const wp = u.path[0];
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
-    const step = u.def.speed * dt * (G.terrainSpeed || 1);
+    const step = (u.task.gs && u.task.t === 'move' ? Math.min(u.def.speed, u.task.gs) : u.def.speed) * dt * (G.terrainSpeed || 1);
     steer(u, dx / (d || 1), dy / (d || 1), dt);
     u.walk += dt;
     u.dist = (u.dist || 0) + Math.min(step, d);

@@ -73,6 +73,7 @@ G.RES = {
   gold:   { name: 'Gold Mine', res: 'gold', amount: 800, rate: 0.38 },
   stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
 };
+G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian' };
 G.CARRY = 10;
 G.FARM_RATE = 0.33;
 
