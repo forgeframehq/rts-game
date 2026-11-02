@@ -1,1 +1,5 @@
-{"music": ["peaceful_1.mp3", "peaceful_2.mp3"], "battleMusic": ["battle.mp3"]}
+{
+ "menuMusic": ["menu_1.mp3", "menu_2.mp3"],
+ "music": ["peaceful_1.mp3", "peaceful_2.mp3", "peaceful_3.mp3", "peaceful_4.mp3"],
+ "battleMusic": ["battle_1.mp3", "battle_2.mp3"]
+}

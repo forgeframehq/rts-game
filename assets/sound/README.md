@@ -19,15 +19,28 @@ Tracks live in `assets/sound/music/` and are listed under `"music"` in `manifest
 { "music": ["peaceful_1.mp3", "peaceful_2.mp3"] }
 ```
 
-There are two sets. `"music"` is the peaceful one, played while the town works;
-`"battleMusic"` takes over when **the player** is in a fight — a blow struck by or against
-them. Two AIs scrapping on the far side of the map does not turn it. Twelve seconds after
-the last blow it drifts back to the peaceful set, and the handover is a 3.5-second
-crossfade on a second audio element rather than a cut.
+There are three sets:
+
+| Key | When it plays |
+|---|---|
+| `menuMusic` | The title screen, the setup screens and the end-of-game screen |
+| `music` | In a game, while the town works |
+| `battleMusic` | In a game, when **the player** is in a fight |
+
+A fight means a blow struck by or against the player. Two AIs scrapping on the far side
+of the map does not turn it. Twelve seconds after the last blow it drifts back to the
+peaceful set; leaving for the title screen forgets the battle at once. Every handover is a
+3.5-second crossfade on a second audio element rather than a cut.
 
 ```json
-{ "music": ["peaceful_1.mp3", "peaceful_2.mp3"], "battleMusic": ["battle.mp3"] }
+{
+ "menuMusic": ["menu_1.mp3", "menu_2.mp3"],
+ "music": ["peaceful_1.mp3", "peaceful_2.mp3"],
+ "battleMusic": ["battle_1.mp3"]
+}
 ```
+
+A set left empty falls back to the peaceful one, so a half-filled pack still plays.
 
 Each set plays in a shuffled order, one after another, for ever, fading in and out so
 tracks run together without a click. Music is streamed from an `<audio>` element rather than

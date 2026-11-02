@@ -74,8 +74,10 @@
       manifest = m;
       if (m.music) lists.peace = [].concat(m.music);
       if (m.battleMusic) lists.battle = [].concat(m.battleMusic);
-      if (lists.peace.length || lists.battle.length) {
-        order.peace = shuffle(lists.peace.length); order.battle = shuffle(lists.battle.length);
+      if (m.menuMusic) lists.menu = [].concat(m.menuMusic);
+      if (S.musicLoaded()) {
+        for (const k in lists) order[k] = shuffle(lists[k].length);
+        if (!lists.menu.length) mood = 'peace';
         S.startMusic();
       }
       for (const key in m) {
@@ -126,9 +128,10 @@
   // Two moods, two playlists, and a crossfade between them: the peaceful set plays while
   // the town works, and the battle set takes over when the player is in a fight. Two
   // elements exist so one can come up while the other goes down, rather than cutting.
-  const lists = { peace: [], battle: [] };
-  let deck = [], cur = 0, order = { peace: [], battle: [] }, at = { peace: 0, battle: 0 };
-  let mood = 'peace', fades = [null, null], lastFight = -1e9, moodTimer = null;
+  const lists = { menu: [], peace: [], battle: [] };
+  let deck = [], cur = 0;
+  let order = { menu: [], peace: [], battle: [] }, at = { menu: 0, peace: 0, battle: 0 };
+  let mood = 'menu', scene = 'menu', fades = [null, null], lastFight = -1e9, moodTimer = null;
   S.musicEnabled = true;
   // 0.75 against files normalised to -24.4 LUFS puts the music out at about -26.9 LUFS:
   // present on a phone speaker, but a clear step under the game. Soft is -31.3.
@@ -141,9 +144,10 @@
     for (let i = n - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; }
     return a;
   }
+  // a set with nothing in it falls back to the peaceful one, so a half-filled pack still plays
   function pick(m) {
-    const l = lists[m].length ? lists[m] : lists.peace;
     const key = lists[m].length ? m : 'peace';
+    const l = lists[key];
     if (!l.length) return null;
     if (at[key] >= order[key].length) { order[key] = shuffle(l.length); at[key] = 0; }
     return l[order[key][at[key]++]];
@@ -192,19 +196,27 @@
   }
   // called from the game whenever the player strikes or is struck
   S.fighting = function () {
+    if (scene !== 'game') return;
     lastFight = (typeof G !== 'undefined' && G.time) || (performance.now() / 1000);
     if (mood !== 'battle' && lists.battle.length) setMood('battle');
+  };
+  // the title screen has its own theme; a battle is forgotten on the way back out to it
+  S.setScene = function (which) {
+    if (scene === which) return;
+    scene = which;
+    lastFight = -1e9;
+    setMood(which === 'menu' ? 'menu' : 'peace');
   };
   function watchMood() {
     if (moodTimer) return;
     moodTimer = setInterval(() => {
       const now = (typeof G !== 'undefined' && G.time) || (performance.now() / 1000);
-      if (mood === 'battle' && now - lastFight > CALM_AFTER) setMood('peace');
+      if (scene === 'game' && mood === 'battle' && now - lastFight > CALM_AFTER) setMood('peace');
     }, 1000);
   }
 
   S.startMusic = function () {
-    if (!S.musicEnabled || !(lists.peace.length || lists.battle.length)) return;
+    if (!S.musicEnabled || !S.musicLoaded()) return;
     watchMood();
     const a = deck[cur];
     if (a && a.src) { if (a.paused) { a.play().catch(() => {}); fade(cur, vol(), 2.0); } return; }
@@ -236,7 +248,7 @@
     if (on) S.wake();
   };
   S.loaded = () => ready;
-  S.musicLoaded = () => lists.peace.length + lists.battle.length;
+  S.musicLoaded = () => lists.menu.length + lists.peace.length + lists.battle.length;
   // what is playing, for the options screen and for checking the mix
   S.nowPlaying = () => (deck[cur] && deck[cur].src)
     ? { track: deck[cur].src.split('/').pop(), mood, paused: deck[cur].paused,

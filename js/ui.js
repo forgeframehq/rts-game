@@ -60,10 +60,12 @@
   const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
   function show(id) {
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
+    if (G.sound && (id === 'start' || id === 'over')) G.sound.setScene('menu');
     if (id === 'start') refreshContinue();
   }
   document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show('start'));
   function enterGame() {
+    if (G.sound) G.sound.setScene('game');
     for (const s of SCREENS) $(s).classList.add('hidden');
     $('hud').classList.remove('hidden');
     G.paused = false; G.demo = false; saveT = 20;
