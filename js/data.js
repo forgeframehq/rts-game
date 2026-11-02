@@ -61,7 +61,7 @@ G.UNITS = {
   repeater:   { name: 'Repeater Crossbowman', cost: { wood: 40, gold: 35 }, time: 16, hp: 35, atk: 3, range: 4, rate: 1, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 1 } },
   // ---- siege: shared by every dynasty. siege:true means the full attack lands on
   // buildings instead of the single point a bow would do, so walls actually come down.
-  ram:        { name: 'Battering Ram', cost: { wood: 160 }, time: 36, hp: 175, atk: 2, range: 0.6, rate: 5, armor: 0, pierce: 8, speed: 0.55, los: 3, icon: '🐏', cls: 'sie', siege: true, bonus: { bld: 48 } },
+  ram:        { name: 'Battering Ram', cost: { wood: 160 }, time: 36, hp: 175, atk: 2, range: 0.6, rate: 5, armor: 0, pierce: 10, speed: 0.55, los: 3, icon: '🐏', cls: 'sie', siege: true, bonus: { bld: 48 } },
   trebuchet:  { name: 'Trebuchet', cost: { wood: 200, gold: 160 }, time: 50, hp: 150, atk: 10, range: 12, rate: 10, armor: 1, pierce: 2, speed: 0.5, los: 14, icon: '🪨', cls: 'sie', ranged: true, siege: true, bonus: { bld: 190 } }
 };
 

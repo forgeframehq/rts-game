@@ -1912,5 +1912,37 @@
   "h": 149.0,
   "ax": 96.0,
   "ay": 100.68
+ },
+ "unit_britons_ram_m_idle": {
+  "file": "assets/units/britons_ram_m_idle.png",
+  "frames": 1,
+  "fw": 42.28,
+  "fh": 46.4,
+  "ax": 17.06,
+  "ay": 46.25
+ },
+ "unit_britons_ram_m_walk_se": {
+  "file": "assets/units/britons_ram_m_walk_se.png",
+  "frames": 1,
+  "fw": 42.28,
+  "fh": 46.4,
+  "ax": 17.06,
+  "ay": 46.25
+ },
+ "unit_britons_trebuchet_m_idle": {
+  "file": "assets/units/britons_trebuchet_m_idle.png",
+  "frames": 1,
+  "fw": 46.2,
+  "fh": 58.5,
+  "ax": 25.58,
+  "ay": 58.31
+ },
+ "unit_britons_trebuchet_m_walk_se": {
+  "file": "assets/units/britons_trebuchet_m_walk_se.png",
+  "frames": 1,
+  "fw": 46.2,
+  "fh": 58.5,
+  "ax": 25.58,
+  "ay": 58.31
  }
 }

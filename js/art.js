@@ -277,7 +277,10 @@
     else if (moving) f = Math.floor((u.dist || 0) / STRIDE * d.frames);
     else f = Math.floor((G.time + (u.id % 7) * 0.37) * (FPS[anim] || 8));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
-    ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x, y, (u.def && u.def.cls === 'sie' ? 13 : 9) * z, (u.def && u.def.cls === 'sie' ? 5 : 4) * z, 0, 0, 7); ctx.fill();
+    // a siege engine is one painted machine with no swing of its own, so it rocks forward
+    // into the blow and back out again as it strikes
+    if (u.def && u.def.siege && u.atkAnim > 0) x += (u.face || 1) * Math.sin(u.atkAnim * Math.PI) * 3.5 * z;
     // quick turn: the sprite narrows and flips over ~0.12s instead of snapping
     const fc = u.face || 1;
     if (u.fv === undefined) u.fv = fc;
