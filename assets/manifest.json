@@ -1132,5 +1132,382 @@
   "fh": 46.93,
   "ax": 24.27,
   "ay": 41.69
+ },
+ "unit3d_western_spearman_m_t1_attack": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_attack2": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_death": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_hit": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 55.2,
+  "fh": 54.93,
+  "ax": 28.8,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_idle": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 56.53,
+  "fh": 54.13,
+  "ax": 28.53,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_ready": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t1_walk": {
+  "file": "assets/units/unit3d_western_spearman_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 37.95
+ },
+ "unit3d_western_spearman_m_t2_attack": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_attack2": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_death": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_hit": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 57.33,
+  "fh": 54.93,
+  "ax": 28.8,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_idle": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 59.2,
+  "fh": 54.13,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_ready": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_western_spearman_m_t2_walk": {
+  "file": "assets/units/unit3d_western_spearman_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 61.6,
+  "ax": 34.13,
+  "ay": 42.49
+ },
+ "unit3d_western_archer_m_t1_attack": {
+  "file": "assets/units/unit3d_western_archer_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 51.73,
+  "fh": 50.93,
+  "ax": 25.87,
+  "ay": 44.35
+ },
+ "unit3d_western_archer_m_t1_death": {
+  "file": "assets/units/unit3d_western_archer_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.53,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_western_archer_m_t1_hit": {
+  "file": "assets/units/unit3d_western_archer_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 32.0,
+  "fh": 49.33,
+  "ax": 16.0,
+  "ay": 43.82
+ },
+ "unit3d_western_archer_m_t1_idle": {
+  "file": "assets/units/unit3d_western_archer_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.2,
+  "fh": 41.07,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_western_archer_m_t1_walk": {
+  "file": "assets/units/unit3d_western_archer_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 31.73,
+  "fh": 42.13,
+  "ax": 16.0,
+  "ay": 36.89
+ },
+ "unit3d_western_archer_m_t2_attack": {
+  "file": "assets/units/unit3d_western_archer_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 51.73,
+  "fh": 50.93,
+  "ax": 25.87,
+  "ay": 44.35
+ },
+ "unit3d_western_archer_m_t2_death": {
+  "file": "assets/units/unit3d_western_archer_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.53,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_western_archer_m_t2_hit": {
+  "file": "assets/units/unit3d_western_archer_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.07,
+  "fh": 49.33,
+  "ax": 16.53,
+  "ay": 43.82
+ },
+ "unit3d_western_archer_m_t2_idle": {
+  "file": "assets/units/unit3d_western_archer_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.2,
+  "fh": 41.07,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_western_archer_m_t2_walk": {
+  "file": "assets/units/unit3d_western_archer_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 31.73,
+  "fh": 42.13,
+  "ax": 16.0,
+  "ay": 36.89
+ },
+ "unit3d_britons_longbowman_m_t1_attack": {
+  "file": "assets/units/unit3d_britons_longbowman_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 48.53,
+  "fh": 55.73,
+  "ax": 24.27,
+  "ay": 49.15
+ },
+ "unit3d_britons_longbowman_m_t1_death": {
+  "file": "assets/units/unit3d_britons_longbowman_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 62.93,
+  "ax": 34.13,
+  "ay": 46.22
+ },
+ "unit3d_britons_longbowman_m_t1_hit": {
+  "file": "assets/units/unit3d_britons_longbowman_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 42.93,
+  "fh": 51.2,
+  "ax": 21.33,
+  "ay": 45.42
+ },
+ "unit3d_britons_longbowman_m_t1_idle": {
+  "file": "assets/units/unit3d_britons_longbowman_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 53.07,
+  "fh": 43.2,
+  "ax": 26.4,
+  "ay": 38.49
+ },
+ "unit3d_britons_longbowman_m_t1_walk": {
+  "file": "assets/units/unit3d_britons_longbowman_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 45.33,
+  "fh": 44.0,
+  "ax": 22.67,
+  "ay": 38.49
+ },
+ "unit3d_western_knight_m_t1_attack": {
+  "file": "assets/units/unit3d_western_knight_m_t1_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_western_knight_m_t1_death": {
+  "file": "assets/units/unit3d_western_knight_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 88.0,
+  "ax": 46.55,
+  "ay": 61.93
+ },
+ "unit3d_western_knight_m_t1_idle": {
+  "file": "assets/units/unit3d_western_knight_m_t1_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 71.27,
+  "fh": 69.82,
+  "ax": 35.64,
+  "ay": 60.48
+ },
+ "unit3d_western_knight_m_t1_walk": {
+  "file": "assets/units/unit3d_western_knight_m_t1_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 73.45,
+  "ax": 36.73,
+  "ay": 60.84
+ },
+ "unit3d_western_knight_m_t2_attack": {
+  "file": "assets/units/unit3d_western_knight_m_t2_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_western_knight_m_t2_death": {
+  "file": "assets/units/unit3d_western_knight_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 88.0,
+  "ax": 46.55,
+  "ay": 61.93
+ },
+ "unit3d_western_knight_m_t2_idle": {
+  "file": "assets/units/unit3d_western_knight_m_t2_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 71.27,
+  "fh": 69.82,
+  "ax": 35.64,
+  "ay": 60.48
+ },
+ "unit3d_western_knight_m_t2_walk": {
+  "file": "assets/units/unit3d_western_knight_m_t2_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 73.45,
+  "ax": 36.73,
+  "ay": 60.84
  }
 }

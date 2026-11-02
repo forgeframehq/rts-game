@@ -1,0 +1,639 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "swordsman_rig.glb",
+ "clipsUrl": [
+  "villager_m_anim.glb",
+  "villager_m_anim2.glb",
+  "combat_anim.glb",
+  "combat2_anim.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 12,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1
+  },
+  {
+   "name": "idle",
+   "clip": "Idle_02",
+   "frames": 16,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "clip": "Right_Hand_Sword_Slash",
+   "frames": 12,
+   "start": 0.05,
+   "end": 0.75,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "attack2",
+   "clip": "Double_Combo_Attack",
+   "frames": 12,
+   "start": 0.08,
+   "end": 0.6,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "ready",
+   "clip": "Combat_Stance",
+   "frames": 12,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "block",
+   "clip": "Block2",
+   "frames": 8,
+   "start": 0.1,
+   "end": 0.7,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "lockRoot": true
+  },
+  {
+   "name": "hit",
+   "clip": "Hit_Reaction_1",
+   "frames": 8,
+   "start": 0,
+   "end": 0.8,
+   "props": [
+    {
+     "bone": "RightHand",
+     "tool": "sword",
+     "rot": [
+      1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "LeftForeArm",
+     "tool": "bigshield",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "pos": [
+      0,
+      0.08,
+      0
+     ]
+    },
+    {
+     "bone": "LeftArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "RightArm",
+     "tool": "pauldron",
+     "rot": [
+      0,
+      0,
+      -1.5708
+     ],
+     "pos": [
+      0,
+      0.015,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "plume",
+     "pos": [
+      0,
+      0.13,
+      0
+     ]
+    },
+    {
+     "bone": "Spine02",
+     "tool": "cape",
+     "pos": [
+      0,
+      0.07,
+      -0.02
+     ]
+    }
+   ],
+   "lockRoot": true
+  }
+ ]
+}
