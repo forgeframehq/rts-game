@@ -161,6 +161,25 @@ G.makeAI = function () {
       const c = G.buildCost(p, t);
       for (const k in c) if (R[k] < c[k]) want[k] = (want[k] || 0) + 0.3;
     }
+    // --- rebalance ---
+    // A villager never leaves a job on its own, so a crew assigned to wood early keeps
+    // chopping while the granary empties and the lumber pile grows past any use. Move one
+    // worker per think from the most over-served resource to the most under-served one.
+    const gapOf = k => (want[k] || 0) - counts[k] / n - Math.min(0.3, R[k] / 2500);
+    let needK = null, needGap = -1e9, overK = null, overGap = 1e9;
+    for (const k in counts) {
+      const g = gapOf(k);
+      if (g > needGap) { needGap = g; needK = k; }
+      if (counts[k] > 1 && g < overGap) { overGap = g; overK = k; }
+    }
+    if (needK && overK && needK !== overK && needGap - overGap > 0.25) {
+      const rt = { wood: 'tree', gold: 'gold', stone: 'stone' }[overK];
+      const spare = overK === 'food'
+        ? vils.find(x => x.task.t === 'farm')
+        : vils.find(x => x.task.t === 'gather' && x.task.rtype === rt && !(x.carry && x.carry.amt > G.CARRY * 0.5));
+      if (spare) { spare.task = { t: 'idle' }; spare.path = []; spare.pathFor = 0; counts[overK]--; }
+    }
+
     for (const v of vils) {
       if (v.task.t !== 'idle') continue;
       let best = 'food', bestGap = -1e9;
@@ -169,8 +188,9 @@ G.makeAI = function () {
       if (best === 'food') {
         const berry = G.nearest(v, e => e.kind === 'res' && e.type === 'berry', 14);
         if (berry && G.dist(berry, home) < 14) { G.cmdGather([v], berry); continue; }
-        // free farm or build a new one
-        const free = blds.find(b => b.type === 'farm' && b.built && !(b.farmer && G.byId.get(b.farmer) && G.byId.get(b.farmer).task.t === 'farm' && G.byId.get(b.farmer).task.id === b.id));
+        // an unworked field — sowing a spent one again is far cheaper than a new farm
+        const free = blds.find(b => b.type === 'farm' && b.built && !G.farmBusy(b, v)
+                                    && (b.food > 0 || G.canAfford(p, G.resowCost(p))));
         if (free) { G.cmdFarm([v], free); continue; }
         if (G.canAfford(p, G.buildCost(p, 'farm'))) {
           const spot = findSpot('farm', home.x, home.y, 3);
@@ -179,8 +199,23 @@ G.makeAI = function () {
         best = 'wood';
       }
       const rt = { wood: 'tree', gold: 'gold', stone: 'stone' }[best];
-      const r = G.nearest(v, e => e.kind === 'res' && e.type === rt && (e.unreach || 0) < 3, 40);
-      if (r) G.cmdGather([v], r);
+      let r = G.nearest(v, e => e.kind === 'res' && e.type === rt && (e.unreach || 0) < 3, 40);
+      // That kind has run out within reach. Take anything else rather than stand still —
+      // an idle villager is the most expensive thing on the map.
+      if (!r) for (const alt of ['tree', 'berry', 'gold', 'stone']) {
+        if (alt === rt) continue;
+        r = G.nearest(v, e => e.kind === 'res' && e.type === alt && (e.unreach || 0) < 3, 70);
+        if (r) break;
+      }
+      if (r) { G.cmdGather([v], r); continue; }
+      // nothing left to gather anywhere: work a field, sowing it again if it is spent
+      const fld = blds.find(b => b.type === 'farm' && b.built && !G.farmBusy(b, v)
+                                 && (b.food > 0 || G.canAfford(p, G.resowCost(p))));
+      if (fld) { G.cmdFarm([v], fld); continue; }
+      if (G.canAfford(p, G.buildCost(p, 'farm'))) {
+        const spot = findSpot('farm', home.x, home.y, 3);
+        if (spot) G.placeBuilding(p, 'farm', spot.tx, spot.ty, [v]);
+      }
     }
 
     // --- army production ---

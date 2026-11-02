@@ -271,7 +271,8 @@
       if (selected) selRingTile(e, own ? '#fff' : '#ff6b5e');
       const g = G.toScreen(e.tx + e.size / 2, e.ty + e.size / 2);
       let sp;
-      if (e.built) sp = G.buildingSprite(e.type, e.owner, e.type === 'farm' ? Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)) : 0);
+      if (e.built) sp = G.buildingSprite(e.type, e.owner, e.type !== 'farm' ? 0
+        : e.food <= 0 ? 'spent' : Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)));
       else sp = G.foundationSprite(e.type, Math.min(3, Math.floor(e.progress * 4)));
       if (e.hitT) ctx.globalAlpha = 0.85;
       drawSprite(sp, g.x, g.y, z);

@@ -31,6 +31,9 @@ ASSETS = {
     'lumber_camp': ('lumbercamp', 2, 1.0),
     'mining_camp': ('miningcamp', 2, 1.0),
     'farm': ('farm', 2, 1.0),
+    # the harvested field's fence sits lower, so the footprint detector reads it wide;
+    # this fudge lines it up exactly with the standing crop it replaces
+    'farm_spent': ('farm_spent', 2, 0.6755),
     'watch_tower': ('tower', 1, 1.0),
     'blacksmith': ('blacksmith', 3, 1.0),
     'castle': ('castle', 4, 1.0),

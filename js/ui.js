@@ -492,7 +492,7 @@
         if (job) sub += ` · ${job}`;
         if (e.carry && e.carry.amt >= 1) sub += ` · carrying ${Math.floor(e.carry.amt)} ${ICON[e.carry.res]}`;
       } else if (!e.built) sub = `Under construction ${Math.floor(e.progress * 100)}%`;
-      else if (e.type === 'farm') sub += ` · ${Math.ceil(e.food)} food left`;
+      else if (e.type === 'farm') sub += e.food > 0 ? ` · ${Math.ceil(e.food)} food left` : ' · Fallow — re-sow it';
       if (e.aging) sub += ` · ${G.AGES[e.aging.to].name} ${Math.floor(e.aging.t / G.AGES[e.aging.to].time * 100)}%`;
       if (e.research) { const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id]; sub += ` · ${rd.name} ${Math.floor(e.research.t / rd.time * 100)}%`; }
       if (e.garrison && e.garrison.length) sub += ` · ${e.garrison.length}/${e.def.garrison} inside`;
@@ -559,6 +559,17 @@
         const mil = units.filter(u => u.type !== 'villager'); select(mil.length && mil.length < units.length ? mil : [units[0]], false);
       }));
       return;
+    }
+    // a spent farm keeps its field — sow it again rather than building a new one
+    const spent = sel.filter(x => G.farmSpent(x) && x.owner === 1);
+    if (spent.length) {
+      const rc = G.resowCost(1);
+      cmds.appendChild(btn('i:farm', spent.length > 1 ? `Re-sow ${spent.length}` : 'Re-sow', costTxt(rc), () => {
+        let done = 0;
+        for (const f of spent) if (G.resowFarm(f, 1)) done++;
+        if (!done) { UI.alert('Not enough wood to sow'); flashCost(rc); }
+        panelKey = '';
+      }, !G.canAfford(1, rc)));
     }
     if (e.kind === 'building' && e.built && e.def.trains) {
       for (const t of G.trainsFor(e)) {

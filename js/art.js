@@ -47,6 +47,10 @@
 
   const baseBuilding = G.buildingSprite, baseFoundation = G.foundationSprite;
   G.buildingSprite = function (type, owner, farmStage) {
+    // a spent field gets its own harvested art so you can see at a glance what needs sowing
+    if (type === 'farm' && farmStage === 'spent') {
+      return sprite('farm_spent', G.ownerColor(owner)) || sprite('farm', G.ownerColor(owner)) || baseBuilding(type, owner, 2);
+    }
     return sprite(type, G.ownerColor(owner)) || baseBuilding(type, owner, farmStage);
   };
   G.foundationSprite = function (type, stage) {

@@ -61,7 +61,7 @@ G.BUILDINGS = {
   mill:       { name: 'Mill', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['food'], icon: '🌾' },
   lumbercamp: { name: 'Lumber Camp', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['wood'], icon: '🪵' },
   miningcamp: { name: 'Mining Camp', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['gold','stone'], icon: '⛏️' },
-  farm:       { name: 'Farm', cost: { wood: 60 }, time: 10, hp: 480, size: 2, los: 1, farm: 175, icon: '🟫' },
+  farm:       { name: 'Farm', cost: { wood: 60 }, time: 10, hp: 480, size: 2, los: 1, farm: 175, reseed: 25, icon: '🟫' },
   barracks:   { name: 'Barracks', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['militia','spearman'], icon: '⚔️' },
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['knight'], icon: '🐎' },

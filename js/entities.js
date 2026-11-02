@@ -299,6 +299,17 @@
   };
 
   // Context-sensitive command (what a tap / right-click on something does).
+  // A spent farm keeps its tiles and can be sown again for a fraction of a new one.
+  G.farmFull = owner => Math.round(G.BUILDINGS.farm.farm * (mods(owner).farmFood || 1));
+  G.farmSpent = f => !!f && !f.dead && f.type === 'farm' && f.built && f.food <= 0;
+  G.resowCost = owner => ({ wood: Math.round(G.BUILDINGS.farm.reseed * (mods(owner).farmCost || 1)) });
+  G.resowFarm = function (f, owner) {
+    if (!G.farmSpent(f) || f.owner !== owner) return false;
+    if (!G.pay(owner, G.resowCost(owner))) return false;
+    f.food = G.farmFull(owner);
+    return true;
+  };
+
   // A farm takes one worker. It counts as busy while another villager is working
   // it OR walking to it, so two villagers never get sent to the same plot.
   G.farmBusy = function (f, except) {
@@ -701,7 +712,15 @@
           if (!u.carry || u.carry.res !== 'food') u.carry = { res: 'food', amt: 0 };
           const amt = Math.min(G.FARM_RATE * dt * (G.fastGather || 1), f.food);
           u.carry.amt += amt; f.food -= amt;
-          if (f.food <= 0) { G.kill(f); }
+          if (f.food <= 0) {
+            // The field is spent, not destroyed. Sow it again for a fraction of a new farm
+            // and keep working; with no wood it lies fallow until someone comes back to it.
+            f.food = 0;
+            if (!G.resowFarm(f, u.owner)) {
+              u.atFarm = false;
+              if (u.carry && u.carry.amt > 0) goDrop(u); else u.task = { t: 'idle' };
+            }
+          }
         } else {
           u.atFarm = false;
           if (u.pathFor !== f.id || !u.path.length) {
