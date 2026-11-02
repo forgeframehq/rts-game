@@ -249,7 +249,7 @@
       if (e.owner !== 1 && !G.isVisible(e.x, e.y)) continue;
       const s = G.toScreen(e.x, e.y);
       const d = Math.hypot(s.x - sx, s.y - 12 * z - sy);
-      const r = (e.type === 'knight' ? 22 : 18) * Math.max(z, 0.8);
+      const r = (G.mounted(e) ? 22 : 18) * Math.max(z, 0.8);
       if (d < r && d < bd) { bd = d; best = e; }
     }
     if (best) return best;

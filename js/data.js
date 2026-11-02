@@ -24,7 +24,8 @@ G.CIVS = {
     bonuses: ["Knights +25% HP", "Farms hold 25% more food", "Berries gathered 20% faster"],
     name: 'Franks', color: '#3a8f3a',
     desc: 'Cavalry civ. Knights +25% HP. Farms 25% more food. Berries gathered 20% faster.',
-    mods: { knightHp: 1.25, farmFood: 1.25, berryRate: 1.2 }
+    mods: { knightHp: 1.25, farmFood: 1.25, berryRate: 1.2 },
+    unique: { type: 'axethrower', at: 'castle', text: 'Axe Thrower — trained at the Castle. Infantry that hurls the francisca, a throwing axe, from 3 tiles away, and chews through buildings. Armoured enough to stand in the shield line when the axes run out.' }
   },
   byzantines: {
     role: "Defense",
@@ -32,7 +33,8 @@ G.CIVS = {
     bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Units heal slowly near the Town Center"],
     name: 'Byzantines', color: '#8a3fb8',
     desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Units heal slowly near Town Center.',
-    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true }
+    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true },
+    unique: { type: 'cataphract', at: 'castle', text: 'Cataphract — trained at the Castle. A horseman armoured head to hoof, who rides straight over infantry: huge bonus damage against foot soldiers and little to fear from arrows. The heavy fist of the Eastern Roman army.' }
   },
   chinese: {
     role: "Economy",
@@ -40,7 +42,8 @@ G.CIVS = {
     bonuses: ["Start with +3 villagers (but −50 food)", "Houses support 10 population", "Villagers 10% cheaper"],
     name: 'Chinese', color: '#d4a017',
     desc: 'Economy civ. Start with +3 villagers but -50 food. Houses support 10 pop. Villagers 10% cheaper.',
-    mods: { extraVils: 3, startFoodDelta: -50, housePop: 10, vilCost: 0.9 }
+    mods: { extraVils: 3, startFoodDelta: -50, housePop: 10, vilCost: 0.9 },
+    unique: { type: 'repeater', at: 'castle', text: 'Repeater Crossbowman — trained at the Castle. The chu-ko-nu: a magazine crossbow that looses bolt after bolt, each one light but twice as fast as any other bow. Deadly in numbers, which the Chinese always had.' }
   }
 };
 
@@ -51,7 +54,11 @@ G.UNITS = {
   spearman: { name: 'Spearman', cost: { food: 35, wood: 25 }, time: 11, hp: 45, atk: 4, range: 0.7, rate: 2, armor: 0, pierce: 0, speed: 1.5, los: 4, icon: '🔱', cls: 'inf', bonus: { cav: 15 } },
   archer:   { name: 'Archer', cost: { wood: 25, gold: 45 }, time: 14, hp: 30, atk: 4, range: 4, rate: 2, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🏹', cls: 'arc', ranged: true, bonus: { inf: 2 } },
   longbowman: { name: 'Longbowman', cost: { wood: 35, gold: 40 }, time: 15, hp: 35, atk: 6, range: 5, rate: 2, armor: 0, pierce: 1, speed: 1.4, los: 7, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 2 } },
-  knight:   { name: 'Knight', cost: { food: 60, gold: 75 }, time: 18, hp: 100, atk: 10, range: 0.7, rate: 1.8, armor: 2, pierce: 2, speed: 2.4, los: 5, icon: '🐎', cls: 'cav' }
+  knight:   { name: 'Knight', cost: { food: 60, gold: 75 }, time: 18, hp: 100, atk: 10, range: 0.7, rate: 1.8, armor: 2, pierce: 2, speed: 2.4, los: 5, icon: '🐎', cls: 'cav' },
+  // ---- unique units (one per dynasty, trained at the Castle) ----
+  axethrower: { name: 'Axe Thrower', cost: { food: 55, gold: 25 }, time: 15, hp: 50, atk: 7, range: 3, rate: 2, armor: 1, pierce: 1, speed: 1.5, los: 6, icon: '🪓', cls: 'inf', ranged: true, bonus: { bld: 4 } },
+  cataphract: { name: 'Cataphract', cost: { food: 70, gold: 75 }, time: 20, hp: 110, atk: 9, range: 0.7, rate: 1.8, armor: 2, pierce: 3, speed: 2.2, los: 5, icon: '🛡️', cls: 'cav', bonus: { inf: 9 } },
+  repeater:   { name: 'Repeater Crossbowman', cost: { wood: 40, gold: 35 }, time: 16, hp: 35, atk: 3, range: 4, rate: 1, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 1 } }
 };
 
 // Buildings. size in tiles (square footprint).
@@ -89,6 +96,9 @@ G.UPGRADES = {
   crossbow:     { name: 'Crossbowman',     line: 'archer',     tier: 1, at: 'range',    age: 3, cost: { food: 125, gold: 75 },   time: 35, stats: { hp: 35, atk: 5 } },
   arbalester:   { name: 'Arbalester',      line: 'archer',     tier: 2, at: 'range',    age: 4, cost: { food: 350, gold: 300 },  time: 50, stats: { hp: 40, atk: 6, range: 5 } },
   elitelongbow: { name: 'Elite Longbowman',line: 'longbowman', tier: 1, at: 'castle',   age: 4, cost: { food: 850, gold: 850 },  time: 50, stats: { hp: 40, atk: 7, range: 6 } },
+  eliteaxe:     { name: 'Elite Axe Thrower',line: 'axethrower',tier: 1, at: 'castle',   age: 4, cost: { food: 900, gold: 500 },  time: 50, stats: { hp: 60, atk: 8, range: 4, armor: 2 } },
+  elitecata:    { name: 'Elite Cataphract', line: 'cataphract',tier: 1, at: 'castle',   age: 4, cost: { food: 1200, gold: 600 }, time: 50, stats: { hp: 150, atk: 11, armor: 3, bonus: { inf: 13 } } },
+  eliterepeater:{ name: 'Elite Repeater',   line: 'repeater',  tier: 1, at: 'castle',   age: 4, cost: { food: 760, gold: 760 },  time: 50, stats: { hp: 40, atk: 4, rate: 0.9 } },
   cavalier:     { name: 'Cavalier',        line: 'knight',     tier: 1, at: 'stable',   age: 4, cost: { food: 300, gold: 300 },  time: 50, stats: { hp: 120, atk: 12 } },
   paladin:      { name: 'Paladin',         line: 'knight',     tier: 2, at: 'stable',   age: 4, cost: { food: 1300, gold: 750 }, time: 60, stats: { hp: 160, atk: 14, armor: 3, pierce: 3 } }
 };
@@ -101,7 +111,7 @@ G.TECHS = {
   scalemail:   { name: 'Scale Mail',   icon: 'garrison', age: 2, cost: { food: 100 },             time: 30, eff: { armor: 1 } },
   chainmail:   { name: 'Chain Mail',   icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail' }
 };
-G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3 };
+G.UNIT_AGE = { spearman: 2, archer: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3 };
 G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','castle','tower','towncenter'];
 
 G.RES = {
@@ -111,6 +121,8 @@ G.RES = {
   stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
 };
 G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian' };
+// mounted units: drawn taller, with a bigger shadow and selection ring
+G.mounted = e => ((e.def || G.UNITS[e.type] || {}).cls) === 'cav';
 G.CARRY = 10;
 G.FARM_RATE = 0.33;
 

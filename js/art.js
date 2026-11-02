@@ -46,12 +46,19 @@
   }
 
   const baseBuilding = G.buildingSprite, baseFoundation = G.foundationSprite;
+  // buildings are made once per region (western / mediterranean / eastasian) and fall back to the western set
+  const regionOf = owner => (G.players[owner] && G.REGION[G.players[owner].civ]) || 'western';
+  const bldKey = (type, owner) => {
+    const r = regionOf(owner);
+    return (r !== 'western' && art[r + '_' + type]) ? r + '_' + type : type;
+  };
   G.buildingSprite = function (type, owner, farmStage) {
+    const key = bldKey(type, owner);
     // a spent field gets its own harvested art so you can see at a glance what needs sowing
     if (type === 'farm' && farmStage === 'spent') {
-      return sprite('farm_spent', G.ownerColor(owner)) || sprite('farm', G.ownerColor(owner)) || baseBuilding(type, owner, 2);
+      return sprite(bldKey('farm_spent', owner), G.ownerColor(owner)) || sprite(key, G.ownerColor(owner)) || baseBuilding(type, owner, 2);
     }
-    return sprite(type, G.ownerColor(owner)) || baseBuilding(type, owner, farmStage);
+    return sprite(key, G.ownerColor(owner)) || baseBuilding(type, owner, farmStage);
   };
   G.foundationSprite = function (type, stage) {
     const size = G.BUILDINGS[type].size;
@@ -133,7 +140,8 @@
     if (alpha < 1) ctx.restore();
   }
   // where in each attack animation the blow lands (0..1)
-  const IMPACT = { militia: { attack: 0.5, attack2: 0.4 }, spearman: { attack: 0.55, attack2: 0.35 }, archer: { attack: 0.92 }, longbowman: { attack: 0.92 }, knight: { attack: 0.45 } };
+  const IMPACT = { militia: { attack: 0.5, attack2: 0.4 }, spearman: { attack: 0.55, attack2: 0.35 }, archer: { attack: 0.92 }, longbowman: { attack: 0.92 }, knight: { attack: 0.45 },
+    axethrower: { attack: 0.62, attack2: 0.45 }, cataphract: { attack: 0.45 }, repeater: { attack: 0.92 } };
   function drawShadow(ctx, x, y, z) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill(); }
   function draw3d(ctx, u, x, y, z) {
     if (!G.use3d) return false;

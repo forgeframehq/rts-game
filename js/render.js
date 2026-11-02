@@ -307,12 +307,12 @@
     // unit
     if (selected) {
       ctx.strokeStyle = e.owner === 1 ? '#fff' : '#ff6b5e'; ctx.lineWidth = 1.5;
-      const rr = e.type === 'knight' ? 12 : 8;
+      const rr = G.mounted(e) ? 12 : 8;
       ctx.beginPath(); ctx.ellipse(s.x, s.y, rr * z, rr * 0.5 * z, 0, 0, 7); ctx.stroke();
     }
     if (e.atkAnim > 0) e.atkAnim -= 0.016;
     if (!G.drawUnitArt || !G.drawUnitArt(ctx, e, s.x, s.y, z)) G.drawUnit(ctx, e, s.x, s.y, z * 1.6);
-    if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - ((G.unitArtHeight && G.unitArtHeight(e)) || (e.type === 'knight' ? 34 : 28)) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
+    if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - ((G.unitArtHeight && G.unitArtHeight(e)) || (G.mounted(e) ? 34 : 28)) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
   }
 
   function drawGhost(z) {

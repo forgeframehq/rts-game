@@ -223,10 +223,12 @@ G.makeAI = function () {
     const needBld = nxt && G.ageBlock(p, null) && G.ageBlock(p, null).startsWith('Needs') && vils.length >= ageVils(age + 1) ? 180 : 0;
     if (army.length < AI.cfg.armyCap && pop < cap) {
       for (const b of blds) {
-        if (!b.built || !b.def.trains || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
-        let opts = b.def.trains;
+        if (!b.built || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
+        // the Castle has no train list of its own: its only unit is the dynasty's unique one
+        let opts = G.trainsFor(b).filter(t => G.canTrainType(p, t));
+        if (!opts.length) continue;
         // counter what the player fields
-        const enemyCav = G.ents.filter(e => G.enemies(e.owner, AI.p) && e.type === 'knight').length;
+        const enemyCav = G.ents.filter(e => G.enemies(e.owner, AI.p) && e.kind === 'unit' && G.mounted(e)).length;
         if (b.type === 'barracks') opts = enemyCav > 2 ? ['spearman'] : ['militia', 'spearman'];
         const type = opts[Math.floor(Math.random() * opts.length)];
         const cost = G.unitCost(p, type);

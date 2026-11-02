@@ -279,8 +279,9 @@
     ctx.save(); ctx.translate(x, y); ctx.scale(z * u.face, z);
     if (u.hitT) ctx.globalAlpha = 0.7;
     // shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(0, 0, t === 'knight' ? 10 : 6, t === 'knight' ? 4 : 3, 0, 0, 7); ctx.fill();
-    if (t === 'knight') {
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); const mnt = G.mounted(u);
+    ctx.ellipse(0, 0, mnt ? 10 : 6, mnt ? 4 : 3, 0, 0, 7); ctx.fill();
+    if (mnt) {
       // horse
       const b = step * 1.5;
       ctx.fillStyle = '#6b4a2e';
@@ -299,14 +300,16 @@
       ctx.fillStyle = '#4a3a2a';
       ctx.fillRect(-2.5 + step * 1.5, -6, 2, 6); ctx.fillRect(0.5 - step * 1.5, -6, 2, 6);
       // body
-      const armored = t === 'militia' || t === 'spearman';
+      const armored = t === 'militia' || t === 'spearman' || t === 'axethrower';
       ctx.fillStyle = t === 'villager' ? '#9b7b53' : armored ? '#8d939b' : '#6f7a46';
       ctx.fillRect(-3.5, -14, 7, 8.5);
       ctx.fillStyle = c; ctx.fillRect(-3.5, -11, 7, 3);
       // head
       ctx.fillStyle = '#e0b48a'; ctx.beginPath(); ctx.arc(0, -16.5, 2.8, 0, 7); ctx.fill();
-      if (armored) { ctx.fillStyle = '#9aa0a8'; ctx.beginPath(); ctx.arc(0, -17.5, 3, Math.PI, 0); ctx.fill(); }
-      else if (t === 'archer') { ctx.fillStyle = sh(c, 0.7); ctx.beginPath(); ctx.arc(0, -17.5, 3, Math.PI, 0); ctx.fill(); }
+      if (t === 'repeater') { // wide straw hat
+        ctx.fillStyle = '#c8a85c'; ctx.beginPath(); ctx.moveTo(-5.5, -18); ctx.lineTo(5.5, -18); ctx.lineTo(0, -21.5); ctx.closePath(); ctx.fill();
+      } else if (armored) { ctx.fillStyle = '#9aa0a8'; ctx.beginPath(); ctx.arc(0, -17.5, 3, Math.PI, 0); ctx.fill(); }
+      else if (t === 'archer' || t === 'longbowman') { ctx.fillStyle = sh(c, 0.7); ctx.beginPath(); ctx.arc(0, -17.5, 3, Math.PI, 0); ctx.fill(); }
       else { ctx.fillStyle = '#c9a65c'; ctx.fillRect(-3.5, -19.5, 7, 1.6); }
       // weapon / tool
       const sw = u.atkAnim > 0 ? 1 : work;
@@ -314,6 +317,18 @@
       if (t === 'militia') {
         ctx.strokeStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(3, -10); ctx.lineTo(9, -16 + sw * 6); ctx.stroke();
         ctx.fillStyle = sh(c, 0.8); ctx.fillRect(-6, -13, 3, 6);
+      } else if (t === 'axethrower') {
+        // francisca, cocked back over the shoulder and flung forward
+        const a = -0.9 + sw * 2.1;
+        ctx.save(); ctx.translate(3, -12); ctx.rotate(a);
+        ctx.strokeStyle = '#7a5530'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -7); ctx.stroke();
+        ctx.fillStyle = '#cfd4d9'; ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(4, -8.5); ctx.lineTo(4, -4.5); ctx.closePath(); ctx.fill();
+        ctx.restore();
+      } else if (t === 'repeater') {
+        // magazine crossbow held level, box on top
+        ctx.strokeStyle = '#6b4a2e'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(1, -11); ctx.lineTo(8, -11.5); ctx.stroke();
+        ctx.strokeStyle = '#9aa0a8'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(6.5, -14); ctx.lineTo(6.5, -9); ctx.stroke();
+        ctx.fillStyle = '#5a3a1f'; ctx.fillRect(3, -13.5, 3.5, 2);
       } else if (t === 'spearman') {
         ctx.strokeStyle = '#7a5530'; ctx.beginPath(); ctx.moveTo(-1, -2); ctx.lineTo(7 + sw * 2, -24); ctx.stroke();
         ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(7 + sw * 2, -27); ctx.lineTo(8.5 + sw * 2, -23); ctx.lineTo(5.8 + sw * 2, -23.5); ctx.closePath(); ctx.fill();

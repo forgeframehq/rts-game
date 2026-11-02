@@ -1,0 +1,222 @@
+{
+ "height": 150,
+ "frame": 256,
+ "model": "archer_rig.glb",
+ "clipsUrl": [
+  "villager_m_anim.glb",
+  "villager_m_anim2.glb",
+  "combat_anim.glb",
+  "combat2_anim.glb"
+ ],
+ "anims": [
+  {
+   "name": "walk",
+   "clip": "Casual_Walk",
+   "frames": 12,
+   "lockRoot": true,
+   "start": 0,
+   "end": 0.3378,
+   "stride": 1.1,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "repeater",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "conicalhat",
+     "scale": 0.95,
+     "pos": [
+      0,
+      0.075,
+      0
+     ]
+    },
+    {
+     "bone": "Spine01",
+     "tool": "quiver",
+     "pos": [
+      0.04,
+      0.1,
+      -0.12
+     ],
+     "rot": [
+      0.3,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "idle",
+   "clip": "Idle_02",
+   "frames": 16,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "repeater",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "conicalhat",
+     "scale": 0.95,
+     "pos": [
+      0,
+      0.075,
+      0
+     ]
+    },
+    {
+     "bone": "Spine01",
+     "tool": "quiver",
+     "pos": [
+      0.04,
+      0.1,
+      -0.12
+     ],
+     "rot": [
+      0.3,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "clip": "Dead",
+   "frames": 10,
+   "loop": false,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "repeater",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "conicalhat",
+     "scale": 0.95,
+     "pos": [
+      0,
+      0.075,
+      0
+     ]
+    },
+    {
+     "bone": "Spine01",
+     "tool": "quiver",
+     "pos": [
+      0.04,
+      0.1,
+      -0.12
+     ],
+     "rot": [
+      0.3,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "clip": "Archery_Shot_1",
+   "frames": 12,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "repeater",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "conicalhat",
+     "scale": 0.95,
+     "pos": [
+      0,
+      0.075,
+      0
+     ]
+    },
+    {
+     "bone": "Spine01",
+     "tool": "quiver",
+     "pos": [
+      0.04,
+      0.1,
+      -0.12
+     ],
+     "rot": [
+      0.3,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "hit",
+   "clip": "Hit_Reaction_1",
+   "frames": 8,
+   "start": 0,
+   "end": 0.8,
+   "lockRoot": true,
+   "props": [
+    {
+     "bone": "LeftHand",
+     "tool": "repeater",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ]
+    },
+    {
+     "bone": "Head",
+     "tool": "conicalhat",
+     "scale": 0.95,
+     "pos": [
+      0,
+      0.075,
+      0
+     ]
+    },
+    {
+     "bone": "Spine01",
+     "tool": "quiver",
+     "pos": [
+      0.04,
+      0.1,
+      -0.12
+     ],
+     "rot": [
+      0.3,
+      0,
+      0
+     ]
+    }
+   ]
+  }
+ ]
+}
