@@ -121,14 +121,24 @@ G.RES = {
   stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
 };
 G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian' };
-// How each dynasty's villagers are dyed from the shared (Britons) sprites: cloth takes the
-// dynasty's hue, skin is nudged a little. Britons are the painted original, so they have no
-// entry. A dynasty with its own villager art stops being dyed on its own (see art.js).
-// hue 0-360; sat/val/skin* are multipliers; skinH is a hue nudge in degrees.
+// How each dynasty's villagers are dyed from the shared (Britons) sprites. Britons are the
+// painted original, so they have no entry; a dynasty with villager art of its own stops being
+// dyed automatically (see art.js). Each dynasty dresses in two colours — hue for the tunic or
+// dress, hue2 for what is worn below the waist — and has its own hair and skin.
+// hue/hue2 are 0-360; everything else is a multiplier, except the *H hue nudges in degrees.
 G.CIV_LOOK = {
-  franks:     { hue: 95,  sat: 0.70, val: 1.25, skinH: -3, skinS: 0.92, skinV: 1.07 },  // green wool
-  byzantines: { hue: 42,  sat: 0.45, val: 1.95, skinH: 5,  skinS: 1.10, skinV: 0.86 },  // undyed linen
-  chinese:    { hue: 212, sat: 0.60, val: 1.30, skinH: 2,  skinS: 0.90, skinV: 1.00 }   // indigo
+  franks: {    // green wool over russet, fair hair
+    hue: 95,  sat: 0.75, val: 1.25,  hue2: 24,  sat2: 0.80, val2: 1.15,
+    hairH: 10, hairS: 1.10, hairV: 1.55, skinH: -3, skinS: 0.92, skinV: 1.08
+  },
+  byzantines: {  // undyed linen over ochre, dark hair
+    hue: 42,  sat: 0.40, val: 1.95,  hue2: 33,  sat2: 0.85, val2: 1.20,
+    hairH: -4, hairS: 0.95, hairV: 0.80, skinH: 5, skinS: 1.12, skinV: 0.85
+  },
+  chinese: {   // indigo over slate, black hair
+    hue: 212, sat: 0.62, val: 1.30,  hue2: 220, sat2: 0.30, val2: 0.85,
+    hairH: 0,  hairS: 0.45, hairV: 0.60, skinH: 3, skinS: 0.88, skinV: 1.02
+  }
 };
 // mounted units: drawn taller, with a bigger shadow and selection ring
 G.mounted = e => ((e.def || G.UNITS[e.type] || {}).cls) === 'cav';

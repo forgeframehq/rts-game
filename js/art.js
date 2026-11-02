@@ -46,18 +46,23 @@
         if (x < hx0) hx0 = x; if (x > hx1) hx1 = x;
       }
       hx0 = Math.max(x0, hx0 - 2); hx1 = Math.min(x1 - 1, hx1 + 2);
+      const waist = top + Math.round(tall * 0.55);   // tunic above, trousers or skirt below
       for (let y = top; y <= bot; y++) for (let x = x0; x < x1; x++) {
         const i = (y * w + x) * 4;
         if (d[i + 3] <= 40) continue;
         const hsv = rgb2hsv(d[i], d[i + 1], d[i + 2]), hu = hsv[0], sa = hsv[1], va = hsv[2];
         if (sa > 0.35 && hu > 270 && hu < 340) continue;                    // team colour
         const onHead = y < headBot && x >= hx0 && x <= hx1;
-        if (onHead && va < 0.32) continue;                                  // hair
-        const skin = onHead || (hu > 10 && hu < 46 && sa > 0.18 && sa < 0.68 && va > 0.38);
+        const hair = onHead && va < 0.32;
+        const skin = !hair && (onHead || (hu > 10 && hu < 46 && sa > 0.18 && sa < 0.68 && va > 0.38));
         let out;
-        if (skin) out = hsv2rgb((hu + look.skinH + 360) % 360, Math.min(1, sa * look.skinS), Math.min(1, va * look.skinV));
-        else if (sa > 0.18) out = hsv2rgb(look.hue, Math.min(1, sa * look.sat), Math.min(1, va * look.val));
-        else continue;
+        if (hair) out = hsv2rgb((hu + look.hairH + 360) % 360, Math.min(1, sa * look.hairS), Math.min(1, va * look.hairV));
+        else if (skin) out = hsv2rgb((hu + look.skinH + 360) % 360, Math.min(1, sa * look.skinS), Math.min(1, va * look.skinV));
+        else if (sa > 0.18) {
+          const lo = y >= waist;
+          out = hsv2rgb(lo ? look.hue2 : look.hue,
+            Math.min(1, sa * (lo ? look.sat2 : look.sat)), Math.min(1, va * (lo ? look.val2 : look.val)));
+        } else continue;
         d[i] = out[0]; d[i + 1] = out[1]; d[i + 2] = out[2];
       }
     }
