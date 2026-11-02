@@ -7,16 +7,75 @@
 
   function hexRgb(h) { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
 
+  // ---- dyeing a shared sprite for a dynasty ----
+  // Villagers are painted once (the Britons set) and dyed per dynasty here, so every
+  // dynasty gets its own cloth colour and skin tone without shipping another sprite sheet.
+  // Cloth is hue-shifted; face, hands and hair are found per frame and left alone (bar a
+  // small skin shift); magenta is skipped so the team colour still lands on top.
+  function rgb2hsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d > 1e-6) h = 60 * (mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4);
+    return [h, mx ? d / mx : 0, mx];
+  }
+  function hsv2rgb(h, s, v) {
+    const i = Math.floor(h / 60) % 6, f = h / 60 - Math.floor(h / 60);
+    const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+    const o = [[v, t, p], [q, v, p], [p, v, t], [p, q, v], [t, p, v], [v, p, q]][i];
+    return [o[0] * 255, o[1] * 255, o[2] * 255];
+  }
+  function dye(d, w, h, frames, rows, look) {
+    const cw = w / frames, ch = h / rows;
+    for (let ry = 0; ry < rows; ry++) for (let fx = 0; fx < frames; fx++) {
+      const x0 = Math.round(fx * cw), x1 = Math.round((fx + 1) * cw);
+      const y0 = Math.round(ry * ch), y1 = Math.round((ry + 1) * ch);
+      let top = -1, bot = -1;
+      for (let y = y0; y < y1; y++) {
+        let any = false;
+        for (let x = x0; x < x1; x++) if (d[(y * w + x) * 4 + 3] > 40) { any = true; break; }
+        if (any) { if (top < 0) top = y; bot = y; }
+      }
+      if (top < 0) continue;
+      const tall = bot - top + 1;
+      // the head: the top fifth of the figure, narrowed to the columns the crown covers,
+      // so the mask stops at the neck instead of running out over the shoulders
+      const crown = top + Math.max(1, Math.round(tall * 0.07)), headBot = top + Math.max(1, Math.round(tall * 0.20));
+      let hx0 = x1, hx1 = x0;
+      for (let y = top; y < crown; y++) for (let x = x0; x < x1; x++) if (d[(y * w + x) * 4 + 3] > 40) {
+        if (x < hx0) hx0 = x; if (x > hx1) hx1 = x;
+      }
+      hx0 = Math.max(x0, hx0 - 2); hx1 = Math.min(x1 - 1, hx1 + 2);
+      for (let y = top; y <= bot; y++) for (let x = x0; x < x1; x++) {
+        const i = (y * w + x) * 4;
+        if (d[i + 3] <= 40) continue;
+        const hsv = rgb2hsv(d[i], d[i + 1], d[i + 2]), hu = hsv[0], sa = hsv[1], va = hsv[2];
+        if (sa > 0.35 && hu > 270 && hu < 340) continue;                    // team colour
+        const onHead = y < headBot && x >= hx0 && x <= hx1;
+        if (onHead && va < 0.32) continue;                                  // hair
+        const skin = onHead || (hu > 10 && hu < 46 && sa > 0.18 && sa < 0.68 && va > 0.38);
+        let out;
+        if (skin) out = hsv2rgb((hu + look.skinH + 360) % 360, Math.min(1, sa * look.skinS), Math.min(1, va * look.skinV));
+        else if (sa > 0.18) out = hsv2rgb(look.hue, Math.min(1, sa * look.sat), Math.min(1, va * look.val));
+        else continue;
+        d[i] = out[0]; d[i + 1] = out[1]; d[i + 2] = out[2];
+      }
+    }
+  }
+
   // Replace magenta pixels with the team colour, keeping their light and shade.
-  function recolor(img, color) {
+  function recolor(img, color, look, def) {
     const cv = document.createElement('canvas');
     cv.width = img.naturalWidth; cv.height = img.naturalHeight;
     const c = cv.getContext('2d');
     c.drawImage(img, 0, 0);
-    if (!color) return cv;
+    if (!color && !look) return cv;
     let data;
     try { data = c.getImageData(0, 0, cv.width, cv.height); } catch (e) { return cv; } // file:// can block pixel access
-    const d = data.data, [tr, tg, tb] = hexRgb(color);
+    const d = data.data, [tr, tg, tb] = hexRgb(color || '#ffffff');
+    // dye first: the dynasty pass needs to see the magenta it must skip
+    if (look && def) dye(d, cv.width, cv.height, def.frames || 1, def.rows || 1, look);
+    if (!color) { c.putImageData(data, 0, 0); return cv; }
     for (let i = 0; i < d.length; i += 4) {
       if (!d[i + 3]) continue;
       const r = d[i], g = d[i + 1], b = d[i + 2];
@@ -33,13 +92,20 @@
     return cv;
   }
 
-  function sprite(key, color) {
+  // A dynasty dyes a sprite only when it is borrowing another dynasty's art: the moment
+  // its own sheet exists (unit3d_franks_villager_…), that art is used as painted.
+  function lookFor(key, civ) {
+    const l = civ && G.CIV_LOOK && G.CIV_LOOK[civ];
+    return (l && key.indexOf('_villager_') > 0 && key.indexOf('_' + civ + '_') < 0) ? l : null;
+  }
+  function sprite(key, color, civ) {
     const a = art[key];
     if (!a) return null;
-    const k = key + '|' + color;
+    const look = lookFor(key, civ);
+    const k = key + '|' + color + (look ? '|' + civ : '');
     let s = tinted.get(k);
     if (!s) {
-      s = { cv: recolor(a.img, color), w: a.def.w, h: a.def.h, ax: a.def.ax, ay: a.def.ay, art: true };
+      s = { cv: recolor(a.img, color, look, a.def), w: a.def.w, h: a.def.h, ax: a.def.ax, ay: a.def.ay, art: true };
       tinted.set(k, s);
     }
     return s;
@@ -47,6 +113,7 @@
 
   const baseBuilding = G.buildingSprite, baseFoundation = G.foundationSprite;
   // buildings are made once per region (western / mediterranean / eastasian) and fall back to the western set
+  const civOf = owner => (G.players[owner] && G.players[owner].civ) || null;
   const regionOf = owner => (G.players[owner] && G.REGION[G.players[owner].civ]) || 'western';
   const bldKey = (type, owner) => {
     const r = regionOf(owner);
@@ -132,8 +199,8 @@
     }
     return ['idle'];
   }
-  function drawFrame3(ctx, key, color, f, row, x, y, z, alpha) {
-    const a = art[key], sp = sprite(key, color), d = a.def;
+  function drawFrame3(ctx, key, owner, f, row, x, y, z, alpha) {
+    const a = art[key], sp = sprite(key, G.ownerColor(owner), civOf(owner)), d = a.def;
     const cw = sp.cv.width / d.frames, ch = sp.cv.height / d.rows;
     if (alpha < 1) { ctx.save(); ctx.globalAlpha = alpha; }
     ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - d.ax * z, y - d.ay * z, d.fw * z, d.fh * z);
@@ -162,25 +229,25 @@
       if (e < (1 - imp) * T) ph = imp + e / T;            // follow-through after the hit
       else if (cool <= imp * T) ph = imp - cool / T;      // wind-up into the next hit
       drawShadow(ctx, x, y, z);
-      if (ph >= 0) { drawFrame3(ctx, sk, G.ownerColor(u.owner), Math.min(sd.frames - 1, Math.floor(ph * sd.frames)), u.dir || 0, x, y, z, 1); return true; }
+      if (ph >= 0) { drawFrame3(ctx, sk, u.owner, Math.min(sd.frames - 1, Math.floor(ph * sd.frames)), u.dir || 0, x, y, z, 1); return true; }
       const hk = u.hurtT > 0 && (((u.id + (u.swingN || 0)) % 3 === 0 && key3d(u, 'block')) || key3d(u, 'hit'));
-      if (hk) { const hd = art[hk].def; drawFrame3(ctx, hk, G.ownerColor(u.owner), Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
+      if (hk) { const hd = art[hk].def; drawFrame3(ctx, hk, u.owner, Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
       const rk = key3d(u, 'ready') || key3d(u, 'idle');
-      if (rk) { const rd = art[rk].def; drawFrame3(ctx, rk, G.ownerColor(u.owner), Math.floor((G.time + (u.id % 7) * 0.37) * Math.min(14, Math.max(7, rd.frames / (rd.cycle || 1.6)))), u.dir || 0, x, y, z, 1); return true; }
+      if (rk) { const rd = art[rk].def; drawFrame3(ctx, rk, u.owner, Math.floor((G.time + (u.id % 7) * 0.37) * Math.min(14, Math.max(7, rd.frames / (rd.cycle || 1.6)))), u.dir || 0, x, y, z, 1); return true; }
     }
     if (!moving && u.hurtT > 0 && u.type !== 'villager') {
       const hk = key3d(u, 'hit');
-      if (hk) { const hd = art[hk].def; drawShadow(ctx, x, y, z); drawFrame3(ctx, hk, G.ownerColor(u.owner), Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
+      if (hk) { const hd = art[hk].def; drawShadow(ctx, x, y, z); drawFrame3(ctx, hk, u.owner, Math.min(hd.frames - 1, Math.floor((1 - u.hurtT / 0.6) * hd.frames)), u.dir || 0, x, y, z, 1); return true; }
     }
     const f = moving ? Math.floor((u.dist || 0) / (d.stride || STRIDE3) * d.frames) : Math.floor((G.time + (u.id % 7) * 0.37) * (d.cycle ? Math.min(14, Math.max(7, d.frames / d.cycle)) : (FPS3[anim] || 8)));
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill();
-    drawFrame3(ctx, key, G.ownerColor(u.owner), f, u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
+    drawFrame3(ctx, key, u.owner, f, u.dir || 0, x, y, z, u.hitT ? 0.7 : 1);
     return true;
   }
 
-  function drawFrame(ctx, key, color, f, x, y, z, face, alpha) {
-    const a = art[key], sp = sprite(key, color), d = a.def;
+  function drawFrame(ctx, key, owner, f, x, y, z, face, alpha) {
+    const a = art[key], sp = sprite(key, G.ownerColor(owner), civOf(owner)), d = a.def;
     const cw = sp.cv.width / d.frames, ch = sp.cv.height;
     ctx.save(); ctx.translate(x, y);
     if (alpha < 1) ctx.globalAlpha = alpha;
@@ -211,7 +278,7 @@
     if (u.fv === undefined) u.fv = fc;
     u.fv += Math.max(-1, Math.min(1, fc - u.fv)) * Math.min(1, (G.frameDt || 0.016) / 0.06);
     const fs = Math.sign(u.fv || fc) * Math.max(0.35, Math.abs(u.fv));
-    drawFrame(ctx, key, G.ownerColor(u.owner), f, x, y, z, fs, u.hitT ? 0.7 : 1);
+    drawFrame(ctx, key, u.owner, f, x, y, z, fs, u.hitT ? 0.7 : 1);
     // carried load: drawn only when there is no dedicated carry animation
     if (u.carry && u.carry.amt > 1 && (legacy || anim === 'walk_se' || anim === 'walk_ne' || anim === 'idle')) {
       ctx.fillStyle = CARRY[u.carry.res];
@@ -232,8 +299,8 @@
       const n = art[key].def.frames;
       const f = Math.min(n - 1, Math.floor(c.t * FPS.death));
       const alpha = c.t > 10 ? Math.max(0, 1 - (c.t - 10) / 4) : 1;
-      if (k3) drawFrame3(ctx, key, G.ownerColor(c.owner), f, c.dir || 0, s.x, s.y, z, alpha);
-      else drawFrame(ctx, key, G.ownerColor(c.owner), f, s.x, s.y, z, c.face || 1, alpha);
+      if (k3) drawFrame3(ctx, key, c.owner, f, c.dir || 0, s.x, s.y, z, alpha);
+      else drawFrame(ctx, key, c.owner, f, s.x, s.y, z, c.face || 1, alpha);
     }
   };
   G.hasDeathArt = u => !!animKey(u, 'death', true);

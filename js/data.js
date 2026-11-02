@@ -121,6 +121,15 @@ G.RES = {
   stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
 };
 G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian' };
+// How each dynasty's villagers are dyed from the shared (Britons) sprites: cloth takes the
+// dynasty's hue, skin is nudged a little. Britons are the painted original, so they have no
+// entry. A dynasty with its own villager art stops being dyed on its own (see art.js).
+// hue 0-360; sat/val/skin* are multipliers; skinH is a hue nudge in degrees.
+G.CIV_LOOK = {
+  franks:     { hue: 95,  sat: 0.70, val: 1.25, skinH: -3, skinS: 0.92, skinV: 1.07 },  // green wool
+  byzantines: { hue: 42,  sat: 0.45, val: 1.95, skinH: 5,  skinS: 1.10, skinV: 0.86 },  // undyed linen
+  chinese:    { hue: 212, sat: 0.60, val: 1.30, skinH: 2,  skinS: 0.90, skinV: 1.00 }   // indigo
+};
 // mounted units: drawn taller, with a bigger shadow and selection ring
 G.mounted = e => ((e.def || G.UNITS[e.type] || {}).cls) === 'cav';
 G.CARRY = 10;
