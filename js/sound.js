@@ -172,7 +172,9 @@
       if (k >= 1) { clearInterval(fades[i]); fades[i] = null; if (stop) { a.pause(); a.removeAttribute('src'); a.load(); } }
     }, 50);
   }
-  function vol() { return S.musicEnabled ? S.musicVolume : 0; }
+  // the town music sits furthest back: it plays for most of a match and must never crowd it
+  const MOOD_VOL = { menu: 1, peace: 0.55, battle: 0.85 };
+  function vol(m) { return S.musicEnabled ? S.musicVolume * (MOOD_VOL[m || mood] || 1) : 0; }
 
   // start a track of this mood on the free deck, handing over from whatever is playing
   function play(m, fadeIn) {
@@ -184,7 +186,7 @@
     a.volume = 0;
     const pr = a.play();
     if (pr && pr.catch) pr.catch(() => {});     // refused until a gesture; wake() retries
-    fade(next, vol(), fadeIn);
+    fade(next, vol(m), fadeIn);
     if (deck[other] && !deck[other].paused) fade(other, 0, fadeIn, true);
     cur = next;
   }
@@ -254,4 +256,8 @@
     ? { track: deck[cur].src.split('/').pop(), mood, paused: deck[cur].paused,
         volume: +deck[cur].volume.toFixed(3) }
     : null;
+  // Fetch the track list as the page opens, not on the first tap: otherwise the first tap is
+  // usually Quick Match, the game has begun before the list arrives, and the title theme is
+  // skipped for the town music. (The audio itself still waits for a tap, as browsers require.)
+  S.preload = load;
 })();

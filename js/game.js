@@ -31,7 +31,7 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect', mode: config.mode || 'conquest', time: +config.time || 0 };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect', mode: config.mode || 'conquest', time: +config.time || 0, startAge: Math.min(4, Math.max(1, +config.startAge || 1)) };
     G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
@@ -40,6 +40,8 @@
     const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);
     G.players = {};
     slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
+    // a later starting Age, as in AoE2's setup: everyone begins already advanced
+    for (const id in G.players) G.players[id].age = G.rules.startAge;
     G.time = 0; G.over = null; G.overReason = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     const r = G.mapRng;
     // corner spots: bottom-left, top-right, top-left, bottom-right on screen

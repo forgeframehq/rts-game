@@ -33,6 +33,8 @@ G.makeAI = function () {
   }
 
   function build(type, ax, ay, minR, nBuilders) {
+    // the same Age rules as the player: no towers or stables in the Dark Age
+    if (!G.canBuildType(AI.p, type)) return null;
     if (!G.canAfford(AI.p, G.buildCost(AI.p, type))) return null;
     const spot = findSpot(type, ax, ay, minR);
     if (!spot) return null;
@@ -124,8 +126,10 @@ G.makeAI = function () {
     // One house at a time was a bottleneck: a single builder walking out to the edge of
     // town took long enough that the Town Center sat pop-capped and idle waiting for it.
     const housing = blds.filter(b => b.type === 'house' && !b.built).length;
-    const tight = cap - pop <= 6 && cap < 200;
-    if (tight && housing < (cap - pop <= 2 ? 2 : 1)) build('house', home.x, home.y, 4, 2);
+    // one house at a time, a little ahead of need, like a real player; two only once the
+    // town is training from several buildings and filling up faster than one builder keeps up
+    const tight = cap - pop <= (pop < 15 ? 2 : 5) && cap < 200;
+    if (tight && housing < (pop >= 20 && cap - pop <= 2 ? 2 : 1)) build('house', home.x, home.y, 4, pop < 15 ? 1 : 2);
 
     // --- buildings the next Age needs: build the cheapest missing one ---
     const blk = nxt && G.ageBlock(p, null);
@@ -134,7 +138,10 @@ G.makeAI = function () {
       const t = nxt.needs.filter(t => !has(t) && G.canBuildType(p, t)).sort((a, b) => cost(a) - cost(b))[0];
       // build it once the economy is big enough, or the moment it is simply affordable —
       // waiting on a villager count this level never reaches would stall the Age forever
-      if (t && (vils.length >= ageVils(age + 1) - 2 || G.canAfford(p, G.buildCost(p, t)))) {
+      // Only once the economy is nearly ready for the Age. (ageVils is capped at this level's
+      // villager limit, so an easy opponent still gets there.) Building them the moment they
+      // were affordable put a whole town up in the first 30 seconds on high resources.
+      if (t && vils.length >= ageVils(age + 1) - 2) {
         const near = { mill: 'berry', lumbercamp: 'tree', miningcamp: 'gold' }[t];
         const r = near && G.nearest(home, e => e.kind === 'res' && e.type === near, 22);
         build(t, r ? r.x : home.x, r ? r.y : home.y, r ? 1 : 5, 2);

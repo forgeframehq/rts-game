@@ -1,4 +1,11 @@
 // HUD, command panel, touch/mouse input, menus.
+// The preview page wraps the game with its own viewport tag, one that allows page zoom, so a
+// pinch could zoom the whole page instead of the map. Force the game's own setting, and never
+// let a two-finger move reach the browser.
+for (const m of document.querySelectorAll('meta[name=viewport]'))
+  m.content = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover';
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 (function () {
   const $ = id => document.getElementById(id);
   const UI = G.ui = {};
@@ -51,10 +58,15 @@
 
   // a phone will not play anything until the player has touched the screen, so the first
   // gesture of the session is what starts the audio
+  // gesture of the session is what starts the audio. Keep listening until music is actually
+  // playing: if the track list was still loading on the first tap, the next tap starts it.
+  if (G.sound && G.sound.preload) G.sound.preload();
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {
-    if (G.sound) G.sound.wake();
-    ['pointerdown', 'keydown'].forEach(e2 => window.removeEventListener(e2, wake));
-  }, { once: false }));
+    if (!G.sound) return;
+    G.sound.wake();
+    const np = G.sound.nowPlaying();
+    if ((np && !np.paused) || !G.sound.musicEnabled) ['pointerdown', 'keydown'].forEach(e2 => window.removeEventListener(e2, wake));
+  }));
 
   // ---------- Screens ----------
   const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
@@ -111,11 +123,13 @@
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0', age: '1', diff: 'normal'
   };
   if (!setup.shape) setup.shape = 'rect';
   if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
   if (setup.time == null) setup.time = '0';     // ...and from before the time limit
+  if (setup.age == null) setup.age = '1';
+  if (setup.diff == null) setup.diff = 'normal';
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
     setup.slots.forEach((sl, i) => {
@@ -149,7 +163,10 @@
   }
   document.querySelectorAll('[data-opt]').forEach(seg => seg.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
-    setup[seg.dataset.opt] = b.dataset.v; renderSlots();
+    setup[seg.dataset.opt] = b.dataset.v;
+    // one tap sets every computer player; each can still be changed on its own row
+    if (seg.dataset.opt === 'diff') setup.slots.forEach(s => { s.ai = b.dataset.v; });
+    renderSlots();
   }));
   let lastConfig = null;
   function startSkirmish(cfg) {
@@ -162,12 +179,13 @@
       return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
     });
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest', time: +cfg.time || 0 });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest', time: +cfg.time || 0, startAge: +cfg.age || 1 });
     G.buildGround();
     enterGame();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
     UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: lose your King and Queen and you lose. ' : '')
       + (G.rules.time ? `⏳ ${G.rules.time} min limit. ` : '')
+      + (G.rules.startAge > 1 ? `Starting in the ${G.AGES[G.rules.startAge].name}. ` : '')
       + `You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
   }
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
