@@ -84,7 +84,7 @@ def prep():
             af = ('silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.02,'
                   'areverse,silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse,'
                   'afade=t=in:d=0.005,loudnorm=I=-18:TP=-2:LRA=11')
-            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', src, '-af', af, '-ac', '1', '-ar', '44100', '-b:a', '96k', dst], check=True)
+            subprocess.run(['ffmpeg', '-nostdin', '-y', '-loglevel', 'error', '-i', src, '-af', af, '-ac', '1', '-ar', '44100', '-b:a', '96k', dst], check=True)
             files.setdefault(k, []).append('sfx/' + os.path.basename(dst))
     m = json.load(open('assets/sound/manifest.json'))
     m.update(files)
