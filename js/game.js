@@ -34,7 +34,7 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: 'diamond', mode: config.mode || 'conquest', time: +config.time || 0, startAge: Math.min(4, Math.max(1, +config.startAge || 1)) };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: 'diamond', mode: config.mode || 'conquest', time: +config.time || 0, map: 'grasslands', startAge: Math.min(4, Math.max(1, +config.startAge || 1)) };
     G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
@@ -70,6 +70,8 @@
       spots = [{ x: m, y: N - m - 3 }, { x: N - m - 3, y: m }, { x: m, y: m }, { x: N - m - 3, y: N - m - 3 }];
     }
     const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
+    G.rules.map = G.pickMap ? G.pickMap(config.map || 'grasslands', r) : 'grasslands';
+    if (G.mapPaint) G.mapPaint(G.rules.map, r, starts);
     // Town centers first (so resources avoid them)
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
     // Regicide: each player is given a King and a Queen. Lose both and the dynasty falls.
@@ -77,6 +79,7 @@
       G.addUnit('king', s.p, s.x + 3.5, s.y + 4.2);
       G.addUnit('queen', s.p, s.x + 4.4, s.y + 3.6);
     }
+    if (G.mapWalls) G.mapWalls(G.rules.map, starts);
     for (const s of starts) startResources(r, s.x + 2, s.y + 2);   // around the 4x4 Town Center's middle
     // Forests and scattered resources across the map, away from starts
     const far = (x, y) => starts.every(s => Math.hypot(x - s.x, y - s.y) > 13);
@@ -88,7 +91,7 @@
       const d = (r() * 2 - 1) * (G.view.a - pad), s = (r() * 2 - 1) * (G.view.b - pad);
       return { x: Math.round((s + N + d) / 2), y: Math.round((s + N - d) / 2) };
     };
-    for (let k = 0; k < Math.round(22 * scale); k++) {
+    for (let k = 0; k < Math.round(22 * scale * (G.mapForest ? G.mapForest(G.rules.map) : 1)); k++) {
       const { x, y } = rnd(3);
       if (far(x, y)) cluster(r, 'tree', x, y, 18 + Math.floor(r() * 30), 2);
     }
@@ -96,6 +99,7 @@
       const { x, y } = rnd(6);
       if (far(x, y)) cluster(r, k % 3 === 0 ? 'stone' : k % 3 === 1 ? 'gold' : 'berry', x, y, 5, 1);
     }
+    if (G.mapExtras) G.mapExtras(G.rules.map, r, starts, cluster);
     // Starting villagers
     for (const tc of tcs) {
       const md = G.CIVS[G.players[tc.owner].civ].mods;

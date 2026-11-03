@@ -609,3 +609,8 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 .newrec{color:#ffd76a;font-weight:bold;margin:6px 0}
 #objpanel{position:absolute;top:52px;left:8px;right:8px;z-index:30;background:rgba(30,20,10,.94);border:1px solid #c9a24a;border-radius:10px;padding:10px;font-size:13px;color:#f3e3bd}
 #objpanel ul{margin:6px 0 0;padding-left:18px}
+/* map picker: a swipeable strip of painted thumbnails */
+.seg.mapseg{display:flex;overflow-x:auto;gap:8px;padding:2px 2px 6px;scroll-snap-type:x mandatory;flex-wrap:nowrap}
+.seg.mapseg button{flex:0 0 92px;padding:4px;display:flex;flex-direction:column;align-items:center;gap:4px;scroll-snap-align:start;font-size:12px;line-height:1.1}
+.seg.mapseg img{width:82px;height:82px;border-radius:6px;object-fit:cover;border:2px solid rgba(0,0,0,.4)}
+.seg.mapseg button.on img{border-color:#ffd76a;box-shadow:0 0 10px rgba(255,215,106,.6)}

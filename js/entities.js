@@ -825,6 +825,11 @@
         } else {
           if (u.pathFor !== t.id || u.repath <= 0 || !u.path.length) pathTo(u, t, true);
           moveAlong(u, dt);
+          // the way is shut by an enemy wall (Fortress maps, or walls they built): break through it
+          if (!u.path.length && d > u.range + 1.5 && !t.def.wall) {
+            const w = nearest(u, e => e.kind === 'building' && e.def.wall && G.enemies(e.owner, u.owner), 2.5);
+            if (w) { u.task = { t: 'attack', id: w.id, forced: true }; u.path = []; }
+          }
         }
         break;
       }

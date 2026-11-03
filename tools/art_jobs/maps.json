@@ -1,0 +1,59 @@
+{
+ "out": "build/art/maps",
+ "jobs": [
+  [
+   "grasslands",
+   "",
+   "Open rolling green meadows with a few scattered small woods and clearings.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "blackforest",
+   "",
+   "A huge dense dark green forest covering almost everything, with narrow winding clearings and a few open glades.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "highlands",
+   "",
+   "Green hills crossed by long grey rocky ridges and cliffs with narrow passes between them.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "greatlake",
+   "",
+   "A large blue lake in the middle surrounded by a ring of green meadow and forests.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "twinrivers",
+   "",
+   "Green land cut by two parallel blue rivers running diagonally, with a few shallow sandy fords crossing them.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "goldrush",
+   "",
+   "Green meadows with a big glittering gold-ore field in the centre ringed by trees.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "fortress",
+   "",
+   "Four small stone-walled castle towns in the corners of green land with forests between them.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "desertoasis",
+   "",
+   "Golden sand desert with small blue oasis ponds ringed by palm trees and a little scrub.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ],
+  [
+   "random",
+   "",
+   "An old parchment map rolled half open with a big golden question mark compass rose, medieval style.",
+   "Painted map thumbnail for a medieval strategy game, seen straight down from high above like a hand-painted parchment-edged miniature map, storybook Age of Empires 2 style, square, no text, no labels, no UI."
+  ]
+ ]
+}

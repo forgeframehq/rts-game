@@ -114,7 +114,7 @@
     gScore[si] = 0; parent[si] = -1; stamp[si] = curStamp;
     heap.push({ i: si, x: sx, y: sy, f: h(sx, sy) });
     let best = si, bestH = h(sx, sy), found = -1, expanded = 0;
-    while (heap.size && expanded < 3000) {
+    while (heap.size && expanded < (G.rules && G.rules.map && G.rules.map !== 'grasslands' ? 7000 : 3000)) {
       const n = heap.pop(); expanded++;
       if (isGoal(n.x, n.y)) { found = n.i; break; }
       const hn = h(n.x, n.y); if (hn < bestH) { bestH = hn; best = n.i; }

@@ -1,0 +1,60 @@
+{
+ "out": "build/art/squarefit3",
+ "jobs": [
+  [
+   "w_stable",
+   "stable",
+   "Rebuild this as a square-planned medieval stable: timber-framed stalls around a small square yard, steep shingle roof, hay bales, a water trough, horses' heads at the stall doors, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "w_range",
+   "archery_range",
+   "Rebuild this as a square-planned medieval archery range: a compact timber hall with an open front onto a small square practice yard with straw targets, bow racks, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "w_blacksmith",
+   "blacksmith",
+   "Redraw this exact blacksmith, same style and materials, compact square plan, with the chimney clean and no smoke. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "w_monastery",
+   "monastery.jpg",
+   "Rebuild this as a square-planned medieval monastery: a compact stone chapel with a small bell tower set on a square cloister with a tiny herb garden inside, slate roofs, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "ea_stable",
+   "eastasian/stable.jpg",
+   "Rebuild this as a square-planned Song-dynasty Chinese stable: red-lacquered timber stalls around a small square yard under grey tile roofs with upturned eaves, hay, horses at the stalls, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "ea_lumbercamp",
+   "eastasian/lumber_camp.jpg",
+   "Rebuild this as a square-planned Song-dynasty Chinese lumber camp: a compact open timber pavilion under a grey tile roof with upturned eaves, stacked logs and a sawhorse under it, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "ea_siege_workshop",
+   "eastasian/siege_workshop.png",
+   "Rebuild this as a square-planned Song-dynasty Chinese siege workshop: a compact red-timber workshop hall around a small square yard with a half-built traction trebuchet and a ram, grey tile roofs with upturned eaves, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "med_stable",
+   "mediterranean/stable.jpg",
+   "Rebuild this as a square-planned Byzantine stable: whitewashed stone stalls with round arches around a small square yard under terracotta tile roofs, hay, horses at the arches, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "med_range",
+   "mediterranean/archery_range.jpg",
+   "Rebuild this as a square-planned Byzantine archery range: a compact whitewashed colonnaded hall with terracotta roof opening onto a small square yard with straw targets, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "med_lumbercamp",
+   "mediterranean/lumber_camp.jpg",
+   "Rebuild this as a square-planned Byzantine lumber camp: a compact open timber shed on stone pillars under a terracotta roof, stacked logs and a saw bench under it, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ],
+  [
+   "med_siege_workshop",
+   "mediterranean/siege_workshop.png",
+   "Rebuild this as a square-planned Byzantine siege workshop: a compact whitewashed workshop around a small square yard with a half-built trebuchet and a ram, terracotta roofs, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally. No smoke, no steam, no fire plumes drawn in the image: chimneys stay clean (the game animates smoke)."
+  ]
+ ]
+}

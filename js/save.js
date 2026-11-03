@@ -59,6 +59,7 @@
       if (o.kind !== 'unit' && o.type !== 'farm') G.setBlock(o, o.id);
     }
     G.setNextId(maxId + 1);
+    if (G.applyTerrainBlocks) G.applyTerrainBlocks();
     G.time = d.time; G.over = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     G.revealAll = G.rules.reveal === 'all';
     G.ais = d.ais.map(x => { const a = G.makeAI(); a.level = x.level; a.init(x.p); a.waveN = x.waveN; a.nextAttack = x.nextAttack; a.rb = x.rb; a.lowT = x.lowT || 0; a.hideT = x.hideT || 0; return a; });

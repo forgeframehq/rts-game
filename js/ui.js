@@ -249,6 +249,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       box.appendChild(row);
     });
     document.querySelectorAll('[data-opt]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(setup[seg.dataset.opt]))));
+    if ($('map-hint')) $('map-hint').textContent = setup.map === 'random' ? 'A surprise: one of the eight maps, revealed when the battle starts.' : (G.MAPS[setup.map] || G.MAPS.grasslands).desc;
     validate();
   }
   function validate() {

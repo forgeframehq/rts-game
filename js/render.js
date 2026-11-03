@@ -63,7 +63,7 @@
   // Everything is baked once when the map is made, so it costs nothing per frame.
   let GT = 16; // texels per tile, set per map size in buildGround
   let ground = null, fogCv = null, fogCtx = null, fogImg = null, borderRef = null;
-  const TEX = {}, TEXN = ['grass_a', 'grass_b', 'dirt', 'forest_floor'];
+  const TEX = {}, TEXN = ['grass_a', 'grass_b', 'dirt', 'forest_floor'], TEXX = ['water', 'shallows', 'sand', 'rock'];
   let texReady = 0;
   for (const k of TEXN) {
     const im = new Image();
@@ -75,6 +75,19 @@
       if (++texReady === TEXN.length && G.players && ground) G.buildGround();   // arrived after the map was made
     };
     im.src = 'assets/ground/' + k + '.jpg';
+  }
+  // map-type textures: loaded too, with flat painted stand-ins until they arrive
+  const FLAT = { water: [52, 104, 140], shallows: [96, 160, 165], sand: [214, 188, 132], rock: [128, 118, 104] };
+  for (const k of TEXX) {
+    const im = new Image();
+    im.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.drawImage(im, 0, 0, 256, 256); try { TEX[k] = x.getImageData(0, 0, 256, 256).data; if (G.players && ground && G.terrain.some(t => t >= 5)) G.buildGround(); } catch (e) { /* keep flat */ } };
+    im.src = 'assets/ground/' + k + '.jpg';
+  }
+  function flatTex(k) {
+    if (TEX[k]) return TEX[k];
+    const a = new Uint8ClampedArray(256 * 256 * 4), c = FLAT[k], r = G.rng(k.length * 31);
+    for (let i = 0; i < 256 * 256; i++) { const v = 0.92 + r() * 0.16; a[i * 4] = c[0] * v; a[i * 4 + 1] = c[1] * v; a[i * 4 + 2] = c[2] * v; a[i * 4 + 3] = 255; }
+    return a;
   }
   // tileable value noise, 256x256, smoothed: used for edges, grass mixing and light
   function makeNoise(seed, cell) {
@@ -98,7 +111,10 @@
     const W_ = N * GT, img = g.createImageData(W_, W_), d = img.data;
     // per-tile fields, bilinearly sampled per pixel: dirt, and forest (from where the trees stand)
     const dirt = new Float32Array(N * N), forest = new Float32Array(N * N);
-    for (let i = 0; i < N * N; i++) dirt[i] = G.terrain[i] === 4 ? 1 : 0;
+    const wat = new Float32Array(N * N), sha = new Float32Array(N * N), snd = new Float32Array(N * N), rck = new Float32Array(N * N);
+    let extra = false;
+    for (let i = 0; i < N * N; i++) { const t = G.terrain[i]; dirt[i] = t === 4 ? 1 : 0; wat[i] = t === 5 ? 1 : 0; sha[i] = t === 6 ? 1 : 0; snd[i] = t === 7 ? 1 : 0; rck[i] = t === 8 ? 1 : 0; if (t >= 5) extra = true; }
+    const XW = extra ? flatTex('water') : null, XS = extra ? flatTex('shallows') : null, XD = extra ? flatTex('sand') : null, XR = extra ? flatTex('rock') : null;
     for (const e of G.ents) if (!e.dead && e.kind === 'res' && e.type === 'tree')
       for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) {
         const x = e.tx + i, y = e.ty + j; if (x < 0 || y < 0 || x >= N || y >= N) continue;
@@ -123,12 +139,20 @@
         const dw = ss(0.42, 0.6, bil(dirt, u, v) + (n1 - 0.5) * 0.55 + (n2 - 0.5) * 0.2);
         const fw = ss(0.25, 0.75, bil(forest, u, v) + (n1 - 0.5) * 0.35) * 0.85;
         const gw = ss(0.38, 0.62, n2);
+        let ww = 0, shw = 0, sdw = 0, rw = 0;
+        if (extra) { ww = bil(wat, u, v) + (n1 - 0.5) * 0.25; shw = bil(sha, u, v) + (n1 - 0.5) * 0.25; sdw = ss(0.3, 0.6, bil(snd, u, v) + (n1 - 0.5) * 0.4 + (n2 - 0.5) * 0.15); rw = ss(0.35, 0.6, bil(rck, u, v) + (n1 - 0.5) * 0.45); }
         const light = 0.9 + n3 * 0.2;
         const o = (py * W_ + px) * 4;
         for (let c = 0; c < 3; c++) {
           let col = A[ti + c] + (B[ti + c] - A[ti + c]) * gw;
           col += (F[ti + c] - col) * fw;
           col += (D[ti + c] - col) * dw;
+          if (extra) {
+            col += (XD[ti + c] - col) * sdw; col += (XR[ti + c] - col) * rw;
+            // water: a wet dark rim, then the shallows, then deep water
+            col *= 1 - 0.35 * ss(0.15, 0.45, ww + shw);
+            col += (XS[ti + c] - col) * ss(0.3, 0.55, ww + shw); col += (XW[ti + c] - col) * ss(0.5, 0.75, ww);
+          }
           d[o + c] = col * light;
         }
         d[o + 3] = 255;
@@ -140,7 +164,7 @@
     const cols = ['#f2efe2', '#f4d24a', '#c9a3e8', '#e8f0ff'];
     for (let k = 0; k < N * N * 0.06; k++) {
       const cx = r() * N, cy = r() * N;
-      if (dirt[(cy | 0) * N + (cx | 0)] || forest[(cy | 0) * N + (cx | 0)] > 0.5) continue;
+      if (dirt[(cy | 0) * N + (cx | 0)] || G.terrain[(cy | 0) * N + (cx | 0)] >= 5 || forest[(cy | 0) * N + (cx | 0)] > 0.5) continue;
       const col = cols[(r() * cols.length) | 0], m = 3 + (r() * 6 | 0);
       for (let i = 0; i < m; i++) {
         const x = (cx + (r() - 0.5) * 0.9) * GT, y = (cy + (r() - 0.5) * 0.9) * GT;
@@ -150,8 +174,19 @@
     }
     for (let k = 0; k < N * N * 0.05; k++) {
       const x = r() * N * GT, y = r() * N * GT, s = GT * (0.04 + r() * 0.05);
+      const tt = G.terrain[((y / GT) | 0) * N + ((x / GT) | 0)]; if (tt === 5 || tt === 6) continue;
       g.fillStyle = 'rgba(0,0,0,0.25)'; g.beginPath(); g.ellipse(x + s * 0.3, y + s * 0.3, s, s * 0.8, 0, 0, 7); g.fill();
       g.fillStyle = r() < 0.5 ? '#9a958a' : '#b8b0a0'; g.beginPath(); g.ellipse(x, y, s, s * 0.8, 0, 0, 7); g.fill();
+     }
+    // ridges: piled boulders so the rock reads as high ground you can't climb
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      if (G.terrain[y * N + x] !== 8) continue;
+      for (let k = 0; k < 3; k++) {
+        const bx = (x + 0.2 + r() * 0.6) * GT, by = (y + 0.2 + r() * 0.6) * GT, s = GT * (0.28 + r() * 0.22);
+        g.fillStyle = 'rgba(0,0,0,0.35)'; g.beginPath(); g.ellipse(bx + s * 0.25, by + s * 0.3, s, s * 0.75, 0, 0, 7); g.fill();
+        g.fillStyle = ['#8a8070', '#9b917f', '#7a7163'][k]; g.beginPath(); g.ellipse(bx, by, s, s * 0.75, 0, 0, 7); g.fill();
+        g.fillStyle = 'rgba(255,250,235,0.28)'; g.beginPath(); g.ellipse(bx - s * 0.3, by - s * 0.3, s * 0.45, s * 0.3, 0, 0, 7); g.fill();
+      }
     }
   }
 
@@ -780,6 +815,8 @@
     m.setTransform(sx, sy, -sx, sy, A * sx, -(N - B) * sy);
     m.fillStyle = G.view.rect ? '#22361a' : '#4f7a30'; m.fillRect(0, 0, N, N);
     if (G.view.rect) { m.save(); m.setTransform(1, 0, 0, 1, 0, 0); m.fillStyle = '#4f7a30'; m.fillRect(0, 0, w, h); m.restore(); }
+    const MMC = { 5: '#2f6a96', 6: '#5aa0a8', 7: '#cdb37a', 8: '#7d7468' };
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const c = MMC[G.terrain[y * N + x]]; if (c) { m.fillStyle = c; m.fillRect(x, y, 1, 1); } }
     for (const e of G.ents) {
       if (e.dead) continue;
       const x = e.kind === 'unit' ? e.x : e.tx, y = e.kind === 'unit' ? e.y : e.ty;
