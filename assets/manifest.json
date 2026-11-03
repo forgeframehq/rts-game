@@ -2290,10 +2290,10 @@
   "frames": 12,
   "rows": 8,
   "cycle": 1,
-  "fw": 51.73,
-  "fh": 50.93,
-  "ax": 25.87,
-  "ay": 44.35
+  "fw": 52.27,
+  "fh": 50.4,
+  "ax": 26.13,
+  "ay": 44.09
  },
  "unit3d_chinese_repeater_m_t1_death": {
   "file": "assets/units/unit3d_chinese_repeater_m_t1_death.png",
@@ -2301,9 +2301,9 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 65.07,
+  "fh": 64.53,
   "ax": 34.13,
-  "ay": 45.95
+  "ay": 45.42
  },
  "unit3d_chinese_repeater_m_t1_hit": {
   "file": "assets/units/unit3d_chinese_repeater_m_t1_hit.png",
@@ -2311,7 +2311,7 @@
   "rows": 8,
   "cycle": 0.933,
   "fw": 32.0,
-  "fh": 49.33,
+  "fh": 49.07,
   "ax": 16.0,
   "ay": 43.82
  },
@@ -2320,10 +2320,10 @@
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
-  "fw": 31.2,
-  "fh": 43.73,
-  "ax": 15.73,
-  "ay": 39.29
+  "fw": 30.93,
+  "fh": 43.2,
+  "ax": 15.47,
+  "ay": 38.75
  },
  "unit3d_chinese_repeater_m_t1_walk": {
   "file": "assets/units/unit3d_chinese_repeater_m_t1_walk.png",
@@ -2331,10 +2331,10 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 31.73,
+  "fw": 32.8,
   "fh": 43.73,
-  "ax": 16.0,
-  "ay": 38.49
+  "ax": 16.53,
+  "ay": 38.22
  },
  "unit3d_western_archer_m_ready": {
   "file": "assets/units/unit3d_western_archer_m_ready.png",
