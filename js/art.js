@@ -142,6 +142,8 @@
     for (const k of tries) if (art[k]) return k;
     return type;
   };
+  // painted construction stage n (1 bare frame, 2 half built) of this owner's building, if any
+  G.stageSprite = (type, owner, n) => { const k = bldKey(type, owner) + '_s' + n; return art[k] ? sprite(k, G.ownerColor(owner)) : null; };
   G.buildingSprite = function (type, owner, farmStage, mask) {
     // walls are drawn in code from their neighbours, so they never take painted art
     if (G.BUILDINGS[type] && G.BUILDINGS[type].wall) return baseBuilding(type, owner, farmStage, mask);
@@ -334,7 +336,9 @@
   G.hasDeathArt = u => !!animKey(u, 'death', true);
 
   G.loadArt = function (done) {
-    fetch('assets/manifest.json').then(r => r.json()).then(man => {
+    // the main index plus the construction stages, which keep their own small index
+    Promise.all(['assets/manifest.json', 'assets/stages.json'].map(u => fetch(u).then(r => r.ok ? r.json() : {}).catch(() => ({}))))
+      .then(([a, b]) => Object.assign({}, a, b)).then(man => {
       const keys = Object.keys(man);
       let left = keys.length;
       const fin = () => { if (--left === 0 && done) done(); };

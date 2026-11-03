@@ -647,6 +647,18 @@
     ctx.fillStyle = 'rgba(96,70,42,0.78)';
     ctx.beginPath(); ctx.moveTo(N_.x, N_.y); ctx.lineTo(E_.x, E_.y); ctx.lineTo(S_.x, S_.y); ctx.lineTo(W_.x, W_.y); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = 'rgba(230,210,170,0.55)'; ctx.lineWidth = Math.max(1, 1.2 * z); ctx.setLineDash([4 * z, 3 * z]); ctx.stroke(); ctx.setLineDash([]);
+    // painted stages: the bare frame, then half built, then the finished building fades in
+    const s1 = G.stageSprite && G.stageSprite(e.type, e.owner, 1), s2 = s1 && G.stageSprite(e.type, e.owner, 2);
+    if (s1 && s2 && fin) {
+      const sm = (a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+      const a1 = sm(0, 0.06), a2 = sm(0.44, 0.48), a3 = sm(0.9, 0.96);   // quick swaps: no lingering double image
+      if (a2 < 1) { ctx.globalAlpha = a1 * (1 - a3); drawSprite(s1, g.x, g.y, z); }
+      if (a2 > 0 && a3 < 1) { ctx.globalAlpha = a2; drawSprite(s2, g.x, g.y, z); }
+      if (a3 > 0) { ctx.globalAlpha = a3; drawSprite(fin, g.x, g.y, z); }
+      ctx.globalAlpha = 1;
+      constructionDust(e, g, z, N_, E_, S_, W_);
+      return;
+    }
     if (e.type === 'farm') {
       // tilled row by row along the field, each strip a slice of the footprint itself
       if (fin && p > 0.02) {
@@ -654,7 +666,7 @@
               c = G.toScreen(e.tx + e.size * p, e.ty + e.size), d = G.toScreen(e.tx, e.ty + e.size), up = 26 * z;
         ctx.save(); ctx.beginPath();
         ctx.moveTo(a.x, a.y - up); ctx.lineTo(b.x, b.y - up); ctx.lineTo(c.x, c.y + 4 * z); ctx.lineTo(d.x, d.y + 4 * z); ctx.closePath(); ctx.clip();
-        drawSprite(fin, g.x, g.y, z); ctx.restore();
+        drawSprite(G.buildingSprite('farm', e.owner, 'spent') || fin, g.x, g.y, z); ctx.restore();   // ploughed earth and fence; the wheat comes when it is done
       }
       for (const c of [N_, E_, S_, W_]) pole(c, 9 * z, z);
       return;
@@ -676,6 +688,9 @@
       for (let i = 0; i < Math.ceil(left * 4); i++) { ctx.fillStyle = i % 2 ? '#9a6a3c' : '#7c5230'; ctx.fillRect(bx + i * 1.5 * z, by - i * 3 * z, 16 * z, 3 * z); }
       for (let i = 0; i < Math.ceil(left * 3); i++) { ctx.fillStyle = '#a9a39a'; ctx.beginPath(); ctx.ellipse(bx - 8 * z - i * 5 * z, by + 2 * z, 3.4 * z, 2.4 * z, 0, 0, 7); ctx.fill(); }
     }
+    constructionDust(e, g, z, N_, E_, S_, W_);
+  }
+  function constructionDust(e, g, z, N_, E_, S_, W_) {
     // dust while someone is working on it
     const working = G.ents.some(u => !u.dead && u.task && u.task.t === 'build' && u.task.id === e.id && u.working);
     if (working) for (let k = 0; k < 3; k++) {

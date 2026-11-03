@@ -1,0 +1,34 @@
+{
+ "barracks_dark_s1": {
+  "file": "assets/stages/barracks_dark_s1.png",
+  "size": 3,
+  "w": 203.48,
+  "h": 164.29,
+  "ax": 100.43,
+  "ay": 115.96
+ },
+ "barracks_dark_s2": {
+  "file": "assets/stages/barracks_dark_s2.png",
+  "size": 3,
+  "w": 211.96,
+  "h": 179.04,
+  "ax": 106.41,
+  "ay": 130.62
+ },
+ "house_dark_s1": {
+  "file": "assets/stages/house_dark_s1.png",
+  "size": 2,
+  "w": 136.64,
+  "h": 106.32,
+  "ax": 68.8,
+  "ay": 74.05
+ },
+ "house_dark_s2": {
+  "file": "assets/stages/house_dark_s2.png",
+  "size": 2,
+  "w": 134.43,
+  "h": 121.44,
+  "ax": 69.36,
+  "ay": 89.17
+ }
+}

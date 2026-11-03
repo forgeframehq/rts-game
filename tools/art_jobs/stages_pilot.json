@@ -1,0 +1,29 @@
+{
+ "out": "build/art/stages",
+ "jobs": [
+  [
+   "w_house_dark_s1",
+   "house_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare timber frame of corner posts, sill beams and a few cross beams standing where the walls will be, with no walls, no roof and no thatch yet. A stack of fresh timber, a pile of stones and a wooden ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "w_house_dark_s2",
+   "house_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (same timber, same wattle, same planks; do not turn it into stone). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare wooden roof rafters remain with a few bundles of thatch at the eaves, and lash a few rough timber scaffolding poles against the walls. Bare trodden earth around it with wood offcuts.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "w_barracks_dark_s1",
+   "barracks_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare timber frame of corner posts, sill beams and a few cross beams standing where the walls will be, with no walls, no roof and no thatch yet. A stack of fresh timber, a pile of stones and a wooden ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "w_barracks_dark_s2",
+   "barracks_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (same timber, same wattle, same planks; do not turn it into stone). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare wooden roof rafters remain with a few bundles of thatch at the eaves, and lash a few rough timber scaffolding poles against the walls. Bare trodden earth around it with wood offcuts.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ]
+ ]
+}

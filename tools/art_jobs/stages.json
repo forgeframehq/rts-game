@@ -1,0 +1,593 @@
+{
+ "out": "build/art/stages",
+ "jobs": [
+  [
+   "barracks_s1",
+   "repo:assets/source/barracks.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "barracks_s2",
+   "repo:assets/source/barracks.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "blacksmith_s1",
+   "repo:assets/source/blacksmith.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "blacksmith_s2",
+   "repo:assets/source/blacksmith.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "castle_s1",
+   "repo:assets/source/castle.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "castle_s2",
+   "repo:assets/source/castle.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_barracks_s1",
+   "repo:assets/source/eastasian/barracks.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_barracks_s2",
+   "repo:assets/source/eastasian/barracks.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_barracks_dark_s1",
+   "repo:assets/source/eastasian/barracks_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_barracks_dark_s2",
+   "repo:assets/source/eastasian/barracks_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_blacksmith_s1",
+   "repo:assets/source/eastasian/blacksmith.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_blacksmith_s2",
+   "repo:assets/source/eastasian/blacksmith.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_castle_s1",
+   "repo:assets/source/eastasian/castle.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_castle_s2",
+   "repo:assets/source/eastasian/castle.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_house_s1",
+   "repo:assets/source/eastasian/house.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_house_s2",
+   "repo:assets/source/eastasian/house.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_house_dark_s1",
+   "repo:assets/source/eastasian/house_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_house_dark_s2",
+   "repo:assets/source/eastasian/house_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_lumbercamp_s1",
+   "repo:assets/source/eastasian/lumber_camp.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_lumbercamp_s2",
+   "repo:assets/source/eastasian/lumber_camp.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_mill_s1",
+   "repo:assets/source/eastasian/mill.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_mill_s2",
+   "repo:assets/source/eastasian/mill.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_mill_dark_s1",
+   "repo:assets/source/eastasian/mill_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_mill_dark_s2",
+   "repo:assets/source/eastasian/mill_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_miningcamp_s1",
+   "repo:assets/source/eastasian/mining_camp.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_miningcamp_s2",
+   "repo:assets/source/eastasian/mining_camp.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_monastery_s1",
+   "repo:assets/source/eastasian/monastery.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_monastery_s2",
+   "repo:assets/source/eastasian/monastery.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_range_s1",
+   "repo:assets/source/eastasian/archery_range.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_range_s2",
+   "repo:assets/source/eastasian/archery_range.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_siegeworkshop_s1",
+   "repo:assets/source/eastasian/siege_workshop.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_siegeworkshop_s2",
+   "repo:assets/source/eastasian/siege_workshop.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_stable_s1",
+   "repo:assets/source/eastasian/stable.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_stable_s2",
+   "repo:assets/source/eastasian/stable.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_tower_s1",
+   "repo:assets/source/eastasian/watch_tower.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_tower_s2",
+   "repo:assets/source/eastasian/watch_tower.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_towncenter_s1",
+   "repo:assets/source/eastasian/town_center.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_towncenter_s2",
+   "repo:assets/source/eastasian/town_center.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_towncenter_dark_s1",
+   "repo:assets/source/eastasian/town_center_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "eastasian_towncenter_dark_s2",
+   "repo:assets/source/eastasian/town_center_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "house_s1",
+   "repo:assets/source/house.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "house_s2",
+   "repo:assets/source/house.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "lumbercamp_s1",
+   "repo:assets/source/lumber_camp.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "lumbercamp_s2",
+   "repo:assets/source/lumber_camp.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_barracks_s1",
+   "repo:assets/source/mediterranean/barracks.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_barracks_s2",
+   "repo:assets/source/mediterranean/barracks.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_barracks_dark_s1",
+   "repo:assets/source/mediterranean/barracks_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_barracks_dark_s2",
+   "repo:assets/source/mediterranean/barracks_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_blacksmith_s1",
+   "repo:assets/source/mediterranean/blacksmith.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_blacksmith_s2",
+   "repo:assets/source/mediterranean/blacksmith.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_castle_s1",
+   "repo:assets/source/mediterranean/castle.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_castle_s2",
+   "repo:assets/source/mediterranean/castle.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_house_s1",
+   "repo:assets/source/mediterranean/house.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_house_s2",
+   "repo:assets/source/mediterranean/house.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_house_dark_s1",
+   "repo:assets/source/mediterranean/house_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_house_dark_s2",
+   "repo:assets/source/mediterranean/house_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_lumbercamp_s1",
+   "repo:assets/source/mediterranean/lumber_camp.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_lumbercamp_s2",
+   "repo:assets/source/mediterranean/lumber_camp.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_mill_s1",
+   "repo:assets/source/mediterranean/mill.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_mill_s2",
+   "repo:assets/source/mediterranean/mill.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_mill_dark_s1",
+   "repo:assets/source/mediterranean/mill_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_mill_dark_s2",
+   "repo:assets/source/mediterranean/mill_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_miningcamp_s1",
+   "repo:assets/source/mediterranean/mining_camp.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_miningcamp_s2",
+   "repo:assets/source/mediterranean/mining_camp.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_monastery_s1",
+   "repo:assets/source/mediterranean/monastery.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_monastery_s2",
+   "repo:assets/source/mediterranean/monastery.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_range_s1",
+   "repo:assets/source/mediterranean/archery_range.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_range_s2",
+   "repo:assets/source/mediterranean/archery_range.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_siegeworkshop_s1",
+   "repo:assets/source/mediterranean/siege_workshop.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_siegeworkshop_s2",
+   "repo:assets/source/mediterranean/siege_workshop.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_stable_s1",
+   "repo:assets/source/mediterranean/stable.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_stable_s2",
+   "repo:assets/source/mediterranean/stable.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_tower_s1",
+   "repo:assets/source/mediterranean/watch_tower.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_tower_s2",
+   "repo:assets/source/mediterranean/watch_tower.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_towncenter_s1",
+   "repo:assets/source/mediterranean/town_center.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_towncenter_s2",
+   "repo:assets/source/mediterranean/town_center.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_towncenter_dark_s1",
+   "repo:assets/source/mediterranean/town_center_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mediterranean_towncenter_dark_s2",
+   "repo:assets/source/mediterranean/town_center_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mill_s1",
+   "repo:assets/source/mill.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mill_s2",
+   "repo:assets/source/mill.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mill_dark_s1",
+   "repo:assets/source/mill_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "mill_dark_s2",
+   "repo:assets/source/mill_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "miningcamp_s1",
+   "repo:assets/source/mining_camp.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "miningcamp_s2",
+   "repo:assets/source/mining_camp.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "monastery_s1",
+   "repo:assets/source/monastery.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "monastery_s2",
+   "repo:assets/source/monastery.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "range_s1",
+   "repo:assets/source/archery_range.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "range_s2",
+   "repo:assets/source/archery_range.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "siegeworkshop_s1",
+   "repo:assets/source/siege_workshop.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "siegeworkshop_s2",
+   "repo:assets/source/siege_workshop.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "stable_s1",
+   "repo:assets/source/stable.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "stable_s2",
+   "repo:assets/source/stable.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "tower_s1",
+   "repo:assets/source/watch_tower.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "tower_s2",
+   "repo:assets/source/watch_tower.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "towncenter_s1",
+   "repo:assets/source/town_center.png",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "towncenter_s2",
+   "repo:assets/source/town_center.png",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "towncenter_dark_s1",
+   "repo:assets/source/town_center_dark.jpg",
+   "Show this same building at an EARLY stage of construction: only its foundation laid on bare trodden earth, and the bare frame of its walls (timber posts and beams, or the first low courses of stone if it is a stone building) where the walls will be, no roof yet. Building materials of the same kind as the finished building (timber, stone, bricks or tiles) and a ladder lie on the plot.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ],
+  [
+   "towncenter_dark_s2",
+   "repo:assets/source/town_center_dark.jpg",
+   "Edit this exact building into its HALF-BUILT state. Keep its walls, materials, colours, doors and details exactly as they are in the reference (do not change what it is made of). Remove the top third of the walls so they stand unfinished and uneven, take away the roof covering so only the bare roof structure remains with a little of the covering at the eaves, and lash rough timber scaffolding poles against the walls. Bare trodden earth around it with offcuts. Remove any flags and banners.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same scale, and the same square ground footprint in the same place, so the picture lines up exactly with the finished building. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Plain pure white background, no grass, no people, no text, no border. No magenta anywhere."
+  ]
+ ]
+}
