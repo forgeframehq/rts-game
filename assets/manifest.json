@@ -365,9 +365,9 @@
   "rows": 8,
   "cycle": 2.952,
   "fw": 49.07,
-  "fh": 52.53,
+  "fh": 52.27,
   "ax": 24.53,
-  "ay": 47.02
+  "ay": 46.75
  },
  "unit3d_britons_villager_m_carry_food": {
   "file": "assets/units/unit3d_britons_villager_m_carry_food.png",
@@ -376,9 +376,9 @@
   "cycle": 2.178,
   "stride": 1.17,
   "fw": 29.33,
-  "fh": 46.67,
+  "fh": 46.93,
   "ax": 14.67,
-  "ay": 40.62
+  "ay": 40.89
  },
  "unit3d_britons_villager_m_carry_ore": {
   "file": "assets/units/unit3d_britons_villager_m_carry_ore.png",
@@ -387,9 +387,9 @@
   "cycle": 2.178,
   "stride": 1.17,
   "fw": 29.33,
-  "fh": 44.8,
+  "fh": 45.07,
   "ax": 14.67,
-  "ay": 38.75
+  "ay": 39.02
  },
  "unit3d_britons_villager_m_carry_wood": {
   "file": "assets/units/unit3d_britons_villager_m_carry_wood.png",
@@ -398,9 +398,9 @@
   "cycle": 2.178,
   "stride": 1.17,
   "fw": 29.33,
-  "fh": 44.0,
+  "fh": 44.27,
   "ax": 14.67,
-  "ay": 37.95
+  "ay": 38.22
  },
  "unit3d_britons_villager_m_chop": {
   "file": "assets/units/unit3d_britons_villager_m_chop.png",
@@ -408,9 +408,9 @@
   "rows": 8,
   "cycle": 2.952,
   "fw": 50.67,
-  "fh": 52.53,
+  "fh": 52.27,
   "ax": 25.33,
-  "ay": 47.02
+  "ay": 46.75
  },
  "unit3d_britons_villager_m_death": {
   "file": "assets/units/unit3d_britons_villager_m_death.png",
@@ -418,19 +418,19 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 63.47,
+  "fh": 61.87,
   "ax": 34.13,
-  "ay": 45.69
+  "ay": 45.42
  },
  "unit3d_britons_villager_m_farm": {
   "file": "assets/units/unit3d_britons_villager_m_farm.png",
   "frames": 10,
   "rows": 8,
   "cycle": 5.64,
-  "fw": 51.2,
-  "fh": 50.4,
-  "ax": 25.6,
-  "ay": 40.09
+  "fw": 50.67,
+  "fh": 49.87,
+  "ax": 25.33,
+  "ay": 39.82
  },
  "unit3d_britons_villager_m_forage": {
   "file": "assets/units/unit3d_britons_villager_m_forage.png",
@@ -447,9 +447,9 @@
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
-  "fw": 23.47,
+  "fw": 24.0,
   "fh": 41.07,
-  "ax": 11.73,
+  "ax": 12.0,
   "ay": 36.35
  },
  "unit3d_britons_villager_m_mine": {
@@ -457,9 +457,9 @@
   "frames": 12,
   "rows": 8,
   "cycle": 2.22,
-  "fw": 50.67,
+  "fw": 49.6,
   "fh": 56.27,
-  "ax": 25.33,
+  "ax": 24.8,
   "ay": 49.15
  },
  "unit3d_britons_villager_m_walk": {
@@ -468,9 +468,9 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 27.73,
+  "fw": 27.2,
   "fh": 42.4,
-  "ax": 13.87,
+  "ax": 13.6,
   "ay": 36.89
  },
  "unit3d_britons_villager_f_build": {
@@ -478,10 +478,10 @@
   "frames": 10,
   "rows": 8,
   "cycle": 2.952,
-  "fw": 49.07,
-  "fh": 50.4,
+  "fw": 49.33,
+  "fh": 49.07,
   "ax": 24.53,
-  "ay": 46.22
+  "ay": 44.89
  },
  "unit3d_britons_villager_f_carry_food": {
   "file": "assets/units/unit3d_britons_villager_f_carry_food.png",
@@ -489,9 +489,9 @@
   "rows": 8,
   "cycle": 2.178,
   "stride": 1.17,
-  "fw": 28.8,
+  "fw": 29.33,
   "fh": 46.93,
-  "ax": 14.4,
+  "ax": 14.67,
   "ay": 41.42
  },
  "unit3d_britons_villager_f_carry_ore": {
@@ -500,10 +500,10 @@
   "rows": 8,
   "cycle": 2.178,
   "stride": 1.17,
-  "fw": 28.8,
-  "fh": 45.07,
-  "ax": 14.4,
-  "ay": 39.55
+  "fw": 29.33,
+  "fh": 45.33,
+  "ax": 14.67,
+  "ay": 39.82
  },
  "unit3d_britons_villager_f_carry_wood": {
   "file": "assets/units/unit3d_britons_villager_f_carry_wood.png",
@@ -511,10 +511,10 @@
   "rows": 8,
   "cycle": 2.178,
   "stride": 1.17,
-  "fw": 28.8,
-  "fh": 43.2,
-  "ax": 14.4,
-  "ay": 37.69
+  "fw": 29.33,
+  "fh": 43.73,
+  "ax": 14.67,
+  "ay": 38.22
  },
  "unit3d_britons_villager_f_chop": {
   "file": "assets/units/unit3d_britons_villager_f_chop.png",
@@ -522,9 +522,9 @@
   "rows": 8,
   "cycle": 2.952,
   "fw": 51.2,
-  "fh": 50.4,
+  "fh": 49.07,
   "ax": 25.6,
-  "ay": 46.22
+  "ay": 44.89
  },
  "unit3d_britons_villager_f_death": {
   "file": "assets/units/unit3d_britons_villager_f_death.png",
@@ -532,7 +532,7 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 61.33,
+  "fh": 61.6,
   "ax": 34.13,
   "ay": 45.15
  },
@@ -541,10 +541,10 @@
   "frames": 10,
   "rows": 8,
   "cycle": 5.64,
-  "fw": 49.33,
-  "fh": 48.0,
-  "ax": 24.8,
-  "ay": 40.09
+  "fw": 50.13,
+  "fh": 47.2,
+  "ax": 25.07,
+  "ay": 39.82
  },
  "unit3d_britons_villager_f_forage": {
   "file": "assets/units/unit3d_britons_villager_f_forage.png",
@@ -562,18 +562,18 @@
   "rows": 8,
   "cycle": 1.867,
   "fw": 23.47,
-  "fh": 40.0,
+  "fh": 40.27,
   "ax": 11.73,
-  "ay": 36.09
+  "ay": 36.35
  },
  "unit3d_britons_villager_f_mine": {
   "file": "assets/units/unit3d_britons_villager_f_mine.png",
   "frames": 12,
   "rows": 8,
   "cycle": 2.22,
-  "fw": 47.47,
-  "fh": 54.93,
-  "ax": 23.73,
+  "fw": 45.87,
+  "fh": 55.47,
+  "ax": 22.93,
   "ay": 49.15
  },
  "unit3d_britons_villager_f_walk": {
@@ -582,10 +582,10 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 26.67,
+  "fw": 26.13,
   "fh": 41.6,
-  "ax": 13.33,
-  "ay": 36.62
+  "ax": 13.07,
+  "ay": 36.89
  },
  "unit3d_western_knight_m_attack": {
   "file": "assets/units/unit3d_western_knight_m_attack.png",
