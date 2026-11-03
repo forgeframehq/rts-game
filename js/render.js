@@ -269,7 +269,7 @@
     ctx.drawImage(ground, 0, 0, N, N);
     drawAprons();
     // grid when placing
-    if (G.ghost) {
+    if (G.ghost && !G.noGrid) {
       ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 0.03;
       const w = G.toWorld(W / 2, H / 2);
       for (let i = -14; i <= 14; i++) {

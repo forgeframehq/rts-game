@@ -107,7 +107,6 @@
       <section class="opts frame">
         <h3 class="ribbon">Battle settings</h3>
         <div class="opt"><label>Game mode</label><div class="seg" data-opt="mode"><button data-v="conquest" class="on">Conquest</button><button data-v="regicide">Regicide</button></div></div>
-        <div class="opt"><label>Difficulty</label><div class="seg" data-opt="diff"><button data-v="easy">Easy</button><button data-v="normal" class="on">Normal</button><button data-v="hard">Hard</button></div></div>
         <div class="opt"><label>Starting Age</label><div class="seg" data-opt="age"><button data-v="1" class="on">Dark</button><button data-v="2">Feudal</button><button data-v="3">Castle</button><button data-v="4">Imperial</button></div></div>
         <div class="opt"><label>Time limit</label><div class="seg" data-opt="time"><button data-v="0" class="on">Off</button><button data-v="15">15 min</button><button data-v="20">20 min</button><button data-v="30">30 min</button></div></div>
         <div class="opt"><label>Map size</label><div class="seg" data-opt="size"><button data-v="small">Small</button><button data-v="medium" class="on">Medium</button><button data-v="large">Large</button></div></div>
@@ -122,12 +121,22 @@
   </div>
 </div>
 
+<!-- Dynasty picker (opened from a Skirmish player row) -->
+<div id="picker" class="screen hidden">
+  <div class="pick-card">
+    <h3 class="ribbon">Choose a Dynasty</h3>
+    <div id="pick-grid"></div>
+    <button id="pick-cancel" class="plain">Cancel</button>
+  </div>
+</div>
+
 <!-- Dynasties -->
 <div id="dynasties" class="screen title hidden">
   <div class="sheet">
     <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Dynasties</h2></header>
     <div class="sheet-body">
       <div id="dyn-tabs"></div>
+      <div class="seg dyn-view"><button data-v="history" class="on">History &amp; bonuses</button><button data-v="tree">Tech tree</button></div>
       <article id="dyn-page">
         <div class="dyn-top"><img id="dyn-crest" alt=""><div><h3 id="dyn-name"></h3><div id="dyn-role" class="role"></div></div></div>
         <p id="dyn-history"></p>
@@ -135,6 +144,11 @@
         <ul id="dyn-bonuses"></ul>
         <h4>Unique unit</h4>
         <p id="dyn-unique" class="hint"></p>
+      </article>
+      <article id="dyn-treepage" class="hidden">
+        <div class="tree-legend"><span class="lg bld">Building</span><span class="lg unit">Unit</span><span class="lg uniq">Unique unit</span><span class="lg tech">Technology</span><span class="lg dyn">Dynasty tech</span><span class="swipe">Swipe sideways for more ›</span></div>
+        <div id="tree-wrap"><div id="dyn-tree"></div></div>
+        <div id="tree-info" class="hint">Tap anything in the tree to see what it does.</div>
       </article>
     </div>
   </div>
@@ -145,14 +159,36 @@
   <div class="sheet">
     <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Options</h2></header>
     <div class="sheet-body">
-      <section class="opts">
+      <section class="opts frame">
+        <h3 class="ribbon">Gameplay</h3>
         <div class="opt"><label>Game speed</label><div class="seg" data-pref="speed"><button data-v="1">Normal</button><button data-v="1.5">Fast</button><button data-v="2">Very fast</button></div></div>
-        <div class="opt"><label>Sound</label><div class="seg" data-pref="sound"><button data-v="off">Off</button><button data-v="quiet">Quiet</button><button data-v="full" class="on">Full</button></div></div>
-        <div class="opt"><label>Music</label><div class="seg" data-pref="music"><button data-v="off">Off</button><button data-v="soft">Soft</button><button data-v="normal" class="on">Normal</button></div></div>
+        <div class="opt"><label>Quick Match opponent</label><div class="seg" data-pref="quickAI"><button data-v="easy">Easy</button><button data-v="normal">Normal</button><button data-v="hard">Hard</button></div></div>
+        <div class="opt"><label>Keep training villagers</label><div class="seg" data-pref="autovil"><button data-v="off">Off</button><button data-v="30">Up to 30</button><button data-v="60">Up to 60</button></div><p class="hint">The Town Center queues villagers by itself whenever it is idle and you can afford them.</p></div>
+        <div class="opt"><label>Idle villager alert</label><div class="seg" data-pref="idlealert"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+        <div class="opt"><label>Attack alerts</label><div class="seg" data-pref="attackalert"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+      </section>
+      <section class="opts frame">
+        <h3 class="ribbon">Controls</h3>
+        <div class="opt"><label>Camera drag speed</label><div class="seg" data-pref="camspeed"><button data-v="0.7">Slow</button><button data-v="1">Normal</button><button data-v="1.4">Fast</button></div></div>
+        <div class="opt"><label>Button size</label><div class="seg" data-pref="btnsize"><button data-v="normal">Normal</button><button data-v="large">Large</button></div></div>
+        <div class="opt"><label>Vibration</label><div class="seg" data-pref="haptics"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+      </section>
+      <section class="opts frame">
+        <h3 class="ribbon">Display</h3>
         <div class="opt"><label>Graphics</label><div class="seg" data-pref="gfx"><button data-v="high">Sharp</button><button data-v="low">Battery saver</button></div></div>
         <div class="opt"><label>Screen</label><div class="seg" data-pref="orient"><button data-v="auto">Auto-rotate</button><button data-v="landscape">Landscape</button><button data-v="portrait">Portrait</button></div></div>
         <div class="opt"><label>Health bars</label><div class="seg" data-pref="hp"><button data-v="damaged">When damaged</button><button data-v="always">Always</button></div></div>
-        <div class="opt"><label>Saved game</label><button id="btn-delsave" class="plain">Delete saved game</button></div>
+        <div class="opt"><label>Grid when placing buildings</label><div class="seg" data-pref="grid"><button data-v="on">On</button><button data-v="off">Off</button></div></div>
+        <div class="opt"><label>Minimap size</label><div class="seg" data-pref="mmsize"><button data-v="small">Small</button><button data-v="large">Large</button></div></div>
+      </section>
+      <section class="opts frame">
+        <h3 class="ribbon">Audio</h3>
+        <div class="opt"><label>Sound effects</label><div class="seg" data-pref="sound"><button data-v="off">Off</button><button data-v="quiet">Quiet</button><button data-v="full">Full</button></div></div>
+        <div class="opt"><label>Music</label><div class="seg" data-pref="music"><button data-v="off">Off</button><button data-v="soft">Soft</button><button data-v="normal">Normal</button></div></div>
+      </section>
+      <section class="opts frame">
+        <h3 class="ribbon">Saved data</h3>
+        <div class="opt btnrow"><button id="btn-delsave" class="plain">Delete saved game</button><button id="btn-resetprefs" class="plain">Reset all settings</button><button id="btn-replaytut" class="plain">Replay the tutorial</button></div>
       </section>
     </div>
   </div>

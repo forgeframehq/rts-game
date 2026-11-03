@@ -17,7 +17,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal' };
+  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small' };
+  const prefs = { ...PREF_DEFAULTS };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
   // (Android in full screen or as an installed app); elsewhere the phone's own rotation decides.
@@ -43,6 +44,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
+    G.noGrid = prefs.grid === 'off';
+    document.body.classList.toggle('bigbtn', prefs.btnsize === 'large');
+    document.body.classList.toggle('mm-large', prefs.mmsize === 'large');
     lockOrientation();
     G.resize();
     [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
@@ -70,7 +74,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }));
 
   // ---------- Screens ----------
-  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over'];
+  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over', 'picker'];
   function show(id) {
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
     if (G.sound && (id === 'start' || id === 'over')) G.sound.setScene('menu');
@@ -92,7 +96,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     show('start');
   }
   function refreshContinue() {
-    const s = G.hasSave();
+    let s = G.hasSave();
+    if (s && s.time < 60) s = null;   // a game left in its first minute isn't worth resuming
     $('m-continue').classList.toggle('hidden', !s);
     $('m-skirmish').classList.toggle('primary', !s);
     if (s) {
@@ -110,6 +115,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('m-tut').onclick = () => { G.tutorial.start(); enterGame(); };
   const _ss = startSkirmish; startSkirmish = cfg => { G.tutorial.last = false; _ss(cfg); };
   $('m-options').onclick = () => show('options');
+  $('btn-resetprefs').onclick = () => { const keep = prefs.setup; Object.assign(prefs, PREF_DEFAULTS, { setup: keep }); savePrefs(); applyPrefs(); UI.alert('Settings reset'); };
+  $('btn-replaytut').onclick = () => { G.tutorial.start(); enterGame(); };
   const delBtn = $('btn-delsave');
   delBtn.onclick = () => {
     if (!G.hasSave()) { delBtn.textContent = 'No saved game'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
@@ -119,7 +126,26 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   };
 
   // ---------- Skirmish setup ----------
-  const civOpts = () => `<option value="random">Random</option>` + Object.keys(G.CIVS).map(k => `<option value="${k}">${G.CIVS[k].name}</option>`).join('');
+  const TEAM_COL = ['#6b5a3e', '#3b6fd6', '#c0392b', '#2e8b57', '#c9a227'];
+  const DIFF_TXT = { easy: 'Easy', normal: 'Normal', hard: 'Hard' };
+  const crestOf = civ => civ === 'random' ? '' : `assets/ui/crest_${civ}.png`;
+  const shield = (n) => `<svg viewBox="0 0 24 28" class="shield"><path d="M12 1 L22 4 V13 C22 20 17 25 12 27 C7 25 2 20 2 13 V4 Z" fill="${TEAM_COL[n]}" stroke="#f0cf7a" stroke-width="1.6"/><text x="12" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#fff4d6">${n ? n : '–'}</text></svg>`;
+  // the dynasty picker: game-styled cards instead of the phone's own list
+  function pickCiv(cur, done) {
+    const grid = $('pick-grid'); grid.innerHTML = '';
+    for (const k of ['random', ...Object.keys(G.CIVS)]) {
+      const c = G.CIVS[k], b = document.createElement('button');
+      b.className = 'pcard' + (k === cur ? ' on' : '');
+      b.innerHTML = (k === 'random' ? '<div class="qcrest">?</div>' : `<img src="${crestOf(k)}" alt="">`) +
+        `<b>${k === 'random' ? 'Random' : c.name}</b><em>${k === 'random' ? 'Surprise me' : c.role}</em>` +
+        `<small>${k === 'random' ? 'A dynasty is drawn when the battle starts.' : c.bonuses.slice(0, 2).join(' · ')}</small>`;
+      b.onclick = () => { $('picker').classList.add('hidden'); done(k); };
+      grid.appendChild(b);
+    }
+    $('picker').classList.remove('hidden');
+  }
+  $('pick-cancel').onclick = () => $('picker').classList.add('hidden');
+  $('picker').onclick = e => { if (e.target.id === 'picker') $('picker').classList.add('hidden'); };
   const setup = prefs.setup || {
     slots: [
       { type: 'human', civ: 'britons', team: 0 },
@@ -127,29 +153,34 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0', age: '1', diff: 'normal'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0', age: '1'
   };
   if (!setup.shape) setup.shape = 'rect';
   if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
   if (setup.time == null) setup.time = '0';     // ...and from before the time limit
   if (setup.age == null) setup.age = '1';
-  if (setup.diff == null) setup.diff = 'normal';
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
     setup.slots.forEach((sl, i) => {
       const row = document.createElement('div');
-      row.className = 'slot' + (sl.type === 'closed' ? ' closed' : '');
-      const who = i === 0 ? `<span class="who">You</span>`
-        : `<select data-k="type" aria-label="Player ${i + 1}">${i === 1 ? '' : '<option value="closed">Closed</option>'}<option value="ai">Computer</option></select>`;
-      row.innerHTML = `<i class="dot" style="background:${G.PLAYER_COLORS[i + 1]}"></i>${who}` + (sl.type === 'closed' ? '' :
-        `<img class="mini-crest" src="assets/ui/crest_${sl.civ === 'random' ? 'britons' : sl.civ}.png" alt="" ${sl.civ === 'random' ? 'style="filter:grayscale(1) brightness(.6)"' : ''}>` +
-        `<select data-k="civ" aria-label="Dynasty">${civOpts()}</select>` +
-        `<select data-k="team" aria-label="Team"><option value="0">No team</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option><option value="4">Team 4</option></select>` +
-        (sl.type === 'ai' ? `<select data-k="ai" aria-label="Difficulty"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select>` : ''));
-      row.querySelectorAll('select').forEach(sel => {
-        sel.value = String(sl[sel.dataset.k]);
-        sel.onchange = () => { sl[sel.dataset.k] = sel.dataset.k === 'team' ? +sel.value : sel.value; renderSlots(); };
-      });
+      if (sl.type === 'closed') {
+        row.className = 'slot seat';
+        row.innerHTML = `<i class="gem" style="--c:${G.PLAYER_COLORS[i + 1]}"></i><span>+ Add computer player</span>`;
+        row.onclick = () => { sl.type = 'ai'; sl.ai = sl.ai || 'normal'; renderSlots(); };
+        box.appendChild(row); return;
+      }
+      const c = G.CIVS[sl.civ];
+      row.className = 'slot pl';
+      row.innerHTML = `<i class="gem" style="--c:${G.PLAYER_COLORS[i + 1]}"></i>` +
+        `<button class="civpick">${sl.civ === 'random' ? '<div class="qcrest sm">?</div>' : `<img src="${crestOf(sl.civ)}" alt="">`}` +
+        `<span><small class="who">${i === 0 ? 'You' : 'Computer'}</small><b>${c ? c.name : 'Random'}</b><em>${c ? c.role : 'Any dynasty'}</em></span></button>` +
+        `<div class="badges"><button class="badge team" aria-label="Team">${shield(sl.team || 0)}<small>Team</small></button>` +
+        (sl.type === 'ai' ? `<button class="badge diff d-${sl.ai}">${DIFF_TXT[sl.ai] || 'Normal'}</button>` : '') +
+        (i > 1 ? `<button class="badge xbtn" aria-label="Remove player">✕</button>` : '') + `</div>`;
+      row.querySelector('.civpick').onclick = () => pickCiv(sl.civ, k => { sl.civ = k; renderSlots(); });
+      row.querySelector('.team').onclick = () => { sl.team = ((sl.team || 0) + 1) % 5; renderSlots(); };
+      const d = row.querySelector('.diff'); if (d) d.onclick = () => { const o = ['easy', 'normal', 'hard']; sl.ai = o[(o.indexOf(sl.ai) + 1) % 3]; renderSlots(); };
+      const x = row.querySelector('.xbtn'); if (x) x.onclick = () => { sl.type = 'closed'; renderSlots(); };
       box.appendChild(row);
     });
     document.querySelectorAll('[data-opt]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(setup[seg.dataset.opt]))));
@@ -168,8 +199,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   document.querySelectorAll('[data-opt]').forEach(seg => seg.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     setup[seg.dataset.opt] = b.dataset.v;
-    // one tap sets every computer player; each can still be changed on its own row
-    if (seg.dataset.opt === 'diff') setup.slots.forEach(s => { s.ai = b.dataset.v; });
     renderSlots();
   }));
   let lastConfig = null;
@@ -225,6 +254,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     b.onclick = () => showDyn(k);
     tabs.appendChild(b);
   }
+  let dynView = 'history';
+  document.querySelectorAll('.dyn-view button').forEach(b => b.onclick = () => {
+    dynView = b.dataset.v; document.querySelectorAll('.dyn-view button').forEach(x => x.classList.toggle('on', x === b));
+    $('dyn-page').classList.toggle('hidden', dynView !== 'history'); $('dyn-treepage').classList.toggle('hidden', dynView !== 'tree');
+    document.querySelector('#dynasties .sheet').classList.toggle('wide', dynView === 'tree');
+  });
   function showDyn(k) {
     dynSel = k; const c = G.CIVS[k];
     [...tabs.children].forEach(x => x.classList.toggle('on', x.dataset.civ === k));
@@ -234,6 +269,47 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     $('dyn-history').textContent = c.history;
     $('dyn-bonuses').innerHTML = c.bonuses.map(x => `<li>${x}</li>`).join('');
     $('dyn-unique').textContent = c.unique ? c.unique.text : 'Arrives with the next update, alongside the Ages system.';
+    buildTree(k);
+  }
+  // ---- tech tree, laid out like AoE2's: one column per building, one row per Age ----
+  const TREE_COLS = ['towncenter', 'mill', 'lumbercamp', 'miningcamp', 'barracks', 'range', 'stable', 'siegeworkshop', 'blacksmith', 'monastery', 'university', 'castle'];
+  const ROMAN = ['', 'I', 'II', 'III', 'IV'];
+  const fmtCost = c => Object.entries(c || {}).map(([k, v]) => `${v} ${k}`).join(', ');
+  function buildTree(civ) {
+    const uniq = G.CIVS[civ].unique && G.CIVS[civ].unique.type;
+    const cols = TREE_COLS.map(b => {
+      const B = G.BUILDINGS[b], cells = [[], [], [], [], []];
+      cells[G.BUILD_AGE[b] || 1].push({ kind: 'bld', icon: b, name: B.name, info: `${B.name}: costs ${fmtCost(B.cost)}.` });
+      const lines = b === 'castle' ? (uniq ? [uniq] : []) : (B.trains || []);
+      for (const u of lines) {
+        const U = G.UNITS[u];
+        cells[u === uniq ? 3 : (G.UNIT_AGE[u] || 1)].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, name: U.name, info: `${U.name}: ${fmtCost(U.cost)}. ${U.hp} HP, ${U.atk} attack${U.range > 1 ? `, range ${U.range}` : ''}.` });
+        for (const id in G.UPGRADES) { const up = G.UPGRADES[id]; if (up.line === u) cells[up.age].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, name: up.name, info: `${up.name} (upgrade): ${fmtCost(up.cost)}. ${up.stats.hp ? up.stats.hp + ' HP, ' : ''}${up.stats.atk ? up.stats.atk + ' attack' : ''}.` }); }
+      }
+      for (const id in G.TECHS) {
+        const t = G.TECHS[id];
+        if ((t.at || 'blacksmith') !== b || (t.civ && t.civ !== civ)) continue;
+        cells[t.age].push({ kind: t.civ ? 'dyn' : 'tech', icon: t.icon, name: t.name, info: `${t.name}: ${t.desc}. Costs ${fmtCost(t.cost)}.` });
+      }
+      return { b, cells };
+    });
+    const tree = $('dyn-tree'); tree.innerHTML = '';
+    tree.style.gridTemplateColumns = `64px repeat(${cols.length}, max-content)`;
+    for (let a = 1; a <= 4; a++) {
+      const lab = document.createElement('div'); lab.className = 'age-lab';
+      lab.innerHTML = `<i>${ROMAN[a]}</i><span>${G.AGES[a].short}</span>`; tree.appendChild(lab);
+      for (const c of cols) {
+        const cell = document.createElement('div'); cell.className = 'tcell a' + a;
+        for (const it of c.cells[a]) {
+          const t = document.createElement('button'); t.className = 'tile ' + it.kind;
+          t.innerHTML = `<img src="assets/ui/icons/${it.icon}.png" alt="" onerror="this.style.visibility='hidden'"><span>${it.name}</span>`;
+          t.onclick = () => { tree.querySelectorAll('.tile.sel').forEach(x => x.classList.remove('sel')); t.classList.add('sel'); $('tree-info').textContent = it.info; };
+          cell.appendChild(t);
+        }
+        tree.appendChild(cell);
+      }
+    }
+    $('tree-info').textContent = 'Tap anything in the tree to see what it does.';
   }
 
   // ---------- Pause & game over ----------
@@ -265,12 +341,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     // the royals matter more than anything else: warn even when they're on screen
     if (t.owner === 1 && t.def.cls === 'hero' && G.enemies(att.owner, 1) && G.time - royalAlertT > 8) {
       royalAlertT = G.time; lastAlertT = G.time;
-      if (G.sound) G.sound.play('attacked');
+      if (G.sound) G.sound.play('attacked'); if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate([60, 40, 60]);
       UI.alert(`👑 Your ${t.def.name} is under attack! Garrison them in the Town Center.`);
       UI.lastAttack = { x: t.x, y: t.y };
       return;
     }
-    if (t.owner === 1 && G.enemies(att.owner, 1) && G.time - lastAlertT > 12) {
+    if (t.owner === 1 && G.enemies(att.owner, 1) && G.time - lastAlertT > 12 && prefs.attackalert !== 'off') {
       const s = G.toScreen(t.x, t.y);
       if (s.x < 0 || s.y < 0 || s.x > G.W || s.y > G.H) { lastAlertT = G.time; if (G.sound) G.sound.play('attacked'); UI.alert(t.kind === 'building' ? `⚠️ Your ${t.def.name} is under attack!` : '⚠️ Your units are under attack!'); UI.lastAttack = { x: t.x, y: t.y }; }
     }
@@ -792,6 +868,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       $('clock').innerHTML = `<b>${G.AGES[G.ageOf(1)].short}</b><span>${ct}</span>`;
       const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
+      if (idle > (UI.lastIdle || 0) && prefs.idlealert !== 'off' && G.time > 5) { if (G.sound) G.sound.play('select'); $('btn-idle').classList.remove('flash'); void $('btn-idle').offsetWidth; $('btn-idle').classList.add('flash'); }
+      UI.lastIdle = idle;
+      // keep the Town Center training villagers (Options), up to the chosen number
+      const av = +prefs.autovil || 0;
+      if (av && !G.over) for (const b of G.ents) if (!b.dead && b.owner === 1 && b.type === 'towncenter' && b.built && !b.queue.length && !b.aging && !b.research) {
+        const nv = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager').length, pc = G.popOf(1);
+        if (nv < av && pc.pop < pc.cap && G.canAfford(1, G.unitCost(1, 'villager'))) G.train(b, 'villager');
+      }
       const na = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager').length;
       const ac = $('army-count'); ac.textContent = na || ''; ac.classList.toggle('zero', !na);
       refreshPanel(false);
@@ -839,7 +923,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       holdTimer = setTimeout(() => {
         if (gesture && gesture.type === 'pending' && mode !== 'place') {
           gesture = { type: 'box' }; G.boxSel = { x0: e.clientX, y0: e.clientY, x1: e.clientX, y1: e.clientY };
-          if (navigator.vibrate) navigator.vibrate(15);
+          if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate(15);
         }
       }, 420);
     }
@@ -859,7 +943,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
     }
     if (gesture.type === 'pan') {
-      G.camera.x -= dx / G.camera.zoom; G.camera.y -= dy / G.camera.zoom;
+      const cs = +prefs.camspeed || 1; G.camera.x -= dx * cs / G.camera.zoom; G.camera.y -= dy * cs / G.camera.zoom;
       G.camera.vx = 0; G.camera.vy = 0;
       if (gesture.samples) { gesture.samples.push({ dx, dy, t: performance.now() }); if (gesture.samples.length > 5) gesture.samples.shift(); }
     } else if (gesture.type === 'box') {
