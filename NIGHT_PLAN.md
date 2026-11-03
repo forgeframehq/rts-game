@@ -5,7 +5,7 @@ Status: [x] done, [~] in progress, [ ] not started. Keys live only in the sessio
 ## Dynasty art
 - [x] Concepts: Franks/Byzantine/Chinese swordsman, spearman, archer, knight, king, queen (build/art/dynasty_units) + villagers
 - [x] 23 Meshy models built and rigged, backed up on the `models` branch
-- [~] Render all units per dynasty: `python3 tools/render_dynasty.py <dynasty>` (skips finished stems)
+- [x] Render all units per dynasty: `python3 tools/render_dynasty.py <dynasty>` (skips finished stems)
 - [ ] Re-render Western knight/scout idle (calmer idle in j_knight*/j_scout/j_cata) after dynasty renders
 - [ ] Check every dynasty in game, commit, publish
 
@@ -18,13 +18,15 @@ Status: [x] done, [~] in progress, [ ] not started. Keys live only in the sessio
 ## Fixes from play
 - [x] Units under attack orders turn on whoever hits them; the group follows
 - [x] Easy AI: smaller economy and army, first attack at 12 min
-- [ ] Siege Workshop sits on its square; Battering Ram grounded with shadow and turning wheels
+- [~] Siege Workshop re-fitted; Battering Ram rebuilt in code (render.html buildRam, j_ram.json), needs process_render into manifest
 - [ ] Cavalier idle calm (job files done; needs re-render)
 
 ## Other
-- [~] Sound effects via ElevenLabs on Kie: `python3 tools/gen_sfx.py` (resumable; Kie queue was timing out)
-- [ ] Construction stages from Kie (pilot House + Barracks, then all), farm under construction = empty field
-- [ ] Farming and mining animations
+- [ ] BLOCKED Sound effects: Kie's ElevenLabs timed out all night; retry tools/gen_sfx.py: `python3 tools/gen_sfx.py` (resumable; Kie queue was timing out)
+- [x] Construction stages from Kie for every building (assets/stages.json); farm under construction = empty field
+- [~] Farming = Reaping_Swing, mining = Heavy_Hammer_Swing + pickaxe (jobs updated); run tools/rerender_work.sh
 - [x] Formations (line, staggered, box) + Formation button; garrison portrait row (royals crowned), tap to send one out
 - [ ] Horses: try a Meshy horse, else improve code horse
 - [ ] Morning summary with screenshots
+
+- [~] Unique units re-rendered on dynasty bodies (axe/cata/repeater --redo) + Western knight calmer idle
