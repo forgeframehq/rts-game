@@ -614,3 +614,5 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 .seg.mapseg button{flex:0 0 92px;padding:4px;display:flex;flex-direction:column;align-items:center;gap:4px;scroll-snap-align:start;font-size:12px;line-height:1.1}
 .seg.mapseg img{width:82px;height:82px;border-radius:6px;object-fit:cover;border:2px solid rgba(0,0,0,.4)}
 .seg.mapseg button.on img{border-color:#ffd76a;box-shadow:0 0 10px rgba(255,215,106,.6)}
+.ico.por{object-fit:cover;border-radius:6px}
+.tile img[src*="/u/"],.tile img[src*="/t/"]{object-fit:cover;border-radius:6px}

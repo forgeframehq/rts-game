@@ -358,6 +358,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const end = () => { sx = null; }; ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => el.addEventListener(ev, end));
     el.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
   })($('tree-wrap'));
+  const civPor = (civ, u, tier) => { const L = LINES[u]; if (L) u = L[Math.min(L.length - 1, tier)]; else if (!SOLO.has(u)) return null; return `assets/ui/icons/u/${civ}_${u}.jpg`; };
   function buildTree(civ) {
     const uniq = G.CIVS[civ].unique && G.CIVS[civ].unique.type;
     const cols = TREE_COLS.map(b => {
@@ -366,13 +367,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const lines = b === 'castle' ? (uniq ? [uniq] : []) : (B.trains || []);
       for (const u of lines) {
         const U = G.UNITS[u];
-        cells[u === uniq ? 3 : (G.UNIT_AGE[u] || 1)].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, name: U.name, info: `${U.name}: ${fmtCost(U.cost)}. ${U.hp} HP, ${U.atk} attack${U.range > 1 ? `, range ${U.range}` : ''}.` });
-        for (const id in G.UPGRADES) { const up = G.UPGRADES[id]; if (up.line === u) cells[up.age].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, name: up.name, info: `${up.name} (upgrade): ${fmtCost(up.cost)}. ${up.stats.hp ? up.stats.hp + ' HP, ' : ''}${up.stats.atk ? up.stats.atk + ' attack' : ''}.` }); }
+        cells[u === uniq ? 3 : (G.UNIT_AGE[u] || 1)].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, src: civPor(civ, u === 'villager' ? 'villagers' : u, 0), name: U.name, info: `${U.name}: ${fmtCost(U.cost)}. ${U.hp} HP, ${U.atk} attack${U.range > 1 ? `, range ${U.range}` : ''}.` });
+        for (const id in G.UPGRADES) { const up = G.UPGRADES[id]; if (up.line === u) cells[up.age].push({ kind: u === uniq ? 'uniq' : 'unit', icon: u, src: civPor(civ, u, up.tier), name: up.name, info: `${up.name} (upgrade): ${fmtCost(up.cost)}. ${up.stats.hp ? up.stats.hp + ' HP, ' : ''}${up.stats.atk ? up.stats.atk + ' attack' : ''}.` }); }
       }
       for (const id in G.TECHS) {
         const t = G.TECHS[id];
         if ((t.at || 'blacksmith') !== b || (t.civ && t.civ !== civ)) continue;
-        cells[t.age].push({ kind: t.civ ? 'dyn' : 'tech', icon: t.icon, name: t.name, info: `${t.name}: ${t.desc}. Costs ${fmtCost(t.cost)}.` });
+        cells[t.age].push({ kind: t.civ ? 'dyn' : 'tech', icon: t.icon, src: G.techIcon(id), name: t.name, info: `${t.name}: ${t.desc}. Costs ${fmtCost(t.cost)}.` });
       }
       return { b, cells };
     });
@@ -385,7 +386,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const cell = document.createElement('div'); cell.className = 'tcell a' + a;
         for (const it of c.cells[a]) {
           const t = document.createElement('button'); t.className = 'tile ' + it.kind;
-          t.innerHTML = `<img src="assets/ui/icons/${it.icon}.png" alt="" onerror="this.style.visibility='hidden'"><span>${it.name}</span>`;
+          t.innerHTML = `<img src="${it.src || `assets/ui/icons/${it.icon}.png`}" alt="" onerror="this.onerror=null;this.src='assets/ui/icons/${it.icon}.png'"><span>${it.name}</span>`;
           t.onclick = () => { tree.querySelectorAll('.tile.sel').forEach(x => x.classList.remove('sel')); t.classList.add('sel'); $('tree-info').textContent = it.info; };
           cell.appendChild(t);
         }
@@ -690,7 +691,32 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   const ICONP = 'assets/ui/icons/';
   const ICONS = new Set('research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
-  function iconHTML(ic) {
+  // per-dynasty portraits: each unit line shows its current rank (Militia -> Man-at-Arms -> ...)
+  const LINES = { militia: ['militia', 'manatarms', 'longsword', 'champion'], spearman: ['spearman', 'pikeman', 'halberdier'], archer: ['archer', 'crossbow', 'arbalester'],
+    knight: ['knight', 'cavalier', 'paladin'], longbowman: ['longbowman', 'elitelongbowman'], axethrower: ['axethrower', 'eliteaxethrower'], cataphract: ['cataphract', 'elitecataphract'], repeater: ['repeater', 'eliterepeater'] };
+  const SOLO = new Set(['scout', 'monk', 'king', 'queen', 'villager', 'villager_f', 'villagers']);
+  const UPKEY = { elitelongbow: 'elitelongbowman', eliteaxe: 'eliteaxethrower', elitecata: 'elitecataphract' };
+  const TECHIC = new Set('architecture arrowslits beardedaxe blastfurnace bodkin bowsaw bracer chainmail chivalry doublebit fletching forging fortwalls goldmining goldshaft greatwall greekfire handcart heavyplow horsecollar ironcasting logistica loom masonry platemail rocketry scalemail stonemining treadmill warwolf wheelbarrow yeomen'.split(' '));
+  // portrait file for a unit of this owner; tier forces a rank (for upgrade buttons)
+  G.portrait = function (owner, type, tier) {
+    const p = G.players && G.players[owner || 1]; if (!p) return null;
+    let k = type;
+    if (LINES[type]) k = LINES[type][Math.min(LINES[type].length - 1, tier != null ? tier : ((p.up && p.up[type]) || 0))];
+    else if (!SOLO.has(type)) return null;
+    return `${ICONP}u/${p.civ}_${k}.jpg`;
+  };
+  G.techIcon = id => (TECHIC.has(id) ? `${ICONP}t/${id}.jpg` : null);
+  function iconHTML(ic, owner) {
+    if (ic && ic.startsWith('u:')) {   // u:<type>[@tier][|lock]  a dynasty portrait
+      const [body, lock] = ic.slice(2).split('|'), [t, tier] = body.split('@'), src = G.portrait(owner || 1, t, tier != null ? +tier : null);
+      if (src) return `<img class="ico por${lock ? ' locked' : ''}" src="${src}" alt="" draggable="false" onerror="this.onerror=null;this.src='${ICONP}${ICONS.has(t) ? t : 'army'}.png'">` + (lock ? '<span class="lock">🔒</span>' : '');
+      ic = 'i:' + (t === 'villagers' ? 'villager' : t) + (lock ? '|lock' : '');
+    }
+    if (ic && ic.startsWith('t:')) {
+      const [id, lock] = ic.slice(2).split('|'), src = G.techIcon(id);
+      if (src) return `<img class="ico por${lock ? ' locked' : ''}" src="${src}" alt="" draggable="false">` + (lock ? '<span class="lock">🔒</span>' : '');
+      ic = 'i:' + ((G.TECHS[id] && G.TECHS[id].icon) || 'research') + (lock ? '|lock' : '');
+    }
     if (ic && ic.startsWith('i:')) {
       const [n, lock] = ic.slice(2).split('|');
       if (ICONS.has(n)) return `<img class="ico${lock ? ' locked' : ''}" src="${ICONP}${n}.png" alt="" draggable="false">` + (lock ? '<span class="lock">🔒</span>' : '');
@@ -702,7 +728,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   G.iconHTML = iconHTML;
   function selIcon(e) {
     if (e.kind === 'res') return iconHTML('i:' + { tree: 'wood', berry: 'food', gold: 'gold', stone: 'stone' }[e.type]);
-    return iconHTML('i:' + (e.type === 'villager' && e.sex === 'f' ? 'villager_f' : e.type));
+    if (e.kind === 'unit') return iconHTML('u:' + (e.type === 'villager' && e.sex === 'f' ? 'villager_f' : e.type), e.owner);
+    return iconHTML('i:' + e.type);
   }
   function costTxt(c) { return Object.keys(c).map(k => `<img class="ci" src="${ICONP}${k}.png" alt="${k}">${c[k]}`).join(' '); }
   // ---- press and hold any command for an explanation ----
@@ -813,7 +840,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (q.dataset.k !== key + e.id) {
         q.dataset.k = key + e.id; q.innerHTML = '';
         e.queue.forEach((it, i) => {
-          const d = document.createElement('button'); d.className = 'qitem'; d.innerHTML = iconHTML('i:' + it.type) + (i === 0 ? '<span class="prog"></span>' : '');
+          const d = document.createElement('button'); d.className = 'qitem'; d.innerHTML = iconHTML((G.UNITS[it.type] ? 'u:' + (it.type === 'villager' ? 'villagers' : it.type) : 'i:' + it.type), 1) + (i === 0 ? '<span class="prog"></span>' : '');
           d.onclick = () => { G.cancelTrain(e, i); panelKey = ''; };
           q.appendChild(d);
         });
@@ -827,7 +854,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         for (const u of e.garrison) {
           const d = document.createElement('button'); d.className = 'qitem' + (u.def.cls === 'hero' ? ' royal' : '');
           d.title = 'Send out ' + u.def.name;
-          d.innerHTML = iconHTML('i:' + (u.type === 'villager' && u.sex === 'f' ? 'villager_f' : u.type)) + (u.def.cls === 'hero' ? '<span class="crown">👑</span>' : '');
+          d.innerHTML = iconHTML('u:' + (u.type === 'villager' && u.sex === 'f' ? 'villager_f' : u.type), u.owner) + (u.def.cls === 'hero' ? '<span class="crown">👑</span>' : '');
           d.onclick = () => { G.ungarrison(e, x => x === u); panelKey = ''; q.dataset.k = ''; };
           q.appendChild(d);
         }
@@ -913,8 +940,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (!resPage && trains.length) {
         for (const t of trains) {
           const c = G.unitCost(1, t);
-          if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
-          cmds.appendChild(btn('i:' + t, G.unitDef(1, t).name, costTxt(c), () => {
+          if (!G.canTrainType(1, t)) { cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t) + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
+          cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t), G.unitDef(1, t).name, costTxt(c), () => {
             for (const b of sel) {
               const r = G.train(b, t);
               if (r === 'pop') { UI.alert('Need more houses!'); break; }
@@ -931,7 +958,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id];
           cmds.appendChild(btn('⏹', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
         } else for (const r of res) {
-          const ic = r.kind === 'up' ? 'i:' + r.def.line + (r.why ? '|lock' : '') : 'i:' + r.def.icon + (r.why ? '|lock' : '');
+          const ic = r.kind === 'up' ? 'u:' + r.def.line + '@' + r.def.tier + (r.why ? '|lock' : '') : 't:' + r.id + (r.why ? '|lock' : '');
           const b = btn(ic, r.def.name, r.why || costTxt(r.def.cost), () => {
             if (r.why) { UI.alert(`${r.def.name} needs the ${G.AGES[r.def.age].name}`); return; }
             const ok = G.startResearch(e, r.id);
@@ -945,7 +972,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           cmds.appendChild(b);
         }
         for (const id of done) {
-          const t = G.TECHS[id], b = btn('i:' + t.icon, t.name, '✓ done', () => UI.alert(`${t.name}: ${t.desc || 'researched'}`), true);
+          const t = G.TECHS[id], b = btn('t:' + id, t.name, '✓ done', () => UI.alert(`${t.name}: ${t.desc || 'researched'}`), true);
           b.classList.add('research', 'done'); cmds.appendChild(b);
         }
       }
