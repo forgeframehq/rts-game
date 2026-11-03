@@ -9,11 +9,11 @@
  },
  "towncenter": {
   "file": "assets/towncenter.png",
-  "size": 3,
-  "w": 194.14,
-  "h": 189.2,
-  "ax": 96.49,
-  "ay": 140.87
+  "size": 4,
+  "w": 258.85,
+  "h": 252.27,
+  "ax": 128.65,
+  "ay": 187.83
  },
  "barracks": {
   "file": "assets/barracks.png",
@@ -65,11 +65,11 @@
  },
  "farm": {
   "file": "assets/farm.png",
-  "size": 2,
-  "w": 136.0,
-  "h": 108.91,
-  "ax": 67.0,
-  "ay": 55.13
+  "size": 3,
+  "w": 204.0,
+  "h": 163.37,
+  "ax": 100.5,
+  "ay": 82.7
  },
  "tower": {
   "file": "assets/tower.png",
@@ -1528,11 +1528,11 @@
  },
  "farm_spent": {
   "file": "assets/farm_spent.png",
-  "size": 2,
-  "w": 136.0,
-  "h": 98.15,
-  "ax": 67.27,
-  "ay": 75.87
+  "size": 3,
+  "w": 204.0,
+  "h": 147.23,
+  "ax": 100.91,
+  "ay": 113.81
  },
  "unit3d_franks_axethrower_m_attack": {
   "file": "assets/units/unit3d_franks_axethrower_m_attack.png",
@@ -1715,11 +1715,11 @@
  },
  "mediterranean_towncenter": {
   "file": "assets/mediterranean_towncenter.png",
-  "size": 3,
-  "w": 194.92,
-  "h": 198.96,
-  "ax": 97.12,
-  "ay": 150.51
+  "size": 4,
+  "w": 259.89,
+  "h": 265.28,
+  "ax": 129.49,
+  "ay": 200.68
  },
  "mediterranean_barracks": {
   "file": "assets/mediterranean_barracks.png",
@@ -1763,11 +1763,11 @@
  },
  "mediterranean_farm": {
   "file": "assets/mediterranean_farm.png",
-  "size": 2,
-  "w": 144.2,
-  "h": 113.17,
-  "ax": 72.1,
-  "ay": 84.37
+  "size": 3,
+  "w": 216.3,
+  "h": 169.75,
+  "ax": 108.15,
+  "ay": 126.56
  },
  "mediterranean_tower": {
   "file": "assets/mediterranean_tower.png",
@@ -1795,11 +1795,11 @@
  },
  "eastasian_towncenter": {
   "file": "assets/eastasian_towncenter.png",
-  "size": 3,
-  "w": 219.43,
-  "h": 182.49,
-  "ax": 109.05,
-  "ay": 134.05
+  "size": 4,
+  "w": 292.57,
+  "h": 243.32,
+  "ax": 145.4,
+  "ay": 178.73
  },
  "eastasian_barracks": {
   "file": "assets/eastasian_barracks.png",
@@ -1843,11 +1843,11 @@
  },
  "eastasian_farm": {
   "file": "assets/eastasian_farm.png",
-  "size": 2,
-  "w": 143.36,
-  "h": 95.45,
-  "ax": 71.68,
-  "ay": 66.65
+  "size": 3,
+  "w": 215.04,
+  "h": 143.18,
+  "ax": 107.52,
+  "ay": 99.98
  },
  "eastasian_tower": {
   "file": "assets/eastasian_tower.png",
@@ -1891,27 +1891,27 @@
  },
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
-  "size": 3,
-  "w": 206.01,
-  "h": 179.16,
-  "ax": 103.92,
-  "ay": 130.95
+  "size": 4,
+  "w": 274.68,
+  "h": 238.88,
+  "ax": 138.56,
+  "ay": 174.6
  },
  "mediterranean_siegeworkshop": {
   "file": "assets/mediterranean_siegeworkshop.png",
-  "size": 3,
-  "w": 199.91,
-  "h": 158.68,
-  "ax": 99.75,
-  "ay": 110.47
+  "size": 4,
+  "w": 266.55,
+  "h": 211.57,
+  "ax": 133.0,
+  "ay": 147.29
  },
  "eastasian_siegeworkshop": {
   "file": "assets/eastasian_siegeworkshop.png",
-  "size": 3,
-  "w": 196.92,
-  "h": 149.0,
-  "ax": 96.0,
-  "ay": 100.68
+  "size": 4,
+  "w": 262.56,
+  "h": 198.67,
+  "ax": 128.0,
+  "ay": 134.24
  },
  "unit_britons_ram_m_idle": {
   "file": "assets/units/britons_ram_m_idle.png",
@@ -2426,11 +2426,11 @@
  },
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
-  "size": 3,
-  "w": 215.4,
-  "h": 186.09,
-  "ax": 107.88,
-  "ay": 142.89
+  "size": 4,
+  "w": 287.2,
+  "h": 248.12,
+  "ax": 143.84,
+  "ay": 190.52
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
@@ -2458,11 +2458,11 @@
  },
  "mediterranean_towncenter_dark": {
   "file": "assets/mediterranean_towncenter_dark.png",
-  "size": 3,
-  "w": 215.04,
-  "h": 157.21,
-  "ax": 107.52,
-  "ay": 114.01
+  "size": 4,
+  "w": 286.72,
+  "h": 209.61,
+  "ax": 143.36,
+  "ay": 152.01
  },
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",
@@ -2490,11 +2490,11 @@
  },
  "eastasian_towncenter_dark": {
   "file": "assets/eastasian_towncenter_dark.png",
-  "size": 3,
-  "w": 212.11,
-  "h": 156.86,
-  "ax": 108.07,
-  "ay": 108.65
+  "size": 4,
+  "w": 282.81,
+  "h": 209.15,
+  "ax": 144.09,
+  "ay": 144.87
  },
  "eastasian_barracks_dark": {
   "file": "assets/eastasian_barracks_dark.png",

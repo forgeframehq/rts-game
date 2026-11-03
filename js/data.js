@@ -72,18 +72,18 @@ G.UNITS = {
 
 // Buildings. size in tiles (square footprint).
 G.BUILDINGS = {
-  towncenter: { name: 'Town Center', cost: { wood: 275, stone: 100 }, time: 60, hp: 2400, size: 3, los: 8, pop: 5, drop: ['food','wood','gold','stone'], trains: ['villager'], garrison: 15, atk: 5, range: 6, rate: 2, icon: '🏰' },
+  towncenter: { name: 'Town Center', cost: { wood: 275, stone: 100 }, time: 60, hp: 2400, size: 4, los: 8, pop: 5, drop: ['food','wood','gold','stone'], trains: ['villager'], garrison: 15, atk: 5, range: 6, rate: 2, icon: '🏰' },
   house:      { name: 'House', cost: { wood: 25 }, time: 15, hp: 550, size: 2, los: 2, pop: 5, icon: '🏠' },
   mill:       { name: 'Mill', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['food'], icon: '🌾' },
   lumbercamp: { name: 'Lumber Camp', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['wood'], icon: '🪵' },
   miningcamp: { name: 'Mining Camp', cost: { wood: 100 }, time: 20, hp: 600, size: 2, los: 4, drop: ['gold','stone'], icon: '⛏️' },
-  farm:       { name: 'Farm', cost: { wood: 60 }, time: 10, hp: 480, size: 2, los: 1, farm: 175, reseed: 25, icon: '🟫' },
+  farm:       { name: 'Farm', cost: { wood: 60 }, time: 10, hp: 480, size: 3, los: 1, farm: 175, reseed: 25, icon: '🟫' },
   barracks:   { name: 'Barracks', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['militia','spearman'], icon: '⚔️' },
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['scout','knight'], icon: '🐎' },
   blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
   monastery:  { name: 'Monastery', cost: { wood: 175 }, time: 40, hp: 1050, size: 3, los: 6, trains: ['monk'], icon: '✝️' },
-  siegeworkshop: { name: 'Siege Workshop', cost: { wood: 200 }, time: 40, hp: 1050, size: 3, los: 5, trains: ['ram','trebuchet'], icon: '⚙️' },
+  siegeworkshop: { name: 'Siege Workshop', cost: { wood: 200 }, time: 40, hp: 1050, size: 4, los: 5, trains: ['ram','trebuchet'], icon: '⚙️' },
   castle:     { name: 'Castle', cost: { stone: 350 }, time: 80, hp: 3000, size: 4, los: 9, garrison: 20, atk: 11, range: 8, rate: 2, icon: '🏯' },
   // ---- walls: cheap, quick, and built in runs. size 1 so they follow a line. ----
   palisade:   { name: 'Palisade Wall', cost: { wood: 5 }, time: 3, hp: 250, size: 1, los: 2, wall: 'wood', icon: '🪵' },

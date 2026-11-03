@@ -60,10 +60,10 @@
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
     // Regicide: each player is given a King and a Queen. Lose both and the dynasty falls.
     if (G.rules.mode === 'regicide') for (const s of starts) {
-      G.addUnit('king', s.p, s.x + 2.5, s.y + 3.2);
-      G.addUnit('queen', s.p, s.x + 3.4, s.y + 2.6);
+      G.addUnit('king', s.p, s.x + 3.5, s.y + 4.2);
+      G.addUnit('queen', s.p, s.x + 4.4, s.y + 3.6);
     }
-    for (const s of starts) startResources(r, s.x + 1, s.y + 1);
+    for (const s of starts) startResources(r, s.x + 2, s.y + 2);   // around the 4x4 Town Center's middle
     // Forests and scattered resources across the map, away from starts
     const far = (x, y) => starts.every(s => Math.hypot(x - s.x, y - s.y) > 13);
     // random points inside the playable area
@@ -87,7 +87,7 @@
       const md = G.CIVS[G.players[tc.owner].civ].mods;
       const n = 3 + (md.extraVils || 0);
       for (let i = 0; i < n; i++) {
-        const f = G.nearestFree(tc.tx + 1 + (i % 3) - 1, tc.ty + 4 + Math.floor(i / 3), 6);
+        const f = G.nearestFree(tc.tx + 1 + (i % 3), tc.ty + 5 + Math.floor(i / 3), 6);
         G.addUnit('villager', tc.owner, f.x + 0.5, f.y + 0.5);
       }
     }

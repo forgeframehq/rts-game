@@ -788,7 +788,8 @@
           u.atFarm = true; u.path = []; u.working = true;
           // wander slightly over the field
           u.fw = (u.fw || 0) + dt;
-          const tx = f.tx + 0.5 + (Math.sin(u.fw * 0.5) + 1) * 0.5, ty = f.ty + 0.5 + (Math.cos(u.fw * 0.37) + 1) * 0.5;
+          const sp = (f.size - 1) * 0.5;   // over the whole field, rows to rows
+          const tx = f.tx + 0.5 + (Math.sin(u.fw * 0.5) + 1) * sp, ty = f.ty + 0.5 + (Math.cos(u.fw * 0.37) + 1) * sp;
           u.x += (tx - u.x) * dt; u.y += (ty - u.y) * dt;
           if (!u.carry || u.carry.res !== 'food') u.carry = { res: 'food', amt: 0 };
           const amt = Math.min(G.FARM_RATE * dt * (G.fastGather || 1), f.food);
