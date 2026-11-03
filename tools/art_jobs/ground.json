@@ -1,0 +1,29 @@
+{
+ "out": "build/art/ground",
+ "jobs": [
+  [
+   "grass_a",
+   "",
+   "Lush meadow grass: dense short green grass blades in varied greens with a few yellow-green highlights and tiny darker clumps, a medium natural green overall.",
+   "Seamless tileable texture that fills the whole square edge to edge, seen straight down from directly above, with no perspective, no horizon, no objects, no shadows cast by anything, even soft daylight. Hand-painted, semi-realistic Age of Empires 2 terrain style, fine detail but low contrast so game units stand out on top. No text, no border, no frame."
+  ],
+  [
+   "grass_b",
+   "",
+   "Slightly drier meadow grass: short grass in olive and warm green with sparse tiny clover leaves and very small yellow wildflowers scattered thinly.",
+   "Seamless tileable texture that fills the whole square edge to edge, seen straight down from directly above, with no perspective, no horizon, no objects, no shadows cast by anything, even soft daylight. Hand-painted, semi-realistic Age of Empires 2 terrain style, fine detail but low contrast so game units stand out on top. No text, no border, no frame."
+  ],
+  [
+   "dirt",
+   "",
+   "Worn bare earth path: packed light-brown soil with fine dust, tiny pebbles and a few faint footprint-worn patches, a warm medium brown overall.",
+   "Seamless tileable texture that fills the whole square edge to edge, seen straight down from directly above, with no perspective, no horizon, no objects, no shadows cast by anything, even soft daylight. Hand-painted, semi-realistic Age of Empires 2 terrain style, fine detail but low contrast so game units stand out on top. No text, no border, no frame."
+  ],
+  [
+   "forest_floor",
+   "",
+   "Forest floor: dark green moss and short shaded grass mixed with fallen brown leaves, pine needles and small twigs, darker than meadow grass.",
+   "Seamless tileable texture that fills the whole square edge to edge, seen straight down from directly above, with no perspective, no horizon, no objects, no shadows cast by anything, even soft daylight. Hand-painted, semi-realistic Age of Empires 2 terrain style, fine detail but low contrast so game units stand out on top. No text, no border, no frame."
+  ]
+ ]
+}

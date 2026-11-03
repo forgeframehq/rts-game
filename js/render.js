@@ -57,27 +57,121 @@
   };
 
   // ---------- Ground texture in tile space (drawn with an iso transform) ----------
-  const GT = 16; // texels per tile
+  // Four painted textures (lush and dry grass, worn earth, forest floor) are blended per pixel
+  // with ragged, noise-broken edges, so the tile grid never shows; a large slow light
+  // variation gives the land depth, and small flowers and pebbles are scattered on top.
+  // Everything is baked once when the map is made, so it costs nothing per frame.
+  let GT = 16; // texels per tile, set per map size in buildGround
   let ground = null, fogCv = null, fogCtx = null, fogImg = null, borderRef = null;
+  const TEX = {}, TEXN = ['grass_a', 'grass_b', 'dirt', 'forest_floor'];
+  let texReady = 0;
+  for (const k of TEXN) {
+    const im = new Image();
+    im.onload = () => {
+      const c = document.createElement('canvas'); c.width = c.height = 256;
+      const x = c.getContext('2d'); x.drawImage(im, 0, 0, 256, 256);
+      try { TEX[k] = x.getImageData(0, 0, 256, 256).data; } catch (e) { /* no pixel access: keep the plain ground */ }
+      TEX[k + '_img'] = im;
+      if (++texReady === TEXN.length && G.players && ground) G.buildGround();   // arrived after the map was made
+    };
+    im.src = 'assets/ground/' + k + '.jpg';
+  }
+  // tileable value noise, 256x256, smoothed: used for edges, grass mixing and light
+  function makeNoise(seed, cell) {
+    const r = G.rng(seed), n = 256 / cell, grid = new Float32Array(n * n);
+    for (let i = 0; i < n * n; i++) grid[i] = r();
+    const out = new Float32Array(256 * 256);
+    for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) {
+      const gx = x / cell, gy = y / cell, x0 = Math.floor(gx), y0 = Math.floor(gy);
+      let fx = gx - x0, fy = gy - y0; fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+      const g = (i, j) => grid[((j % n + n) % n) * n + ((i % n + n) % n)];
+      const top = g(x0, y0) + (g(x0 + 1, y0) - g(x0, y0)) * fx, bot = g(x0, y0 + 1) + (g(x0 + 1, y0 + 1) - g(x0, y0 + 1)) * fx;
+      out[y * 256 + x] = top + (bot - top) * fy;
+    }
+    return out;
+  }
+  let NZ1 = null, NZ2 = null, NZ3 = null;
+  const ss = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+  function paintGround(g) {
+    if (!NZ1) { NZ1 = makeNoise(11, 8); NZ2 = makeNoise(23, 32); NZ3 = makeNoise(37, 64); }
+    const W_ = N * GT, img = g.createImageData(W_, W_), d = img.data;
+    // per-tile fields, bilinearly sampled per pixel: dirt, and forest (from where the trees stand)
+    const dirt = new Float32Array(N * N), forest = new Float32Array(N * N);
+    for (let i = 0; i < N * N; i++) dirt[i] = G.terrain[i] === 4 ? 1 : 0;
+    for (const e of G.ents) if (e.kind === 'res' && e.type === 'tree')
+      for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) {
+        const x = e.tx + i, y = e.ty + j; if (x < 0 || y < 0 || x >= N || y >= N) continue;
+        forest[y * N + x] = Math.min(1, forest[y * N + x] + (i === 0 && j === 0 ? 0.6 : Math.abs(i) + Math.abs(j) <= 2 ? 0.25 : 0.1));
+      }
+    const bil = (f, u, v) => {
+      const x0 = Math.max(0, Math.min(N - 1, Math.floor(u))), y0 = Math.max(0, Math.min(N - 1, Math.floor(v)));
+      const x1 = Math.min(N - 1, x0 + 1), y1 = Math.min(N - 1, y0 + 1), fx = Math.max(0, Math.min(1, u - x0)), fy = Math.max(0, Math.min(1, v - y0));
+      const t = f[y0 * N + x0] + (f[y0 * N + x1] - f[y0 * N + x0]) * fx, b = f[y1 * N + x0] + (f[y1 * N + x1] - f[y1 * N + x0]) * fx;
+      return t + (b - t) * fy;
+    };
+    const A = TEX.grass_a, B = TEX.grass_b, D = TEX.dirt, F = TEX.forest_floor;
+    const tpt = 256 / 8;                  // a texture repeats every 8 tiles
+    for (let py = 0; py < W_; py++) {
+      const v = py / GT - 0.5;
+      for (let px = 0; px < W_; px++) {
+        const u = px / GT - 0.5;
+        const tx = ((u + 0.5) * tpt | 0) & 255, ty = ((v + 0.5) * tpt | 0) & 255, ti = (ty * 256 + tx) * 4;
+        const n1 = NZ1[((py * 3 & 255) * 256) + (px * 3 & 255)];          // fine: ragged edges
+        const n2 = NZ2[(((py >> 1) & 255) * 256) + ((px >> 1) & 255)];   // medium: grass patches
+        const n3 = NZ3[(((py >> 2) & 255) * 256) + ((px >> 2) & 255)];   // large: light and shade
+        const dw = ss(0.42, 0.6, bil(dirt, u, v) + (n1 - 0.5) * 0.55 + (n2 - 0.5) * 0.2);
+        const fw = ss(0.25, 0.75, bil(forest, u, v) + (n1 - 0.5) * 0.35) * 0.85;
+        const gw = ss(0.38, 0.62, n2);
+        const light = 0.9 + n3 * 0.2;
+        const o = (py * W_ + px) * 4;
+        for (let c = 0; c < 3; c++) {
+          let col = A[ti + c] + (B[ti + c] - A[ti + c]) * gw;
+          col += (F[ti + c] - col) * fw;
+          col += (D[ti + c] - col) * dw;
+          d[o + c] = col * light;
+        }
+        d[o + 3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+    // small flowers and pebbles, in clusters, never on worn earth
+    const r = G.rng(4321);
+    const cols = ['#f2efe2', '#f4d24a', '#c9a3e8', '#e8f0ff'];
+    for (let k = 0; k < N * N * 0.06; k++) {
+      const cx = r() * N, cy = r() * N;
+      if (dirt[(cy | 0) * N + (cx | 0)] || forest[(cy | 0) * N + (cx | 0)] > 0.5) continue;
+      const col = cols[(r() * cols.length) | 0], m = 3 + (r() * 6 | 0);
+      for (let i = 0; i < m; i++) {
+        const x = (cx + (r() - 0.5) * 0.9) * GT, y = (cy + (r() - 0.5) * 0.9) * GT;
+        g.fillStyle = 'rgba(30,50,15,0.35)'; g.fillRect(x, y + 0.6, GT * 0.07, GT * 0.07);
+        g.fillStyle = col; g.fillRect(x, y, GT * 0.07, GT * 0.07);
+      }
+    }
+    for (let k = 0; k < N * N * 0.05; k++) {
+      const x = r() * N * GT, y = r() * N * GT, s = GT * (0.04 + r() * 0.05);
+      g.fillStyle = 'rgba(0,0,0,0.25)'; g.beginPath(); g.ellipse(x + s * 0.3, y + s * 0.3, s, s * 0.8, 0, 0, 7); g.fill();
+      g.fillStyle = r() < 0.5 ? '#9a958a' : '#b8b0a0'; g.beginPath(); g.ellipse(x, y, s, s * 0.8, 0, 0, 7); g.fill();
+    }
+  }
+
   G.buildGround = function () {
     N = G.MAP;
+    // as sharp as a phone's canvas limits allow: about 9 megapixels for the whole map
+    GT = (TEX.grass_a && TEX.dirt) ? Math.max(16, Math.min(32, Math.floor(3000 / N))) : 16;
     ground = document.createElement('canvas');
     ground.width = ground.height = N * GT;
     const g = ground.getContext('2d');
-    const pal = ['#5f8a3a', '#679540', '#6e9c45', '#77a44b', '#9a8a5a'];
-    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-      g.fillStyle = pal[G.terrain[G.idx(x, y)]]; g.fillRect(x * GT, y * GT, GT, GT);
-    }
-    // blur-ish blend by drawing scaled copy
-    const tmp = document.createElement('canvas'); tmp.width = tmp.height = N * 2;
-    const t = tmp.getContext('2d'); t.imageSmoothingEnabled = true; t.drawImage(ground, 0, 0, N * 2, N * 2);
-    g.imageSmoothingEnabled = true; g.globalAlpha = 0.75; g.drawImage(tmp, 0, 0, N * GT, N * GT); g.globalAlpha = 1;
-    // speckles (grass tufts, dirt)
-    const r = G.rng(1234);
-    for (let k = 0; k < N * N * 3; k++) {
-      const x = r() * N * GT, y = r() * N * GT;
-      g.fillStyle = r() < 0.5 ? 'rgba(40,70,20,0.35)' : 'rgba(170,200,110,0.25)';
-      g.fillRect(x, y, 1 + r() * 2, 1 + r() * 2);
+    if (TEX.grass_a && TEX.grass_b && TEX.dirt && TEX.forest_floor) paintGround(g);
+    else {
+      // textures not loaded (or no pixel access): the plain painted ground
+      const pal = ['#5f8a3a', '#679540', '#6e9c45', '#77a44b', '#9a8a5a'];
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        g.fillStyle = pal[G.terrain[G.idx(x, y)]]; g.fillRect(x * GT, y * GT, GT, GT);
+      }
+      const tmp = document.createElement('canvas'); tmp.width = tmp.height = N * 2;
+      const t = tmp.getContext('2d'); t.imageSmoothingEnabled = true; t.drawImage(ground, 0, 0, N * 2, N * 2);
+      g.imageSmoothingEnabled = true; g.globalAlpha = 0.75; g.drawImage(tmp, 0, 0, N * GT, N * GT); g.globalAlpha = 1;
     }
     // rectangle maps: the land past the edge is dark forest floor with a decorative tree line
     G.deco = []; borderRef = null;
@@ -97,9 +191,9 @@
         if (out <= 5 && rr() < (out <= 2 ? 0.75 : 0.45)) G.deco.push({ x: x + 0.3 + rr() * 0.4, y: y + 0.3 + rr() * 0.4, v: Math.floor(rr() * 4) });
       }
     }
-    // darker patches under forests
+    // the shade right under each tree
     for (const e of G.ents) if (e.kind === 'res' && e.type === 'tree') {
-      g.fillStyle = 'rgba(30,50,15,0.35)'; g.beginPath(); g.arc((e.tx + 0.5) * GT, (e.ty + 0.5) * GT, GT * 0.9, 0, 7); g.fill();
+      g.fillStyle = 'rgba(20,35,10,0.28)'; g.beginPath(); g.arc((e.tx + 0.5) * GT, (e.ty + 0.5) * GT, GT * 0.75, 0, 7); g.fill();
     }
     fogCv = document.createElement('canvas'); fogCv.width = fogCv.height = N;
     fogCtx = fogCv.getContext('2d'); fogImg = fogCtx.createImageData(N, N);
@@ -122,6 +216,47 @@
     fogCtx.putImageData(fogImg, 0, 0);
   }
 
+  // ---------- Building aprons ----------
+  // Every building stands on a patch of trodden earth that frays out into the grass, with a
+  // soft shadow where it meets the ground, so it sits in the land instead of on top of it.
+  // One apron image per footprint size, made once; drawn flat on the ground before anything.
+  const aprons = {};
+  function apron(size) {
+    if (aprons[size]) return aprons[size];
+    if (!TEX.dirt_img) return null;
+    const pad = 1.1, T = 24, S = Math.round((size + pad * 2) * T);
+    const c = document.createElement('canvas'); c.width = c.height = S;
+    const x = c.getContext('2d');
+    x.fillStyle = x.createPattern(TEX.dirt_img, 'repeat'); x.fillRect(0, 0, S, S);
+    const m = x.getImageData(0, 0, S, S), d = m.data, r = G.rng(size * 97);
+    if (!NZ1) { NZ1 = makeNoise(11, 8); NZ2 = makeNoise(23, 32); NZ3 = makeNoise(37, 64); }
+    const lo = pad * T, hi = S - pad * T;
+    for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
+      // distance outside the footprint square, in tiles
+      const dx = Math.max(lo - px, 0, px - hi) / T, dy = Math.max(lo - py, 0, py - hi) / T;
+      const out = Math.hypot(dx, dy);
+      const n = NZ1[((py * 2) & 255) * 256 + ((px * 2) & 255)];
+      let a = 1 - ss(0.15, 0.95, out + (n - 0.5) * 0.7);
+      const o = (py * S + px) * 4;
+      // the shadow: darkest right at the walls
+      const sh = 1 - 0.32 * (1 - ss(0, 0.45, out));
+      d[o] *= sh; d[o + 1] *= sh; d[o + 2] *= sh; d[o + 3] = a * 235;
+    }
+    x.putImageData(m, 0, 0);
+    return (aprons[size] = { cv: c, pad });
+  }
+  function drawAprons() {
+    for (const e of G.ents) {
+      if (e.dead || e.kind !== 'building' || e.type === 'farm' || e.def.wall) continue;
+      const cx = e.tx + e.size / 2, cy = e.ty + e.size / 2;
+      if (!G.revealAll && !G.isExplored(cx, cy)) continue;
+      const s = G.toScreen(cx, cy);
+      if (s.x < -300 || s.x > W + 300 || s.y < -300 || s.y > H + 300) continue;
+      const a = apron(e.size); if (!a) return;
+      ctx.drawImage(a.cv, e.tx - a.pad, e.ty - a.pad, e.size + a.pad * 2, e.size + a.pad * 2);
+    }
+  }
+
   // ---------- Main render ----------
   G.render = function () {
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -132,6 +267,7 @@
     setIso(ctx);
     ctx.imageSmoothingEnabled = true;
     ctx.drawImage(ground, 0, 0, N, N);
+    drawAprons();
     // grid when placing
     if (G.ghost) {
       ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 0.03;
