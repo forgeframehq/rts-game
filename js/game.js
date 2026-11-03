@@ -202,6 +202,7 @@
   G.step = function (dt) {
     G.time += dt;
     G.updateEntities(dt);
+    if (G.tutorial && G.tutorial.on) G.tutorial.update();
     if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
     fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; checkTime(); }
   };

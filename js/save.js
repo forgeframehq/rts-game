@@ -11,6 +11,7 @@
   G.clearSave = function () { const s = store(); if (s) try { s.removeItem(KEY); } catch (e) { /* ignore */ } };
 
   G.saveGame = function () {
+    if (G.tutorial && G.tutorial.on) return;
     const s = store();
     if (!s || !G.players || G.over || !G.ents.length || G.demo) return false;
     const ents = G.ents.filter(e => !e.dead).map(e => {

@@ -85,6 +85,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     G.inGame = true; if (prefs.orient !== 'auto') lockOrientation();
   }
   function toMenu() {
+    if (G.tutorial && G.tutorial.on) { G.tutorial.stop(); G.over = 'quit'; }
     if (!G.over) G.saveGame();
     G.paused = true; G.demo = true; G.inGame = false;
     $('hud').classList.add('hidden');
@@ -106,6 +107,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('m-skirmish').onclick = () => { renderSlots(); show('skirmish'); };
   $('m-dynasties').onclick = () => { showDyn(dynSel); show('dynasties'); };
   $('m-learn').onclick = () => show('help');
+  $('m-tut').onclick = () => { G.tutorial.start(); enterGame(); };
+  const _ss = startSkirmish; startSkirmish = cfg => { G.tutorial.last = false; _ss(cfg); };
   $('m-options').onclick = () => show('options');
   const delBtn = $('btn-delsave');
   delBtn.onclick = () => {
@@ -234,7 +237,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
 
   // ---------- Pause & game over ----------
-  $('btn-again').onclick = () => { if (lastConfig) startSkirmish(lastConfig); else show('start'); };
+  $('btn-again').onclick = () => { if (G.tutorial.last) { G.tutorial.start(); enterGame(); } else if (lastConfig) startSkirmish(lastConfig); else show('start'); };
   $('btn-over-menu').onclick = () => { $('hud').classList.add('hidden'); G.demo = true; show('start'); };
   $('btn-menu').onclick = () => { G.paused = true; G.saveGame(); $('menu').classList.remove('hidden'); };
   $('btn-resume').onclick = () => { G.paused = false; $('menu').classList.add('hidden'); };
@@ -248,7 +251,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   UI.gameOver = function (res) {
     if (G.sound) G.sound.play(res === 'victory' ? 'victory' : 'defeat');
     const p = G.players[1];
-    $('over-title').textContent = (G.overReason === 'time' ? "⏳ Time's up — " : '') + (res === 'victory' ? '👑 Victory!' : '💀 Defeat');
+    const tut = G.tutorial && G.tutorial.on; if (tut) G.tutorial.stop();
+    $('over-title').textContent = tut ? (res === 'victory' ? '🎓 Tutorial complete!' : 'Tutorial over: try again!') : (G.overReason === 'time' ? "⏳ Time's up — " : '') + (res === 'victory' ? '👑 Victory!' : '💀 Defeat');
     const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
     const scores = Object.keys(G.players).map(id => `<span style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : G.CIVS[G.players[id].civ].name}</span> ${G.scoreOf(+id)}`).join(' · ');
     $('over-stats').innerHTML = `Time: ${m}:${String(s).padStart(2, '0')}<br>Enemies defeated: ${p.killed}<br>Units & buildings lost: ${p.lost}<br>` +
@@ -543,6 +547,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const b = document.createElement('button');
     b.className = 'cmd' + (poor ? ' poor' : '');
     b.innerHTML = `<span class="ic">${iconHTML(ic)}</span><span class="lb">${lb}</span>${cs ? `<span class="cs">${cs}</span>` : ''}`;
+    if (UI.tutGlow && lb === UI.tutGlow) b.classList.add('tut-glow');
     b.onclick = e => { e.stopPropagation(); fn(); };
     return b;
   }
@@ -740,13 +745,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         if (e.aging) cmds.appendChild(btn('⏹', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
         else if (nx) {
           const why = G.ageBlock(1, e);
-          cmds.appendChild(btn('⬆️', nx.short + ' Age', why ? 'locked' : costTxt(nx.cost), () => {
+          cmds.appendChild(btn('⬆️', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {
             const r = G.advanceAge(e);
-            if (r === 'res') { UI.alert('Not enough resources'); flashCost(nx.cost); }
+            if (r === 'res') { UI.alert('Not enough resources'); flashCost(G.ageCost(1, G.ageOf(1) + 1)); }
             else if (!r) UI.alert(G.ageBlock(1, e) || 'Cannot advance now');
             else UI.alert(`Advancing to the ${nx.name}…`);
             panelKey = '';
-          }, !!why || !G.canAfford(1, nx.cost)));
+          }, !!why || !G.canAfford(1, G.ageCost(1, G.ageOf(1) + 1))));
         }
       }
       if (e.def.garrison && e.owner === 1) {

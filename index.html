@@ -17,6 +17,11 @@
 
 <!-- HUD -->
 <div id="hud" class="hidden">
+  <div id="tut" class="hidden">
+    <div class="tut-top"><span id="tut-step"></span><button id="tut-skip">Skip</button></div>
+    <h3 id="tut-title"></h3><p id="tut-text"></p><div id="tut-hint"></div>
+    <button id="tut-next" class="hidden">Next ›</button>
+  </div>
   <div id="topbar">
     <div class="res" id="r-food"><img src="assets/ui/icons/food.png" alt="food"><b>0</b></div>
     <div class="res" id="r-wood"><img src="assets/ui/icons/wood.png" alt="wood"><b>0</b></div>
@@ -68,7 +73,7 @@
       <div class="mgrid">
         <button id="m-campaign" class="mbtn" disabled><span>Campaign</span><small>Coming soon</small></button>
         <button id="m-dynasties" class="mbtn"><span>Dynasties</span><small>History &amp; bonuses</small></button>
-        <button id="m-learn" class="mbtn"><span>Learn to Play</span><small>Controls &amp; basics</small></button>
+        <button id="m-learn" class="mbtn"><span>Learn to Play</span><small>Guided tutorial match</small></button>
         <button id="m-options" class="mbtn"><span>Options</span><small>Speed, graphics</small></button>
       </div>
     </nav>
@@ -158,11 +163,12 @@
   <div class="sheet">
     <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Learn to Play</h2></header>
     <div class="sheet-body help">
+      <button id="m-tut" class="mbtn primary tut-start"><span>▶ Play the tutorial</span><small>A short guided match: gather, build, train, fight. About 5 minutes.</small></button>
       <h4>Controls</h4>
       <ul>
         <li><b>Tap</b> a unit or building to select it. <b>Double-tap</b> a unit to select all of that type on screen.</li>
         <li>With units selected, <b>tap</b> the ground to move, a resource to gather, an enemy to attack, or a foundation to build. Tap the ground to move. Tap <b>✖ Deselect</b> to clear the selection.</li>
-        <li><b>Drag</b> to move the camera, <b>pinch</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
+        <li><b>Drag</b> to move the camera, <b>+ / −</b> to zoom. <b>Press and hold</b>, then drag, to box-select (or use ⬚).</li>
         <li>Side buttons: 👷 next idle villager, ⚔️ select your army, ⬚ box select, 🏰 jump to your Town Center.</li>
       </ul>
       <h4>Your first minutes</h4>
@@ -215,6 +221,7 @@
 <script src="js/ai.js"></script>
 <script src="js/game.js"></script>
 <script src="js/save.js"></script>
+<script src="js/tutorial.js"></script>
 <script src="js/ui.js"></script>
 </body>
 </html>

@@ -384,6 +384,7 @@
     // placement ghost
     if (G.ghost && G.ghost.tx != null) drawGhost(z);
 
+    if (G.drawTutorial) G.drawTutorial(ctx);
     // box selection
     if (G.boxSel) {
       const b = G.boxSel;

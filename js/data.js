@@ -21,28 +21,28 @@ G.CIVS = {
   franks: {
     role: "Cavalry",
     history: "A Germanic people who built the strongest kingdom in post-Roman western Europe. Clovis I united them around 500, and Charlemagne was crowned Emperor of the Romans in 800. Their armoured horsemen grew into the mounted knights of the high Middle Ages.",
-    bonuses: ["Knights +25% HP", "Farms hold 25% more food", "Berries gathered 20% faster"],
+    bonuses: ["Knights +25% HP", "Cavalry 15% cheaper", "Farms hold 25% more food", "Berries gathered 20% faster"],
     name: 'Franks', color: '#3a8f3a',
-    desc: 'Cavalry civ. Knights +25% HP. Farms 25% more food. Berries gathered 20% faster.',
-    mods: { knightHp: 1.25, farmFood: 1.25, berryRate: 1.2 },
+    desc: 'Cavalry civ. Knights +25% HP. Cavalry 15% cheaper. Farms 25% more food. Berries gathered 20% faster.',
+    mods: { knightHp: 1.25, cavCost: 0.85, farmFood: 1.25, berryRate: 1.2 },
     unique: { type: 'axethrower', at: 'castle', text: 'Axe Thrower — trained at the Castle. Infantry that hurls the francisca, a throwing axe, from 3 tiles away, and chews through buildings. Armoured enough to stand in the shield line when the axes run out.' }
   },
   byzantines: {
     role: "Defense",
     history: "The Eastern Roman Empire, ruled from Constantinople for over a thousand years until 1453. Behind the great Theodosian Walls, the city outlasted wave after wave of sieges, defended by armoured cataphracts and disciplined spearmen.",
-    bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Units heal slowly near the Town Center"],
+    bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Castle and Imperial Ages 15% cheaper", "Units heal slowly near the Town Center"],
     name: 'Byzantines', color: '#8a3fb8',
-    desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Units heal slowly near Town Center.',
-    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true },
+    desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Castle and Imperial Ages 15% cheaper. Units heal slowly near Town Center.',
+    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true, ageDisc: { 3: 0.85, 4: 0.85 } },
     unique: { type: 'cataphract', at: 'castle', text: 'Cataphract — trained at the Castle. A horseman armoured head to hoof, who rides straight over infantry: huge bonus damage against foot soldiers and little to fear from arrows. The heavy fist of the Eastern Roman army.' }
   },
   chinese: {
     role: "Economy",
     history: "Under the Tang and Song dynasties, China was the largest and richest state on earth, with vast cities, paper money, printing and gunpowder. Huge populations and a well-run state let its armies field crossbowmen and cavalry in enormous numbers.",
-    bonuses: ["Start with +3 villagers (but −50 food)", "Houses support 10 population", "Villagers 10% cheaper"],
+    bonuses: ["Start with +3 villagers (but −150 food, −50 wood)", "Houses support 10 population", "Villagers 10% cheaper"],
     name: 'Chinese', color: '#d4a017',
-    desc: 'Economy civ. Start with +3 villagers but -50 food. Houses support 10 pop. Villagers 10% cheaper.',
-    mods: { extraVils: 3, startFoodDelta: -50, housePop: 10, vilCost: 0.9 },
+    desc: 'Economy civ. Start with +3 villagers but -150 food, -50 wood. Houses support 10 pop. Villagers 10% cheaper.',
+    mods: { extraVils: 3, startFoodDelta: -150, startWoodDelta: -50, housePop: 10, vilCost: 0.9 },
     unique: { type: 'repeater', at: 'castle', text: 'Repeater Crossbowman — trained at the Castle. The chu-ko-nu: a magazine crossbow that looses bolt after bolt, each one light but twice as fast as any other bow. Deadly in numbers, which the Chinese always had.' }
   }
 };

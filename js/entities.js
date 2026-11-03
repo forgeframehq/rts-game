@@ -15,7 +15,8 @@
     opts = opts || {};
     const m = G.CIVS[civ].mods;
     const res = { ...(G.RES_PRESETS[G.rules.res] || G.START_RES) };
-    if (m.startFoodDelta) res.food += m.startFoodDelta;
+    if (m.startFoodDelta) res.food = Math.max(0, res.food + m.startFoodDelta);
+    if (m.startWoodDelta) res.wood = Math.max(0, res.wood + m.startWoodDelta);
     return { id, civ, age: 1, up: {}, techs: {}, team: opts.team || 0, ai: opts.ai || null, res, gathered: { food: 0, wood: 0, gold: 0, stone: 0 }, killed: 0, lost: 0, alive: true };
   };
 
@@ -38,11 +39,18 @@
     if (tc && tc.queue.length) return 'Town Center busy';
     return null;
   };
+  // a dynasty can make an Age cheaper (Byzantines: Castle and Imperial Ages)
+  G.ageCost = function (p, n) {
+    const a = G.AGES[n]; if (!a) return null;
+    const f = (G.CIVS[G.players[p].civ].mods.ageDisc || {})[n] || 1;
+    const c = {}; for (const k in a.cost) c[k] = Math.round(a.cost[k] * f); return c;
+  };
   G.advanceAge = function (tc) {
     const p = tc.owner, next = G.AGES[G.ageOf(p) + 1];
     if (!next || G.ageBlock(p, tc)) return false;
-    if (!G.pay(p, next.cost)) return 'res';
-    tc.aging = { t: 0, to: G.ageOf(p) + 1, cost: next.cost };
+    const cost = G.ageCost(p, G.ageOf(p) + 1);
+    if (!G.pay(p, cost)) return 'res';
+    tc.aging = { t: 0, to: G.ageOf(p) + 1, cost };
     return true;
   };
   G.cancelAge = function (tc) { if (tc.aging) { G.refund(tc.owner, tc.aging.cost); tc.aging = null; } };
@@ -154,6 +162,7 @@
     if (type === 'archer' && m.archerCost) f = m.archerCost;
     if (type === 'spearman' && m.spearCost) f = m.spearCost;
     if (type === 'villager' && m.vilCost) f = m.vilCost;
+    if (m.cavCost && G.UNITS[type].cls === 'cav') f = m.cavCost;
     for (const k in base) c[k] = Math.round(base[k] * f);
     return c;
   };
