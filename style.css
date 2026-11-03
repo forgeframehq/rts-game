@@ -538,3 +538,21 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 #cine-title h2 { margin: 4px 0 2px; font-size: clamp(26px, 6vw, 46px); color: #f3d98a; letter-spacing: 0.12em; text-transform: uppercase; text-shadow: 0 3px 12px #000, 0 1px 0 #000; }
 #cine-title p { margin: 0; font: 600 13px system-ui; letter-spacing: 0.14em; text-transform: uppercase; color: #f1e2bd; text-shadow: 0 2px 8px #000; }
 @keyframes cinetitle { from { opacity: 0; transform: translate(-50%, 12px); letter-spacing: 0.3em; } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* ---- first screen: just the painting, the logo and a glowing Tap to begin ---- */
+#start:not(.begun) .title-panel { justify-content: center; }
+#start:not(.begun) #logo { max-height: 42vh; max-width: 460px; animation: logoIn 1.6s ease-out both; }
+@keyframes logoIn { from { opacity: 0; transform: scale(0.94); filter: drop-shadow(0 0 0 #0000) brightness(0.6); } to { opacity: 1; transform: none; } }
+.tap-begin { display: flex; align-items: center; gap: 14px; text-transform: uppercase; font-size: 18px; letter-spacing: 0.22em;
+  text-shadow: 0 0 12px rgba(255,204,90,0.65), 0 2px 6px #000; animation: tapPulse 2.2s ease-in-out infinite, tapIn 1s 1s ease-out both; }
+.tap-begin i { display: block; width: 46px; height: 1.5px; background: linear-gradient(90deg, transparent, #e9c46a); }
+.tap-begin i:last-child { background: linear-gradient(90deg, #e9c46a, transparent); }
+@keyframes tapIn { from { opacity: 0; transform: translateY(8px); } }
+#start:not(.begun) { cursor: pointer; }
+/* film out: a slow dissolve into the menu, whose buttons rise in one by one */
+#cine.out { opacity: 0; transition: opacity 0.85s ease; pointer-events: none; }
+#start.begun .mainmenu > *, #start.begun .mgrid > * { animation: menuIn 0.55s ease-out both; }
+#start.begun .mainmenu > *:nth-child(2) { animation-delay: 0.08s; } #start.begun .mainmenu > *:nth-child(3) { animation-delay: 0.16s; }
+#start.begun .mgrid > *:nth-child(1) { animation-delay: 0.24s; } #start.begun .mgrid > *:nth-child(2) { animation-delay: 0.3s; }
+#start.begun .mgrid > *:nth-child(3) { animation-delay: 0.36s; } #start.begun .mgrid > *:nth-child(4) { animation-delay: 0.42s; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(14px); } }

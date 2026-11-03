@@ -73,7 +73,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   const film = name => `assets/video/${name}${innerHeight > innerWidth ? '_p' : ''}.mp4`;
   function playFilm(src, title, done) {
     const v = $('cine-v'), box = $('cine');
-    cineDone = () => { cineDone = null; v.pause(); v.removeAttribute('src'); v.load(); box.classList.add('hidden'); $('cine-title').classList.add('hidden'); if (G.sound) G.sound.hush(false); done && done(); };
+    cineDone = () => { cineDone = null; done && done(); box.classList.add('out'); if (G.sound) G.sound.hush(false);
+      setTimeout(() => { v.pause(); v.removeAttribute('src'); v.load(); box.classList.add('hidden'); box.classList.remove('out'); $('cine-title').classList.add('hidden'); }, 900); };
     if (G.sound) G.sound.hush(true);
     box.classList.remove('hidden'); box.classList.remove('show-skip');
     $('cine-title').classList.add('hidden');
@@ -93,6 +94,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
   let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
+  $('start').addEventListener('click', e => { if (!$('start').classList.contains('begun') && e.target.id !== 'tap-begin') $('tap-begin').click(); });
   $('tap-begin').onclick = () => {
     if (G.sound) G.sound.wake();
     const show = () => $('start').classList.add('begun');
