@@ -3219,42 +3219,42 @@
  "house_dark": {
   "file": "assets/house_dark.png",
   "size": 2,
-  "w": 147.0,
-  "h": 134.0,
-  "ax": 76.25,
-  "ay": 101.5
+  "w": 151.73,
+  "h": 159.1,
+  "ax": 75.33,
+  "ay": 126.92
  },
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
   "size": 4,
-  "w": 275.33,
-  "h": 263.33,
-  "ax": 138.67,
-  "ay": 198.67
+  "w": 281.7,
+  "h": 269.96,
+  "ax": 139.74,
+  "ay": 205.64
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 301.96,
-  "h": 265.8,
-  "ax": 150.98,
-  "ay": 217.2
+  "w": 213.31,
+  "h": 202.18,
+  "ax": 107.36,
+  "ay": 153.94
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
   "size": 2,
-  "w": 155.0,
-  "h": 182.0,
-  "ax": 77.0,
-  "ay": 149.0
+  "w": 149.21,
+  "h": 147.24,
+  "ax": 74.79,
+  "ay": 115.06
  },
  "mediterranean_house_dark": {
   "file": "assets/mediterranean_house_dark.png",
   "size": 2,
-  "w": 132.52,
-  "h": 98.89,
-  "ax": 68.02,
-  "ay": 66.38
+  "w": 136.06,
+  "h": 133.66,
+  "ax": 67.95,
+  "ay": 101.49
  },
  "mediterranean_towncenter_dark": {
   "file": "assets/mediterranean_towncenter_dark.png",
@@ -3267,50 +3267,50 @@
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",
   "size": 3,
-  "w": 215.75,
-  "h": 156.63,
-  "ax": 112.67,
-  "ay": 107.62
+  "w": 214.12,
+  "h": 198.28,
+  "ax": 106.3,
+  "ay": 150.03
  },
  "mediterranean_mill_dark": {
   "file": "assets/mediterranean_mill_dark.png",
   "size": 2,
-  "w": 139.5,
-  "h": 102.5,
-  "ax": 70.0,
-  "ay": 70.0
+  "w": 139.89,
+  "h": 141.08,
+  "ax": 71.53,
+  "ay": 108.88
  },
  "eastasian_house_dark": {
   "file": "assets/eastasian_house_dark.png",
   "size": 2,
-  "w": 140.55,
-  "h": 136.03,
-  "ax": 70.53,
-  "ay": 103.03
+  "w": 151.5,
+  "h": 142.52,
+  "ax": 76.42,
+  "ay": 110.33
  },
  "eastasian_towncenter_dark": {
   "file": "assets/eastasian_towncenter_dark.png",
   "size": 4,
-  "w": 299.11,
-  "h": 246.05,
-  "ax": 149.22,
-  "ay": 180.73
+  "w": 287.14,
+  "h": 224.0,
+  "ax": 145.43,
+  "ay": 159.71
  },
  "eastasian_barracks_dark": {
   "file": "assets/eastasian_barracks_dark.png",
   "size": 3,
-  "w": 218.14,
-  "h": 192.5,
-  "ax": 109.57,
-  "ay": 143.5
+  "w": 225.39,
+  "h": 216.52,
+  "ax": 112.96,
+  "ay": 168.26
  },
  "eastasian_mill_dark": {
   "file": "assets/eastasian_mill_dark.png",
   "size": 2,
-  "w": 146.07,
-  "h": 166.65,
-  "ax": 73.54,
-  "ay": 134.15
+  "w": 144.51,
+  "h": 161.41,
+  "ax": 77.6,
+  "ay": 129.21
  },
  "unit3d_franks_villager_m_build": {
   "file": "assets/units/pack_unit3d_franks_villager_m.png",
