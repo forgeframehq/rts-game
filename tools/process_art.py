@@ -43,6 +43,7 @@ ASSETS = {
     'siege_workshop': ('siegeworkshop', 4, 1.0),
     'monastery': ('monastery', 3, 1.0),
     'castle': ('castle', 4, 1.0),
+    'university': ('university', 3, 1.0),
     'construction_site_1x1': ('fnd_1', 1, 1.0),
     'construction_site_2x2': ('fnd_2', 2, 1.0),
     'construction_site_3x3': ('fnd_3', 3, 1.0),

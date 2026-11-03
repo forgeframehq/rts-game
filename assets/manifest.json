@@ -1539,9 +1539,9 @@
   "frames": 12,
   "rows": 8,
   "cycle": 1.05,
-  "fw": 51.2,
-  "fh": 57.87,
-  "ax": 25.6,
+  "fw": 51.73,
+  "fh": 58.4,
+  "ax": 25.87,
   "ay": 49.15
  },
  "unit3d_franks_axethrower_m_attack2": {
@@ -1549,9 +1549,9 @@
   "frames": 12,
   "rows": 8,
   "cycle": 1.473,
-  "fw": 60.27,
-  "fh": 57.33,
-  "ax": 30.13,
+  "fw": 60.8,
+  "fh": 57.87,
+  "ax": 30.4,
   "ay": 49.15
  },
  "unit3d_franks_axethrower_m_death": {
@@ -1560,28 +1560,28 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 61.33,
+  "fh": 60.8,
   "ax": 34.13,
-  "ay": 44.89
+  "ay": 45.42
  },
  "unit3d_franks_axethrower_m_hit": {
   "file": "assets/units/unit3d_franks_axethrower_m_hit.png",
   "frames": 8,
   "rows": 8,
   "cycle": 0.933,
-  "fw": 28.27,
-  "fh": 46.4,
-  "ax": 14.13,
-  "ay": 40.89
+  "fw": 27.73,
+  "fh": 46.67,
+  "ax": 13.87,
+  "ay": 41.15
  },
  "unit3d_franks_axethrower_m_idle": {
   "file": "assets/units/unit3d_franks_axethrower_m_idle.png",
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
-  "fw": 30.93,
-  "fh": 44.8,
-  "ax": 15.47,
+  "fw": 30.4,
+  "fh": 45.6,
+  "ax": 15.2,
   "ay": 40.35
  },
  "unit3d_franks_axethrower_m_ready": {
@@ -1590,9 +1590,9 @@
   "rows": 8,
   "cycle": 1.667,
   "fw": 37.87,
-  "fh": 49.6,
+  "fh": 50.67,
   "ax": 18.93,
-  "ay": 42.22
+  "ay": 42.75
  },
  "unit3d_franks_axethrower_m_walk": {
   "file": "assets/units/unit3d_franks_axethrower_m_walk.png",
@@ -1600,20 +1600,20 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 39.47,
-  "fh": 42.4,
-  "ax": 19.73,
-  "ay": 37.15
+  "fw": 38.93,
+  "fh": 42.13,
+  "ax": 19.47,
+  "ay": 36.62
  },
  "unit3d_chinese_repeater_m_attack": {
   "file": "assets/units/unit3d_chinese_repeater_m_attack.png",
   "frames": 12,
   "rows": 8,
   "cycle": 1,
-  "fw": 51.73,
-  "fh": 50.93,
-  "ax": 25.87,
-  "ay": 44.35
+  "fw": 52.27,
+  "fh": 50.4,
+  "ax": 26.13,
+  "ay": 44.09
  },
  "unit3d_chinese_repeater_m_death": {
   "file": "assets/units/unit3d_chinese_repeater_m_death.png",
@@ -1621,9 +1621,9 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 65.07,
+  "fh": 64.53,
   "ax": 34.13,
-  "ay": 45.95
+  "ay": 45.42
  },
  "unit3d_chinese_repeater_m_hit": {
   "file": "assets/units/unit3d_chinese_repeater_m_hit.png",
@@ -1631,7 +1631,7 @@
   "rows": 8,
   "cycle": 0.933,
   "fw": 32.0,
-  "fh": 49.33,
+  "fh": 49.07,
   "ax": 16.0,
   "ay": 43.82
  },
@@ -1640,10 +1640,10 @@
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
-  "fw": 31.2,
-  "fh": 43.73,
-  "ax": 15.73,
-  "ay": 39.29
+  "fw": 30.93,
+  "fh": 43.2,
+  "ax": 15.47,
+  "ay": 38.75
  },
  "unit3d_chinese_repeater_m_walk": {
   "file": "assets/units/unit3d_chinese_repeater_m_walk.png",
@@ -1651,10 +1651,10 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 31.73,
+  "fw": 32.8,
   "fh": 43.73,
-  "ax": 16.0,
-  "ay": 38.49
+  "ax": 16.53,
+  "ay": 38.22
  },
  "unit3d_byzantines_cataphract_m_attack": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_attack.png",
@@ -1662,9 +1662,9 @@
   "rows": 8,
   "cycle": 10.667,
   "fw": 69.82,
-  "fh": 72.0,
+  "fh": 71.27,
   "ax": 34.91,
-  "ay": 63.03
+  "ay": 62.3
  },
  "unit3d_byzantines_cataphract_m_death": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_death.png",
@@ -1672,15 +1672,15 @@
   "rows": 8,
   "cycle": 10.667,
   "fw": 93.09,
-  "fh": 83.64,
+  "fh": 85.09,
   "ax": 46.55,
-  "ay": 57.57
+  "ay": 59.03
  },
  "unit3d_byzantines_cataphract_m_idle": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
+  "cycle": 2.133,
   "fw": 71.27,
   "fh": 66.55,
   "ax": 35.64,
@@ -1892,10 +1892,10 @@
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
   "size": 4,
-  "w": 313.5,
-  "h": 309.5,
-  "ax": 157.0,
-  "ay": 244.5
+  "w": 275.88,
+  "h": 272.36,
+  "ax": 116.16,
+  "ay": 201.76
  },
  "mediterranean_siegeworkshop": {
   "file": "assets/mediterranean_siegeworkshop.png",
@@ -1951,9 +1951,9 @@
   "rows": 8,
   "cycle": 8.533,
   "fw": 71.27,
-  "fh": 68.0,
+  "fh": 67.27,
   "ax": 35.64,
-  "ay": 58.66
+  "ay": 57.93
  },
  "unit3d_western_knight_m_hit": {
   "file": "assets/units/unit3d_western_knight_m_hit.png",
@@ -2178,9 +2178,9 @@
   "frames": 12,
   "rows": 8,
   "cycle": 1.05,
-  "fw": 51.2,
-  "fh": 57.87,
-  "ax": 25.6,
+  "fw": 51.73,
+  "fh": 58.4,
+  "ax": 25.87,
   "ay": 49.15
  },
  "unit3d_franks_axethrower_m_t1_attack2": {
@@ -2188,9 +2188,9 @@
   "frames": 12,
   "rows": 8,
   "cycle": 1.473,
-  "fw": 60.27,
-  "fh": 57.33,
-  "ax": 30.13,
+  "fw": 60.8,
+  "fh": 57.87,
+  "ax": 30.4,
   "ay": 49.15
  },
  "unit3d_franks_axethrower_m_t1_death": {
@@ -2199,28 +2199,28 @@
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
-  "fh": 61.33,
+  "fh": 60.8,
   "ax": 34.13,
-  "ay": 44.89
+  "ay": 45.42
  },
  "unit3d_franks_axethrower_m_t1_hit": {
   "file": "assets/units/unit3d_franks_axethrower_m_t1_hit.png",
   "frames": 8,
   "rows": 8,
   "cycle": 0.933,
-  "fw": 28.27,
-  "fh": 46.4,
-  "ax": 14.13,
-  "ay": 40.89
+  "fw": 27.73,
+  "fh": 46.67,
+  "ax": 13.87,
+  "ay": 41.15
  },
  "unit3d_franks_axethrower_m_t1_idle": {
   "file": "assets/units/unit3d_franks_axethrower_m_t1_idle.png",
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
-  "fw": 30.93,
-  "fh": 44.8,
-  "ax": 15.47,
+  "fw": 30.4,
+  "fh": 45.6,
+  "ax": 15.2,
   "ay": 40.35
  },
  "unit3d_franks_axethrower_m_t1_ready": {
@@ -2229,9 +2229,9 @@
   "rows": 8,
   "cycle": 1.667,
   "fw": 37.87,
-  "fh": 49.6,
+  "fh": 50.67,
   "ax": 18.93,
-  "ay": 42.22
+  "ay": 42.75
  },
  "unit3d_franks_axethrower_m_t1_walk": {
   "file": "assets/units/unit3d_franks_axethrower_m_t1_walk.png",
@@ -2239,10 +2239,10 @@
   "rows": 8,
   "cycle": 1.396,
   "stride": 1.1,
-  "fw": 39.47,
-  "fh": 42.93,
-  "ax": 19.73,
-  "ay": 37.69
+  "fw": 38.93,
+  "fh": 43.47,
+  "ax": 19.47,
+  "ay": 37.95
  },
  "unit3d_byzantines_cataphract_m_t1_attack": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_t1_attack.png",
@@ -2250,9 +2250,9 @@
   "rows": 8,
   "cycle": 10.667,
   "fw": 69.82,
-  "fh": 72.0,
+  "fh": 71.27,
   "ax": 34.91,
-  "ay": 63.03
+  "ay": 62.3
  },
  "unit3d_byzantines_cataphract_m_t1_death": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_t1_death.png",
@@ -2260,19 +2260,19 @@
   "rows": 8,
   "cycle": 10.667,
   "fw": 93.09,
-  "fh": 89.45,
+  "fh": 88.73,
   "ax": 46.55,
-  "ay": 63.39
+  "ay": 62.66
  },
  "unit3d_byzantines_cataphract_m_t1_idle": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_t1_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
+  "cycle": 2.133,
   "fw": 71.27,
-  "fh": 71.27,
+  "fh": 69.09,
   "ax": 35.64,
-  "ay": 61.93
+  "ay": 59.75
  },
  "unit3d_byzantines_cataphract_m_t1_walk": {
   "file": "assets/units/unit3d_byzantines_cataphract_m_t1_walk.png",
@@ -2281,9 +2281,9 @@
   "cycle": 10.667,
   "stride": 1.6,
   "fw": 73.45,
-  "fh": 74.91,
+  "fh": 74.18,
   "ax": 36.73,
-  "ay": 62.3
+  "ay": 61.57
  },
  "unit3d_chinese_repeater_m_t1_attack": {
   "file": "assets/units/unit3d_chinese_repeater_m_t1_attack.png",
@@ -2511,5 +2511,3434 @@
   "h": 166.65,
   "ax": 73.54,
   "ay": 134.15
+ },
+ "unit3d_franks_villager_m_build": {
+  "file": "assets/units/unit3d_franks_villager_m_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 48.8,
+  "fh": 51.47,
+  "ax": 24.53,
+  "ay": 46.22
+ },
+ "unit3d_franks_villager_m_carry_food": {
+  "file": "assets/units/unit3d_franks_villager_m_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 29.87,
+  "fh": 46.93,
+  "ax": 14.93,
+  "ay": 40.89
+ },
+ "unit3d_franks_villager_m_carry_ore": {
+  "file": "assets/units/unit3d_franks_villager_m_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 29.87,
+  "fh": 45.07,
+  "ax": 14.93,
+  "ay": 39.02
+ },
+ "unit3d_franks_villager_m_carry_wood": {
+  "file": "assets/units/unit3d_franks_villager_m_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 29.87,
+  "fh": 45.07,
+  "ax": 14.93,
+  "ay": 39.02
+ },
+ "unit3d_franks_villager_m_chop": {
+  "file": "assets/units/unit3d_franks_villager_m_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 50.67,
+  "fh": 51.47,
+  "ax": 25.33,
+  "ay": 46.22
+ },
+ "unit3d_franks_villager_m_death": {
+  "file": "assets/units/unit3d_franks_villager_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_franks_villager_m_farm": {
+  "file": "assets/units/unit3d_franks_villager_m_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 50.93,
+  "fh": 48.8,
+  "ax": 25.6,
+  "ay": 39.55
+ },
+ "unit3d_franks_villager_m_forage": {
+  "file": "assets/units/unit3d_franks_villager_m_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 30.93,
+  "fh": 43.47,
+  "ax": 15.47,
+  "ay": 37.42
+ },
+ "unit3d_franks_villager_m_idle": {
+  "file": "assets/units/unit3d_franks_villager_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 24.53,
+  "fh": 41.6,
+  "ax": 12.27,
+  "ay": 36.62
+ },
+ "unit3d_franks_villager_m_mine": {
+  "file": "assets/units/unit3d_franks_villager_m_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 46.93,
+  "fh": 55.73,
+  "ax": 23.47,
+  "ay": 49.15
+ },
+ "unit3d_franks_villager_m_walk": {
+  "file": "assets/units/unit3d_franks_villager_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 25.6,
+  "fh": 42.4,
+  "ax": 12.8,
+  "ay": 37.42
+ },
+ "unit3d_franks_villager_f_build": {
+  "file": "assets/units/unit3d_franks_villager_f_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 49.6,
+  "fh": 49.87,
+  "ax": 24.8,
+  "ay": 45.42
+ },
+ "unit3d_franks_villager_f_carry_food": {
+  "file": "assets/units/unit3d_franks_villager_f_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.8,
+  "fh": 46.67,
+  "ax": 14.4,
+  "ay": 41.42
+ },
+ "unit3d_franks_villager_f_carry_ore": {
+  "file": "assets/units/unit3d_franks_villager_f_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.8,
+  "fh": 45.07,
+  "ax": 14.4,
+  "ay": 39.82
+ },
+ "unit3d_franks_villager_f_carry_wood": {
+  "file": "assets/units/unit3d_franks_villager_f_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.8,
+  "fh": 43.2,
+  "ax": 14.4,
+  "ay": 37.95
+ },
+ "unit3d_franks_villager_f_chop": {
+  "file": "assets/units/unit3d_franks_villager_f_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 51.2,
+  "fh": 49.6,
+  "ax": 25.6,
+  "ay": 45.15
+ },
+ "unit3d_franks_villager_f_death": {
+  "file": "assets/units/unit3d_franks_villager_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.6,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_franks_villager_f_farm": {
+  "file": "assets/units/unit3d_franks_villager_f_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 47.47,
+  "fh": 45.87,
+  "ax": 23.73,
+  "ay": 39.82
+ },
+ "unit3d_franks_villager_f_forage": {
+  "file": "assets/units/unit3d_franks_villager_f_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 28.8,
+  "fh": 42.13,
+  "ax": 14.4,
+  "ay": 37.69
+ },
+ "unit3d_franks_villager_f_idle": {
+  "file": "assets/units/unit3d_franks_villager_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 22.4,
+  "fh": 40.0,
+  "ax": 11.2,
+  "ay": 36.09
+ },
+ "unit3d_franks_villager_f_mine": {
+  "file": "assets/units/unit3d_franks_villager_f_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 46.4,
+  "fh": 55.47,
+  "ax": 23.2,
+  "ay": 49.15
+ },
+ "unit3d_franks_villager_f_walk": {
+  "file": "assets/units/unit3d_franks_villager_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 26.13,
+  "fh": 41.87,
+  "ax": 13.07,
+  "ay": 36.62
+ },
+ "unit3d_franks_militia_m_attack": {
+  "file": "assets/units/unit3d_franks_militia_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 55.2,
+  "fh": 58.4,
+  "ax": 27.73,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_attack2": {
+  "file": "assets/units/unit3d_franks_militia_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.73,
+  "fh": 59.2,
+  "ax": 29.87,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_block": {
+  "file": "assets/units/unit3d_franks_militia_m_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 50.4,
+  "ax": 17.6,
+  "ay": 43.82
+ },
+ "unit3d_franks_militia_m_death": {
+  "file": "assets/units/unit3d_franks_militia_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.8,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_franks_militia_m_hit": {
+  "file": "assets/units/unit3d_franks_militia_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.27,
+  "fh": 50.67,
+  "ax": 14.13,
+  "ay": 45.15
+ },
+ "unit3d_franks_militia_m_idle": {
+  "file": "assets/units/unit3d_franks_militia_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 49.87,
+  "ax": 18.13,
+  "ay": 44.62
+ },
+ "unit3d_franks_militia_m_ready": {
+  "file": "assets/units/unit3d_franks_militia_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 47.47,
+  "ax": 22.13,
+  "ay": 39.29
+ },
+ "unit3d_franks_militia_m_walk": {
+  "file": "assets/units/unit3d_franks_militia_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.53,
+  "fh": 42.67,
+  "ax": 24.27,
+  "ay": 37.15
+ },
+ "unit3d_franks_militia_m_t1_attack": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 55.2,
+  "fh": 58.4,
+  "ax": 27.73,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t1_attack2": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.73,
+  "fh": 59.2,
+  "ax": 29.87,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t1_block": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 50.4,
+  "ax": 17.6,
+  "ay": 43.82
+ },
+ "unit3d_franks_militia_m_t1_death": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.8,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_franks_militia_m_t1_hit": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.27,
+  "fh": 50.67,
+  "ax": 14.13,
+  "ay": 45.15
+ },
+ "unit3d_franks_militia_m_t1_idle": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 49.87,
+  "ax": 18.13,
+  "ay": 44.62
+ },
+ "unit3d_franks_militia_m_t1_ready": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 47.47,
+  "ax": 22.13,
+  "ay": 39.29
+ },
+ "unit3d_franks_militia_m_t1_walk": {
+  "file": "assets/units/unit3d_franks_militia_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.53,
+  "fh": 42.67,
+  "ax": 24.27,
+  "ay": 37.15
+ },
+ "unit3d_franks_militia_m_t2_attack": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 55.2,
+  "fh": 58.4,
+  "ax": 27.73,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t2_attack2": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.73,
+  "fh": 59.2,
+  "ax": 29.87,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t2_block": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 50.4,
+  "ax": 17.6,
+  "ay": 43.82
+ },
+ "unit3d_franks_militia_m_t2_death": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t2_hit": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.27,
+  "fh": 50.67,
+  "ax": 14.13,
+  "ay": 45.15
+ },
+ "unit3d_franks_militia_m_t2_idle": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 49.87,
+  "ax": 18.13,
+  "ay": 44.62
+ },
+ "unit3d_franks_militia_m_t2_ready": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 52.27,
+  "ax": 22.13,
+  "ay": 44.09
+ },
+ "unit3d_franks_militia_m_t2_walk": {
+  "file": "assets/units/unit3d_franks_militia_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.53,
+  "fh": 47.47,
+  "ax": 24.27,
+  "ay": 41.95
+ },
+ "unit3d_franks_militia_m_t3_attack": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 55.2,
+  "fh": 58.4,
+  "ax": 27.73,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t3_attack2": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.73,
+  "fh": 59.2,
+  "ax": 29.87,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t3_block": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 50.4,
+  "ax": 17.6,
+  "ay": 43.82
+ },
+ "unit3d_franks_militia_m_t3_death": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_militia_m_t3_hit": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 32.53,
+  "fh": 50.67,
+  "ax": 16.27,
+  "ay": 45.15
+ },
+ "unit3d_franks_militia_m_t3_idle": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 49.87,
+  "ax": 18.13,
+  "ay": 44.62
+ },
+ "unit3d_franks_militia_m_t3_ready": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 52.27,
+  "ax": 22.13,
+  "ay": 44.09
+ },
+ "unit3d_franks_militia_m_t3_walk": {
+  "file": "assets/units/unit3d_franks_militia_m_t3_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.53,
+  "fh": 47.47,
+  "ax": 24.27,
+  "ay": 41.95
+ },
+ "unit3d_franks_spearman_m_attack": {
+  "file": "assets/units/unit3d_franks_spearman_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 57.6,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_attack2": {
+  "file": "assets/units/unit3d_franks_spearman_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 65.87,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_death": {
+  "file": "assets/units/unit3d_franks_spearman_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_hit": {
+  "file": "assets/units/unit3d_franks_spearman_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 41.07,
+  "fh": 54.93,
+  "ax": 20.53,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_idle": {
+  "file": "assets/units/unit3d_franks_spearman_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 45.33,
+  "fh": 53.87,
+  "ax": 22.67,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_ready": {
+  "file": "assets/units/unit3d_franks_spearman_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 57.87,
+  "fh": 50.67,
+  "ax": 29.07,
+  "ay": 42.75
+ },
+ "unit3d_franks_spearman_m_walk": {
+  "file": "assets/units/unit3d_franks_spearman_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 54.67,
+  "fh": 45.87,
+  "ax": 27.47,
+  "ay": 36.89
+ },
+ "unit3d_franks_spearman_m_t1_attack": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 57.6,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_attack2": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_death": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_hit": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 56.27,
+  "fh": 54.93,
+  "ax": 29.33,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_idle": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 56.8,
+  "fh": 53.87,
+  "ax": 28.8,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_ready": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t1_walk": {
+  "file": "assets/units/unit3d_franks_spearman_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 57.33,
+  "ax": 34.13,
+  "ay": 38.22
+ },
+ "unit3d_franks_spearman_m_t2_attack": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 57.6,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_attack2": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_death": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_hit": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 58.4,
+  "fh": 54.93,
+  "ax": 29.33,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_idle": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 59.2,
+  "fh": 53.87,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_ready": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_spearman_m_t2_walk": {
+  "file": "assets/units/unit3d_franks_spearman_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 42.22
+ },
+ "unit3d_franks_archer_m_attack": {
+  "file": "assets/units/unit3d_franks_archer_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 44.27,
+  "fh": 56.0,
+  "ax": 22.13,
+  "ay": 49.15
+ },
+ "unit3d_franks_archer_m_death": {
+  "file": "assets/units/unit3d_franks_archer_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_franks_archer_m_hit": {
+  "file": "assets/units/unit3d_franks_archer_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 38.4,
+  "fh": 48.27,
+  "ax": 19.2,
+  "ay": 42.49
+ },
+ "unit3d_franks_archer_m_idle": {
+  "file": "assets/units/unit3d_franks_archer_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 46.4,
+  "fh": 42.93,
+  "ax": 23.2,
+  "ay": 37.95
+ },
+ "unit3d_franks_archer_m_walk": {
+  "file": "assets/units/unit3d_franks_archer_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 38.93,
+  "fh": 43.73,
+  "ax": 19.47,
+  "ay": 38.22
+ },
+ "unit3d_franks_archer_m_t1_attack": {
+  "file": "assets/units/unit3d_franks_archer_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.27,
+  "fh": 50.93,
+  "ax": 26.13,
+  "ay": 44.09
+ },
+ "unit3d_franks_archer_m_t1_death": {
+  "file": "assets/units/unit3d_franks_archer_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.0,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_franks_archer_m_t1_hit": {
+  "file": "assets/units/unit3d_franks_archer_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 32.0,
+  "fh": 49.87,
+  "ax": 16.0,
+  "ay": 44.09
+ },
+ "unit3d_franks_archer_m_t1_idle": {
+  "file": "assets/units/unit3d_franks_archer_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.47,
+  "fh": 41.6,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_franks_archer_m_t1_walk": {
+  "file": "assets/units/unit3d_franks_archer_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 42.93,
+  "ax": 16.53,
+  "ay": 37.42
+ },
+ "unit3d_franks_archer_m_t2_attack": {
+  "file": "assets/units/unit3d_franks_archer_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.27,
+  "fh": 50.93,
+  "ax": 26.13,
+  "ay": 44.09
+ },
+ "unit3d_franks_archer_m_t2_death": {
+  "file": "assets/units/unit3d_franks_archer_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.0,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_franks_archer_m_t2_hit": {
+  "file": "assets/units/unit3d_franks_archer_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.07,
+  "fh": 49.87,
+  "ax": 16.53,
+  "ay": 44.09
+ },
+ "unit3d_franks_archer_m_t2_idle": {
+  "file": "assets/units/unit3d_franks_archer_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.47,
+  "fh": 41.6,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_franks_archer_m_t2_walk": {
+  "file": "assets/units/unit3d_franks_archer_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 42.93,
+  "ax": 16.53,
+  "ay": 37.42
+ },
+ "unit3d_franks_knight_m_attack": {
+  "file": "assets/units/unit3d_franks_knight_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_franks_knight_m_death": {
+  "file": "assets/units/unit3d_franks_knight_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 84.36,
+  "ax": 46.55,
+  "ay": 58.3
+ },
+ "unit3d_franks_knight_m_idle": {
+  "file": "assets/units/unit3d_franks_knight_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_franks_knight_m_walk": {
+  "file": "assets/units/unit3d_franks_knight_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 70.55,
+  "ax": 36.73,
+  "ay": 57.93
+ },
+ "unit3d_franks_knight_m_t1_attack": {
+  "file": "assets/units/unit3d_franks_knight_m_t1_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_franks_knight_m_t1_death": {
+  "file": "assets/units/unit3d_franks_knight_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.64,
+  "ax": 46.55,
+  "ay": 61.57
+ },
+ "unit3d_franks_knight_m_t1_idle": {
+  "file": "assets/units/unit3d_franks_knight_m_t1_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 68.36,
+  "ax": 35.64,
+  "ay": 59.03
+ },
+ "unit3d_franks_knight_m_t1_walk": {
+  "file": "assets/units/unit3d_franks_knight_m_t1_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 73.09,
+  "ax": 36.73,
+  "ay": 60.48
+ },
+ "unit3d_franks_knight_m_t2_attack": {
+  "file": "assets/units/unit3d_franks_knight_m_t2_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.82,
+  "ax": 34.91,
+  "ay": 64.84
+ },
+ "unit3d_franks_knight_m_t2_death": {
+  "file": "assets/units/unit3d_franks_knight_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.64,
+  "ax": 46.55,
+  "ay": 61.57
+ },
+ "unit3d_franks_knight_m_t2_idle": {
+  "file": "assets/units/unit3d_franks_knight_m_t2_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 68.36,
+  "ax": 35.64,
+  "ay": 59.03
+ },
+ "unit3d_franks_knight_m_t2_walk": {
+  "file": "assets/units/unit3d_franks_knight_m_t2_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 73.09,
+  "ax": 36.73,
+  "ay": 60.48
+ },
+ "unit3d_franks_scout_m_attack": {
+  "file": "assets/units/unit3d_franks_scout_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 76.0,
+  "ax": 34.91,
+  "ay": 67.03
+ },
+ "unit3d_franks_scout_m_death": {
+  "file": "assets/units/unit3d_franks_scout_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.27,
+  "ax": 46.55,
+  "ay": 61.21
+ },
+ "unit3d_franks_scout_m_hit": {
+  "file": "assets/units/unit3d_franks_scout_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 66.18,
+  "ax": 35.64,
+  "ay": 56.84
+ },
+ "unit3d_franks_scout_m_idle": {
+  "file": "assets/units/unit3d_franks_scout_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_franks_scout_m_walk": {
+  "file": "assets/units/unit3d_franks_scout_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 71.64,
+  "ax": 36.73,
+  "ay": 59.03
+ },
+ "unit3d_franks_king_m_hit": {
+  "file": "assets/units/unit3d_franks_king_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 31.47,
+  "fh": 49.6,
+  "ax": 15.73,
+  "ay": 44.89
+ },
+ "unit3d_franks_king_m_idle": {
+  "file": "assets/units/unit3d_franks_king_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 42.13,
+  "fh": 51.2,
+  "ax": 21.07,
+  "ay": 46.22
+ },
+ "unit3d_franks_queen_f_death": {
+  "file": "assets/units/unit3d_franks_queen_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 57.6,
+  "ax": 34.13,
+  "ay": 43.55
+ },
+ "unit3d_franks_queen_f_idle": {
+  "file": "assets/units/unit3d_franks_queen_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 27.2,
+  "fh": 41.33,
+  "ax": 13.6,
+  "ay": 36.35
+ },
+ "unit3d_franks_queen_f_walk": {
+  "file": "assets/units/unit3d_franks_queen_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.0,
+  "fh": 42.13,
+  "ax": 16.0,
+  "ay": 37.42
+ },
+ "unit3d_byzantines_villager_m_build": {
+  "file": "assets/units/unit3d_byzantines_villager_m_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 49.07,
+  "fh": 52.0,
+  "ax": 24.53,
+  "ay": 46.22
+ },
+ "unit3d_byzantines_villager_m_carry_food": {
+  "file": "assets/units/unit3d_byzantines_villager_m_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 46.93,
+  "ax": 14.13,
+  "ay": 40.62
+ },
+ "unit3d_byzantines_villager_m_carry_ore": {
+  "file": "assets/units/unit3d_byzantines_villager_m_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 45.07,
+  "ax": 14.13,
+  "ay": 38.75
+ },
+ "unit3d_byzantines_villager_m_carry_wood": {
+  "file": "assets/units/unit3d_byzantines_villager_m_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 45.07,
+  "ax": 14.13,
+  "ay": 38.75
+ },
+ "unit3d_byzantines_villager_m_chop": {
+  "file": "assets/units/unit3d_byzantines_villager_m_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 50.67,
+  "fh": 52.0,
+  "ax": 25.33,
+  "ay": 46.22
+ },
+ "unit3d_byzantines_villager_m_death": {
+  "file": "assets/units/unit3d_byzantines_villager_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 62.93,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_byzantines_villager_m_farm": {
+  "file": "assets/units/unit3d_byzantines_villager_m_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 49.87,
+  "fh": 49.33,
+  "ax": 24.8,
+  "ay": 39.82
+ },
+ "unit3d_byzantines_villager_m_forage": {
+  "file": "assets/units/unit3d_byzantines_villager_m_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 29.87,
+  "fh": 42.93,
+  "ax": 14.93,
+  "ay": 37.42
+ },
+ "unit3d_byzantines_villager_m_idle": {
+  "file": "assets/units/unit3d_byzantines_villager_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 22.93,
+  "fh": 41.87,
+  "ax": 11.47,
+  "ay": 36.89
+ },
+ "unit3d_byzantines_villager_m_mine": {
+  "file": "assets/units/unit3d_byzantines_villager_m_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 50.67,
+  "fh": 56.27,
+  "ax": 25.33,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_villager_m_walk": {
+  "file": "assets/units/unit3d_byzantines_villager_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 26.4,
+  "fh": 42.93,
+  "ax": 13.33,
+  "ay": 37.42
+ },
+ "unit3d_byzantines_villager_f_build": {
+  "file": "assets/units/unit3d_byzantines_villager_f_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 50.13,
+  "fh": 49.87,
+  "ax": 25.07,
+  "ay": 45.42
+ },
+ "unit3d_byzantines_villager_f_carry_food": {
+  "file": "assets/units/unit3d_byzantines_villager_f_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.4,
+  "fh": 47.73,
+  "ax": 15.2,
+  "ay": 41.69
+ },
+ "unit3d_byzantines_villager_f_carry_ore": {
+  "file": "assets/units/unit3d_byzantines_villager_f_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.4,
+  "fh": 45.87,
+  "ax": 15.2,
+  "ay": 39.82
+ },
+ "unit3d_byzantines_villager_f_carry_wood": {
+  "file": "assets/units/unit3d_byzantines_villager_f_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.4,
+  "fh": 44.0,
+  "ax": 15.2,
+  "ay": 37.95
+ },
+ "unit3d_byzantines_villager_f_chop": {
+  "file": "assets/units/unit3d_byzantines_villager_f_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 52.27,
+  "fh": 49.87,
+  "ax": 26.13,
+  "ay": 45.42
+ },
+ "unit3d_byzantines_villager_f_death": {
+  "file": "assets/units/unit3d_byzantines_villager_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_byzantines_villager_f_farm": {
+  "file": "assets/units/unit3d_byzantines_villager_f_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 49.6,
+  "fh": 48.0,
+  "ax": 24.8,
+  "ay": 40.09
+ },
+ "unit3d_byzantines_villager_f_forage": {
+  "file": "assets/units/unit3d_byzantines_villager_f_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 29.6,
+  "fh": 42.13,
+  "ax": 14.93,
+  "ay": 37.69
+ },
+ "unit3d_byzantines_villager_f_idle": {
+  "file": "assets/units/unit3d_byzantines_villager_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 23.47,
+  "fh": 40.27,
+  "ax": 11.73,
+  "ay": 36.09
+ },
+ "unit3d_byzantines_villager_f_mine": {
+  "file": "assets/units/unit3d_byzantines_villager_f_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 45.87,
+  "fh": 54.93,
+  "ax": 22.93,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_villager_f_walk": {
+  "file": "assets/units/unit3d_byzantines_villager_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 27.73,
+  "fh": 41.87,
+  "ax": 13.87,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_militia_m_attack": {
+  "file": "assets/units/unit3d_byzantines_militia_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.4,
+  "fh": 58.13,
+  "ax": 27.2,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_attack2": {
+  "file": "assets/units/unit3d_byzantines_militia_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.2,
+  "fh": 59.73,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_block": {
+  "file": "assets/units/unit3d_byzantines_militia_m_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_byzantines_militia_m_death": {
+  "file": "assets/units/unit3d_byzantines_militia_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.0,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_byzantines_militia_m_hit": {
+  "file": "assets/units/unit3d_byzantines_militia_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.53,
+  "fh": 50.4,
+  "ax": 14.4,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_militia_m_idle": {
+  "file": "assets/units/unit3d_byzantines_militia_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 48.8,
+  "ax": 18.13,
+  "ay": 44.09
+ },
+ "unit3d_byzantines_militia_m_ready": {
+  "file": "assets/units/unit3d_byzantines_militia_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 43.2,
+  "fh": 46.67,
+  "ax": 21.6,
+  "ay": 38.75
+ },
+ "unit3d_byzantines_militia_m_walk": {
+  "file": "assets/units/unit3d_byzantines_militia_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 47.47,
+  "fh": 42.67,
+  "ax": 23.73,
+  "ay": 37.15
+ },
+ "unit3d_byzantines_militia_m_t1_attack": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.4,
+  "fh": 58.13,
+  "ax": 27.2,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t1_attack2": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.2,
+  "fh": 59.73,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t1_block": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_byzantines_militia_m_t1_death": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.0,
+  "ax": 34.13,
+  "ay": 44.89
+ },
+ "unit3d_byzantines_militia_m_t1_hit": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.53,
+  "fh": 50.4,
+  "ax": 14.4,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_militia_m_t1_idle": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 48.8,
+  "ax": 18.13,
+  "ay": 44.09
+ },
+ "unit3d_byzantines_militia_m_t1_ready": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 43.2,
+  "fh": 46.67,
+  "ax": 21.6,
+  "ay": 38.75
+ },
+ "unit3d_byzantines_militia_m_t1_walk": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 47.47,
+  "fh": 42.67,
+  "ax": 23.73,
+  "ay": 37.15
+ },
+ "unit3d_byzantines_militia_m_t2_attack": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.4,
+  "fh": 58.13,
+  "ax": 27.2,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t2_attack2": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.2,
+  "fh": 59.73,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t2_block": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_byzantines_militia_m_t2_death": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 48.89
+ },
+ "unit3d_byzantines_militia_m_t2_hit": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 28.53,
+  "fh": 50.4,
+  "ax": 14.4,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_militia_m_t2_idle": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 48.8,
+  "ax": 18.13,
+  "ay": 44.09
+ },
+ "unit3d_byzantines_militia_m_t2_ready": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 43.2,
+  "fh": 50.93,
+  "ax": 21.6,
+  "ay": 43.02
+ },
+ "unit3d_byzantines_militia_m_t2_walk": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 47.47,
+  "fh": 46.93,
+  "ax": 23.73,
+  "ay": 41.42
+ },
+ "unit3d_byzantines_militia_m_t3_attack": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.4,
+  "fh": 58.13,
+  "ax": 27.2,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t3_attack2": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 59.2,
+  "fh": 59.73,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_militia_m_t3_block": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_byzantines_militia_m_t3_death": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 48.89
+ },
+ "unit3d_byzantines_militia_m_t3_hit": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.6,
+  "fh": 50.4,
+  "ax": 16.8,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_militia_m_t3_idle": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.27,
+  "fh": 48.8,
+  "ax": 18.13,
+  "ay": 44.09
+ },
+ "unit3d_byzantines_militia_m_t3_ready": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 43.2,
+  "fh": 50.93,
+  "ax": 21.6,
+  "ay": 43.02
+ },
+ "unit3d_byzantines_militia_m_t3_walk": {
+  "file": "assets/units/unit3d_byzantines_militia_m_t3_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 47.47,
+  "fh": 46.93,
+  "ax": 23.73,
+  "ay": 41.42
+ },
+ "unit3d_byzantines_spearman_m_attack": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_attack2": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 66.4,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_death": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_hit": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 40.0,
+  "fh": 54.4,
+  "ax": 20.0,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_idle": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 45.33,
+  "fh": 53.33,
+  "ax": 22.67,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_ready": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 57.6,
+  "fh": 50.4,
+  "ax": 28.8,
+  "ay": 42.75
+ },
+ "unit3d_byzantines_spearman_m_walk": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 54.67,
+  "fh": 45.6,
+  "ax": 27.47,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_spearman_m_t1_attack": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_attack2": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_death": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_hit": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 55.2,
+  "fh": 54.4,
+  "ax": 28.8,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_idle": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 56.53,
+  "fh": 53.33,
+  "ax": 28.53,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_ready": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t1_walk": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 57.07,
+  "ax": 34.13,
+  "ay": 37.95
+ },
+ "unit3d_byzantines_spearman_m_t2_attack": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_attack2": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_death": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_hit": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 57.33,
+  "fh": 54.4,
+  "ax": 28.8,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_idle": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 59.2,
+  "fh": 53.33,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_ready": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_spearman_m_t2_walk": {
+  "file": "assets/units/unit3d_byzantines_spearman_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 42.22
+ },
+ "unit3d_byzantines_archer_m_attack": {
+  "file": "assets/units/unit3d_byzantines_archer_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 44.8,
+  "fh": 56.0,
+  "ax": 22.4,
+  "ay": 49.15
+ },
+ "unit3d_byzantines_archer_m_death": {
+  "file": "assets/units/unit3d_byzantines_archer_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 62.13,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_byzantines_archer_m_hit": {
+  "file": "assets/units/unit3d_byzantines_archer_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 38.4,
+  "fh": 48.27,
+  "ax": 19.2,
+  "ay": 42.49
+ },
+ "unit3d_byzantines_archer_m_idle": {
+  "file": "assets/units/unit3d_byzantines_archer_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 46.4,
+  "fh": 43.2,
+  "ax": 23.2,
+  "ay": 38.22
+ },
+ "unit3d_byzantines_archer_m_walk": {
+  "file": "assets/units/unit3d_byzantines_archer_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 39.2,
+  "fh": 43.2,
+  "ax": 19.47,
+  "ay": 37.95
+ },
+ "unit3d_byzantines_archer_m_t1_attack": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.8,
+  "fh": 51.47,
+  "ax": 26.4,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_archer_m_t1_death": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_byzantines_archer_m_t1_hit": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 31.73,
+  "fh": 49.6,
+  "ax": 16.0,
+  "ay": 43.82
+ },
+ "unit3d_byzantines_archer_m_t1_idle": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.2,
+  "fh": 41.6,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_archer_m_t1_walk": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 41.87,
+  "ax": 16.53,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_archer_m_t2_attack": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.8,
+  "fh": 51.47,
+  "ax": 26.4,
+  "ay": 44.62
+ },
+ "unit3d_byzantines_archer_m_t2_death": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 45.69
+ },
+ "unit3d_byzantines_archer_m_t2_hit": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.6,
+  "fh": 49.6,
+  "ax": 16.8,
+  "ay": 43.82
+ },
+ "unit3d_byzantines_archer_m_t2_idle": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 31.2,
+  "fh": 41.6,
+  "ax": 15.73,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_archer_m_t2_walk": {
+  "file": "assets/units/unit3d_byzantines_archer_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 41.87,
+  "ax": 16.53,
+  "ay": 36.62
+ },
+ "unit3d_byzantines_knight_m_attack": {
+  "file": "assets/units/unit3d_byzantines_knight_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.09,
+  "ax": 34.91,
+  "ay": 64.12
+ },
+ "unit3d_byzantines_knight_m_death": {
+  "file": "assets/units/unit3d_byzantines_knight_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 85.09,
+  "ax": 46.55,
+  "ay": 59.03
+ },
+ "unit3d_byzantines_knight_m_idle": {
+  "file": "assets/units/unit3d_byzantines_knight_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_byzantines_knight_m_walk": {
+  "file": "assets/units/unit3d_byzantines_knight_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 70.55,
+  "ax": 36.73,
+  "ay": 57.93
+ },
+ "unit3d_byzantines_knight_m_t1_attack": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t1_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.09,
+  "ax": 34.91,
+  "ay": 64.12
+ },
+ "unit3d_byzantines_knight_m_t1_death": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.27,
+  "ax": 46.55,
+  "ay": 61.21
+ },
+ "unit3d_byzantines_knight_m_t1_idle": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t1_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 67.64,
+  "ax": 35.64,
+  "ay": 58.3
+ },
+ "unit3d_byzantines_knight_m_t1_walk": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t1_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 72.73,
+  "ax": 36.73,
+  "ay": 60.12
+ },
+ "unit3d_byzantines_knight_m_t2_attack": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t2_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.09,
+  "ax": 34.91,
+  "ay": 64.12
+ },
+ "unit3d_byzantines_knight_m_t2_death": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.27,
+  "ax": 46.55,
+  "ay": 61.21
+ },
+ "unit3d_byzantines_knight_m_t2_idle": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t2_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 67.64,
+  "ax": 35.64,
+  "ay": 58.3
+ },
+ "unit3d_byzantines_knight_m_t2_walk": {
+  "file": "assets/units/unit3d_byzantines_knight_m_t2_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 72.73,
+  "ax": 36.73,
+  "ay": 60.12
+ },
+ "unit3d_byzantines_scout_m_attack": {
+  "file": "assets/units/unit3d_byzantines_scout_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 76.0,
+  "ax": 34.91,
+  "ay": 67.03
+ },
+ "unit3d_byzantines_scout_m_death": {
+  "file": "assets/units/unit3d_byzantines_scout_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 86.91,
+  "ax": 46.55,
+  "ay": 60.84
+ },
+ "unit3d_byzantines_scout_m_hit": {
+  "file": "assets/units/unit3d_byzantines_scout_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 66.18,
+  "ax": 35.64,
+  "ay": 56.84
+ },
+ "unit3d_byzantines_scout_m_idle": {
+  "file": "assets/units/unit3d_byzantines_scout_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_byzantines_scout_m_walk": {
+  "file": "assets/units/unit3d_byzantines_scout_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 71.27,
+  "ax": 36.73,
+  "ay": 58.66
+ },
+ "unit3d_byzantines_king_m_hit": {
+  "file": "assets/units/unit3d_byzantines_king_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 27.73,
+  "fh": 50.4,
+  "ax": 13.87,
+  "ay": 45.42
+ },
+ "unit3d_byzantines_king_m_idle": {
+  "file": "assets/units/unit3d_byzantines_king_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 38.4,
+  "fh": 49.6,
+  "ax": 19.2,
+  "ay": 45.69
+ },
+ "unit3d_byzantines_queen_f_death": {
+  "file": "assets/units/unit3d_byzantines_queen_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.07,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_byzantines_queen_f_idle": {
+  "file": "assets/units/unit3d_byzantines_queen_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 29.33,
+  "fh": 40.53,
+  "ax": 14.67,
+  "ay": 36.35
+ },
+ "unit3d_byzantines_queen_f_walk": {
+  "file": "assets/units/unit3d_byzantines_queen_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 30.93,
+  "fh": 41.6,
+  "ax": 15.47,
+  "ay": 36.35
+ },
+ "unit3d_chinese_villager_m_build": {
+  "file": "assets/units/unit3d_chinese_villager_m_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 48.53,
+  "fh": 49.6,
+  "ax": 24.27,
+  "ay": 44.62
+ },
+ "unit3d_chinese_villager_m_carry_food": {
+  "file": "assets/units/unit3d_chinese_villager_m_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 46.67,
+  "ax": 14.13,
+  "ay": 40.89
+ },
+ "unit3d_chinese_villager_m_carry_ore": {
+  "file": "assets/units/unit3d_chinese_villager_m_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 44.8,
+  "ax": 14.13,
+  "ay": 39.02
+ },
+ "unit3d_chinese_villager_m_carry_wood": {
+  "file": "assets/units/unit3d_chinese_villager_m_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 28.27,
+  "fh": 44.53,
+  "ax": 14.13,
+  "ay": 38.75
+ },
+ "unit3d_chinese_villager_m_chop": {
+  "file": "assets/units/unit3d_chinese_villager_m_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 50.13,
+  "fh": 49.33,
+  "ax": 25.07,
+  "ay": 44.35
+ },
+ "unit3d_chinese_villager_m_death": {
+  "file": "assets/units/unit3d_chinese_villager_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.8,
+  "ax": 34.13,
+  "ay": 44.62
+ },
+ "unit3d_chinese_villager_m_farm": {
+  "file": "assets/units/unit3d_chinese_villager_m_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 51.2,
+  "fh": 48.27,
+  "ax": 25.6,
+  "ay": 39.82
+ },
+ "unit3d_chinese_villager_m_forage": {
+  "file": "assets/units/unit3d_chinese_villager_m_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 30.93,
+  "fh": 43.2,
+  "ax": 15.47,
+  "ay": 37.95
+ },
+ "unit3d_chinese_villager_m_idle": {
+  "file": "assets/units/unit3d_chinese_villager_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 22.4,
+  "fh": 40.8,
+  "ax": 11.2,
+  "ay": 36.35
+ },
+ "unit3d_chinese_villager_m_mine": {
+  "file": "assets/units/unit3d_chinese_villager_m_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 46.4,
+  "fh": 55.73,
+  "ax": 23.2,
+  "ay": 49.15
+ },
+ "unit3d_chinese_villager_m_walk": {
+  "file": "assets/units/unit3d_chinese_villager_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 25.6,
+  "fh": 42.4,
+  "ax": 12.8,
+  "ay": 37.15
+ },
+ "unit3d_chinese_villager_f_build": {
+  "file": "assets/units/unit3d_chinese_villager_f_build.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 49.07,
+  "fh": 50.13,
+  "ax": 24.53,
+  "ay": 44.89
+ },
+ "unit3d_chinese_villager_f_carry_food": {
+  "file": "assets/units/unit3d_chinese_villager_f_carry_food.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.93,
+  "fh": 48.0,
+  "ax": 15.47,
+  "ay": 41.42
+ },
+ "unit3d_chinese_villager_f_carry_ore": {
+  "file": "assets/units/unit3d_chinese_villager_f_carry_ore.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.93,
+  "fh": 46.13,
+  "ax": 15.47,
+  "ay": 39.55
+ },
+ "unit3d_chinese_villager_f_carry_wood": {
+  "file": "assets/units/unit3d_chinese_villager_f_carry_wood.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.178,
+  "stride": 1.17,
+  "fw": 30.93,
+  "fh": 45.07,
+  "ax": 15.47,
+  "ay": 38.49
+ },
+ "unit3d_chinese_villager_f_chop": {
+  "file": "assets/units/unit3d_chinese_villager_f_chop.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.952,
+  "fw": 51.2,
+  "fh": 49.87,
+  "ax": 25.6,
+  "ay": 44.62
+ },
+ "unit3d_chinese_villager_f_death": {
+  "file": "assets/units/unit3d_chinese_villager_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.6,
+  "ax": 34.13,
+  "ay": 44.62
+ },
+ "unit3d_chinese_villager_f_farm": {
+  "file": "assets/units/unit3d_chinese_villager_f_farm.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 5.64,
+  "fw": 48.53,
+  "fh": 45.87,
+  "ax": 24.27,
+  "ay": 39.29
+ },
+ "unit3d_chinese_villager_f_forage": {
+  "file": "assets/units/unit3d_chinese_villager_f_forage.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 7.167,
+  "fw": 32.0,
+  "fh": 43.47,
+  "ax": 16.0,
+  "ay": 37.95
+ },
+ "unit3d_chinese_villager_f_idle": {
+  "file": "assets/units/unit3d_chinese_villager_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 24.0,
+  "fh": 41.07,
+  "ax": 12.0,
+  "ay": 36.35
+ },
+ "unit3d_chinese_villager_f_mine": {
+  "file": "assets/units/unit3d_chinese_villager_f_mine.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.22,
+  "fw": 45.33,
+  "fh": 55.47,
+  "ax": 22.67,
+  "ay": 49.15
+ },
+ "unit3d_chinese_villager_f_walk": {
+  "file": "assets/units/unit3d_chinese_villager_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 27.47,
+  "fh": 42.4,
+  "ax": 13.87,
+  "ay": 37.15
+ },
+ "unit3d_chinese_militia_m_attack": {
+  "file": "assets/units/unit3d_chinese_militia_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.93,
+  "fh": 58.13,
+  "ax": 27.47,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_attack2": {
+  "file": "assets/units/unit3d_chinese_militia_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 58.93,
+  "fh": 59.47,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_block": {
+  "file": "assets/units/unit3d_chinese_militia_m_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_death": {
+  "file": "assets/units/unit3d_chinese_militia_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.53,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_chinese_militia_m_hit": {
+  "file": "assets/units/unit3d_chinese_militia_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 27.2,
+  "fh": 49.33,
+  "ax": 13.6,
+  "ay": 44.35
+ },
+ "unit3d_chinese_militia_m_idle": {
+  "file": "assets/units/unit3d_chinese_militia_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.07,
+  "ax": 18.4,
+  "ay": 44.62
+ },
+ "unit3d_chinese_militia_m_ready": {
+  "file": "assets/units/unit3d_chinese_militia_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 46.67,
+  "ax": 22.13,
+  "ay": 39.02
+ },
+ "unit3d_chinese_militia_m_walk": {
+  "file": "assets/units/unit3d_chinese_militia_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.0,
+  "fh": 41.87,
+  "ax": 24.0,
+  "ay": 36.89
+ },
+ "unit3d_chinese_militia_m_t1_attack": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.93,
+  "fh": 58.13,
+  "ax": 27.47,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t1_attack2": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 58.93,
+  "fh": 59.47,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t1_block": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_t1_death": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.53,
+  "ax": 34.13,
+  "ay": 45.42
+ },
+ "unit3d_chinese_militia_m_t1_hit": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 27.2,
+  "fh": 49.33,
+  "ax": 13.6,
+  "ay": 44.35
+ },
+ "unit3d_chinese_militia_m_t1_idle": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.07,
+  "ax": 18.4,
+  "ay": 44.62
+ },
+ "unit3d_chinese_militia_m_t1_ready": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 46.67,
+  "ax": 22.13,
+  "ay": 39.02
+ },
+ "unit3d_chinese_militia_m_t1_walk": {
+  "file": "assets/units/unit3d_chinese_militia_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.0,
+  "fh": 41.87,
+  "ax": 24.0,
+  "ay": 36.89
+ },
+ "unit3d_chinese_militia_m_t2_attack": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.93,
+  "fh": 58.13,
+  "ax": 27.47,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t2_attack2": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 58.93,
+  "fh": 59.47,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t2_block": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_t2_death": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t2_hit": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 27.2,
+  "fh": 49.33,
+  "ax": 13.6,
+  "ay": 44.35
+ },
+ "unit3d_chinese_militia_m_t2_idle": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.07,
+  "ax": 18.4,
+  "ay": 44.62
+ },
+ "unit3d_chinese_militia_m_t2_ready": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 50.93,
+  "ax": 22.13,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_t2_walk": {
+  "file": "assets/units/unit3d_chinese_militia_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.0,
+  "fh": 46.4,
+  "ax": 24.0,
+  "ay": 41.42
+ },
+ "unit3d_chinese_militia_m_t3_attack": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.05,
+  "fw": 54.93,
+  "fh": 58.13,
+  "ax": 27.47,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t3_attack2": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.473,
+  "fw": 58.93,
+  "fh": 59.47,
+  "ax": 29.6,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t3_block": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_block.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.94,
+  "fw": 35.2,
+  "fh": 49.6,
+  "ax": 17.6,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_t3_death": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_militia_m_t3_hit": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 32.53,
+  "fh": 49.33,
+  "ax": 16.27,
+  "ay": 44.35
+ },
+ "unit3d_chinese_militia_m_t3_idle": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 36.8,
+  "fh": 49.07,
+  "ax": 18.4,
+  "ay": 44.62
+ },
+ "unit3d_chinese_militia_m_t3_ready": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 44.27,
+  "fh": 50.93,
+  "ax": 22.13,
+  "ay": 43.29
+ },
+ "unit3d_chinese_militia_m_t3_walk": {
+  "file": "assets/units/unit3d_chinese_militia_m_t3_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 48.0,
+  "fh": 46.4,
+  "ax": 24.0,
+  "ay": 41.42
+ },
+ "unit3d_chinese_spearman_m_attack": {
+  "file": "assets/units/unit3d_chinese_spearman_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_attack2": {
+  "file": "assets/units/unit3d_chinese_spearman_m_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 66.13,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_death": {
+  "file": "assets/units/unit3d_chinese_spearman_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_hit": {
+  "file": "assets/units/unit3d_chinese_spearman_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 39.47,
+  "fh": 54.13,
+  "ax": 19.73,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_idle": {
+  "file": "assets/units/unit3d_chinese_spearman_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 45.33,
+  "fh": 53.6,
+  "ax": 22.67,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_ready": {
+  "file": "assets/units/unit3d_chinese_spearman_m_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 57.33,
+  "fh": 49.87,
+  "ax": 28.8,
+  "ay": 42.49
+ },
+ "unit3d_chinese_spearman_m_walk": {
+  "file": "assets/units/unit3d_chinese_spearman_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 55.2,
+  "fh": 45.87,
+  "ax": 27.73,
+  "ay": 36.62
+ },
+ "unit3d_chinese_spearman_m_t1_attack": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_attack2": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_death": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_hit": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 54.93,
+  "fh": 54.13,
+  "ax": 28.53,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_idle": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 56.53,
+  "fh": 53.6,
+  "ax": 28.53,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_ready": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 56.53,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t1_walk": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 37.69
+ },
+ "unit3d_chinese_spearman_m_t2_attack": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.8,
+  "fw": 68.27,
+  "fh": 56.8,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_attack2": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_attack2.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.95,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_death": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_hit": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 57.07,
+  "fh": 54.13,
+  "ax": 28.53,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_idle": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 58.67,
+  "fh": 53.6,
+  "ax": 29.33,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_ready": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_ready.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.667,
+  "fw": 68.27,
+  "fh": 56.53,
+  "ax": 34.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_spearman_m_t2_walk": {
+  "file": "assets/units/unit3d_chinese_spearman_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.067,
+  "stride": 1.45,
+  "fw": 68.27,
+  "fh": 61.33,
+  "ax": 34.13,
+  "ay": 42.22
+ },
+ "unit3d_chinese_archer_m_attack": {
+  "file": "assets/units/unit3d_chinese_archer_m_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 44.27,
+  "fh": 55.47,
+  "ax": 22.13,
+  "ay": 49.15
+ },
+ "unit3d_chinese_archer_m_death": {
+  "file": "assets/units/unit3d_chinese_archer_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 61.07,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_chinese_archer_m_hit": {
+  "file": "assets/units/unit3d_chinese_archer_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 38.93,
+  "fh": 47.47,
+  "ax": 19.47,
+  "ay": 42.22
+ },
+ "unit3d_chinese_archer_m_idle": {
+  "file": "assets/units/unit3d_chinese_archer_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 45.87,
+  "fh": 42.4,
+  "ax": 22.93,
+  "ay": 37.95
+ },
+ "unit3d_chinese_archer_m_walk": {
+  "file": "assets/units/unit3d_chinese_archer_m_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 38.93,
+  "fh": 43.2,
+  "ax": 19.47,
+  "ay": 37.69
+ },
+ "unit3d_chinese_archer_m_t1_attack": {
+  "file": "assets/units/unit3d_chinese_archer_m_t1_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.27,
+  "fh": 50.4,
+  "ax": 26.13,
+  "ay": 44.09
+ },
+ "unit3d_chinese_archer_m_t1_death": {
+  "file": "assets/units/unit3d_chinese_archer_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_chinese_archer_m_t1_hit": {
+  "file": "assets/units/unit3d_chinese_archer_m_t1_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 32.0,
+  "fh": 49.07,
+  "ax": 16.0,
+  "ay": 43.82
+ },
+ "unit3d_chinese_archer_m_t1_idle": {
+  "file": "assets/units/unit3d_chinese_archer_m_t1_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 30.93,
+  "fh": 40.53,
+  "ax": 15.47,
+  "ay": 36.09
+ },
+ "unit3d_chinese_archer_m_t1_walk": {
+  "file": "assets/units/unit3d_chinese_archer_m_t1_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 42.4,
+  "ax": 16.53,
+  "ay": 36.89
+ },
+ "unit3d_chinese_archer_m_t2_attack": {
+  "file": "assets/units/unit3d_chinese_archer_m_t2_attack.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 52.27,
+  "fh": 50.4,
+  "ax": 26.13,
+  "ay": 44.09
+ },
+ "unit3d_chinese_archer_m_t2_death": {
+  "file": "assets/units/unit3d_chinese_archer_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 64.27,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_chinese_archer_m_t2_hit": {
+  "file": "assets/units/unit3d_chinese_archer_m_t2_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 33.07,
+  "fh": 49.07,
+  "ax": 16.53,
+  "ay": 43.82
+ },
+ "unit3d_chinese_archer_m_t2_idle": {
+  "file": "assets/units/unit3d_chinese_archer_m_t2_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 30.93,
+  "fh": 40.53,
+  "ax": 15.47,
+  "ay": 36.09
+ },
+ "unit3d_chinese_archer_m_t2_walk": {
+  "file": "assets/units/unit3d_chinese_archer_m_t2_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 32.8,
+  "fh": 42.4,
+  "ax": 16.53,
+  "ay": 36.89
+ },
+ "unit3d_chinese_knight_m_attack": {
+  "file": "assets/units/unit3d_chinese_knight_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.45,
+  "ax": 34.91,
+  "ay": 64.48
+ },
+ "unit3d_chinese_knight_m_death": {
+  "file": "assets/units/unit3d_chinese_knight_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 84.36,
+  "ax": 46.55,
+  "ay": 58.3
+ },
+ "unit3d_chinese_knight_m_idle": {
+  "file": "assets/units/unit3d_chinese_knight_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_chinese_knight_m_walk": {
+  "file": "assets/units/unit3d_chinese_knight_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 70.18,
+  "ax": 36.73,
+  "ay": 57.57
+ },
+ "unit3d_chinese_knight_m_t1_attack": {
+  "file": "assets/units/unit3d_chinese_knight_m_t1_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.45,
+  "ax": 34.91,
+  "ay": 64.48
+ },
+ "unit3d_chinese_knight_m_t1_death": {
+  "file": "assets/units/unit3d_chinese_knight_m_t1_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.27,
+  "ax": 46.55,
+  "ay": 61.21
+ },
+ "unit3d_chinese_knight_m_t1_idle": {
+  "file": "assets/units/unit3d_chinese_knight_m_t1_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 68.0,
+  "ax": 35.64,
+  "ay": 58.66
+ },
+ "unit3d_chinese_knight_m_t1_walk": {
+  "file": "assets/units/unit3d_chinese_knight_m_t1_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 72.73,
+  "ax": 36.73,
+  "ay": 60.12
+ },
+ "unit3d_chinese_knight_m_t2_attack": {
+  "file": "assets/units/unit3d_chinese_knight_m_t2_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 73.45,
+  "ax": 34.91,
+  "ay": 64.48
+ },
+ "unit3d_chinese_knight_m_t2_death": {
+  "file": "assets/units/unit3d_chinese_knight_m_t2_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 87.27,
+  "ax": 46.55,
+  "ay": 61.21
+ },
+ "unit3d_chinese_knight_m_t2_idle": {
+  "file": "assets/units/unit3d_chinese_knight_m_t2_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 68.0,
+  "ax": 35.64,
+  "ay": 58.66
+ },
+ "unit3d_chinese_knight_m_t2_walk": {
+  "file": "assets/units/unit3d_chinese_knight_m_t2_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 72.73,
+  "ax": 36.73,
+  "ay": 60.12
+ },
+ "unit3d_chinese_scout_m_attack": {
+  "file": "assets/units/unit3d_chinese_scout_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 69.82,
+  "fh": 76.0,
+  "ax": 34.91,
+  "ay": 67.03
+ },
+ "unit3d_chinese_scout_m_death": {
+  "file": "assets/units/unit3d_chinese_scout_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 10.667,
+  "fw": 93.09,
+  "fh": 86.91,
+  "ax": 46.55,
+  "ay": 60.84
+ },
+ "unit3d_chinese_scout_m_hit": {
+  "file": "assets/units/unit3d_chinese_scout_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 8.533,
+  "fw": 71.27,
+  "fh": 66.18,
+  "ax": 35.64,
+  "ay": 56.84
+ },
+ "unit3d_chinese_scout_m_idle": {
+  "file": "assets/units/unit3d_chinese_scout_m_idle.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 2.133,
+  "fw": 71.27,
+  "fh": 65.82,
+  "ax": 35.64,
+  "ay": 56.48
+ },
+ "unit3d_chinese_scout_m_walk": {
+  "file": "assets/units/unit3d_chinese_scout_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 10.667,
+  "stride": 1.6,
+  "fw": 73.45,
+  "fh": 71.27,
+  "ax": 36.73,
+  "ay": 58.66
+ },
+ "unit3d_chinese_king_m_hit": {
+  "file": "assets/units/unit3d_chinese_king_m_hit.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 0.933,
+  "fw": 27.2,
+  "fh": 49.87,
+  "ax": 13.6,
+  "ay": 44.89
+ },
+ "unit3d_chinese_king_m_idle": {
+  "file": "assets/units/unit3d_chinese_king_m_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 35.2,
+  "fh": 48.8,
+  "ax": 17.6,
+  "ay": 44.62
+ },
+ "unit3d_chinese_queen_f_death": {
+  "file": "assets/units/unit3d_chinese_queen_f_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 2.967,
+  "fw": 68.27,
+  "fh": 60.53,
+  "ax": 34.13,
+  "ay": 45.15
+ },
+ "unit3d_chinese_queen_f_idle": {
+  "file": "assets/units/unit3d_chinese_queen_f_idle.png",
+  "frames": 16,
+  "rows": 8,
+  "cycle": 1.867,
+  "fw": 24.0,
+  "fh": 40.8,
+  "ax": 12.0,
+  "ay": 36.35
+ },
+ "unit3d_chinese_queen_f_walk": {
+  "file": "assets/units/unit3d_chinese_queen_f_walk.png",
+  "frames": 12,
+  "rows": 8,
+  "cycle": 1.396,
+  "stride": 1.1,
+  "fw": 27.73,
+  "fh": 41.07,
+  "ax": 13.87,
+  "ay": 36.35
  }
 }
