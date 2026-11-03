@@ -38,6 +38,7 @@
     G.initMap(d.config.seed || 1);
     G.terrain.set(d.terrain); G.explored.set(d.explored);
     G.players = d.players;
+    if (G.loadCivArt) for (const id in G.players) G.loadCivArt(G.players[id].civ);
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = d.decals || []; G.corpses = [];
     let maxId = 0;
     for (const o of d.ents) {

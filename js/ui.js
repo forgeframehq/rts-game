@@ -913,7 +913,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // boot: show a living map behind the start screen
   G.paused = true; G.demo = true;
-  G.newGame({ seed: 7 });
+  G.newGame({ seed: 7, demo: true });
   G.buildGround();
   applyPrefs();
   refreshContinue();

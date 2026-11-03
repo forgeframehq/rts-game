@@ -339,12 +339,12 @@
     // the main index plus the construction stages, which keep their own small index
     Promise.all(['assets/manifest.json', 'assets/stages.json'].map(u => fetch(u).then(r => r.ok ? r.json() : {}).catch(() => ({}))))
       .then(([a, b]) => Object.assign({}, a, b)).then(man => {
-      const keys = Object.keys(man);
+      // each dynasty's own units (~15 MB a dynasty) load only when that dynasty is in a match
+      MAN = man; const keys = Object.keys(man).filter(k => !CIV_ART.test(k));
       let left = keys.length;
       const fin = () => { if (--left === 0 && done) done(); };
       // packed unit images (tools/pack_units.py) hold several sheets: load each file once
       // and cut every sheet back out to a canvas of its own
-      const files = {};
       const get = f => files[f] || (files[f] = new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = f; }));
       for (const k of keys) {
         const d = man[k];
@@ -358,6 +358,25 @@
           fin();
         });
       }
+      for (const c of wanted) G.loadCivArt(c);
     }).catch(() => done && done());
+  };
+  // load one dynasty's own unit art (once). Until it arrives its units draw with the shared set.
+  const CIV_ART = /^unit3d_(britons|franks|byzantines|chinese)_/;
+  let MAN = null; const wanted = new Set(), civDone = new Set(), files = {};
+  function get(f) { return files[f] || (files[f] = new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = f; })); }
+  function cut(k, d, img) {
+    if (img && d.sh) {
+      const c = document.createElement('canvas'); c.width = d.sw; c.height = d.sh;
+      c.getContext('2d').drawImage(img, d.sx || 0, d.sy || 0, d.sw, d.sh, 0, 0, d.sw, d.sh);
+      c.naturalWidth = d.sw; c.naturalHeight = d.sh;
+      art[k] = { img: c, def: d };
+    } else if (img) art[k] = { img, def: d };
+  }
+  G.loadCivArt = function (civ) {
+    if (!civ || civDone.has(civ)) return;
+    if (!MAN) { wanted.add(civ); return; }
+    civDone.add(civ);
+    for (const k in MAN) if (k.startsWith('unit3d_' + civ + '_')) get(MAN[k].file).then(img => cut(k, MAN[k], img));
   };
 })();

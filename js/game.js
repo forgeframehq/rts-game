@@ -42,6 +42,7 @@
     slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
     // a later starting Age, as in AoE2's setup: everyone begins already advanced
     for (const id in G.players) G.players[id].age = G.rules.startAge;
+    if (G.loadCivArt && !config.demo) for (const id in G.players) G.loadCivArt(G.players[id].civ);
     G.time = 0; G.over = null; G.overReason = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     const r = G.mapRng;
     // corner spots: bottom-left, top-right, top-left, bottom-right on screen
