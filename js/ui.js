@@ -594,7 +594,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     // queue
     const q = $('queue');
-    if (own && sel.length === 1 && e.kind === 'building' && e.queue) {
+    if (own && sel.length === 1 && e.kind === 'building' && e.queue && (e.queue.length || !(e.garrison && e.garrison.length))) {
       const key = e.queue.map(x => x.type).join(',');
       if (q.dataset.k !== key + e.id) {
         q.dataset.k = key + e.id; q.innerHTML = '';
@@ -605,6 +605,19 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         });
       }
       const p = q.querySelector('.prog'); if (p && e.queue[0]) p.style.width = (e.qt / G.UNITS[e.queue[0].type].time * 100) + '%';
+    } else if (own && sel.length === 1 && e.kind === 'building' && e.garrison && e.garrison.length) {
+      // who is sheltering inside: a portrait each, the royals marked; tap one to send it out
+      const key = 'g' + e.garrison.map(u => u.id).join(',');
+      if (q.dataset.k !== key + e.id) {
+        q.dataset.k = key + e.id; q.innerHTML = '';
+        for (const u of e.garrison) {
+          const d = document.createElement('button'); d.className = 'qitem' + (u.def.cls === 'hero' ? ' royal' : '');
+          d.title = 'Send out ' + u.def.name;
+          d.innerHTML = iconHTML('i:' + (u.type === 'villager' && u.sex === 'f' ? 'villager_f' : u.type)) + (u.def.cls === 'hero' ? '<span class="crown">👑</span>' : '');
+          d.onclick = () => { G.ungarrison(e, x => x === u); panelKey = ''; q.dataset.k = ''; };
+          q.appendChild(d);
+        }
+      }
     } else if (q.innerHTML) { q.innerHTML = ''; q.dataset.k = ''; }
 
     // commands (rebuilt only when something relevant changes)
@@ -642,6 +655,15 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         }));
       }
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
+      // formation, for a group with soldiers in it: tap to cycle line, staggered, box
+      if (units.filter(u => u.type !== 'villager').length >= 2) {
+        const pl = G.players[1], cur = pl.formation || 'line', NAMES = { line: 'Line', staggered: 'Staggered', box: 'Box' };
+        cmds.appendChild(btn('i:army', 'Formation', NAMES[cur], () => {
+          pl.formation = G.FORMATIONS[(G.FORMATIONS.indexOf(cur) + 1) % G.FORMATIONS.length];
+          UI.alert(`Formation: ${NAMES[pl.formation]}` + (pl.formation === 'box' ? ' (archers and royals inside a ring of soldiers)' : pl.formation === 'staggered' ? ' (spread out against arrows and siege)' : ''));
+          panelKey = ''; refreshPanel(true);
+        }));
+      }
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
       }));

@@ -16,8 +16,8 @@ Status: [x] done, [~] in progress, [ ] not started. Keys live only in the sessio
 - [ ] Add 'research', 'university' to ICONS in ui.js; test research end to end; AI uses new techs
 
 ## Fixes from play
-- [ ] Units under attack-move retaliate against whoever hits them (archers killed 20 unopposed)
-- [ ] Easy AI slower, smaller army, later first attack
+- [x] Units under attack orders turn on whoever hits them; the group follows
+- [x] Easy AI: smaller economy and army, first attack at 12 min
 - [ ] Siege Workshop sits on its square; Battering Ram grounded with shadow and turning wheels
 - [ ] Cavalier idle calm (job files done; needs re-render)
 
@@ -25,6 +25,6 @@ Status: [x] done, [~] in progress, [ ] not started. Keys live only in the sessio
 - [~] Sound effects via ElevenLabs on Kie: `python3 tools/gen_sfx.py` (resumable; Kie queue was timing out)
 - [ ] Construction stages from Kie (pilot House + Barracks, then all), farm under construction = empty field
 - [ ] Farming and mining animations
-- [ ] Formations (box, staggered) + Formation button; garrison portrait row with single-unit eject
+- [x] Formations (line, staggered, box) + Formation button; garrison portrait row (royals crowned), tap to send one out
 - [ ] Horses: try a Meshy horse, else improve code horse
 - [ ] Morning summary with screenshots

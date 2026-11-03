@@ -322,6 +322,41 @@
   // AoE2-style formation: a line facing the way the group travels. Melee in front, archers behind,
   // villagers last; a mixed army marches at the pace of its slowest unit so it arrives together.
   const RANK = { inf: 0, cav: 0, arc: 1, vil: 2 };
+  // Offsets (ox across, oy forward) for each unit of a group, in its marching order.
+  //   line      ranks facing forward, melee first (AoE2's default)
+  //   staggered the same ranks spread wide and offset, so arrows and stones hit fewer men
+  //   box       melee and cavalry on the outside of a square, archers, siege and the royals inside
+  G.FORMATIONS = ['line', 'staggered', 'box'];
+  function formationSlots(units, kind) {
+    const n = units.length, out = [];
+    if (kind === 'box' && n >= 5) {
+      const outer = units.filter(u => u.def.cls === 'inf' || u.def.cls === 'cav'), inner = units.filter(u => !outer.includes(u));
+      const ring = [], gap = 0.9;
+      // the smallest square ring that holds the outer men
+      let k = 2; while ((k * 4 - 4) < outer.length) k++;
+      const h = (k - 1) / 2;
+      for (let i = 0; i < k; i++) ring.push([i - h, h]);
+      for (let j = k - 2; j >= 1; j--) ring.push([h, j - h]);
+      for (let i = k - 1; i >= 0; i--) ring.push([i - h, -h]);
+      for (let j = 1; j <= k - 2; j++) ring.push([-h, j - h]);
+      const step = ring.length / Math.max(1, outer.length);
+      const pos = new Map();
+      outer.forEach((u, i) => { const r = ring[Math.floor(i * step)]; pos.set(u, { ox: r[0] * gap, oy: r[1] * gap }); });
+      const ic = Math.max(1, Math.ceil(Math.sqrt(inner.length)));
+      inner.forEach((u, i) => { const c = i % ic, r = Math.floor(i / ic); pos.set(u, { ox: (c - (ic - 1) / 2) * gap * 0.8, oy: (r - (Math.ceil(inner.length / ic) - 1) / 2) * gap * 0.8 }); });
+      for (const u of units) out.push(pos.get(u));
+      return out;
+    }
+    const wide = kind === 'staggered';
+    const cols = n <= 3 ? n : Math.max(3, Math.ceil(Math.sqrt(n * (wide ? 3 : 2))));
+    const rows = Math.ceil(n / cols), gap = wide ? 1.5 : 0.85;
+    for (let i = 0; i < n; i++) {
+      const row = Math.floor(i / cols), inRow = Math.min(cols, n - row * cols), col = i % cols;
+      const shift = wide && row % 2 ? gap / 2 : 0;
+      out.push({ ox: (col - (inRow - 1) / 2) * gap + shift, oy: -(row - (rows - 1) / 2) * gap });
+    }
+    return out;
+  }
   G.cmdMove = function (units, x, y) {
     units = units.filter(u => u.kind === 'unit');
     const n = units.length; if (!n) return;
@@ -329,13 +364,11 @@
     let fx = x - cx, fy = y - cy; const fl = Math.hypot(fx, fy) || 1; fx /= fl; fy /= fl;   // forward
     const rx = -fy, ry = fx;                                                              // right
     const sorted = units.slice().sort((a, b) => (RANK[a.def.cls] || 0) - (RANK[b.def.cls] || 0) || a.id - b.id);
-    const cols = n <= 3 ? n : Math.max(3, Math.ceil(Math.sqrt(n * 2)));
-    const rows = Math.ceil(n / cols), gap = 0.85;
     const military = units.some(u => u.type !== 'villager') && n > 1;
     const gs = military ? Math.min(...units.map(u => u.def.speed)) : 0;
+    const slots = formationSlots(sorted, (G.players[units[0].owner] || {}).formation || 'line');
     sorted.forEach((u, i) => {
-      const row = Math.floor(i / cols), inRow = Math.min(cols, n - row * cols), col = i % cols;
-      const ox = (col - (inRow - 1) / 2) * gap, oy = -(row - (rows - 1) / 2) * gap;   // row 0 at the front
+      const { ox, oy } = slots[i];
       let tx = x + rx * ox + fx * oy, ty = y + ry * ox + fy * oy;
       const f = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
       if (!G.isFree(tx | 0, ty | 0)) { tx = f.x + 0.5; ty = f.y + 0.5; }

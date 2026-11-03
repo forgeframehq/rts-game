@@ -403,3 +403,10 @@ body.mm-off #minimap { display: none; }
   color: #f1d68a; font: 700 26px/1 Georgia, serif; box-shadow: 0 2px 6px rgba(0,0,0,.5); padding: 0; }
 .zbtn:active { transform: scale(0.94); }
 
+
+/* garrison row: royals get a gold rim and a crown */
+.qitem.royal { border-color: #e7c14b !important; box-shadow: 0 0 6px rgba(231,193,75,.6); }
+.qitem .crown { position: absolute; right: -3px; top: -6px; font-size: 12px; }
+.qitem { position: relative; }
+.cmd.tab { background: linear-gradient(180deg, #4a3a1c, #2a2010) padding-box, var(--bevel) border-box !important; }
+.cmd.research.done { opacity: .6; }
