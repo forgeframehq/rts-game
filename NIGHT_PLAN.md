@@ -30,3 +30,8 @@ Status: [x] done, [~] in progress, [ ] not started. Keys live only in the sessio
 - [ ] Morning summary with screenshots
 
 - [~] Unique units re-rendered on dynasty bodies (axe/cata/repeater --redo) + Western knight calmer idle
+
+## Status (morning, Nov 3)
+Done and live: dynasty units for all 4 dynasties, research pages + University + dynasty techs, formations, garrison row with eject, AI retaliation + softer Easy AI, painted construction stages, wheeled ram, reaping/pickaxe motions, calmer knight idle, siege workshop fit, unit art packed (540 sheets -> 94 images).
+Blocked: sound effects (Kie ElevenLabs timed out all night; rerun tools/gen_sfx.py).
+Open: proper horse (Meshy static + code legs), Chinese royal team colour, Chinese University banners/size, AI using University.
