@@ -526,7 +526,7 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 /* ---- cinema: intro and dynasty films ---- */
 #cine { position: fixed; inset: 0; z-index: 60; background: #000; display: flex; align-items: center; justify-content: center; }
 #cine.hidden { display: none; }
-#cine-v { width: 100%; height: 100%; object-fit: contain; background: #000; }
+#cine-v { width: 100%; height: 100%; object-fit: cover; background: #000; }
 #cine-skip { position: absolute; right: calc(16px + var(--safe-r)); bottom: calc(16px + var(--safe-b)); padding: 8px 18px; border-radius: 999px;
   font: 700 14px var(--heading); letter-spacing: 0.08em; color: #f3e2b8; border: 1.5px solid transparent;
   background: rgba(20,14,8,0.75) padding-box, var(--bevel) border-box; opacity: 0; transition: opacity .4s; }

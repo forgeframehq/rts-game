@@ -38,7 +38,7 @@ def main(jobs_file, out, only=None):
     for job in todo:
         stem, img, prompt = job[:3]; secs = str(job[3]) if len(job) > 3 else '5'
         if stem in tasks: continue
-        r = market('/createTask', {"model": model, "input": {"prompt": prompt, "image_urls": [img], "sound": True, "duration": secs}}) if kling \
+        r = market('/createTask', {"model": model, "input": {"prompt": prompt, "image_urls": [img], "sound": J.get("sound", True), "duration": secs}}) if kling \
             else call('/generate', {"prompt": prompt, "imageUrls": [img], "model": model, "aspectRatio": "16:9"})
         if r.get('code') != 200: print('QUEUE FAIL', stem, r, flush=True); continue
         tasks[stem] = r['data']['taskId']; json.dump(tasks, open(tp, 'w')); print('queued', stem, flush=True)

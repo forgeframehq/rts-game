@@ -69,6 +69,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // One overlay plays the intro and the dynasty films, full screen, with a Skip button.
   // Videos load only when played, so the menu never waits on them.
   let cineDone = null;
+  // tall screens get the portrait cut of each film, wide screens the landscape one
+  const film = name => `assets/video/${name}${innerHeight > innerWidth ? '_p' : ''}.mp4`;
   function playFilm(src, title, done) {
     const v = $('cine-v'), box = $('cine');
     cineDone = () => { cineDone = null; v.pause(); v.removeAttribute('src'); v.load(); box.classList.add('hidden'); $('cine-title').classList.add('hidden'); if (G.sound) G.sound.hush(false); done && done(); };
@@ -88,7 +90,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   UI.playDynFilm = (civ, done) => {
     if (prefs.dynfilm === 'off' || !G.CIVS[civ]) return done();
     const c = G.CIVS[civ];
-    playFilm(`assets/video/dyn_${civ}.mp4`, { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
+    playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
   let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
   $('tap-begin').onclick = () => {
@@ -96,7 +98,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const show = () => $('start').classList.add('begun');
     if (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen)) {
       introSeen = true; try { localStorage.setItem('dod.intro', '1'); } catch (e) { /* ignore */ }
-      playFilm('assets/video/intro.mp4', null, show);
+      playFilm(film('intro'), null, show);
     } else show();
   };
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {
@@ -150,7 +152,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('m-options').onclick = () => show('options');
   $('btn-resetprefs').onclick = () => { const keep = prefs.setup; Object.assign(prefs, PREF_DEFAULTS, { setup: keep }); savePrefs(); applyPrefs(); UI.alert('Settings reset'); };
   $('btn-replaytut').onclick = () => { G.tutorial.start(); enterGame(); };
-  $('btn-watchintro').onclick = () => playFilm('assets/video/intro.mp4', null, null);
+  $('btn-watchintro').onclick = () => playFilm(film('intro'), null, null);
   const delBtn = $('btn-delsave');
   delBtn.onclick = () => {
     if (!G.hasSave()) { delBtn.textContent = 'No saved game'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
