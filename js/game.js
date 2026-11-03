@@ -31,7 +31,7 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect', mode: config.mode || 'conquest' };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: config.shape || 'rect', mode: config.mode || 'conquest', time: +config.time || 0 };
     G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
@@ -40,7 +40,7 @@
     const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);
     G.players = {};
     slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
-    G.time = 0; G.over = null;
+    G.time = 0; G.over = null; G.overReason = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     const r = G.mapRng;
     // corner spots: bottom-left, top-right, top-left, bottom-right on screen
     let spots;
@@ -56,7 +56,7 @@
     const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
     // Town centers first (so resources avoid them)
     const tcs = starts.map(s => G.addBuilding('towncenter', s.p, s.x, s.y, true));
-    // Regicide: each player is given a King to guard and a Queen to keep his men on their feet
+    // Regicide: each player is given a King and a Queen. Lose both and the dynasty falls.
     if (G.rules.mode === 'regicide') for (const s of starts) {
       G.addUnit('king', s.p, s.x + 2.5, s.y + 3.2);
       G.addUnit('queen', s.p, s.x + 3.4, s.y + 2.6);
@@ -102,30 +102,96 @@
     if (G.ui) G.ui.reset();
   };
 
-  const hasStuff = p => G.ents.some(x => !x.dead && x.owner === p && (x.kind === 'building' && x.type !== 'farm' || x.kind === 'unit'));
-  // in Regicide the King is the whole game: lose him and it is over, town or no town
-  const kingDown = p => G.rules && G.rules.mode === 'regicide'
-    && !G.ents.some(x => !x.dead && x.owner === p && x.type === 'king');
-  G.onKilled = function (e) {
-    if (G.ui && G.ui.onKilled) G.ui.onKilled(e);
-    if (G.over || e.owner === 0) return;
-    for (const id in G.players) {
-      const p = G.players[id];
-      if (!p.alive) continue;
-      const lostKing = kingDown(+id);
-      if (!hasStuff(+id) || lostKing) {
-        p.alive = false;
-        if (G.ui) {
-          const who = +id === 1 ? 'Your' : `${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]})`;
-          if (lostKing) G.ui.alert(+id === 1 ? '👑 Your King has fallen!' : `👑 ${who} King has fallen!`);
-          else if (+id !== 1) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`);
-        }
-      }
-    }
+  // Walls and fields don't keep a dynasty alive: nobody should have to hunt down a lone palisade.
+  // Units sheltering in a building still count.
+  const counts = x => !x.dead && (x.kind === 'unit' || x.kind === 'building' && x.type !== 'farm' && !x.def.wall);
+  const hasStuff = p => G.unitsOf(p).length > 0 || G.ents.some(x => x.owner === p && x.kind === 'building' && counts(x));
+  // Regicide: the dynasty stands while either royal lives; when the King falls the Queen rules on
+  const royalsDown = p => G.rules && G.rules.mode === 'regicide' && !G.royal(p, 'king') && !G.royal(p, 'queen');
+  const nameOf = id => +id === 1 ? 'Your' : `The ${G.CIVS[G.players[id].civ].name}'`;
+  G.MOURN = 120;
+
+  // a defeated or resigning dynasty's town falls with it
+  G.eliminate = function (id) {
+    const p = G.players[id]; if (!p) return;
+    p.alive = false;
+    for (const e of G.ents.slice()) if (!e.dead && e.owner === +id && e.kind === 'building') G.kill(e);
+    for (const e of G.ents.slice()) if (!e.dead && e.owner === +id && e.kind === 'unit') G.kill(e);
+  };
+  G.resign = function (id) {
+    const p = G.players[id]; if (!p || !p.alive || G.over) return;
+    if (G.ui) G.ui.alert(`🏳️ ${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) resigned`);
+    G.eliminate(id);
+    checkEnd();
+  };
+
+  // Score, AoE2-style: economy, military and progress. Used for the time limit and the end screen.
+  G.scoreOf = function (id) {
+    const p = G.players[id], g = p.gathered;
+    const ups = Object.values(p.up || {}).reduce((a, b) => a + b, 0) + Object.keys(p.techs || {}).length;
+    return Math.round((g.food + g.wood + g.gold + g.stone) / 10 + (p.killValue || 0) / 5 + (p.age - 1) * 150 + ups * 20);
+  };
+  const sideOf = id => G.players[id].team > 0 ? 't' + G.players[id].team : 'p' + id;
+
+  function checkEnd() {
+    if (G.over) return;
     if (!G.players[1].alive) { G.over = 'defeat'; if (G.ui) G.ui.gameOver(G.over); return; }
     const foes = Object.keys(G.players).filter(id => G.players[id].alive && G.enemies(1, +id));
     if (!foes.length) { G.over = 'victory'; if (G.ui) G.ui.gameOver(G.over); }
+  }
+
+  G.onKilled = function (e) {
+    if (G.ui && G.ui.onKilled) G.ui.onKilled(e);
+    if (G.over || e.owner === 0) return;
+    // a royal has fallen but the other still lives
+    if (G.rules.mode === 'regicide' && e.def.cls === 'hero' && G.players[e.owner].alive && !royalsDown(e.owner)) {
+      const p = G.players[e.owner];
+      if (e.type === 'king') {
+        p.mourn = G.time + G.MOURN;
+        if (G.ui) G.ui.alert(`👑 ${nameOf(e.owner)} King has fallen! The Queen takes the throne.`);
+      } else if (G.ui) G.ui.alert(`👸 ${nameOf(e.owner)} Queen has fallen!`);
+    }
+    for (const id in G.players) {
+      const p = G.players[id];
+      if (!p.alive) continue;
+      const lostCrown = royalsDown(+id);
+      if (!hasStuff(+id) || lostCrown) {
+        p.alive = false;
+        if (G.ui) {
+          if (lostCrown) G.ui.alert(+id === 1 ? '👑 Your King and Queen are dead. Your dynasty has fallen.' : `👑 ${nameOf(id)} King and Queen are dead. Their dynasty has fallen!`);
+          else if (+id !== 1) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`);
+        }
+        if (lostCrown && +id !== 1) G.eliminate(+id);
+      }
+    }
+    // when an enemy is down to its last few pieces, show them on the minimap so the hunt doesn't drag
+    for (const id in G.players) {
+      const p = G.players[id];
+      if (!p.alive || p.exposed || !G.enemies(1, +id)) continue;
+      const left = G.unitsOf(+id).length + G.ents.filter(x => x.owner === +id && x.kind === 'building' && counts(x)).length;
+      if (left <= 6) { p.exposed = true; if (G.ui) G.ui.alert(`📍 ${G.CIVS[p.civ].name}'s last forces are shown on the minimap`); }
+    }
+    checkEnd();
   };
+
+  // Time limit: when the clock runs out, the side with the highest score wins
+  let warned = 0;
+  function checkTime() {
+    const lim = G.rules && G.rules.time ? G.rules.time * 60 : 0;
+    if (!lim || G.over) return;
+    const left = lim - G.time;
+    if (left <= 300 && warned < 1 && lim > 300) { warned = 1; if (G.ui) G.ui.alert('⏳ 5 minutes left. Highest score wins.'); }
+    if (left <= 60 && warned < 2) { warned = 2; if (G.ui) G.ui.alert('⏳ 1 minute left!'); }
+    if (left > 0) return;
+    const sides = {};
+    for (const id in G.players) if (G.players[id].alive) { const k = sideOf(+id); sides[k] = (sides[k] || 0) + G.scoreOf(+id); }
+    const mine = sides[sideOf(1)] || 0;
+    const best = Math.max(...Object.keys(sides).filter(k => k !== sideOf(1)).map(k => sides[k]), 0);
+    G.over = mine >= best ? 'victory' : 'defeat';
+    G.overReason = 'time';
+    if (G.ui) G.ui.gameOver(G.over);
+  }
+  G.resetTimeWarnings = () => { warned = G.rules && G.rules.time && G.time > G.rules.time * 60 - 300 ? (G.time > G.rules.time * 60 - 60 ? 2 : 1) : 0; G.overReason = null; };
 
   G.speed = 1;
   G.paused = false;
@@ -134,7 +200,7 @@
     G.time += dt;
     G.updateEntities(dt);
     if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
-    fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; }
+    fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; checkTime(); }
   };
   function frame(t) {
     const real = Math.min(0.05, (t - last) / 1000 || 0); last = t;

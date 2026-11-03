@@ -191,19 +191,36 @@
   G.GARRISON_MAX = 15;
   // Villagers shelter anywhere that takes a garrison; a Castle takes soldiers too,
   // and every unit inside adds an arrow to what the building shoots.
+  // The King and Queen may hide in a Town Center too, so they have shelter from the first minute.
   G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner
-    && (u.type === 'villager' || b.type === 'castle')
+    && (u.type === 'villager' || u.def.cls === 'hero' || b.type === 'castle')
     && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
   G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
   G.ringBell = function (owner) {
     if (owner === 1) snd('bell');
-    for (const u of G.ents) if (!u.dead && u.owner === owner && u.type === 'villager') {
+    // the bell calls the royals home along with the villagers
+    for (const u of G.ents) if (!u.dead && u.owner === owner && (u.type === 'villager' || u.def.cls === 'hero')) {
       const tc = nearest(u, e => e.type === 'towncenter' && G.canGarrison(u, e));
       if (tc) G.garrisonTo(u, tc);
     }
   };
-  G.ungarrison = function (b) {
-    const list = b.garrison || []; b.garrison = [];
+  // Units still standing inside a building are out of G.ents, so anything that asks
+  // "does this player still have X" has to look inside garrisons too.
+  G.unitsOf = function (p) {
+    const out = [];
+    for (const e of G.ents) {
+      if (e.dead || e.owner !== p) continue;
+      if (e.kind === 'unit') out.push(e);
+      else if (e.garrison) for (const g of e.garrison) if (!g.dead) out.push(g);
+    }
+    return out;
+  };
+  G.royal = (p, type) => G.unitsOf(p).find(u => u.type === type) || null;
+  // empty a building, or only the units matching keep (the AI lets its royals out alone)
+  G.ungarrison = function (b, keep) {
+    const all = b.garrison || [];
+    const list = keep ? all.filter(keep) : all;
+    b.garrison = keep ? all.filter(u => !keep(u)) : [];
     for (const u of list) {
       const spot = G.nearestFree(b.x + 1.5, b.y + 1.5, 10) || { x: b.tx, y: b.ty };
       u.x = spot.x + 0.5 + (Math.random() - 0.5) * 0.4; u.y = spot.y + 0.5 + (Math.random() - 0.5) * 0.4;
@@ -422,6 +439,10 @@
     if (q) { G.refund(b.owner, q.cost); if (i === 0) b.qt = 0; }
   };
 
+  // what an entity was worth, for the score: its cost, with a royal counted as a small army
+  G.valueOf = e => e.def.cls === 'hero' ? 400 : Object.values(e.def.cost || {}).reduce((a, b) => a + b, 0);
+  G.KING_AURA = 4;
+
   // ---------- Damage ----------
   function damage(att, t) {
     const d = att.def;
@@ -440,13 +461,23 @@
       const arm = (d.ranged || att.kind === 'building' ? t.def.pierce : t.def.armor) + ta;
       dmg = Math.max(1, d.atk + aa - arm);
       if (d.bonus && d.bonus[t.def.cls]) dmg += d.bonus[t.def.cls];
+      if (soldier && d.cls !== 'hero') {
+        // soldiers fighting near their King hit harder
+        const k = G.kings && G.kings[att.owner];
+        if (k && G.dist(k, att) <= G.KING_AURA) dmg += 1;
+        // a dynasty mourning its King fights weaker for a while
+        if (G.players[att.owner].mourn > G.time) dmg = Math.max(1, Math.round(dmg * 0.8));
+      }
     }
     return dmg;
   }
   function hit(att, t, dmg) {
     if (t.dead) return;
     t.hp -= dmg; t.hitT = 0.2; if (t.kind === 'unit') t.hurtT = 0.6;
-    if (t.hp <= 0) { if (att.owner > 0) G.players[att.owner].killed++; G.kill(t); return; }
+    if (t.hp <= 0) {
+      if (att.owner > 0) { const pl = G.players[att.owner]; pl.killed++; pl.killValue = (pl.killValue || 0) + G.valueOf(t); }
+      G.kill(t); return;
+    }
     // Retaliate / alert
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
       if (t.type !== 'villager' && !t.def.heal) t.task = { t: 'attack', id: att.id };
@@ -476,6 +507,9 @@
   // ---------- Per-frame update ----------
   const SEP = 0.42;
   G.updateEntities = function (dt) {
+    // where each player's King stands this frame (a King hiding indoors leads no one)
+    G.kings = {};
+    for (const e of G.ents) if (!e.dead && e.type === 'king') G.kings[e.owner] = e;
     // Buildings
     for (const b of G.ents) {
       if (b.dead || b.kind !== 'building') continue;
@@ -669,7 +703,9 @@
         break;
       }
       case 'attack': {
-        const t = G.byId.get(task.id);
+        let t = G.byId.get(task.id);
+        // the target ran inside: attack the building that shelters it
+        if (t && t.inside) { const b = G.byId.get(t.inside); if (b && !b.dead && G.enemies(b.owner, u.owner)) { task.id = b.id; t = b; } else t = null; }
         if (!t || t.dead) {
           // look for another enemy nearby
           const n = (u.type === 'villager' || u.def.heal) ? null : nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);

@@ -23,7 +23,7 @@
       v: 1, savedAt: Date.now(), time: G.time, config: G.config, rules: G.rules, map: G.MAP,
       terrain: Array.from(G.terrain), explored: Array.from(G.explored),
       players: G.players, ents, decals: G.decals,
-      ais: (G.ais || []).map(a => ({ p: a.p, level: a.level, waveN: a.waveN, nextAttack: a.nextAttack, rb: a.rb || 0 })),
+      ais: (G.ais || []).map(a => ({ p: a.p, level: a.level, waveN: a.waveN, nextAttack: a.nextAttack, rb: a.rb || 0, lowT: a.lowT || 0, hideT: a.hideT || 0 })),
       cam: { x: G.camera.x, y: G.camera.y, zoom: G.camera.zoom }
     };
     try { s.setItem(KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
@@ -48,9 +48,9 @@
       if (o.kind !== 'unit' && o.type !== 'farm') G.setBlock(o, o.id);
     }
     G.setNextId(maxId + 1);
-    G.time = d.time; G.over = null;
+    G.time = d.time; G.over = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     G.revealAll = G.rules.reveal === 'all';
-    G.ais = d.ais.map(x => { const a = G.makeAI(); a.level = x.level; a.init(x.p); a.waveN = x.waveN; a.nextAttack = x.nextAttack; a.rb = x.rb; return a; });
+    G.ais = d.ais.map(x => { const a = G.makeAI(); a.level = x.level; a.init(x.p); a.waveN = x.waveN; a.nextAttack = x.nextAttack; a.rb = x.rb; a.lowT = x.lowT || 0; a.hideT = x.hideT || 0; return a; });
     G.updateFog();
     G.camera.x = d.cam.x; G.camera.y = d.cam.y; G.camera.zoom = d.cam.zoom;
     if (G.ui) G.ui.reset();

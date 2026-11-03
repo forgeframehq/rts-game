@@ -111,10 +111,11 @@
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0'
   };
   if (!setup.shape) setup.shape = 'rect';
   if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
+  if (setup.time == null) setup.time = '0';     // ...and from before the time limit
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
     setup.slots.forEach((sl, i) => {
@@ -161,11 +162,12 @@
       return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
     });
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest' });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest', time: +cfg.time || 0 });
     G.buildGround();
     enterGame();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
-    UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: guard your King, kill theirs. ' : '')
+    UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: lose your King and Queen and you lose. ' : '')
+      + (G.rules.time ? `⏳ ${G.rules.time} min limit. ` : '')
       + `You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
   }
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
@@ -186,7 +188,8 @@
         { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
         { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
       ],
-      size: 'medium', res: 'high', pop: '200', reveal: 'normal', shape: 'rect'
+      // a smaller map and Regicide keep a Quick Match to roughly 15–20 minutes
+      size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'rect', mode: 'regicide', time: 0
     });
   });
 
@@ -226,14 +229,24 @@
   UI.gameOver = function (res) {
     if (G.sound) G.sound.play(res === 'victory' ? 'victory' : 'defeat');
     const p = G.players[1];
-    $('over-title').textContent = res === 'victory' ? '👑 Victory!' : '💀 Defeat';
+    $('over-title').textContent = (G.overReason === 'time' ? "⏳ Time's up — " : '') + (res === 'victory' ? '👑 Victory!' : '💀 Defeat');
     const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
+    const scores = Object.keys(G.players).map(id => `<span style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : G.CIVS[G.players[id].civ].name}</span> ${G.scoreOf(+id)}`).join(' · ');
     $('over-stats').innerHTML = `Time: ${m}:${String(s).padStart(2, '0')}<br>Enemies defeated: ${p.killed}<br>Units & buildings lost: ${p.lost}<br>` +
-      `Gathered: 🍖${p.gathered.food} 🪵${p.gathered.wood} 🪙${p.gathered.gold} 🪨${p.gathered.stone}`;
+      `Gathered: 🍖${p.gathered.food} 🪵${p.gathered.wood} 🪙${p.gathered.gold} 🪨${p.gathered.stone}<br>Score: ${scores}`;
     G.clearSave();
     setTimeout(() => $('over').classList.remove('hidden'), 900);
   };
+  let royalAlertT = -99;
   G.onHit = function (att, t) {
+    // the royals matter more than anything else: warn even when they're on screen
+    if (t.owner === 1 && t.def.cls === 'hero' && G.enemies(att.owner, 1) && G.time - royalAlertT > 8) {
+      royalAlertT = G.time; lastAlertT = G.time;
+      if (G.sound) G.sound.play('attacked');
+      UI.alert(`👑 Your ${t.def.name} is under attack! Garrison them in the Town Center.`);
+      UI.lastAttack = { x: t.x, y: t.y };
+      return;
+    }
     if (t.owner === 1 && G.enemies(att.owner, 1) && G.time - lastAlertT > 12) {
       const s = G.toScreen(t.x, t.y);
       if (s.x < 0 || s.y < 0 || s.x > G.W || s.y > G.H) { lastAlertT = G.time; if (G.sound) G.sound.play('attacked'); UI.alert(t.kind === 'building' ? `⚠️ Your ${t.def.name} is under attack!` : '⚠️ Your units are under attack!'); UI.lastAttack = { x: t.x, y: t.y }; }
@@ -575,7 +588,7 @@
       const canHide = units.filter(u => G.ents.some(e => !e.dead && e.owner === 1 && G.canGarrison(u, e)));
       if (canHide.length) {
         const hasCastle = G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'castle' && e.built);
-        cmds.appendChild(btn('🛡️', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager') ? 'Castle' : 'Town Center', () => {
+        cmds.appendChild(btn('🛡️', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager' && u.def.cls !== 'hero') ? 'Castle' : 'Town Center', () => {
           let full = 0;
           for (const u of canHide) {
             const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter') && G.canGarrison(u, e));
@@ -679,7 +692,12 @@
       $('r-pop').lastChild.textContent = `${pc.pop}/${pc.cap}`;
       $('r-pop').style.color = pc.pop >= pc.cap ? '#ff8a7a' : '';
       const m = Math.floor(G.time / 60), s = Math.floor(G.time % 60);
-      $('clock').innerHTML = `<b>${G.AGES[G.ageOf(1)].short}</b><span>${m}:${String(s).padStart(2, '0')}</span>`;
+      let ct = `${m}:${String(s).padStart(2, '0')}`;
+      if (G.rules && G.rules.time) {   // with a time limit the clock counts down instead
+        const left = Math.max(0, G.rules.time * 60 - G.time), lm = Math.floor(left / 60), ls = Math.floor(left % 60);
+        ct = `<i style="font-style:normal;${left < 60 ? 'color:#ff7b6b' : ''}">⏳${lm}:${String(ls).padStart(2, '0')}</i>`;
+      }
+      $('clock').innerHTML = `<b>${G.AGES[G.ageOf(1)].short}</b><span>${ct}</span>`;
       const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
       const ic = $('idle-count'); ic.textContent = idle || ''; ic.classList.toggle('zero', !idle);
       const na = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager').length;

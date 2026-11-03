@@ -244,33 +244,33 @@ Checked against the code, not from memory. Already in and working: garrison (Tow
 and Castle), line formations, villager repair, control groups, minimap, idle-villager,
 rally points, farm re-sowing, conquest and Regicide victory.
 
+**Done (2 Nov):** Regicide now ends only when the King AND Queen are dead. If the King falls
+the Queen takes the throne and that dynasty fights 20% weaker for 2 minutes. Soldiers within
+4 tiles of their King hit +1. King and Queen can garrison in the Town Centre as well as the
+Castle (the bell calls them home). Attack waves go for the enemy royals, and the AI hides its
+own when soldiers approach. Conquest no longer needs every wall hunted down; the AI resigns
+when it has no Town Centre, Castle or army, and an enemy's last pieces blink on the minimap.
+Optional time limit (15/20/30 min), highest score wins. Quick Match is now Regicide on a
+small map. Dropped for good: Wonder victory, relics.
+
 **1. Market.** There is no way to trade one resource for another. A player who runs out of
-gold has no route back — no selling surplus wood, no trade carts. In Age of Empires the
-Market is what unsticks a stalled economy, and this game has no equivalent. Biggest gap.
+gold has no route back — no selling surplus wood, no trade carts. Biggest gap.
 
-**2. Monk conversion and relics.** Monks only heal. They cannot convert enemy units, there
-are no relics on the map and no relic gold trickle, which leaves the Monastery half a
-building and the Monk a medic.
+**2. Unit stances and patrol.** No aggressive / defensive / stand-ground / no-attack, and
+no patrol command. Units auto-acquire on one fixed behaviour.
 
-**3. Unit stances and patrol.** No aggressive / defensive / stand-ground / no-attack, and
-no patrol command. Units auto-acquire on one fixed behaviour, so archers cannot be told to
-hold a line and villagers cannot be told to stop wandering into a fight.
+**3. Per-dynasty tech trees.** Every dynasty can build and research everything, plus its own
+unique unit. What a civilisation *cannot* do defines it as much as its bonuses.
 
-**4. Victory conditions.** Conquest and Regicide only. No Wonder, no relic victory, no time
-or score limit, so every game ends by elimination.
+**4. The AI ignores tools it already has.** No walls, gates, repair, or pulling villagers
+inside under attack. Also banks resources late instead of spending them.
 
-**5. Per-dynasty tech trees.** Every dynasty can build and research everything, plus its own
-unique unit. In Age of Empires what a civilisation *cannot* do defines it as much as its
-bonuses — the Franks having no Crossbowman is the point.
+**5. Monk conversion.** Monks only heal. (Relics are dropped.)
 
-**6. The AI ignores tools it already has.** Zero references in `ai.js` to walls, gates,
-garrisoning or repair. It reaches the Castle Age with stone walls and a Castle available and
-never walls its town, never pulls villagers inside under attack, and never repairs anything.
+**6. Tower garrison.** Towers have no garrison capacity.
 
-**7. Tower garrison.** Towers have no garrison capacity, so units cannot add arrows to one.
-
-Deliberately out of scope for now: water, docks, ships and fishing (no map generates water),
-and diplomacy or tribute (there is no human opponent to trade with).
+Deliberately out of scope for now: water, docks, ships and fishing, diplomacy or tribute,
+Wonder and relic victories.
 
 ### Not logic, still outstanding
 - Sound effects: 29 keys are wired to call sites and waiting on an effects pack. Music is in

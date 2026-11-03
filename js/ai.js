@@ -60,13 +60,52 @@ G.makeAI = function () {
     const p = AI.p, R = res();
     const tc = mine(e => e.type === 'towncenter')[0];
     const vils = mine(e => e.type === 'villager');
-    const army = mine(e => e.kind === 'unit' && e.type !== 'villager');
+    // the King and Queen are not soldiers: they never march with an attack wave
+    const army = mine(e => e.kind === 'unit' && e.type !== 'villager' && e.def.cls !== 'hero');
     const blds = mine(e => e.kind === 'building');
     const has = t => blds.some(b => b.type === t);
     const hasBuilt = t => blds.some(b => b.type === t && b.built);
     const { pop, cap } = G.popOf(p);
     const home = tc || blds[0] || vils[0];
     if (!home) return;
+
+    // --- resign: no Town Center, no Castle and no army left to fight with. AoE2's AI concedes
+    // rather than make the player hunt down its last stragglers ---
+    if (!tc && !has('castle') && army.length < 5) {
+      AI.lowT = (AI.lowT || 0) + AI.cfg.think;
+      if (AI.lowT > 20) { G.resign(p); return; }
+    } else AI.lowT = 0;
+
+    // --- Regicide: hide the royals when enemy soldiers come near, let them out once it is quiet ---
+    const regicide = G.rules.mode === 'regicide';
+    if (regicide) {
+      const enemyNear = (x, r) => G.nearest(x, e => e.kind === 'unit' && G.enemies(e.owner, p) && e.type !== 'villager', r);
+      for (const r of ['king', 'queen'].map(t => G.royal(p, t)).filter(Boolean)) {
+        if (r.inside) continue;
+        const danger = enemyNear(r, 9);
+        if (!danger) continue;
+        AI.hideT = G.time;
+        if (r.task.t !== 'garrison') {
+          const b = G.nearest(r, e => (e.type === 'towncenter' || e.type === 'castle') && G.canGarrison(r, e));
+          if (b) G.garrisonTo(r, b); else G.cmdMove([r], home.x, home.y + 2);
+        }
+        const guards = army.filter(u => u.task.t !== 'attack' || !G.byId.get(u.task.id));
+        if (guards.length) G.cmdAttack(guards, danger);
+      }
+      if (G.time - (AI.hideT || 0) > 25) for (const b of blds)
+        if (b.garrison && b.garrison.some(u => u.def.cls === 'hero') && !enemyNear(b, 12)) G.ungarrison(b, u => u.def.cls === 'hero');
+    }
+    // Regicide is won by killing royals, so attack waves go for the nearest one (hidden or not:
+    // a royal inside a building turns the attack on the building)
+    const royalTarget = () => {
+      if (!regicide) return null;
+      let best = null;
+      for (const id in G.players) {
+        if (!G.players[id].alive || !G.enemies(+id, p)) continue;
+        for (const t of ['king', 'queen']) { const r = G.royal(+id, t); if (r && (!best || G.dist(home, r) < G.dist(home, best))) best = r; }
+      }
+      return best;
+    };
 
     // --- Ages: advance once the economy is big enough (pauses villager training, like a real player) ---
     const age = G.ageOf(p), nxt = G.AGES[age + 1], AGE_VILS = [0, 0, 13, 19, 25];
@@ -268,7 +307,7 @@ G.makeAI = function () {
     if (G.time > AI.nextAttack && army.length >= AI.cfg.wave + AI.waveN * AI.cfg.grow) {
       AI.waveN++;
       AI.nextAttack = G.time + 150;
-      const target = G.nearest(home, e => G.enemies(e.owner, AI.p) && e.kind === 'building' && e.type !== 'farm') || G.nearest(home, e => G.enemies(e.owner, AI.p));
+      const target = royalTarget() || G.nearest(home, e => G.enemies(e.owner, AI.p) && e.kind === 'building' && e.type !== 'farm') || G.nearest(home, e => G.enemies(e.owner, AI.p));
       if (target) {
         G.cmdAttack(army, target);
         for (const u of army) u.task.forced = true;
@@ -277,7 +316,7 @@ G.makeAI = function () {
     }
     // keep attacking units busy: when their target dies they auto-acquire; idle stragglers rejoin
     if (AI.waveN > 0) {
-      const target = G.nearest(home, e => G.enemies(e.owner, AI.p) && e.kind === 'building' && e.type !== 'farm');
+      const target = royalTarget() || G.nearest(home, e => G.enemies(e.owner, AI.p) && e.kind === 'building' && e.type !== 'farm');
       const away = army.filter(u => u.task.t === 'idle' && G.dist(u, home) > 15);
       if (target && away.length) { G.cmdAttack(away, target); for (const u of away) u.task.forced = true; }
     }

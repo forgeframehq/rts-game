@@ -509,6 +509,14 @@
       m.fillRect(x - (e.kind === 'unit' ? 0.6 : 0), y - (e.kind === 'unit' ? 0.6 : 0), s, s);
     }
     if (!G.revealAll) { updateFogImage(); m.imageSmoothingEnabled = true; m.drawImage(fogCv, 0, 0, N, N); }
+    // an enemy down to its last few pieces is shown through the fog, blinking, so the hunt doesn't drag
+    if (Math.floor(G.time * 2) % 2 === 0) for (const e of G.ents) {
+      if (e.dead || !e.owner || !G.players[e.owner] || !G.players[e.owner].exposed || e.kind === 'res') continue;
+      if (e.kind === 'building' && (e.type === 'farm' || e.def.wall)) continue;
+      const x = e.kind === 'unit' ? e.x : e.tx, y = e.kind === 'unit' ? e.y : e.ty, s = e.kind === 'unit' ? 2 : (e.size || 1) + 1;
+      m.fillStyle = '#fff'; m.fillRect(x - s / 2 - 0.4, y - s / 2 - 0.4, s + 0.8, s + 0.8);
+      m.fillStyle = G.ownerColor(e.owner); m.fillRect(x - s / 2, y - s / 2, s, s);
+    }
     // camera view
     m.setTransform(1, 0, 0, 1, 0, 0);
     const corners = [G.toWorld(0, 0), G.toWorld(W, 0), G.toWorld(W, H), G.toWorld(0, H)];
