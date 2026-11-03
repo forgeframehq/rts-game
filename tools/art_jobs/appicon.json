@@ -1,0 +1,11 @@
+{
+ "out": "build/art/appicon",
+ "jobs": [
+  [
+   "appicon",
+   "",
+   "Mobile game app icon for a medieval strategy game called Dawn of Dynasties: a golden heraldic shield with a rising sun behind it, two crossed swords and a small crown on top, rich deep crimson background with a soft golden glow, bold, simple silhouette readable at small size, hand-painted Age of Empires style, centered with generous margin.",
+   "Square app icon, full bleed background, no text, no letters, no border, no frame."
+  ]
+ ]
+}

@@ -1,0 +1,6 @@
+{
+  "appId": "com.forgeframe.dawnofdynasties",
+  "appName": "Dawn of Dynasties",
+  "webDir": "www",
+  "android": { "backgroundColor": "#1a120a" }
+}

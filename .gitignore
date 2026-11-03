@@ -10,3 +10,6 @@ tools/render3d/package*.json
 build/
 tools/render3d/_job_*.json
 tools/render3d/_work.json
+
+node_modules/
+www/
