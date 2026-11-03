@@ -84,6 +84,7 @@ G.BUILDINGS = {
   blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
   monastery:  { name: 'Monastery', cost: { wood: 175 }, time: 40, hp: 1050, size: 3, los: 6, trains: ['monk'], icon: '✝️' },
   siegeworkshop: { name: 'Siege Workshop', cost: { wood: 200 }, time: 40, hp: 1050, size: 4, los: 5, trains: ['ram','trebuchet'], icon: '⚙️' },
+  university: { name: 'University', cost: { wood: 200 }, time: 50, hp: 1500, size: 3, los: 5, icon: '🎓' },
   castle:     { name: 'Castle', cost: { stone: 350 }, time: 80, hp: 3000, size: 4, los: 9, garrison: 20, atk: 11, range: 8, rate: 2, icon: '🏯' },
   // ---- walls: cheap, quick, and built in runs. size 1 so they follow a line. ----
   palisade:   { name: 'Palisade Wall', cost: { wood: 5 }, time: 3, hp: 250, size: 1, los: 2, wall: 'wood', icon: '🪵' },
@@ -99,7 +100,7 @@ G.AGES = [
   { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Castle, Siege Workshop, Monastery, Stone Wall, Gate, Knight, Battering Ram, Monk and unique units. All soldiers +1 attack' },
   { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['castle'], bonus: 'Unlocks the Trebuchet. All soldiers +1 attack, +1 armor. Buildings +20% HP' }
 ];
-G.BUILD_AGE = { tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3, monastery: 3, palisade: 2, stonewall: 3, gate: 3 };
+G.BUILD_AGE = { university: 3, tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3, monastery: 3, palisade: 2, stonewall: 3, gate: 3 };
 // ---- Unit upgrade lines (AoE2): researched at a building, upgrade every unit of that line ----
 // stats are the unit's new values (any field of G.UNITS); tier picks the upgraded look.
 G.UPGRADES = {
@@ -118,16 +119,57 @@ G.UPGRADES = {
   paladin:      { name: 'Paladin',         line: 'knight',     tier: 2, at: 'stable',   age: 4, cost: { food: 1300, gold: 750 }, time: 60, stats: { hp: 160, atk: 14, armor: 3, pierce: 3 } }
 };
 // ---- Blacksmith techs: bonuses for all soldiers ----
+// Technologies. `at` is the building that researches it (default the Blacksmith); `civ` limits
+// it to one dynasty (researched at its Castle). eff keys are summed per player by G.techEff:
+//   melee ranged range armor pierce   soldiers' attack, range and armour
+//   gather_<res>  +fraction gather rate      farm  extra food per field
+//   vilHp vilSpeed carry                       villagers
+//   build  +fraction build speed     bldHp / wallHp  +fraction building / wall-and-tower HP
+//   towerAtk towerRange                        towers, Town Centers and Castles
+//   trainSpeed_<building>  unitAtk_<type>  unitRange_<type>
+// Dynasty techs are worth about the same as each other and each sharpens one thing the
+// dynasty is already good at, rather than making it stronger at everything.
 G.TECHS = {
-  forging:     { name: 'Forging',      icon: 'attack',   age: 2, cost: { food: 150 },             time: 30, eff: { melee: 1 } },
-  ironcasting: { name: 'Iron Casting', icon: 'attack',   age: 3, cost: { food: 220, gold: 120 },  time: 40, eff: { melee: 1 }, req: 'forging' },
-  fletching:   { name: 'Fletching',    icon: 'archer',   age: 2, cost: { food: 100, wood: 50 },   time: 30, eff: { ranged: 1, range: 1 } },
-  bodkin:      { name: 'Bodkin Arrow', icon: 'archer',   age: 3, cost: { food: 200, wood: 100 },  time: 40, eff: { ranged: 1, range: 1 }, req: 'fletching' },
-  scalemail:   { name: 'Scale Mail',   icon: 'garrison', age: 2, cost: { food: 100 },             time: 30, eff: { armor: 1 } },
-  chainmail:   { name: 'Chain Mail',   icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail' }
+  // Blacksmith
+  forging:     { name: 'Forging',       icon: 'attack',   age: 2, cost: { food: 150 },             time: 30, eff: { melee: 1 }, desc: 'Soldiers +1 melee attack' },
+  ironcasting: { name: 'Iron Casting',  icon: 'attack',   age: 3, cost: { food: 220, gold: 120 },  time: 40, eff: { melee: 1 }, req: 'forging', desc: '+1 melee attack' },
+  blastfurnace:{ name: 'Blast Furnace', icon: 'attack',   age: 4, cost: { food: 275, gold: 225 },  time: 50, eff: { melee: 2 }, req: 'ironcasting', desc: '+2 melee attack' },
+  fletching:   { name: 'Fletching',     icon: 'archer',   age: 2, cost: { food: 100, wood: 50 },   time: 30, eff: { ranged: 1, range: 1 }, desc: 'Archers +1 attack, +1 range' },
+  bodkin:      { name: 'Bodkin Arrow',  icon: 'archer',   age: 3, cost: { food: 200, wood: 100 },  time: 40, eff: { ranged: 1, range: 1 }, req: 'fletching', desc: '+1 attack, +1 range' },
+  bracer:      { name: 'Bracer',        icon: 'archer',   age: 4, cost: { food: 300, wood: 200 },  time: 50, eff: { ranged: 1, range: 1 }, req: 'bodkin', desc: '+1 attack, +1 range' },
+  scalemail:   { name: 'Scale Mail',    icon: 'garrison', age: 2, cost: { food: 100 },             time: 30, eff: { armor: 1 }, desc: 'Soldiers +1 armour' },
+  chainmail:   { name: 'Chain Mail',    icon: 'garrison', age: 3, cost: { food: 200, gold: 100 },  time: 40, eff: { armor: 1, pierce: 1 }, req: 'scalemail', desc: '+1 armour, +1 arrow armour' },
+  platemail:   { name: 'Plate Mail',    icon: 'garrison', age: 4, cost: { food: 300, gold: 150 },  time: 50, eff: { armor: 1, pierce: 2 }, req: 'chainmail', desc: '+1 armour, +2 arrow armour' },
+  // Town Center
+  loom:        { name: 'Loom',          icon: 'villager', at: 'towncenter', age: 1, cost: { gold: 50 },  time: 20, eff: { vilHp: 15 }, desc: 'Villagers +15 HP' },
+  wheelbarrow: { name: 'Wheelbarrow',   icon: 'villager', at: 'towncenter', age: 2, cost: { food: 175, wood: 50 }, time: 35, eff: { vilSpeed: 0.1, carry: 3 }, desc: 'Villagers 10% faster, carry +3' },
+  handcart:    { name: 'Hand Cart',     icon: 'villager', at: 'towncenter', age: 3, cost: { food: 300, wood: 200 }, time: 45, eff: { vilSpeed: 0.1, carry: 4 }, req: 'wheelbarrow', desc: 'Villagers 10% faster, carry +4' },
+  // Mill, Lumber Camp, Mining Camp
+  horsecollar: { name: 'Horse Collar',  icon: 'farm',     at: 'mill', age: 2, cost: { food: 75, wood: 75 },   time: 25, eff: { farm: 75 }, desc: 'Farms hold +75 food' },
+  heavyplow:   { name: 'Heavy Plow',    icon: 'farm',     at: 'mill', age: 3, cost: { food: 125, wood: 125 }, time: 35, eff: { farm: 125, gather_food: 0.1 }, req: 'horsecollar', desc: 'Farms +125 food, farming 10% faster' },
+  doublebit:   { name: 'Double-Bit Axe',icon: 'wood',     at: 'lumbercamp', age: 2, cost: { food: 100, wood: 50 },  time: 25, eff: { gather_wood: 0.2 }, desc: 'Woodcutting 20% faster' },
+  bowsaw:      { name: 'Bow Saw',       icon: 'wood',     at: 'lumbercamp', age: 3, cost: { food: 150, wood: 100 }, time: 35, eff: { gather_wood: 0.2 }, req: 'doublebit', desc: 'Woodcutting 20% faster' },
+  goldmining:  { name: 'Gold Mining',   icon: 'gold',     at: 'miningcamp', age: 2, cost: { food: 100, wood: 75 },  time: 25, eff: { gather_gold: 0.15 }, desc: 'Gold mining 15% faster' },
+  goldshaft:   { name: 'Gold Shaft',    icon: 'gold',     at: 'miningcamp', age: 3, cost: { food: 200, wood: 100 }, time: 35, eff: { gather_gold: 0.15 }, req: 'goldmining', desc: 'Gold mining 15% faster' },
+  stonemining: { name: 'Stone Mining',  icon: 'stone',    at: 'miningcamp', age: 2, cost: { food: 100, wood: 75 },  time: 25, eff: { gather_stone: 0.15 }, desc: 'Stone mining 15% faster' },
+  // University (Castle Age)
+  masonry:     { name: 'Masonry',       icon: 'castle',   at: 'university', age: 3, cost: { wood: 175, stone: 150 }, time: 40, eff: { bldHp: 0.1 }, desc: 'Buildings +10% HP' },
+  architecture:{ name: 'Architecture',  icon: 'castle',   at: 'university', age: 4, cost: { wood: 200, stone: 300 }, time: 50, eff: { bldHp: 0.1 }, req: 'masonry', desc: 'Buildings +10% HP' },
+  arrowslits:  { name: 'Arrowslits',    icon: 'tower',    at: 'university', age: 3, cost: { food: 250, wood: 250 },  time: 40, eff: { towerAtk: 2 }, desc: 'Towers, Town Centers, Castles +2 attack' },
+  treadmill:   { name: 'Treadmill Crane', icon: 'build',  at: 'university', age: 3, cost: { food: 300, wood: 200 },  time: 40, eff: { build: 0.2 }, desc: 'Villagers build 20% faster' },
+  fortwalls:   { name: 'Fortified Walls', icon: 'stone',  at: 'university', age: 4, cost: { food: 200, stone: 100 }, time: 45, eff: { wallHp: 0.25 }, desc: 'Walls and towers +25% HP' },
+  // Dynasty techs, at the Castle
+  yeomen:      { name: 'Yeomen',        icon: 'longbowman', at: 'castle', civ: 'britons', age: 3, cost: { wood: 300, gold: 200 }, time: 45, eff: { unitRange_archer: 1, unitRange_longbowman: 1 }, desc: 'Archers and Longbowmen +1 range' },
+  warwolf:     { name: 'Warwolf',       icon: 'trebuchet',  at: 'castle', civ: 'britons', age: 4, cost: { food: 800, gold: 400 }, time: 60, eff: { unitAtk_trebuchet: 12 }, desc: 'Trebuchets hit much harder' },
+  chivalry:    { name: 'Chivalry',      icon: 'knight',     at: 'castle', civ: 'franks', age: 3, cost: { food: 400, wood: 400 }, time: 45, eff: { trainSpeed_stable: 0.4 }, desc: 'Stables train 40% faster' },
+  beardedaxe:  { name: 'Bearded Axe',   icon: 'axethrower', at: 'castle', civ: 'franks', age: 4, cost: { food: 400, gold: 400 }, time: 60, eff: { unitRange_axethrower: 1 }, desc: 'Axe Throwers +1 range' },
+  logistica:   { name: 'Logistica',     icon: 'cataphract', at: 'castle', civ: 'byzantines', age: 3, cost: { food: 600, gold: 300 }, time: 45, eff: { unitAtk_cataphract: 3 }, desc: 'Cataphracts +3 attack' },
+  greekfire:   { name: 'Greek Fire',    icon: 'tower',      at: 'castle', civ: 'byzantines', age: 4, cost: { food: 250, gold: 300 }, time: 60, eff: { towerAtk: 1, towerRange: 1 }, desc: 'Towers and Castles +1 attack, +1 range' },
+  rocketry:    { name: 'Rocketry',      icon: 'repeater',   at: 'castle', civ: 'chinese', age: 3, cost: { wood: 750, gold: 450 }, time: 45, eff: { unitAtk_repeater: 2 }, desc: 'Repeater Crossbows +2 attack' },
+  greatwall:   { name: 'Great Wall',    icon: 'stone',      at: 'castle', civ: 'chinese', age: 4, cost: { wood: 400, stone: 400 }, time: 60, eff: { wallHp: 0.3 }, desc: 'Walls and towers +30% HP' }
 };
 G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, ram: 3, trebuchet: 4, monk: 3 };
-G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','siegeworkshop','monastery','castle','tower','palisade','stonewall','gate','towncenter'];
+G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','siegeworkshop','monastery','university','castle','tower','palisade','stonewall','gate','towncenter'];
 
 G.RES = {
   tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },

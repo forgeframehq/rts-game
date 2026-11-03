@@ -153,7 +153,10 @@
       -1.5708
      ]
     }
-   ]
+   ],
+   "end": 0.1,
+   "uend": 0.1,
+   "pingpong": true
   },
   {
    "name": "attack",

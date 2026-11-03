@@ -1,0 +1,113 @@
+{
+ "out": "build/art/dynasty_units",
+ "jobs": [
+  [
+   "franks_militia",
+   "",
+   "A Frankish (Carolingian) infantry swordsman, 9th century: a conical iron spangenhelm with a nose guard, a knee-length mail byrnie over a padded tunic, the tunic's long sleeves and the skirt showing below the mail in magenta cloth, a broad leather belt, cross-gartered leg wrappings, leather shoes. Fair hair, moustache.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "franks_spearman",
+   "",
+   "A Frankish (Carolingian) levy spearman, 9th century: a plain round iron cap, a thick padded leather jerkin over a magenta wool tunic that shows at the arms and the knee-length skirt, cross-gartered leg wrappings, leather shoes, a small knife at the belt. Fair hair.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "franks_archer",
+   "",
+   "A Frankish (Carolingian) archer, 9th century: no helmet, short fair hair tied back, a light quilted gambeson over a magenta wool tunic, a leather bracer on the left forearm, an empty quiver strap across the chest, cross-gartered leg wrappings, leather shoes.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "franks_knight",
+   "",
+   "A Frankish (Carolingian) heavy horseman (scara), 9th century, standing on foot: a gilded spangenhelm with a mail aventail, a long coat of overlapping iron scales over a magenta tunic whose sleeves and split riding skirt show, iron arm guards, tall leather riding boots with spurs.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "franks_king",
+   "",
+   "A Frankish (Carolingian) king, 9th century: a heavy jewelled gold crown with a cross on the front, a long embroidered gold-and-cream tunic to the ankles, a magenta royal mantle fastened at the right shoulder with a large round gold brooch, jewelled belt, soft red leather shoes. Long fair hair, full moustache.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "franks_queen",
+   "",
+   "A Frankish (Carolingian) queen, 9th century: a slender jewelled gold crown over a white silk veil, a long cream gown with broad gold embroidered bands at the neck, cuffs and hem, a magenta mantle over the shoulders fastened with gold brooches, a jewelled girdle. Fair hair in braids under the veil.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_militia",
+   "",
+   "A Byzantine (Eastern Roman) infantry swordsman (skoutatos), 10th century: a conical iron helmet with a mail aventail, a lamellar cuirass (klibanion) of small iron plates over a padded coat, the padded coat's sleeves and pleated knee-length skirt in magenta, iron greaves, tall leather boots. Dark beard, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_spearman",
+   "",
+   "A Byzantine (Eastern Roman) spearman, 10th century: a round felt-covered iron cap, a thick quilted padded coat (kavadion) in magenta reaching the knees with short sleeves over a cream undertunic, leather belt, wrapped leggings, low boots. Dark beard, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_archer",
+   "",
+   "A Byzantine (Eastern Roman) foot archer (toxotes), 10th century: a soft felt cap, a light quilted tunic in magenta to mid-thigh with long sleeves, a leather bracer on the left forearm, an empty quiver strap across the chest, cream trousers, low boots. Short dark hair, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_knight",
+   "",
+   "A Byzantine (Eastern Roman) heavy cavalryman, 10th century, standing on foot: a polished iron helmet with a tall horsehair plume and a mail aventail, a gilded lamellar and scale cuirass with pteruges strips at the shoulders and hips, a magenta riding tunic showing at the sleeves and the split skirt, tall red leather riding boots. Dark beard, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_king",
+   "",
+   "A Byzantine emperor (basileus), 10th century, in court dress: a jewelled gold dome crown (stemma) with strings of pearls hanging at both sides, a long gold-embroidered jewelled sash (loros) wrapped over a cream silk tunic, a magenta cloak (chlamys) pinned at the right shoulder, red silk shoes. Dark beard, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "byzantines_queen",
+   "",
+   "A Byzantine empress (augusta), 10th century, in court dress: a jewelled gold crown with pearl pendants at both sides, a jewelled gold collar, a long cream silk gown with gold embroidered bands, a magenta mantle draped from the shoulders, red silk shoes. Dark hair, olive skin.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_militia",
+   "",
+   "A Song-dynasty Chinese infantry swordsman: an iron helmet with a flared neck guard and a small spike, lamellar armour of small lacquered dark iron plates over a magenta robe whose wide sleeves and knee-length split skirt show, a wide leather belt, padded trousers, black cloth boots. Black hair, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_spearman",
+   "",
+   "A Song-dynasty Chinese spearman: a cloth-covered round iron cap, a padded cotton coat in magenta reaching the knees with a cross-over collar, a sash at the waist, loose trousers tied at the shin, black cloth shoes. Black hair, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_archer",
+   "",
+   "A Song-dynasty Chinese archer: a soft black cloth headwrap (futou), a light magenta robe with a cross-over collar to mid-thigh and narrow sleeves, a leather bracer on the left forearm, an empty quiver strap across the chest, loose trousers, black boots. Black hair, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_knight",
+   "",
+   "A Song-dynasty Chinese heavy cavalryman, standing on foot: an iron helmet with a red tassel plume and a neck guard, lamellar armour of lacquered iron plates with shoulder guards shaped like animal heads, a magenta robe showing at the sleeves and the split riding skirt, black leather riding boots. Black moustache, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_king",
+   "",
+   "A Song-dynasty Chinese emperor in court dress: a tall black emperor's crown (tongtianguan) with a gold ornament, a long magenta robe with a round collar and wide sleeves embroidered with gold dragons, a jade belt, black court boots. Thin black moustache, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ],
+  [
+   "chinese_queen",
+   "",
+   "A Song-dynasty Chinese empress in court dress: an ornate gold phoenix crown with pearls and kingfisher-blue inlay, a long layered silk robe in magenta with wide sleeves and gold embroidered borders, a jade pendant, embroidered shoes. Black hair in an elaborate bun, East Asian features.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background. The hands are EMPTY: no weapon, no shield, no bow, no spear, no staff, nothing held (these are added separately). No horse. No text, no border. The team-colour cloth described must be pure magenta #FF00FF; nothing else in the image may be magenta or pink."
+  ]
+ ]
+}

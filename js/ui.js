@@ -608,7 +608,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
     // commands (rebuilt only when something relevant changes)
     const R = G.players[1].res;
-    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + (e.aging ? 1 : 0) + G.ageOf(1) + (e.research ? e.research.id : '') + JSON.stringify(G.players[1].up || {}) + Object.keys(G.players[1].techs || {}).length + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
+    const key = sel.map(x => x.id).join(',') + '|' + buildMenu + '|' + (e.built ? 1 : 0) + '|' + (e.garrison ? e.garrison.length : 0) + '|' + (e.aging ? 1 : 0) + G.ageOf(1) + (e.research ? e.research.id : '') + (UI.resTab ? 'R' : 'T') + JSON.stringify(G.players[1].up || {}) + Object.keys(G.players[1].techs || {}).length + '|' + Math.floor(R.food / 25) + Math.floor(R.wood / 25) + Math.floor(R.gold / 25) + Math.floor(R.stone / 25);
     if (!force && key === panelKey) return;
     panelKey = key;
     const cmds = $('cmds'); cmds.innerHTML = '';
@@ -660,35 +660,56 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         panelKey = '';
       }, !G.canAfford(1, rc)));
     }
-    if (e.kind === 'building' && e.built && G.trainsFor(e).length) {
-      for (const t of G.trainsFor(e)) {
-        const c = G.unitCost(1, t);
-        if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
-        cmds.appendChild(btn('i:' + t, G.unitDef(1, t).name, costTxt(c), () => {
-          for (const b of sel) {
-            const r = G.train(b, t);
-            if (r === 'pop') { UI.alert('Need more houses!'); break; }
-            if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); break; }
-            if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); break; }
-          }
-          panelKey = '';
-        }, !G.canAfford(1, c)));
+    if (e.kind === 'building' && e.built) {
+      // Two pages, so an upgrade never looks like a unit: Train (units, rally point) and
+      // Research (this building's upgrades and techs, done ones ticked, locked ones greyed).
+      const trains = G.trainsFor(e), mine = e.owner === 1;
+      const res = mine ? G.researchesFor(e) : [], done = mine ? G.researchedAt(e) : [];
+      const hasRes = mine && (res.length || done.length || e.research);
+      const resPage = hasRes && (!trains.length || UI.resTab);
+      if (hasRes && trains.length) {
+        const n = res.filter(r => !r.why).length;
+        const tb = btn(resPage ? '⚔️' : 'i:research', resPage ? 'Train' : 'Research', resPage ? 'units' : (n ? n + ' available' : 'upgrades'),
+          () => { UI.resTab = !UI.resTab; panelKey = ''; refreshPanel(true); });
+        tb.classList.add('tab'); cmds.appendChild(tb);
       }
-      cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
-      if (e.owner === 1 && e.built) {
+      if (!resPage && trains.length) {
+        for (const t of trains) {
+          const c = G.unitCost(1, t);
+          if (!G.canTrainType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
+          cmds.appendChild(btn('i:' + t, G.unitDef(1, t).name, costTxt(c), () => {
+            for (const b of sel) {
+              const r = G.train(b, t);
+              if (r === 'pop') { UI.alert('Need more houses!'); break; }
+              if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); break; }
+              if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); break; }
+            }
+            panelKey = '';
+          }, !G.canAfford(1, c)));
+        }
+        cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
+      }
+      if (resPage) {
         if (e.research) {
           const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id];
           cmds.appendChild(btn('⏹', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
-        } else for (const r of G.researchesFor(e)) {
+        } else for (const r of res) {
           const ic = r.kind === 'up' ? 'i:' + r.def.line + (r.why ? '|lock' : '') : 'i:' + r.def.icon + (r.why ? '|lock' : '');
           const b = btn(ic, r.def.name, r.why || costTxt(r.def.cost), () => {
             if (r.why) { UI.alert(`${r.def.name} needs the ${G.AGES[r.def.age].name}`); return; }
             const ok = G.startResearch(e, r.id);
             if (ok === 'res') { UI.alert('Not enough resources'); flashCost(r.def.cost); }
             else if (!ok) UI.alert('Already researching');
+            else if (r.def.desc) UI.alert(`Researching ${r.def.name}: ${r.def.desc}`);
             panelKey = '';
           }, !!r.why || !G.canAfford(1, r.def.cost));
-          b.classList.add('research'); cmds.appendChild(b);
+          b.classList.add('research');
+          if (r.def.desc) b.title = r.def.desc;
+          cmds.appendChild(b);
+        }
+        for (const id of done) {
+          const t = G.TECHS[id], b = btn('i:' + t.icon, t.name, '✓ done', () => UI.alert(`${t.name}: ${t.desc || 'researched'}`), true);
+          b.classList.add('research', 'done'); cmds.appendChild(b);
         }
       }
       if (e.type === 'towncenter' && e.owner === 1) {

@@ -69,8 +69,28 @@
   };
   G.techBonus = function (p) {
     const b = { melee: 0, ranged: 0, range: 0, armor: 0, pierce: 0 }, t = (G.players[p] && G.players[p].techs) || {};
-    for (const id in t) if (t[id] && G.TECHS[id]) for (const k in G.TECHS[id].eff) b[k] += G.TECHS[id].eff[k];
+    for (const id in t) if (t[id] && G.TECHS[id]) for (const k in G.TECHS[id].eff) if (k in b) b[k] += G.TECHS[id].eff[k];
     return b;
+  };
+  // the summed effect of one key across a player's researched techs (see G.TECHS in data.js)
+  G.techEff = function (p, key) {
+    const t = (G.players[p] && G.players[p].techs) || {}; let v = 0;
+    for (const id in t) if (t[id] && G.TECHS[id] && G.TECHS[id].eff[key]) v += G.TECHS[id].eff[key];
+    return v;
+  };
+  // a unit's attack range: its type, the Blacksmith's range techs, its dynasty, and its own techs
+  G.rangeOf = function (owner, type, def) {
+    return def.range + (def.ranged ? G.techBonus(owner).range : 0)
+      + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0)
+      + G.techEff(owner, 'unitRange_' + type);
+  };
+  G.carryCap = u => G.CARRY + G.techEff(u.owner, 'carry');
+  // building HP after Masonry, Architecture and the wall techs
+  G.bldHpMult = (owner, def) => 1 + G.techEff(owner, 'bldHp') + ((def.wall || def.atk && !def.trains) ? G.techEff(owner, 'wallHp') : 0);
+  // techs done at this building, for the Research page
+  G.researchedAt = function (b) {
+    const pl = G.players[b.owner]; if (!pl || !pl.techs) return [];
+    return Object.keys(pl.techs).filter(id => pl.techs[id] && G.TECHS[id] && (G.TECHS[id].at || 'blacksmith') === b.type);
   };
   // what a building can research right now: [{ id, kind: 'up'|'tech', def, why }]
   G.researchesFor = function (b) {
@@ -83,8 +103,10 @@
       if (!G.trainsFor(b).includes(u.line)) continue;
       out.push({ id, kind: 'up', def: u, why: G.ageOf(p) < u.age ? G.AGES[u.age].short + ' Age' : null });
     }
-    if (b.type === 'blacksmith') for (const id in G.TECHS) {
-      const t = G.TECHS[id]; if (pl.techs[id] || (t.req && !pl.techs[t.req])) continue;
+    for (const id in G.TECHS) {
+      const t = G.TECHS[id];
+      if ((t.at || 'blacksmith') !== b.type || (t.civ && t.civ !== pl.civ)) continue;
+      if (pl.techs[id] || (t.req && !pl.techs[t.req])) continue;
       out.push({ id, kind: 'tech', def: t, why: G.ageOf(p) < t.age ? G.AGES[t.age].short + ' Age' : null });
     }
     return out;
@@ -108,9 +130,20 @@
       }
       if (G.onResearched) G.onResearched(b.owner, u.name);
     } else {
+      const before = {}; for (const e of G.ents) if (!e.dead && e.owner === b.owner && e.kind === 'building') before[e.id] = G.bldHpMult(b.owner, e.def);
       pl.techs[r.id] = true;
-      const tb = G.techBonus(b.owner);
-      for (const e of G.ents) if (!e.dead && e.owner === b.owner && e.kind === 'unit' && e.def.ranged) e.range = e.def.range + tb.range + ((e.type === 'archer' || e.type === 'longbowman') && mods(b.owner).archerRange ? mods(b.owner).archerRange : 0);
+      const eff = G.TECHS[r.id].eff;
+      for (const e of G.ents) {
+        if (e.dead || e.owner !== b.owner) continue;
+        if (e.kind === 'unit') {
+          e.range = G.rangeOf(b.owner, e.type, e.def);
+          if (e.type === 'villager' && eff.vilHp) { e.maxHp += eff.vilHp; e.hp += eff.vilHp; }
+        } else if (e.kind === 'building' && before[e.id]) {
+          const k = G.bldHpMult(b.owner, e.def) / before[e.id];
+          if (k !== 1) { e.maxHp = Math.round(e.maxHp * k); e.hp = Math.round(e.hp * k); }
+          if (e.type === 'farm' && eff.farm && e.built) e.food += eff.farm;
+        }
+      }
       if (G.onResearched) G.onResearched(b.owner, G.TECHS[r.id].name);
     }
   }
@@ -167,9 +200,10 @@
     e.tx = tx; e.ty = ty; e.size = def.size;
     e.x = tx + def.size / 2; e.y = ty + def.size / 2;
     let hp = def.hp; if (owner > 0 && mods(owner).buildingHp) hp = Math.round(hp * mods(owner).buildingHp);
+    if (owner > 0) hp = Math.round(hp * G.bldHpMult(owner, def));
     e.maxHp = hp; e.hp = built ? hp : 1; e.built = !!built; e.progress = built ? 1 : 0;
     e.queue = []; e.qt = 0; e.cool = 0; e.rally = null;
-    if (type === 'farm') { e.food = Math.round(def.farm * (mods(owner).farmFood || 1)); e.farmer = 0; }
+    if (type === 'farm') { e.food = G.farmFull(owner); e.farmer = 0; }
     if (type !== 'farm') G.setBlock(e, e.id);
     return e;
   };
@@ -183,7 +217,8 @@
     if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
     if (type === 'queen') e.sex = 'f';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
-    e.range = def.range + (def.ranged ? G.techBonus(owner).range : 0) + ((type === 'archer' || type === 'longbowman') && mods(owner).archerRange ? mods(owner).archerRange : 0);
+    e.range = G.rangeOf(owner, type, def);
+    if (type === 'villager') { const h = G.techEff(owner, 'vilHp'); e.hp += h; e.maxHp += h; }
     return e;
   };
 
@@ -327,7 +362,7 @@
 
   // Context-sensitive command (what a tap / right-click on something does).
   // A spent farm keeps its tiles and can be sown again for a fraction of a new one.
-  G.farmFull = owner => Math.round(G.BUILDINGS.farm.farm * (mods(owner).farmFood || 1));
+  G.farmFull = owner => Math.round(G.BUILDINGS.farm.farm * (mods(owner).farmFood || 1)) + G.techEff(owner, 'farm');
   G.farmSpent = f => !!f && !f.dead && f.type === 'farm' && f.built && f.food <= 0;
   G.resowCost = owner => ({ wood: Math.round(G.BUILDINGS.farm.reseed * (mods(owner).farmCost || 1)) });
   G.resowFarm = function (f, owner) {
@@ -449,7 +484,7 @@
     let dmg;
     if (t.kind === 'building') {
       // an arrow does nothing to a wall, but a ram or a trebuchet lands its whole blow
-      dmg = d.siege ? d.atk : d.ranged ? 1 : Math.max(1, d.atk - 1);
+      dmg = d.siege ? d.atk + (att.kind === 'unit' ? G.techEff(att.owner, 'unitAtk_' + att.type) : 0) : d.ranged ? 1 : Math.max(1, d.atk - 1);
       if (d.bonus && d.bonus.bld) dmg += d.bonus.bld;
       if (att.kind === 'building') dmg = 1;
     } else {
@@ -459,7 +494,7 @@
       const tSold = t.kind === 'unit' && t.type !== 'villager', tbT = tSold ? G.techBonus(t.owner) : null;
       const ta = tSold ? (G.ageOf(t.owner) >= 4 ? 1 : 0) + (d.ranged || att.kind === 'building' ? tbT.pierce : tbT.armor) : 0;
       const arm = (d.ranged || att.kind === 'building' ? t.def.pierce : t.def.armor) + ta;
-      dmg = Math.max(1, d.atk + aa - arm);
+      dmg = Math.max(1, d.atk + aa - arm + (att.kind === 'building' ? G.techEff(att.owner, 'towerAtk') : G.techEff(att.owner, 'unitAtk_' + att.type)));
       if (d.bonus && d.bonus[t.def.cls]) dmg += d.bonus[t.def.cls];
       if (soldier && d.cls !== 'hero') {
         // soldiers fighting near their King hit harder
@@ -525,7 +560,7 @@
         if (b.aging.t >= G.AGES[b.aging.to].time) finishAge(b);
       } else if (b.queue.length && !b.research) {
         const q = b.queue[0], def = G.UNITS[q.type];
-        const speed = (b.type === 'towncenter' && mods(b.owner).tcSpeed) ? mods(b.owner).tcSpeed : 1;
+        const speed = ((b.type === 'towncenter' && mods(b.owner).tcSpeed) ? mods(b.owner).tcSpeed : 1) * (1 + G.techEff(b.owner, 'trainSpeed_' + b.type));
         const { pop, cap } = G.popOf(b.owner);
         const blocked = pop - b.queue.length + 1 > cap; // housed
         if (!blocked) b.qt += dt * speed * (G.fastTrain || 1);
@@ -538,7 +573,7 @@
       if (b.def.atk) {
         b.cool -= dt;
         if (b.cool <= 0) {
-          const t = nearest(b, e => e.kind === 'unit' && G.enemies(e.owner, b.owner), b.def.range);
+          const t = nearest(b, e => e.kind === 'unit' && G.enemies(e.owner, b.owner), b.def.range + G.techEff(b.owner, 'towerRange'));
           if (t) { const n = 1 + (b.garrison ? b.garrison.length : 0); for (let i = 0; i < n; i++) fire(b, t); b.cool = b.def.rate; }
         }
       }
@@ -611,7 +646,8 @@
     if (!u.path.length) return true;
     const wp = u.path[0];
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
-    const step = (u.task.gs && u.task.t === 'move' ? Math.min(u.def.speed, u.task.gs) : u.def.speed) * dt * (G.terrainSpeed || 1);
+    const step = (u.task.gs && u.task.t === 'move' ? Math.min(u.def.speed, u.task.gs) : u.def.speed) * dt * (G.terrainSpeed || 1)
+      * (u.type === 'villager' ? 1 + G.techEff(u.owner, 'vilSpeed') : 1);
     steer(u, dx / (d || 1), dy / (d || 1), dt);
     u.walk += dt;
     u.dist = (u.dist || 0) + Math.min(step, d);
@@ -728,7 +764,7 @@
         break;
       }
       case 'gather': {
-        if (u.carry && u.carry.amt >= G.CARRY) { goDrop(u); break; }
+        if (u.carry && u.carry.amt >= G.carryCap(u)) { goDrop(u); break; }
         let r = G.byId.get(task.id);
         if (!r || r.dead || r.amount <= 0) {
           r = findNewResource(u, task.rtype, task.lx, task.ly);
@@ -751,6 +787,7 @@
           if (!u.carry) u.carry = { res: r.rtype, amt: 0 };
           let rate = G.RES[r.type].rate * (G.fastGather || 1);
           if (r.type === 'berry' && mods(u.owner).berryRate) rate *= mods(u.owner).berryRate;
+          rate *= 1 + G.techEff(u.owner, 'gather_' + G.RES[r.type].res);
           const amt = Math.min(rate * dt, r.amount);
           u.carry.amt += amt; r.amount -= amt;
           if (r.amount <= 0.001) G.kill(r);
@@ -782,7 +819,7 @@
           }
         }
         f.farmer = u.id;
-        if (u.carry && u.carry.amt >= G.CARRY) { u.atFarm = false; goDrop(u); break; }
+        if (u.carry && u.carry.amt >= G.carryCap(u)) { u.atFarm = false; goDrop(u); break; }
         const inside = u.x >= f.tx && u.x <= f.tx + f.size && u.y >= f.ty && u.y <= f.ty + f.size;
         if (inside) {
           u.atFarm = true; u.path = []; u.working = true;
@@ -792,7 +829,7 @@
           const tx = f.tx + 0.5 + (Math.sin(u.fw * 0.5) + 1) * sp, ty = f.ty + 0.5 + (Math.cos(u.fw * 0.37) + 1) * sp;
           u.x += (tx - u.x) * dt; u.y += (ty - u.y) * dt;
           if (!u.carry || u.carry.res !== 'food') u.carry = { res: 'food', amt: 0 };
-          const amt = Math.min(G.FARM_RATE * dt * (G.fastGather || 1), f.food);
+          const amt = Math.min(G.FARM_RATE * dt * (G.fastGather || 1) * (1 + G.techEff(u.owner, 'gather_food')), f.food);
           u.carry.amt += amt; f.food -= amt;
           if (f.food <= 0) {
             // The field is spent, not destroyed. Sow it again for a fraction of a new farm
@@ -845,7 +882,7 @@
           u.path = []; faceTo(u, b); u.working = true;
           snd('build', u.x, u.y);
           if (!b.built) {
-            const inc = dt / b.def.time * (G.fastBuild || 1);
+            const inc = dt / b.def.time * (G.fastBuild || 1) * (1 + G.techEff(u.owner, 'build'));
             b.progress = Math.min(1, b.progress + inc);
             b.hp = Math.min(b.maxHp, b.hp + inc * b.maxHp);
             if (b.progress >= 1) { b.built = true; b.hp = Math.max(b.hp, b.maxHp * 0.999); snd('complete', b.x, b.y); if (G.onBuilt) G.onBuilt(b); }

@@ -1,0 +1,35 @@
+{
+ "out": "build/art/university",
+ "jobs": [
+  [
+   "icon_research",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with an open leather-bound book of knowledge with a rolled parchment scroll tied with a red ribbon and a quill pen beside it, glowing faintly gold.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_university",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a small medieval university: a stone college hall with a tall arched window, a little bell tower and a scholar's banner.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "w_university",
+   "monastery",
+   "Rebuild this as a medieval European university college: a square-planned stone hall around a small cloister, tall arched traceried windows, a slate roof, a little bell tower with a clock face, a magenta banner over the gate.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same overall height and the same ground footprint width, so it drops straight into the same tile. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Replace only the architecture and materials, as described. Plain pure white background, no ground tile, no grass, no cast shadow on the background, no people, no text, no labels, no border. Any flag, banner, awning or cloth trim must be pure magenta #FF00FF, and nothing else in the image may be magenta or pink. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly."
+  ],
+  [
+   "med_university",
+   "mediterranean/monastery.jpg",
+   "Rebuild this as a Byzantine school of learning: a square-planned building of pale stone and banded brick around an arcaded courtyard, a low dome, terracotta tile roofs, a magenta banner over the entrance.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same overall height and the same ground footprint width, so it drops straight into the same tile. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Replace only the architecture and materials, as described. Plain pure white background, no ground tile, no grass, no cast shadow on the background, no people, no text, no labels, no border. Any flag, banner, awning or cloth trim must be pure magenta #FF00FF, and nothing else in the image may be magenta or pink. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly."
+  ],
+  [
+   "ea_university",
+   "eastasian/monastery.jpg",
+   "Rebuild this as a Song-dynasty Chinese academy: a square-planned compound of timber halls with grey tile roofs and gently upturned eaves around a courtyard with a stone lantern, scroll racks under the eaves, a magenta banner over the gate.",
+   "Keep the camera and the geometry of the reference exactly: the same true 2:1 isometric view, the same corner-on angle, the same overall height and the same ground footprint width, so it drops straight into the same tile. Keep the hand-painted semi-realistic Age of Empires 2 style and the lighting from the upper left. Replace only the architecture and materials, as described. Plain pure white background, no ground tile, no grass, no cast shadow on the background, no people, no text, no labels, no border. Any flag, banner, awning or cloth trim must be pure magenta #FF00FF, and nothing else in the image may be magenta or pink. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly."
+  ]
+ ]
+}
