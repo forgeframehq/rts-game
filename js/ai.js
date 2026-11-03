@@ -156,6 +156,7 @@ G.makeAI = function () {
     else if (vils.length >= 20 && hasBuilt('range') && !has('stable')) build('stable', home.x, home.y, 6, 2);
     else if (vils.length >= 24 && age >= 3 && hasBuilt('stable') && !has('siegeworkshop')) build('siegeworkshop', home.x, home.y, 6, 2);
     else if (vils.length >= 26 && age >= 3 && hasBuilt('siegeworkshop') && !has('monastery')) build('monastery', home.x, home.y, 6, 2);
+    else if (vils.length >= 28 && age >= 3 && hasBuilt('blacksmith') && !has('university') && R.wood > 250) build('university', home.x, home.y, 6, 2);
     // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
     else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
              && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);

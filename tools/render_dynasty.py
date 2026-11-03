@@ -37,11 +37,11 @@ for jf, rig, typ, sex, t in plan:
         for a in j['anims']:
             a['props'] = [p for p in a.get('props', []) if p.get('tool') not in ('crown', 'mantle', 'gown')]
         if typ == 'queen': j['clipsUrl'] = ['villager_m_anim.glb', 'villager_m_anim2.glb'] + [c for c in j.get('clipsUrl', []) if 'villager_m' not in c]
-    tmp = f'{R}/_job_{D}.json'; json.dump(j, open(tmp, 'w'))
+    tmp = f'{R}/_job_{D}{os.environ.get("DRIVE","")[-4:-3]}.json'; json.dump(j, open(tmp, 'w'))
     out = f'build/render/{D}_{typ}_{sex}_t{t}' + ('_hit' if 'hit' in jf else '')
     stem = f'unit3d_{D}_{typ}_{sex}' + (f'_t{t}' if t else '')
     print('render', jf, '->', stem, flush=True)
-    r = subprocess.run(['python3', 'drive_jobs.py', os.path.basename(tmp), os.path.abspath(out)], cwd=R, capture_output=True, text=True, timeout=3000)
+    r = subprocess.run(['python3', os.environ.get('DRIVE','drive_jobs.py'), os.path.basename(tmp), os.path.abspath(out)], cwd=R, capture_output=True, text=True, timeout=3000)
     if r.returncode: print('RENDER FAIL', jf, r.stderr[-400:], flush=True); continue
     subprocess.run(['python3', 'tools/process_render.py', out, stem, str(j.get('height', 150))], check=True, capture_output=True)
     print('done', stem, flush=True)

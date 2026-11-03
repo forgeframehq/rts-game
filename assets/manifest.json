@@ -772,61 +772,45 @@
   "sh": 666
  },
  "unit3d_western_knight_m_attack": {
-  "file": "assets/units/pack_unit3d_western_knight_m.png",
+  "file": "assets/units/unit3d_western_knight_m_attack.png",
   "frames": 10,
   "rows": 8,
   "cycle": 10.667,
-  "fw": 69.82,
-  "fh": 73.82,
-  "ax": 34.91,
-  "ay": 64.84,
-  "sx": 0,
-  "sy": 0,
-  "sw": 1396,
-  "sh": 1181
+  "fw": 66.18,
+  "fh": 78.55,
+  "ax": 33.09,
+  "ay": 67.03
  },
  "unit3d_western_knight_m_death": {
-  "file": "assets/units/pack_unit3d_western_knight_m.png",
+  "file": "assets/units/unit3d_western_knight_m_death.png",
   "frames": 10,
   "rows": 8,
   "cycle": 10.667,
   "fw": 93.09,
-  "fh": 83.64,
+  "fh": 85.09,
   "ax": 46.55,
-  "ay": 57.57,
-  "sx": 0,
-  "sy": 1181,
-  "sw": 1862,
-  "sh": 1338
+  "ay": 59.03
  },
  "unit3d_western_knight_m_idle": {
-  "file": "assets/units/pack_unit3d_western_knight_m.png",
+  "file": "assets/units/unit3d_western_knight_m_idle.png",
   "frames": 12,
   "rows": 8,
   "cycle": 2.133,
-  "fw": 73.45,
-  "fh": 66.18,
-  "ax": 36.73,
-  "ay": 56.48,
-  "sx": 0,
-  "sy": 3572,
-  "sw": 1763,
-  "sh": 1059
+  "fw": 64.0,
+  "fh": 69.45,
+  "ax": 32.0,
+  "ay": 57.93
  },
  "unit3d_western_knight_m_walk": {
-  "file": "assets/units/pack_unit3d_western_knight_m.png",
+  "file": "assets/units/unit3d_western_knight_m_walk.png",
   "frames": 8,
   "rows": 8,
   "cycle": 10.667,
   "stride": 1.6,
-  "fw": 73.45,
-  "fh": 70.18,
-  "ax": 36.73,
-  "ay": 57.57,
-  "sx": 0,
-  "sy": 5707,
-  "sw": 1175,
-  "sh": 1123
+  "fw": 67.64,
+  "fh": 72.73,
+  "ax": 33.82,
+  "ay": 58.66
  },
  "unit3d_western_militia_m_attack": {
   "file": "assets/units/pack_unit3d_western_militia_m.png",
@@ -1941,61 +1925,45 @@
   "sh": 704
  },
  "unit3d_western_knight_m_t1_attack": {
-  "file": "assets/units/pack_unit3d_western_knight_m_t1.png",
+  "file": "assets/units/unit3d_western_knight_m_t1_attack.png",
   "frames": 10,
   "rows": 8,
   "cycle": 10.667,
-  "fw": 69.82,
-  "fh": 73.82,
-  "ax": 34.91,
-  "ay": 64.84,
-  "sx": 0,
-  "sy": 0,
-  "sw": 1396,
-  "sh": 1181
+  "fw": 66.18,
+  "fh": 78.55,
+  "ax": 33.09,
+  "ay": 67.03
  },
  "unit3d_western_knight_m_t1_death": {
-  "file": "assets/units/pack_unit3d_western_knight_m_t1.png",
+  "file": "assets/units/unit3d_western_knight_m_t1_death.png",
   "frames": 10,
   "rows": 8,
   "cycle": 10.667,
   "fw": 93.09,
-  "fh": 88.0,
+  "fh": 89.45,
   "ax": 46.55,
-  "ay": 61.93,
-  "sx": 0,
-  "sy": 1181,
-  "sw": 1862,
-  "sh": 1408
+  "ay": 63.39
  },
  "unit3d_western_knight_m_t1_idle": {
-  "file": "assets/units/pack_unit3d_western_knight_m_t1.png",
+  "file": "assets/units/unit3d_western_knight_m_t1_idle.png",
   "frames": 12,
   "rows": 8,
   "cycle": 2.133,
-  "fw": 73.45,
-  "fh": 68.73,
-  "ax": 36.73,
-  "ay": 59.03,
-  "sx": 0,
-  "sy": 3694,
-  "sw": 1763,
-  "sh": 1100
+  "fw": 65.09,
+  "fh": 72.73,
+  "ax": 32.36,
+  "ay": 61.21
  },
  "unit3d_western_knight_m_t1_walk": {
-  "file": "assets/units/pack_unit3d_western_knight_m_t1.png",
+  "file": "assets/units/unit3d_western_knight_m_t1_walk.png",
   "frames": 8,
   "rows": 8,
   "cycle": 10.667,
   "stride": 1.6,
-  "fw": 73.45,
-  "fh": 73.45,
-  "ax": 36.73,
-  "ay": 60.84,
-  "sx": 0,
-  "sy": 4794,
-  "sw": 1175,
-  "sh": 1175
+  "fw": 67.64,
+  "fh": 76.0,
+  "ax": 33.82,
+  "ay": 61.93
  },
  "unit3d_western_knight_m_t2_attack": {
   "file": "assets/units/pack_unit3d_western_knight_m_t2.png",
@@ -8015,63 +7983,47 @@
   "sh": 1140
  },
  "unit3d_chinese_king_m_hit": {
-  "file": "assets/units/pack_unit3d_chinese_king_m.png",
+  "file": "assets/units/unit3d_chinese_king_m_hit.png",
   "frames": 8,
   "rows": 8,
   "cycle": 0.933,
   "fw": 27.2,
   "fh": 49.87,
   "ax": 13.6,
-  "ay": 44.89,
-  "sx": 0,
-  "sy": 0,
-  "sw": 435,
-  "sh": 798
+  "ay": 44.89
  },
  "unit3d_chinese_king_m_idle": {
-  "file": "assets/units/pack_unit3d_chinese_king_m.png",
+  "file": "assets/units/unit3d_chinese_king_m_idle.png",
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
   "fw": 35.2,
   "fh": 48.8,
   "ax": 17.6,
-  "ay": 44.62,
-  "sx": 0,
-  "sy": 798,
-  "sw": 1126,
-  "sh": 781
+  "ay": 44.62
  },
  "unit3d_chinese_queen_f_death": {
-  "file": "assets/units/pack_unit3d_chinese_queen_f.png",
+  "file": "assets/units/unit3d_chinese_queen_f_death.png",
   "frames": 10,
   "rows": 8,
   "cycle": 2.967,
   "fw": 68.27,
   "fh": 60.53,
   "ax": 34.13,
-  "ay": 45.15,
-  "sx": 0,
-  "sy": 0,
-  "sw": 1365,
-  "sh": 969
+  "ay": 45.15
  },
  "unit3d_chinese_queen_f_idle": {
-  "file": "assets/units/pack_unit3d_chinese_queen_f.png",
+  "file": "assets/units/unit3d_chinese_queen_f_idle.png",
   "frames": 16,
   "rows": 8,
   "cycle": 1.867,
   "fw": 24.0,
   "fh": 40.8,
   "ax": 12.0,
-  "ay": 36.35,
-  "sx": 0,
-  "sy": 969,
-  "sw": 768,
-  "sh": 653
+  "ay": 36.35
  },
  "unit3d_chinese_queen_f_walk": {
-  "file": "assets/units/pack_unit3d_chinese_queen_f.png",
+  "file": "assets/units/unit3d_chinese_queen_f_walk.png",
   "frames": 12,
   "rows": 8,
   "cycle": 1.396,
@@ -8079,11 +8031,7 @@
   "fw": 27.73,
   "fh": 41.07,
   "ax": 13.87,
-  "ay": 36.35,
-  "sx": 0,
-  "sy": 1622,
-  "sw": 666,
-  "sh": 657
+  "ay": 36.35
  },
  "unit3d_western_ram_m_attack": {
   "file": "assets/units/pack_unit3d_western_ram_m.png",
@@ -8160,9 +8108,9 @@
  "eastasian_university": {
   "file": "assets/eastasian_university.png",
   "size": 3,
-  "w": 267.33,
-  "h": 210.17,
-  "ax": 140.25,
-  "ay": 161.65
+  "w": 192.96,
+  "h": 214.02,
+  "ax": 96.48,
+  "ay": 165.79
  }
 }
