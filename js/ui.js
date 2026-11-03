@@ -488,6 +488,21 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // minimap on/off (remembered)
   function applyMap() { document.body.classList.toggle('mm-off', !!prefs.mmOff); $('btn-map').classList.toggle('on', !prefs.mmOff); }
   $('btn-map').onclick = () => { prefs.mmOff = !prefs.mmOff; savePrefs(); applyMap(); };
+  // Zoom buttons: a pinch can be taken by the app the game is shown in, so zoom never
+  // depends on it. Each tap eases the camera in or out about the middle of the screen.
+  let zoomAnim = null;
+  function zoomBy(f) {
+    const from = G.camera.zoom, to = Math.max(G.minZoom || 0.45, Math.min(2.2, from * f)), t0 = performance.now();
+    if (zoomAnim) cancelAnimationFrame(zoomAnim);
+    const step = now => {
+      const k = Math.min(1, (now - t0) / 180), e = 1 - (1 - k) * (1 - k);
+      G.camera.zoom = from + (to - from) * e;
+      if (k < 1) zoomAnim = requestAnimationFrame(step); else zoomAnim = null;
+    };
+    zoomAnim = requestAnimationFrame(step);
+  }
+  $('btn-zin').onclick = () => zoomBy(1.3);
+  $('btn-zout').onclick = () => zoomBy(1 / 1.3);
   applyMap();
   $('btn-home').onclick = () => {
     const tc = G.ents.find(e => !e.dead && e.owner === 1 && e.type === 'towncenter') || G.ents.find(e => !e.dead && e.owner === 1);

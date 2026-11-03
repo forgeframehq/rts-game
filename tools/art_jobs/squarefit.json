@@ -1,0 +1,40 @@
+{
+ "out": "build/art/squarefit",
+ "jobs": [
+  [
+   "w_town_center_dark",
+   "town_center",
+   "Rebuild this as a Dark Age Saxon chieftain's hall: a broad, square-planned timber great hall under a steep golden thatched roof with a central smoke louvre and carved beast-head finials, rough vertical oak-plank walls, a small porch on two posts over a plank door, with a short thatched side wing tucked against it so the whole is as deep as it is wide. No cut stone, no masonry, no roof tiles. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "med_town_center_dark",
+   "mediterranean/town_center.jpg",
+   "Rebuild this as a Dark Age Greek village hall: a square-planned hall of rough fieldstone and mud-brick around a small inner yard, low timber-and-reed roofs, a simple porch on rough posts, a small wooden cross over the door, a stone well in front. No dome, no banded brick courses, no marble columns, no arcade. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "ea_town_center_dark",
+   "eastasian/town_center.jpg",
+   "Rebuild this as a Dark Age Chinese village hall: a square-planned timber-framed hall with rammed-earth walls under a broad, hipped straw-thatched roof, an open verandah on rough unpainted posts across the front, a drum on a stand by the door, a packed-earth forecourt. No ceramic tiles, no upturned eaves, no ridge ornaments, no painted timber. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "w_barracks_dark",
+   "barracks",
+   "Rebuild this as a Dark Age Saxon warrior hall: a square-planned thatched timber hall of rough oak planks, round wooden shields hung on the walls, a rack of ash spears by the door, a small muddy yard with a scarred sparring post in front. No cut stone, no masonry, no roof tiles. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "ea_barracks_dark",
+   "barracks",
+   "Rebuild this as a Dark Age Chinese muster hall: a square-planned hall of rammed earth and rough timber under a hipped straw-thatched roof, a rack of spears and bamboo bows outside, a small packed-earth yard with a wooden training post. No ceramic tiles, no upturned eaves, no painted timber. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "med_barracks",
+   "barracks",
+   "Rebuild this as a Byzantine barracks: a square-planned building of whitewashed stone with red terracotta tile roofs over a small arcaded courtyard, a round-arched gateway, oval shields and spears racked by the entrance, a magenta banner over the gate. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "ea_barracks",
+   "barracks",
+   "Rebuild this as a Song-dynasty Chinese barracks: a square-planned compound of red-lacquered timber halls under grey ceramic tile roofs with gently upturned eaves around a small drill yard, weapon racks of spears and halberds, a magenta banner over the gate. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ]
+ ]
+}

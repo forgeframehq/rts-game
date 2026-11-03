@@ -27,20 +27,20 @@ OUT_SCALE = 2  # store at 2x for sharp phones
 # source file stem -> (game key, footprint tiles, footprint fudge)
 ASSETS = {
     'house': ('house', 2, 1.0),
-    'town_center': ('towncenter', 3, 1.0),
+    'town_center': ('towncenter', 4, 1.0),
     'barracks': ('barracks', 3, 1.0),
     'archery_range': ('range', 3, 1.0),
     'stable': ('stable', 3, 1.0),
     'mill': ('mill', 2, 1.0),
     'lumber_camp': ('lumbercamp', 2, 1.0),
     'mining_camp': ('miningcamp', 2, 1.0),
-    'farm': ('farm', 2, 1.0),
+    'farm': ('farm', 3, 1.0),
     # the harvested field's fence sits lower, so the footprint detector reads it wide;
     # this fudge lines it up exactly with the standing crop it replaces
     'farm_spent': ('farm_spent', 2, 0.6755),
     'watch_tower': ('tower', 1, 1.0),
     'blacksmith': ('blacksmith', 3, 1.0),
-    'siege_workshop': ('siegeworkshop', 3, 1.0),
+    'siege_workshop': ('siegeworkshop', 4, 1.0),
     'monastery': ('monastery', 3, 1.0),
     'castle': ('castle', 4, 1.0),
     'construction_site_1x1': ('fnd_1', 1, 1.0),

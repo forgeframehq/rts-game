@@ -1724,10 +1724,10 @@
  "mediterranean_barracks": {
   "file": "assets/mediterranean_barracks.png",
   "size": 3,
-  "w": 215.04,
-  "h": 175.81,
-  "ax": 107.52,
-  "ay": 132.61
+  "w": 218.01,
+  "h": 176.17,
+  "ax": 108.89,
+  "ay": 127.94
  },
  "mediterranean_range": {
   "file": "assets/mediterranean_range.png",
@@ -1805,9 +1805,9 @@
   "file": "assets/eastasian_barracks.png",
   "size": 3,
   "w": 215.04,
-  "h": 169.92,
+  "h": 175.84,
   "ax": 107.52,
-  "ay": 126.72
+  "ay": 104.64
  },
  "eastasian_range": {
   "file": "assets/eastasian_range.png",
@@ -2427,18 +2427,18 @@
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
   "size": 4,
-  "w": 287.2,
-  "h": 248.12,
-  "ax": 143.84,
-  "ay": 190.52
+  "w": 275.4,
+  "h": 263.53,
+  "ax": 139.0,
+  "ay": 199.24
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 215.49,
-  "h": 191.46,
-  "ax": 107.97,
-  "ay": 148.26
+  "w": 215.47,
+  "h": 189.61,
+  "ax": 107.95,
+  "ay": 146.41
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
@@ -2460,9 +2460,9 @@
   "file": "assets/mediterranean_towncenter_dark.png",
   "size": 4,
   "w": 286.72,
-  "h": 209.61,
+  "h": 226.56,
   "ax": 143.36,
-  "ay": 152.01
+  "ay": 168.36
  },
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",
@@ -2491,18 +2491,18 @@
  "eastasian_towncenter_dark": {
   "file": "assets/eastasian_towncenter_dark.png",
   "size": 4,
-  "w": 282.81,
-  "h": 209.15,
-  "ax": 144.09,
-  "ay": 144.87
+  "w": 287.36,
+  "h": 236.6,
+  "ax": 143.36,
+  "ay": 179.0
  },
  "eastasian_barracks_dark": {
   "file": "assets/eastasian_barracks_dark.png",
   "size": 3,
-  "w": 215.04,
-  "h": 178.27,
-  "ax": 107.52,
-  "ay": 134.62
+  "w": 216.86,
+  "h": 191.31,
+  "ax": 108.89,
+  "ay": 142.62
  },
  "eastasian_mill_dark": {
   "file": "assets/eastasian_mill_dark.png",
