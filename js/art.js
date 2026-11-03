@@ -58,6 +58,10 @@
         let out;
         if (hair) out = hsv2rgb((hu + look.hairH + 360) % 360, Math.min(1, sa * look.hairS), Math.min(1, va * look.hairV));
         else if (skin) out = hsv2rgb((hu + look.skinH + 360) % 360, Math.min(1, sa * look.skinS), Math.min(1, va * look.skinV));
+        // pale undyed cloth (the women's long apron): give it the dynasty's own tint too,
+        // or every dynasty's women look the same from across the map
+        else if (look.apron && sa < 0.32 && va > 0.55 && !onHead)
+          out = hsv2rgb(look.apron[0], look.apron[1], Math.min(1, va * look.apron[2]));
         else if (sa > 0.18) {
           const lo = y >= waist;
           out = hsv2rgb(lo ? look.hue2 : look.hue,

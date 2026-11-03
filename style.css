@@ -385,3 +385,14 @@ body.mm-off #minimap { display: none; }
 
 .sidebtn i.blue { background: #2f6fd6; }
 .cmd.research { background: linear-gradient(180deg, #2d3a4a, #18202b) padding-box, var(--bevel) border-box !important; }
+
+/* Title: a phone plays no sound before a touch, so the first touch is a "Tap to begin" that
+   starts the Main Theme on the title screen, and only then are the menu buttons shown. */
+.tap-begin { align-self: center; margin-top: 18px; padding: 14px 34px; background: none; border: 0; color: #f1d68a;
+  font-family: 'Cinzel', Georgia, serif; font-size: 22px; letter-spacing: 0.08em; text-shadow: 0 2px 6px #000;
+  animation: tapPulse 1.8s ease-in-out infinite; cursor: pointer; }
+@keyframes tapPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+#start.begun .tap-begin { display: none; }
+#start:not(.begun) .mainmenu { display: none; }
+#start .mainmenu { animation: menuIn 0.6s ease-out; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

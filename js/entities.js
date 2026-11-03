@@ -738,6 +738,14 @@
         task.lx = r.x; task.ly = r.y;
         if (G.edgeDist(u, r) <= 0.75) {
           u.path = []; faceTo(u, r); u.working = true;
+          // step right up to the rock, tree or bush, so the swing lands on it instead of on
+          // the air a pace away (a worker on a diagonal neighbour stands well clear of it)
+          const ed = G.edgeDist(u, r);
+          if (ed > 0.3) {
+            const cx = Math.max(r.tx, Math.min(r.tx + 1, u.x)), cy = Math.max(r.ty, Math.min(r.ty + 1, u.y));
+            const k = Math.min(1, dt * 2.5 * (ed - 0.3) / ed);
+            u.x += (cx - u.x) * k; u.y += (cy - u.y) * k;
+          }
           snd({ tree: 'chop', gold: 'mine', stone: 'mine', berry: 'farm' }[r.rtype] || 'chop', u.x, u.y);
           if (u.carry && u.carry.res !== r.rtype) u.carry = null;
           if (!u.carry) u.carry = { res: r.rtype, amt: 0 };

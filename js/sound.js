@@ -135,7 +135,7 @@
   S.musicEnabled = true;
   // 0.75 against files normalised to -24.4 LUFS puts the music out at about -26.9 LUFS:
   // present on a phone speaker, but a clear step under the game. Soft is -31.3.
-  S.musicVolume = 0.75;
+  S.musicVolume = 0.5;
   const CALM_AFTER = 12;      // seconds without a blow before the fighting is over
   const CROSSFADE = 3.5;      // seconds to hand over between moods
 
@@ -184,11 +184,18 @@
     const a = makeDeck(next);
     a.src = 'assets/sound/music/' + file;
     a.volume = 0;
-    const pr = a.play();
-    if (pr && pr.catch) pr.catch(() => {});     // refused until a gesture; wake() retries
-    fade(next, vol(m), fadeIn);
-    if (deck[other] && !deck[other].paused) fade(other, 0, fadeIn, true);
+    // hand over cleanly: the old track fades right down first, then the new one rises,
+    // rather than two pieces of music playing over each other in the middle
+    const busy = deck[other] && !deck[other].paused && deck[other].volume > 0.01;
+    if (busy) fade(other, 0, fadeIn * 0.6, true);
+    const start = () => {
+      if (cur !== next || a.getAttribute('src') !== 'assets/sound/music/' + file) return;   // superseded
+      const pr = a.play();
+      if (pr && pr.catch) pr.catch(() => {});   // refused until a gesture; wake() retries
+      fade(next, vol(m), fadeIn);
+    };
     cur = next;
+    if (busy) setTimeout(start, fadeIn * 450); else start();
   }
 
   function setMood(m) {

@@ -142,16 +142,18 @@ G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean',
 // dress, hue2 for what is worn below the waist — and has its own hair and skin.
 // hue/hue2 are 0-360; everything else is a multiplier, except the *H hue nudges in degrees.
 G.CIV_LOOK = {
-  franks: {    // green wool over russet, fair hair
-    hue: 95,  sat: 0.75, val: 1.25,  hue2: 24,  sat2: 0.80, val2: 1.15,
+  // apron: [hue, saturation, brightness] for pale cloth such as the women's long apron.
+  // Kept clear of purple: that range is reserved for the team colour.
+  franks: {    // green wool over russet, fair hair, pale green apron
+    hue: 100, sat: 1.05, val: 1.25,  hue2: 18,  sat2: 1.05, val2: 1.05, apron: [95, 0.38, 0.92],
     hairH: 10, hairS: 1.10, hairV: 1.55, skinH: -3, skinS: 0.92, skinV: 1.08
   },
-  byzantines: {  // undyed linen over ochre, dark hair
-    hue: 42,  sat: 0.40, val: 1.95,  hue2: 33,  sat2: 0.85, val2: 1.20,
+  byzantines: {  // deep crimson over gold, dark hair, cream-gold apron
+    hue: 356, sat: 1.25, val: 1.05,  hue2: 42,  sat2: 1.10, val2: 1.25, apron: [44, 0.45, 0.95],
     hairH: -4, hairS: 0.95, hairV: 0.80, skinH: 5, skinS: 1.12, skinV: 0.85
   },
-  chinese: {   // indigo over slate, black hair
-    hue: 212, sat: 0.62, val: 1.30,  hue2: 220, sat2: 0.30, val2: 0.85,
+  chinese: {   // indigo over slate, black hair, sky-blue apron
+    hue: 215, sat: 1.05, val: 1.20,  hue2: 205, sat2: 0.55, val2: 0.80, apron: [205, 0.40, 0.92],
     hairH: 0,  hairS: 0.45, hairV: 0.60, skinH: 3, skinS: 0.88, skinV: 1.02
   }
 };

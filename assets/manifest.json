@@ -68,8 +68,8 @@
   "size": 2,
   "w": 136.0,
   "h": 108.91,
-  "ax": 67.89,
-  "ay": 74.17
+  "ax": 67.0,
+  "ay": 55.13
  },
  "tower": {
   "file": "assets/tower.png",
@@ -1724,10 +1724,10 @@
  "mediterranean_barracks": {
   "file": "assets/mediterranean_barracks.png",
   "size": 3,
-  "w": 268.22,
-  "h": 219.29,
-  "ax": 167.26,
-  "ay": 171.02
+  "w": 215.04,
+  "h": 175.81,
+  "ax": 107.52,
+  "ay": 132.61
  },
  "mediterranean_range": {
   "file": "assets/mediterranean_range.png",
@@ -1740,18 +1740,18 @@
  "mediterranean_stable": {
   "file": "assets/mediterranean_stable.png",
   "size": 3,
-  "w": 248.28,
-  "h": 168.83,
-  "ax": 142.85,
-  "ay": 120.32
+  "w": 215.04,
+  "h": 146.23,
+  "ax": 107.52,
+  "ay": 103.03
  },
  "mediterranean_mill": {
   "file": "assets/mediterranean_mill.png",
   "size": 2,
-  "w": 154.46,
-  "h": 212.69,
-  "ax": 64.0,
-  "ay": 180.58
+  "w": 143.36,
+  "h": 197.41,
+  "ax": 71.68,
+  "ay": 168.61
  },
  "mediterranean_lumbercamp": {
   "file": "assets/mediterranean_lumbercamp.png",
@@ -1764,18 +1764,18 @@
  "mediterranean_farm": {
   "file": "assets/mediterranean_farm.png",
   "size": 2,
-  "w": 171.99,
-  "h": 134.98,
-  "ax": 86.35,
-  "ay": 102.71
+  "w": 144.2,
+  "h": 113.17,
+  "ax": 72.1,
+  "ay": 84.37
  },
  "mediterranean_tower": {
   "file": "assets/mediterranean_tower.png",
   "size": 1,
-  "w": 75.26,
-  "h": 202.42,
-  "ax": 37.63,
-  "ay": 186.01
+  "w": 71.68,
+  "h": 192.79,
+  "ax": 35.84,
+  "ay": 178.39
  },
  "mediterranean_blacksmith": {
   "file": "assets/mediterranean_blacksmith.png",
@@ -1804,26 +1804,26 @@
  "eastasian_barracks": {
   "file": "assets/eastasian_barracks.png",
   "size": 3,
-  "w": 265.07,
-  "h": 209.45,
-  "ax": 167.31,
-  "ay": 161.32
+  "w": 215.04,
+  "h": 169.92,
+  "ax": 107.52,
+  "ay": 126.72
  },
  "eastasian_range": {
   "file": "assets/eastasian_range.png",
   "size": 3,
-  "w": 247.91,
-  "h": 202.3,
-  "ax": 131.19,
-  "ay": 154.18
+  "w": 215.04,
+  "h": 175.48,
+  "ax": 107.52,
+  "ay": 132.28
  },
  "eastasian_stable": {
   "file": "assets/eastasian_stable.png",
   "size": 3,
-  "w": 252.57,
-  "h": 182.48,
-  "ax": 114.79,
-  "ay": 134.35
+  "w": 215.04,
+  "h": 155.36,
+  "ax": 107.52,
+  "ay": 112.16
  },
  "eastasian_mill": {
   "file": "assets/eastasian_mill.png",
@@ -1836,34 +1836,34 @@
  "eastasian_miningcamp": {
   "file": "assets/eastasian_miningcamp.png",
   "size": 2,
-  "w": 154.99,
-  "h": 130.48,
-  "ax": 83.08,
-  "ay": 98.4
+  "w": 143.36,
+  "h": 120.69,
+  "ax": 71.68,
+  "ay": 91.89
  },
  "eastasian_farm": {
   "file": "assets/eastasian_farm.png",
   "size": 2,
-  "w": 205.58,
-  "h": 136.88,
-  "ax": 103.81,
-  "ay": 104.68
+  "w": 143.36,
+  "h": 95.45,
+  "ax": 71.68,
+  "ay": 66.65
  },
  "eastasian_tower": {
   "file": "assets/eastasian_tower.png",
   "size": 1,
-  "w": 76.87,
-  "h": 137.49,
-  "ax": 38.54,
-  "ay": 121.35
+  "w": 71.68,
+  "h": 128.21,
+  "ax": 35.84,
+  "ay": 113.81
  },
  "eastasian_blacksmith": {
   "file": "assets/eastasian_blacksmith.png",
   "size": 3,
-  "w": 238.12,
-  "h": 229.29,
-  "ax": 116.82,
-  "ay": 181.17
+  "w": 215.04,
+  "h": 207.07,
+  "ax": 107.52,
+  "ay": 163.87
  },
  "eastasian_castle": {
   "file": "assets/eastasian_castle.png",
@@ -1876,18 +1876,18 @@
  "mediterranean_miningcamp": {
   "file": "assets/mediterranean_miningcamp.png",
   "size": 2,
-  "w": 150.87,
-  "h": 124.84,
-  "ax": 77.22,
-  "ay": 92.67
+  "w": 143.36,
+  "h": 118.63,
+  "ax": 71.68,
+  "ay": 89.83
  },
  "eastasian_lumbercamp": {
   "file": "assets/eastasian_lumbercamp.png",
   "size": 2,
-  "w": 165.34,
-  "h": 130.73,
-  "ax": 98.69,
-  "ay": 98.65
+  "w": 143.36,
+  "h": 113.35,
+  "ax": 71.68,
+  "ay": 84.55
  },
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
@@ -2078,10 +2078,10 @@
  "eastasian_monastery": {
   "file": "assets/eastasian_monastery.png",
   "size": 3,
-  "w": 250.73,
-  "h": 215.82,
-  "ax": 114.73,
-  "ay": 167.57
+  "w": 215.04,
+  "h": 185.1,
+  "ax": 107.52,
+  "ay": 141.9
  },
  "unit3d_britons_king_m_attack": {
   "file": "assets/units/unit3d_britons_king_m_attack.png",
@@ -2427,26 +2427,26 @@
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
   "size": 3,
-  "w": 295.62,
-  "h": 255.39,
-  "ax": 170.67,
-  "ay": 207.09
+  "w": 215.4,
+  "h": 186.09,
+  "ax": 107.88,
+  "ay": 142.89
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 241.79,
-  "h": 214.83,
-  "ax": 136.32,
-  "ay": 166.59
+  "w": 215.49,
+  "h": 191.46,
+  "ax": 107.97,
+  "ay": 148.26
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
   "size": 2,
-  "w": 154.83,
-  "h": 182.06,
-  "ax": 77.12,
-  "ay": 149.66
+  "w": 143.82,
+  "h": 169.12,
+  "ax": 72.14,
+  "ay": 140.32
  },
  "mediterranean_house_dark": {
   "file": "assets/mediterranean_house_dark.png",
@@ -2459,10 +2459,10 @@
  "mediterranean_towncenter_dark": {
   "file": "assets/mediterranean_towncenter_dark.png",
   "size": 3,
-  "w": 247.52,
-  "h": 180.95,
-  "ax": 142.78,
-  "ay": 132.69
+  "w": 215.04,
+  "h": 157.21,
+  "ax": 107.52,
+  "ay": 114.01
  },
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",
@@ -2499,10 +2499,10 @@
  "eastasian_barracks_dark": {
   "file": "assets/eastasian_barracks_dark.png",
   "size": 3,
-  "w": 239.35,
-  "h": 198.42,
-  "ax": 117.65,
-  "ay": 149.71
+  "w": 215.04,
+  "h": 178.27,
+  "ax": 107.52,
+  "ay": 134.62
  },
  "eastasian_mill_dark": {
   "file": "assets/eastasian_mill_dark.png",

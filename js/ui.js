@@ -39,7 +39,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       G.sound.setVolume(v === 'quiet' ? 0.35 : 0.75);
       const mv = prefs.music === undefined ? 'normal' : prefs.music;
       G.sound.setMusicEnabled(mv !== 'off');
-      G.sound.setMusicVolume(mv === 'soft' ? 0.45 : 0.75);
+      G.sound.setMusicVolume(mv === 'soft' ? 0.3 : 0.5);
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
@@ -61,6 +61,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // gesture of the session is what starts the audio. Keep listening until music is actually
   // playing: if the track list was still loading on the first tap, the next tap starts it.
   if (G.sound && G.sound.preload) G.sound.preload();
+  $('tap-begin').onclick = () => { if (G.sound) G.sound.wake(); $('start').classList.add('begun'); };
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {
     if (!G.sound) return;
     G.sound.wake();
