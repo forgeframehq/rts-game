@@ -128,7 +128,7 @@
   const hasStuff = p => G.unitsOf(p).length > 0 || G.ents.some(x => x.owner === p && x.kind === 'building' && counts(x));
   // Regicide: the dynasty stands while either royal lives; when the King falls the Queen rules on
   const royalsDown = p => G.rules && G.rules.mode === 'regicide' && !G.royal(p, 'king') && !G.royal(p, 'queen');
-  // Town Center Rush: a dynasty without a standing Town Center is beaten
+  // Town Center Siege: a dynasty without a standing Town Center is beaten
   const tcsDown = p => G.rules && G.rules.mode === 'tcrush' && !G.ents.some(e => !e.dead && e.owner === p && e.type === 'towncenter' && e.built);
   const nameOf = id => +id === 1 ? 'Your' : `The ${G.CIVS[G.players[id].civ].name}'`;
   G.MOURN = 120;

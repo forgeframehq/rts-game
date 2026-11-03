@@ -261,7 +261,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const ok = foes.length > 0;
     $('btn-start').disabled = !ok;
     const big = act.length > 2 && setup.size === 'small';
-    G.MODE_TXT = G.MODE_TXT || { conquest: 'Destroy every enemy building and unit.', regicide: 'Kill the enemy King and Queen. Protect your own.', tcrush: 'Destroy every enemy Town Center. Lose yours and you lose.' };
+    G.MODE_TXT = G.MODE_TXT || { conquest: 'Destroy every enemy building and unit.', regicide: 'Kill the enemy King and Queen. Protect your own.', tcrush: 'Burn down every enemy Town Center to win. Lose all of yours and you are beaten. Faster than Conquest: no need to hunt down every last house.' };
     $('mode-hint').textContent = G.MODE_TXT[setup.mode] || '';
     $('rule-hint').textContent = !ok ? 'Everyone is on your team. Put at least one computer player on another team.'
       : big ? 'Tip: Medium or Large maps give 3–4 players more room.' : `${act.length} players · ${foes.length} ${foes.length === 1 ? 'enemy' : 'enemies'}`;

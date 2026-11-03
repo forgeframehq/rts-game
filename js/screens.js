@@ -8,7 +8,7 @@
   const MODE = {
     conquest: { name: 'Conquest', icon: '⚔️', goal: 'Destroy every enemy building and unit.', tip: 'Keep your Town Center training villagers; a strong economy wins long games.' },
     regicide: { name: 'Regicide', icon: '👑', goal: 'Kill the enemy King and Queen. Protect your own.', tip: 'When danger comes, garrison your royals in the Town Center (select them, then Garrison).' },
-    tcrush: { name: 'Town Center Rush', icon: '🏚️', goal: 'Destroy every enemy Town Center. Lose yours and you lose.', tip: 'Swordsmen and Rams knock buildings down fastest. Guard your own Town Center.' }
+    tcrush: { name: 'Town Center Siege', icon: '🏚️', goal: 'Burn down every enemy Town Center to win. Lose all of yours and you are beaten.', tip: 'Swordsmen and Rams knock buildings down fastest. Guard your own Town Center.' }
   };
   G.MODES = MODE;
   const mode = () => MODE[(G.rules && G.rules.mode) || 'conquest'] || MODE.conquest;
