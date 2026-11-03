@@ -603,21 +603,40 @@
   }
 
   function drawGhost(z) {
-    const gh = G.ghost, def = G.BUILDINGS[gh.type];
-    const ok = G.areaFree(gh.tx, gh.ty, def.size) && G.isExplored(gh.tx + def.size / 2, gh.ty + def.size / 2);
+    const gh = G.ghost, def = G.BUILDINGS[gh.type], s = def.size;
+    // A tile is buildable when nothing stands on it and you have seen it. Say which it is:
+    // red is something in the way (named in the hint bar), grey is land you have not explored.
+    let why = '', allSeen = true, ok = true;
+    const tiles = [];
+    for (let j = 0; j < s; j++) for (let i = 0; i < s; i++) {
+      const x = gh.tx + i, y = gh.ty + j;
+      const seen = G.isExplored(x + 0.5, y + 0.5) || G.revealAll;
+      let blocker = null, inside = G.inMap(x, y);
+      if (inside && !G.isFree(x, y)) blocker = G.byId.get(G.block[G.idx(x, y)]);
+      const free = inside && !blocker && seen && G.isFree(x, y);
+      if (!free) ok = false;
+      if (!seen) allSeen = false;
+      if (!why) {
+        if (!inside) why = 'the edge of the map';
+        else if (blocker) why = blocker.kind === 'res' ? (G.RES[blocker.type] && G.RES[blocker.type].name || blocker.type).toLowerCase()
+          : (blocker.owner === 1 ? 'your ' : 'a ') + (blocker.def && blocker.def.name || blocker.type);
+        else if (!G.isFree(x, y)) why = 'something on that spot';
+      }
+      tiles.push({ x, y, free, seen });
+    }
+    if (!why && !allSeen) why = 'land you have not explored yet';
     gh.ok = ok;
-    const g = G.toScreen(gh.tx + def.size / 2, gh.ty + def.size / 2);
+    if (G.ui && G.ui.placeWhy) G.ui.placeWhy(ok ? '' : why);
+    const g = G.toScreen(gh.tx + s / 2, gh.ty + s / 2);
     ctx.globalAlpha = 0.6;
     drawSprite(G.buildingSprite(gh.type, 1), g.x, g.y, z);
     ctx.globalAlpha = 1;
-    // colour every tile of the footprint, so a hidden blocker is easy to spot
-    const s = def.size, explored = G.isExplored(gh.tx + s / 2, gh.ty + s / 2);
-    for (let j = 0; j < s; j++) for (let i = 0; i < s; i++) {
-      const x = gh.tx + i, y = gh.ty + j, free = G.isFree(x, y) && explored;
-      ctx.fillStyle = free ? 'rgba(80,220,100,0.32)' : 'rgba(255,50,40,0.55)';
-      const a = G.toScreen(x, y), b = G.toScreen(x + 1, y), c = G.toScreen(x + 1, y + 1), d = G.toScreen(x, y + 1);
+    for (const t of tiles) {
+      const col = t.free ? 'rgba(80,220,100,0.32)' : !t.seen ? 'rgba(150,150,160,0.5)' : 'rgba(255,50,40,0.55)';
+      ctx.fillStyle = col;
+      const a = G.toScreen(t.x, t.y), b = G.toScreen(t.x + 1, t.y), c = G.toScreen(t.x + 1, t.y + 1), d = G.toScreen(t.x, t.y + 1);
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = free ? 'rgba(200,255,200,0.35)' : 'rgba(255,200,190,0.6)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = t.free ? 'rgba(200,255,200,0.35)' : 'rgba(255,220,210,0.6)'; ctx.lineWidth = 1; ctx.stroke();
     }
   }
 

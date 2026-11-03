@@ -402,3 +402,5 @@ body.mm-off #minimap { display: none; }
 .zbtn { width: 44px; height: 40px; border-radius: 10px; border: 2px solid #b48a3c; background: linear-gradient(#3a2a17, #1f160c);
   color: #f1d68a; font: 700 26px/1 Georgia, serif; box-shadow: 0 2px 6px rgba(0,0,0,.5); padding: 0; }
 .zbtn:active { transform: scale(0.94); }
+
+body.no-zoombtns .zoombtns { display: none; }

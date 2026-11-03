@@ -1,0 +1,15 @@
+{
+ "out": "build/art/squarefit2",
+ "jobs": [
+  [
+   "w_siege_workshop",
+   "castle",
+   "Rebuild this as a medieval siege workshop: a square-planned timber workshop yard with a tall open-fronted timber shed under a steep wooden-shingle roof, a half-built trebuchet arm and a battering ram on trestles in the yard, stacked beams, a crane hoist, a magenta banner. No stone castle walls, no towers. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ],
+  [
+   "ea_range",
+   "eastasian/barracks.jpg",
+   "Rebuild this as a Song-dynasty Chinese archery range: a square-planned courtyard of red-lacquered timber pavilions under grey ceramic tile roofs with gently upturned eaves, straw archery targets in the open yard, racks of bows and arrows under the eaves, a magenta banner. The building must be compact and square in plan, as deep as it is wide, filling the reference's square footprint diamond exactly and not reaching past it on any side. No long narrow hall stretching away diagonally."
+  ]
+ ]
+}

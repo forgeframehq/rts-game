@@ -17,7 +17,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal' };
+  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', zoombtns: 'on' };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
   // (Android in full screen or as an installed app); elsewhere the phone's own rotation decides.
@@ -43,6 +43,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
+    document.body.classList.toggle('no-zoombtns', prefs.zoombtns === 'off');
     lockOrientation();
     G.resize();
     [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
@@ -405,7 +406,16 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const s = G.BUILDINGS[type].size;
     G.ghost = { type, tx: Math.floor(c.x - s / 2 + 0.5), ty: Math.floor(c.y - s / 2 + 0.5) };
     $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap the map to move it`;
+    lastWhy = '';
   }
+  // Say what is in the way of a building, so a red footprint is never a mystery.
+  let lastWhy = '';
+  UI.placeWhy = function (why) {
+    if (mode !== 'place' || !G.ghost || why === lastWhy) return;
+    lastWhy = why;
+    const nm = G.BUILDINGS[G.ghost.type].name;
+    $('place-hint').textContent = why ? `${nm}: blocked by ${why}` : `${nm}: tap the map to move it`;
+  };
   function moveGhost(sx, sy) {
     if (!G.ghost) return;
     const w = G.toWorld(sx, sy), s = G.BUILDINGS[G.ghost.type].size;
