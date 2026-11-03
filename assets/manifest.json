@@ -3227,10 +3227,10 @@
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
   "size": 4,
-  "w": 281.7,
-  "h": 269.96,
-  "ax": 139.74,
-  "ay": 205.64
+  "w": 276.82,
+  "h": 237.15,
+  "ax": 138.13,
+  "ay": 172.87
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",

@@ -380,6 +380,7 @@
       ctx.drawImage(fogCv, 0, 0, N, N);
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
+    drawChimneys();
 
     // placement ghost
     if (G.ghost && G.ghost.tx != null) drawGhost(z);
@@ -400,6 +401,38 @@
     ctx.fillRect(x - w / 2, y, w * f, 3);
   }
 
+  // the highest point of a sprite's roof (its smoke louvre or chimney), relative to its anchor, found once
+  function roofTop(sp) {
+    if (sp._top) return sp._top;
+    let top = { x: 0, y: -sp.ay * 0.9 };
+    try {
+      const cv = sp.cv, w = cv.width, h = cv.height, d = cv.getContext('2d').getImageData(0, 0, w, h).data;
+      outer: for (let y = 0; y < h; y++) {
+        let sx = 0, n = 0;
+        for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 200) { sx += x; n++; }
+        if (n >= 3) { top = { x: sx / n * sp.w / w - sp.ax, y: (y + h * 0.02) * sp.h / h - sp.ay }; break outer; }
+      }
+    } catch (err) { /* canvas not readable: fall back to a point above the centre */ }
+    return (sp._top = top);
+  }
+  // chimney smoke: soft puffs rising and drifting off the top of the roof, thicker while training.
+  // Drawn after the fog, so unexplored sky behind a roof can't swallow it.
+  let chimneys = [];
+  function drawChimneys() {
+    for (const [e, g, z, sp] of chimneys) {
+        const tp = roofTop(sp), busy = e.queue && e.queue.length;
+        const cx = g.x + tp.x * z, cy = g.y + tp.y * z, n = busy ? 6 : 4;
+        for (let i = 0; i < n; i++) {
+          const t = (G.time * (busy ? 0.32 : 0.22) + i / n + (e.id % 7) * 0.13) % 1;
+          const px = cx + (Math.sin(t * 5 + i * 1.7 + e.id) * 3 + t * 22) * z, py = cy - (4 + t * 60) * z;
+          const r = (5 + t * 18) * z, a = Math.sin(Math.PI * Math.min(1, t * 1.2)) * (busy ? 0.75 : 0.6);
+          const grd = ctx.createRadialGradient(px, py, 0, px, py, r);
+          grd.addColorStop(0, `rgba(232,228,220,${a.toFixed(3)})`); grd.addColorStop(0.55, `rgba(205,200,192,${(a * 0.55).toFixed(3)})`); grd.addColorStop(1, 'rgba(200,196,188,0)');
+          ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill();
+        }
+    }
+    chimneys = [];
+  }
   function drawSprite(sp, x, y, z) {
     ctx.drawImage(sp.cv, x - sp.ax * z, y - sp.ay * z, sp.w * z, sp.h * z);
   }
@@ -562,12 +595,7 @@
         for (let k = 0; k < 4; k++) { ctx.rotate(Math.PI / 2); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -22 * z); ctx.stroke(); ctx.fillRect(1 * z, -22 * z, 6 * z, 16 * z); }
         ctx.restore();
       }
-      // smoke from town center chimney when training
-      if (e.queue && e.queue.length && e.built) {
-        const k = (G.time * 0.8) % 1;
-        ctx.fillStyle = `rgba(200,200,200,${0.4 * (1 - k)})`;
-        ctx.beginPath(); ctx.arc(g.x + 20 * z, g.y - (e.size * 30 + k * 30) * z, (4 + k * 6) * z, 0, 7); ctx.fill();
-      }
+      if (e.type === 'towncenter' && e.built && sp && sp.cv && !G.gfxLow) chimneys.push([e, g, z, sp]);
       const top = g.y - (sp.art ? sp.ay + 6 : e.size * 32 + 30) * z;
       if (selected || e.hp < e.maxHp * 0.999 || !e.built || (G.hpAlways && e.type !== 'farm')) {
         hpBar(g.x, top, 20 + e.size * 14, Math.max(0, e.hp / e.maxHp), own);
