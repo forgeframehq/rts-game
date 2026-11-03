@@ -1,5 +1,124 @@
 {
- "menuMusic": ["menu_1.mp3", "menu_2.mp3"],
- "music": ["peaceful_1.mp3", "peaceful_2.mp3", "peaceful_3.mp3", "peaceful_4.mp3"],
- "battleMusic": ["battle_1.mp3", "battle_2.mp3"]
+ "menuMusic": [
+  "menu_1.mp3",
+  "menu_2.mp3"
+ ],
+ "music": [
+  "peaceful_1.mp3",
+  "peaceful_2.mp3",
+  "peaceful_3.mp3",
+  "peaceful_4.mp3"
+ ],
+ "battleMusic": [
+  "battle_1.mp3",
+  "battle_2.mp3"
+ ],
+ "ageup": [
+  "sfx/ageup_1.mp3"
+ ],
+ "attacked": [
+  "sfx/attacked_1.mp3"
+ ],
+ "axethrow": [
+  "sfx/axethrow_1.mp3",
+  "sfx/axethrow_2.mp3"
+ ],
+ "bell": [
+  "sfx/bell_1.mp3"
+ ],
+ "bolt": [
+  "sfx/bolt_1.mp3",
+  "sfx/bolt_2.mp3"
+ ],
+ "bow": [
+  "sfx/bow_1.mp3",
+  "sfx/bow_2.mp3",
+  "sfx/bow_3.mp3"
+ ],
+ "build": [
+  "sfx/build_1.mp3",
+  "sfx/build_2.mp3",
+  "sfx/build_3.mp3"
+ ],
+ "buildingdown": [
+  "sfx/buildingdown_1.mp3",
+  "sfx/buildingdown_2.mp3"
+ ],
+ "chop": [
+  "sfx/chop_1.mp3",
+  "sfx/chop_2.mp3",
+  "sfx/chop_3.mp3"
+ ],
+ "click": [
+  "sfx/click_1.mp3"
+ ],
+ "command": [
+  "sfx/command_1.mp3",
+  "sfx/command_2.mp3"
+ ],
+ "complete": [
+  "sfx/complete_1.mp3"
+ ],
+ "defeat": [
+  "sfx/defeat_1.mp3"
+ ],
+ "die": [
+  "sfx/die_1.mp3",
+  "sfx/die_2.mp3",
+  "sfx/die_3.mp3"
+ ],
+ "error": [
+  "sfx/error_1.mp3"
+ ],
+ "farm": [
+  "sfx/farm_1.mp3",
+  "sfx/farm_2.mp3"
+ ],
+ "heal": [
+  "sfx/heal_1.mp3"
+ ],
+ "kingdown": [
+  "sfx/kingdown_1.mp3"
+ ],
+ "mine": [
+  "sfx/mine_1.mp3",
+  "sfx/mine_2.mp3",
+  "sfx/mine_3.mp3"
+ ],
+ "place": [
+  "sfx/place_1.mp3"
+ ],
+ "ram": [
+  "sfx/ram_1.mp3",
+  "sfx/ram_2.mp3"
+ ],
+ "research": [
+  "sfx/research_1.mp3"
+ ],
+ "select": [
+  "sfx/select_1.mp3",
+  "sfx/select_2.mp3"
+ ],
+ "spear": [
+  "sfx/spear_1.mp3",
+  "sfx/spear_2.mp3"
+ ],
+ "stonehit": [
+  "sfx/stonehit_1.mp3",
+  "sfx/stonehit_2.mp3"
+ ],
+ "sword": [
+  "sfx/sword_1.mp3",
+  "sfx/sword_2.mp3",
+  "sfx/sword_3.mp3"
+ ],
+ "train": [
+  "sfx/train_1.mp3"
+ ],
+ "trebuchet": [
+  "sfx/trebuchet_1.mp3"
+ ],
+ "victory": [
+  "sfx/victory_1.mp3"
+ ]
 }
