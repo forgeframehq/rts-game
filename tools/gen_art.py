@@ -84,7 +84,7 @@ def ref_url(ref):
 
 
 def create(prompt, ref):
-    inp = {"prompt": prompt, "aspect_ratio": "1:1", "output_format": "png", "quality": "high"}
+    inp = {"prompt": prompt, "aspect_ratio": os.environ.get("KIE_ASPECT", "1:1"), "output_format": "png", "quality": "high"}
     if ref:
         inp["image_urls"] = [ref_url(ref)]
     r = post("/createTask", {"model": MODEL if ref else T2I, "input": inp})

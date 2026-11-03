@@ -224,8 +224,14 @@
     }, 1000);
   }
 
+  // a film is playing: the music steps aside and comes back when it ends
+  S.hush = function (on) {
+    S.hushed = !!on;
+    if (on) deck.forEach((a, i) => { if (a && !a.paused) { fade(i, 0, 0.6); setTimeout(() => { if (S.hushed) a.pause(); }, 700); } });
+    else S.startMusic();
+  };
   S.startMusic = function () {
-    if (!S.musicEnabled || !S.musicLoaded()) return;
+    if (!S.musicEnabled || !S.musicLoaded() || S.hushed) return;
     watchMood();
     const a = deck[cur];
     if (a && a.src) { if (a.paused) { a.play().catch(() => {}); fade(cur, vol(), 2.0); } return; }

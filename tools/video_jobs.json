@@ -1,0 +1,53 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "jobs": [
+  [
+   "intro_1",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/i1_dawn.jpg",
+   "The camera glides slowly forward over the valley at sunrise. Villagers swing axes at trees, carry baskets and raise the timber frame of a house; chimney smoke drifts, birds fly over the castle. Audio: soft rising orchestral strings, birdsong, distant axe chops. A deep, calm male narrator says: \"Every empire begins with a single village.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   5
+  ],
+  [
+   "intro_2",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/i2_march.jpg",
+   "The camera tracks low beside four armies marching toward the viewer, banners whipping in the wind, horses tossing their heads, dust rising in the low sun. Audio: pounding war drums, brass horns, thousands of marching feet. A deep male narrator says: \"Four dynasties rise.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   5
+  ],
+  [
+   "intro_3",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/i3_siege.jpg",
+   "The trebuchet throws its burning boulder, which arcs into the castle wall and explodes in fire and stone; the battering ram swings into the gate; knights and spearmen clash below. Audio: epic choir and full orchestra, thunderous impacts, clashing steel. A deep male narrator says: \"Only one will rule.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   5
+  ],
+  [
+   "intro_4",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/i4_logo.jpg",
+   "A slow, majestic push toward the castle on the hill at sunset; glowing embers drift upward through the frame, clouds roll slowly, the sky darkens to gold. Audio: a final triumphant orchestral swell ending on a deep cinematic boom. No speech. Keep the painterly look of the image. No text on screen, no subtitles.",
+   5
+  ],
+  [
+   "dyn_britons",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/d_britons.jpg",
+   "The longbowmen draw together and loose a great volley; hundreds of arrows rise into the grey sky and arc toward the distant army; blue lion banners ripple. Audio: creaking bows, the whoosh of a storm of arrows, heroic orchestral strings. A deep male narrator says: \"The Britons. Masters of the longbow.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   10
+  ],
+  [
+   "dyn_franks",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/d_franks.jpg",
+   "The Frankish knights charge toward the camera, lances lowered, horses thundering, clods of earth flying, green fleur-de-lis banners streaming. Audio: thundering hooves, clanking armour, a bold brass fanfare. A deep male narrator says: \"The Franks. Lords of the cavalry charge.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   10
+  ],
+  [
+   "dyn_byzantines",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/d_byzantines.jpg",
+   "Greek fire pours from the walls and blazes across the water; the cataphracts' horses stamp; purple double-eagle banners wave over the golden city as the camera rises toward the domes. Audio: roaring flames, a solemn Byzantine choir, war drums. A deep male narrator says: \"The Byzantines. The walls that never fell.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   10
+  ],
+  [
+   "dyn_chinese",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/film/d_chinese.jpg",
+   "The soldiers on the Great Wall raise their repeating crossbows and shoot thin bolts toward distant enemies off screen; the red dragon banners ripple in the wind; the paper lanterns stay hanging on their poles; the camera drifts slowly along the wall as mist rolls over the mountains. Nothing flies toward the camera. Audio: rapid crossbow clacks, deep war drums, a sweeping erhu and orchestra. A deep male narrator says: \"The Chinese. An empire without end.\" Keep the painterly look of the image. No text on screen, no subtitles.",
+   10
+  ]
+ ]
+}

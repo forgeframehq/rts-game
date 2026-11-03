@@ -17,7 +17,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small' };
+  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', intro: 'first', dynfilm: 'on', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small' };
   const prefs = { ...PREF_DEFAULTS };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
@@ -65,7 +65,40 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // gesture of the session is what starts the audio. Keep listening until music is actually
   // playing: if the track list was still loading on the first tap, the next tap starts it.
   if (G.sound && G.sound.preload) G.sound.preload();
-  $('tap-begin').onclick = () => { if (G.sound) G.sound.wake(); $('start').classList.add('begun'); };
+  // ---------- Cinema ----------
+  // One overlay plays the intro and the dynasty films, full screen, with a Skip button.
+  // Videos load only when played, so the menu never waits on them.
+  let cineDone = null;
+  function playFilm(src, title, done) {
+    const v = $('cine-v'), box = $('cine');
+    cineDone = () => { cineDone = null; v.pause(); v.removeAttribute('src'); v.load(); box.classList.add('hidden'); $('cine-title').classList.add('hidden'); if (G.sound) G.sound.hush(false); done && done(); };
+    if (G.sound) G.sound.hush(true);
+    box.classList.remove('hidden'); box.classList.remove('show-skip');
+    $('cine-title').classList.add('hidden');
+    if (title) { $('cine-crest').src = title.crest; $('cine-name').textContent = title.name; $('cine-role').textContent = title.role; }
+    v.src = src; v.currentTime = 0; v.muted = !(G.sound && G.sound.enabled);
+    v.onended = () => cineDone && cineDone();
+    v.onerror = () => cineDone && cineDone();   // a film that can't load must never block the game
+    v.ontimeupdate = () => { if (title && v.currentTime > 1.2) $('cine-title').classList.remove('hidden'); };
+    const p = v.play(); if (p) p.catch(() => { v.muted = true; v.play().catch(() => cineDone && cineDone()); });
+    setTimeout(() => box.classList.add('show-skip'), 600);
+  }
+  $('cine-skip').onclick = e => { e.stopPropagation(); cineDone && cineDone(); };
+  $('cine').onclick = () => $('cine').classList.add('show-skip');
+  UI.playDynFilm = (civ, done) => {
+    if (prefs.dynfilm === 'off' || !G.CIVS[civ]) return done();
+    const c = G.CIVS[civ];
+    playFilm(`assets/video/dyn_${civ}.mp4`, { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
+  };
+  let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
+  $('tap-begin').onclick = () => {
+    if (G.sound) G.sound.wake();
+    const show = () => $('start').classList.add('begun');
+    if (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen)) {
+      introSeen = true; try { localStorage.setItem('dod.intro', '1'); } catch (e) { /* ignore */ }
+      playFilm('assets/video/intro.mp4', null, show);
+    } else show();
+  };
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {
     if (!G.sound) return;
     G.sound.wake();
@@ -113,10 +146,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('m-dynasties').onclick = () => { showDyn(dynSel); show('dynasties'); };
   $('m-learn').onclick = () => show('help');
   $('m-tut').onclick = () => { G.tutorial.start(); enterGame(); };
-  const _ss = startSkirmish; startSkirmish = cfg => { G.tutorial.last = false; _ss(cfg); };
+  const _ss = startSkirmish; startSkirmish = (cfg, film) => { G.tutorial.last = false; _ss(cfg, film); };
   $('m-options').onclick = () => show('options');
   $('btn-resetprefs').onclick = () => { const keep = prefs.setup; Object.assign(prefs, PREF_DEFAULTS, { setup: keep }); savePrefs(); applyPrefs(); UI.alert('Settings reset'); };
   $('btn-replaytut').onclick = () => { G.tutorial.start(); enterGame(); };
+  $('btn-watchintro').onclick = () => playFilm('assets/video/intro.mp4', null, null);
   const delBtn = $('btn-delsave');
   delBtn.onclick = () => {
     if (!G.hasSave()) { delBtn.textContent = 'No saved game'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
@@ -202,7 +236,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     renderSlots();
   }));
   let lastConfig = null;
-  function startSkirmish(cfg) {
+  function startSkirmish(cfg, film) {
     lastConfig = cfg;
     const used = new Set();
     const players = cfg.slots.filter(s => s.type !== 'closed').map(s => {
@@ -211,6 +245,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       used.add(civ);
       return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
     });
+    // from the menus (not a restart) the player's dynasty film plays first
+    if (film && UI.playDynFilm) return UI.playDynFilm(players[0].civ, () => launch(cfg, players));
+    launch(cfg, players);
+  }
+  function launch(cfg, players) {
     G.clearSave();
     G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest', time: +cfg.time || 0, startAge: +cfg.age || 1 });
     G.buildGround();
@@ -221,7 +260,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       + (G.rules.startAge > 1 ? `Starting in the ${G.AGES[G.rules.startAge].name}. ` : '')
       + `You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
   }
-  $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup))); };
+  $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup)), true); };
 
   // Quick Match: pick a difficulty and go. One opponent, high resources, so you are
   // fighting within a couple of minutes instead of gathering for ten. Keeps your last civ.
@@ -241,7 +280,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       ],
       // a smaller map and Regicide keep a Quick Match to roughly 15–20 minutes
       size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'rect', mode: 'regicide', time: 0
-    });
+    }, true);
   });
 
   // ---------- Dynasties ----------
