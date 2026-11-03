@@ -2,6 +2,8 @@
 (function () {
   let nextId = 1;
   const snd = (k, x, y) => G.sound && G.sound.play(k, x, y);
+  // work sounds follow the player's attention: only villagers they have selected chop, mine and hammer audibly
+  const workSnd = (u, k) => { if (u.owner === 1 && G.selection && G.selection.includes(u)) snd(k, u.x, u.y); };
   G.setNextId = n => { nextId = n; };
   G.ents = [];
   G.byId = new Map();
@@ -841,7 +843,7 @@
             const k = Math.min(1, dt * 2.5 * (ed - 0.3) / ed);
             u.x += (cx - u.x) * k; u.y += (cy - u.y) * k;
           }
-          snd({ tree: 'chop', gold: 'mine', stone: 'mine', berry: 'farm' }[r.rtype] || 'chop', u.x, u.y);
+          workSnd(u, { tree: 'chop', gold: 'mine', stone: 'mine', berry: 'farm' }[r.rtype] || 'chop');
           if (u.carry && u.carry.res !== r.rtype) u.carry = null;
           if (!u.carry) u.carry = { res: r.rtype, amt: 0 };
           let rate = G.RES[r.type].rate * (G.fastGather || 1);
@@ -939,7 +941,7 @@
         if (b.built && b.hp >= b.maxHp) { afterBuild(u, b); break; }
         if (G.edgeDist(u, b) <= 0.8 || (b.type === 'farm' && u.x >= b.tx && u.x <= b.tx + b.size && u.y >= b.ty && u.y <= b.ty + b.size)) {
           u.path = []; faceTo(u, b); u.working = true;
-          snd('build', u.x, u.y);
+          workSnd(u, 'build');
           if (!b.built) {
             const inc = dt / b.def.time * (G.fastBuild || 1) * (1 + G.techEff(u.owner, 'build'));
             b.progress = Math.min(1, b.progress + inc);

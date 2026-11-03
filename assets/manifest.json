@@ -3259,10 +3259,10 @@
  "mediterranean_towncenter_dark": {
   "file": "assets/mediterranean_towncenter_dark.png",
   "size": 4,
-  "w": 319.5,
-  "h": 252.66,
-  "ax": 159.42,
-  "ay": 187.32
+  "w": 268.07,
+  "h": 278.83,
+  "ax": 133.87,
+  "ay": 214.5
  },
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",

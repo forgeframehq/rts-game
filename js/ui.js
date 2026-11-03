@@ -428,10 +428,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     for (const e of G.ents) {
       if (e.dead || e.kind !== 'unit') continue;
       if (e.owner !== 1 && !G.isVisible(e.x, e.y)) continue;
-      const s = G.toScreen(e.x, e.y);
-      const d = Math.hypot(s.x - sx, s.y - 12 * z - sy);
-      const r = (G.mounted(e) ? 22 : 18) * Math.max(z, 0.8);
-      if (d < r && d < bd) { bd = d; best = e; }
+      // the whole figure is the target, feet to head, with a little extra room for a fingertip
+      const s = G.toScreen(e.x, e.y), k = Math.max(z, 0.8), hgt = (G.mounted(e) ? 52 : 40) * k, half = (G.mounted(e) ? 20 : 14) * k + 6;
+      const dx = Math.abs(sx - s.x), up = s.y - sy;
+      if (dx > half || up < -10 * k || up > hgt + 8) continue;
+      const d = Math.hypot(dx, up - hgt / 2);
+      if (d < bd) { bd = d; best = e; }
     }
     if (best) return best;
     // buildings / resources: check tile under finger, and tiles "behind" it for tall sprites
@@ -979,7 +981,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     p.x = e.clientX; p.y = e.clientY;
     if (!gesture) return;
     if (gesture.type === 'pending') {
-      if (Math.hypot(e.clientX - gesture.x, e.clientY - gesture.y) > 9) {
+      if (Math.hypot(e.clientX - gesture.x, e.clientY - gesture.y) > (gesture.mouse ? 9 : 16)) {
         clearHold();
         if (gesture.mouse && mode !== 'place') { G.boxSel = { x0: p.sx, y0: p.sy, x1: e.clientX, y1: e.clientY }; gesture = { type: 'box' }; }
         else gesture = { type: 'pan', samples: [] };
