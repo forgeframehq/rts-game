@@ -1,0 +1,24 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "sound": false,
+ "jobs": [
+  [
+   "intro_1",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/in2p/i1_dawn.jpg",
+   "The father lifts the timber post upright and sets it in place; the mother lifts baskets from the cart; the ox shakes its head; mist drifts along the river as the sun rises. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the tall vertical framing. No text on screen.",
+   5
+  ],
+  [
+   "intro_2",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/in2p/i2_march.jpg",
+   "Villagers walk through the town carrying wood and baskets, a cart rolls past the market stall, smoke drifts from chimneys, the wheat sways in the breeze, builders work on the keep on the hill. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the tall vertical framing. No text on screen.",
+   5
+  ],
+  [
+   "intro_3",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/in2p/i3_siege.jpg",
+   "The knights gallop forward across the open field toward the archers; the archers draw together and loose a volley of arrows toward the charging knights; banners stream in the wind. The two armies stay on opposite sides of the field. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the tall vertical framing. No text on screen.",
+   5
+  ]
+ ]
+}
