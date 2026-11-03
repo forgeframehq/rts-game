@@ -1,7 +1,9 @@
 // Computer opponent: runs a simple economy, builds up, defends and sends attack waves.
 (function () {
   const LEVELS = {
-    easy:   { maxVils: 18, firstAttack: 540, wave: 4, grow: 2, armyCap: 14, think: 1.2 },
+    // Easy plays like a beginner: a small economy, a slow first attack and small raids,
+    // even when high starting resources would let it build an army at once.
+    easy:   { maxVils: 15, firstAttack: 720, wave: 3, grow: 1, armyCap: 8, think: 1.8, armyPerVil: 0.4 },
     normal: { maxVils: 26, firstAttack: 420, wave: 6, grow: 3, armyCap: 24, think: 0.7 },
     hard:   { maxVils: 34, firstAttack: 330, wave: 8, grow: 4, armyCap: 36, think: 0.4 }
   };
@@ -280,7 +282,7 @@ G.makeAI = function () {
       if (k === 'wood') return needBld;
       return 0;
     };
-    if (army.length < AI.cfg.armyCap && pop < cap) {
+    if (army.length < AI.cfg.armyCap && pop < cap && (!AI.cfg.armyPerVil || army.length < vils.length * AI.cfg.armyPerVil)) {
       for (const b of blds) {
         if (!b.built || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
         // the Castle has no train list of its own: its only unit is the dynasty's unique one

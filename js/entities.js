@@ -513,7 +513,24 @@
       if (att.owner > 0) { const pl = G.players[att.owner]; pl.killed++; pl.killValue = (pl.killValue || 0) + G.valueOf(t); }
       G.kill(t); return;
     }
-    // Retaliate / alert
+    // Fight back. A soldier marching on a building (an attack wave, an attack-move) turns on
+    // the unit that hits it, as in AoE2: without this four archers could shoot down a whole
+    // army that kept walking at a Town Center. Siege and the royals keep to their orders.
+    if (t.kind === 'unit' && att.kind === 'unit' && t.task.t === 'attack' && t.type !== 'villager' && !t.def.heal
+        && !t.def.siege && t.def.cls !== 'hero' && G.enemies(att.owner, t.owner)) {
+      const cur = G.byId.get(t.task.id);
+      if (!cur || cur.kind === 'building' || G.dist(t, cur) > G.dist(t, att) + 2) {
+        t.task = { t: 'attack', id: att.id, forced: t.task.forced, home: t.task.home };
+        // and the men marching beside it turn with it
+        for (const o of G.ents) {
+          if (o === t || o.dead || o.kind !== 'unit' || o.owner !== t.owner || o.type === 'villager' || o.def.heal || o.def.siege || o.def.cls === 'hero') continue;
+          if (o.task.t !== 'attack' || G.dist(o, t) > 5) continue;
+          const oc = G.byId.get(o.task.id);
+          if (oc && oc.kind === 'unit') continue;
+          o.task = { t: 'attack', id: att.id, forced: o.task.forced, home: o.task.home }; o.path = []; o.pathFor = 0;
+        }
+      }
+    }
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
       if (t.type !== 'villager' && !t.def.heal) t.task = { t: 'attack', id: att.id };
       else if (att.kind === 'unit' && att.def.cls !== 'cav' && t.hp < t.maxHp * 0.4) {
