@@ -8,3 +8,5 @@ tools/render3d/*.glb
 tools/render3d/package*.json
 # generated art staging
 build/
+tools/render3d/_job_*.json
+tools/render3d/_work.json
