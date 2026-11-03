@@ -15,6 +15,10 @@
     select:     { vol: 0.5, throttle: 0.06, bus: 'ui' },
     command:    { vol: 0.5, throttle: 0.06, bus: 'ui' },
     error:      { vol: 0.6, throttle: 0.25, bus: 'ui' },
+    open:       { vol: 0.45, throttle: 0.15, bus: 'ui' },
+    back:       { vol: 0.45, throttle: 0.15, bus: 'ui' },
+    toggle:     { vol: 0.45, throttle: 0.04, bus: 'ui' },
+    coin:       { vol: 0.5, throttle: 0.3, bus: 'ui' },
     // villagers at work
     chop:       { vol: 0.45, throttle: 0.14, bus: 'work' },
     mine:       { vol: 0.45, throttle: 0.14, bus: 'work' },

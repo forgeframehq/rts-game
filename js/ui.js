@@ -53,7 +53,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     document.querySelectorAll('[data-pref]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(prefs[seg.dataset.pref]))));
   }
   document.addEventListener('click', e => {
-    if (G.sound && e.target.closest('button')) G.sound.play('click');
+    const b = e.target.closest('button'); if (!G.sound || !b) return;
+    // a sound that says what the tap did: back, a switch, opening a screen, or a plain click
+    G.sound.play(b.hasAttribute('data-back') || b.id === 'res-menu' ? 'back' : b.closest('.seg, .swatches, [data-pref], .res-tabs') ? 'toggle' : /^(m-|btn-p|btn-menu|btn-obj)/.test(b.id) ? 'open' : 'click');
   }, true);
   document.querySelectorAll('[data-pref]').forEach(seg => seg.addEventListener('click', e => {
     const v = e.target.closest('button') && e.target.closest('button').dataset.v; if (!v) return;

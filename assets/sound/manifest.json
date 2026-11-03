@@ -120,5 +120,18 @@
  ],
  "victory": [
   "sfx/victory_1.mp3"
+ ],
+ "back": [
+  "sfx/back_1.mp3"
+ ],
+ "coin": [
+  "sfx/coin_1.mp3"
+ ],
+ "open": [
+  "sfx/open_1.mp3"
+ ],
+ "toggle": [
+  "sfx/toggle_1.mp3",
+  "sfx/toggle_2.mp3"
  ]
 }

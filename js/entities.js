@@ -171,7 +171,7 @@
   };
   G.buildCost = (p, type) => ({ ...G.BUILDINGS[type].cost });
   G.canAfford = (p, cost) => Object.keys(cost).every(k => G.players[p].res[k] >= cost[k]);
-  G.pay = function (p, cost) { if (!G.canAfford(p, cost)) return false; const pl = G.players[p], st = pl.stats = pl.stats || {}; for (const k in cost) { pl.res[k] -= cost[k]; st.spent = (st.spent || 0) + cost[k]; } return true; };
+  G.pay = function (p, cost) { if (!G.canAfford(p, cost)) return false; const pl = G.players[p], st = pl.stats = pl.stats || {}; for (const k in cost) { pl.res[k] -= cost[k]; st.spent = (st.spent || 0) + cost[k]; } if (p === 1 && cost.gold && G.sound && !G.demo) G.sound.play('coin'); return true; };
   G.refund = function (p, cost) { for (const k in cost) G.players[p].res[k] += cost[k]; };
 
   G.popOf = function (p) {
