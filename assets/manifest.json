@@ -26,18 +26,18 @@
  "range": {
   "file": "assets/range.png",
   "size": 3,
-  "w": 192.5,
-  "h": 148.39,
-  "ax": 96.0,
-  "ay": 99.89
+  "w": 218.38,
+  "h": 200.62,
+  "ax": 108.94,
+  "ay": 152.37
  },
  "stable": {
   "file": "assets/stable.png",
   "size": 3,
-  "w": 205.5,
-  "h": 132.0,
-  "ax": 101.5,
-  "ay": 83.5
+  "w": 212.33,
+  "h": 179.37,
+  "ax": 106.06,
+  "ay": 130.94
  },
  "mill": {
   "file": "assets/mill.png",
@@ -1185,10 +1185,10 @@
  "blacksmith": {
   "file": "assets/blacksmith.png",
   "size": 3,
-  "w": 199.5,
-  "h": 188.5,
+  "w": 192.28,
+  "h": 218.68,
   "ax": 96.0,
-  "ay": 139.5
+  "ay": 170.41
  },
  "unit3d_western_militia_m_t1_attack": {
   "file": "assets/units/pack_unit3d_western_militia_m_t1.png",
@@ -2340,18 +2340,18 @@
  "mediterranean_range": {
   "file": "assets/mediterranean_range.png",
   "size": 3,
-  "w": 214.44,
-  "h": 168.06,
-  "ax": 110.46,
-  "ay": 119.06
+  "w": 275.69,
+  "h": 230.81,
+  "ax": 137.7,
+  "ay": 182.52
  },
  "mediterranean_stable": {
   "file": "assets/mediterranean_stable.png",
   "size": 3,
-  "w": 247.85,
-  "h": 168.56,
-  "ax": 142.38,
-  "ay": 119.56
+  "w": 251.51,
+  "h": 219.17,
+  "ax": 125.5,
+  "ay": 170.65
  },
  "mediterranean_mill": {
   "file": "assets/mediterranean_mill.png",
@@ -2364,10 +2364,10 @@
  "mediterranean_lumbercamp": {
   "file": "assets/mediterranean_lumbercamp.png",
   "size": 2,
-  "w": 131.51,
-  "h": 96.38,
-  "ax": 65.0,
-  "ay": 63.37
+  "w": 137.64,
+  "h": 123.75,
+  "ax": 69.56,
+  "ay": 91.42
  },
  "mediterranean_farm": {
   "file": "assets/mediterranean_farm.png",
@@ -2428,10 +2428,10 @@
  "eastasian_stable": {
   "file": "assets/eastasian_stable.png",
   "size": 3,
-  "w": 253.16,
-  "h": 182.98,
-  "ax": 110.79,
-  "ay": 134.48
+  "w": 212.27,
+  "h": 177.42,
+  "ax": 106.02,
+  "ay": 129.2
  },
  "eastasian_mill": {
   "file": "assets/eastasian_mill.png",
@@ -2492,10 +2492,10 @@
  "eastasian_lumbercamp": {
   "file": "assets/eastasian_lumbercamp.png",
   "size": 2,
-  "w": 188.52,
-  "h": 148.65,
-  "ax": 123.59,
-  "ay": 116.08
+  "w": 160.04,
+  "h": 131.13,
+  "ax": 79.85,
+  "ay": 98.96
  },
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
@@ -2508,18 +2508,18 @@
  "mediterranean_siegeworkshop": {
   "file": "assets/mediterranean_siegeworkshop.png",
   "size": 4,
-  "w": 266.67,
-  "h": 211.33,
-  "ax": 132.67,
-  "ay": 146.67
+  "w": 302.03,
+  "h": 257.78,
+  "ax": 151.74,
+  "ay": 193.62
  },
  "eastasian_siegeworkshop": {
   "file": "assets/eastasian_siegeworkshop.png",
   "size": 4,
-  "w": 263.35,
-  "h": 199.19,
-  "ax": 128.0,
-  "ay": 133.85
+  "w": 307.32,
+  "h": 248.27,
+  "ax": 162.01,
+  "ay": 183.65
  },
  "unit_britons_ram_m_idle": {
   "file": "assets/units/pack_unit_britons_ram_m.png",
@@ -2742,10 +2742,10 @@
  "monastery": {
   "file": "assets/monastery.png",
   "size": 3,
-  "w": 193.0,
-  "h": 181.97,
-  "ax": 96.5,
-  "ay": 132.97
+  "w": 226.52,
+  "h": 205.34,
+  "ax": 114.02,
+  "ay": 157.22
  },
  "eastasian_monastery": {
   "file": "assets/eastasian_monastery.png",

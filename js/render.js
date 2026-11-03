@@ -452,17 +452,24 @@
   }
   // chimney smoke: soft puffs rising and drifting off the top of the roof, thicker while training.
   // Drawn after the fog, so unexplored sky behind a roof can't swallow it.
+  // which buildings smoke, and how: a hearth in every house, the forge, the Town Center, the castle kitchens
+  const SMOKE = {
+    towncenter: { n: 4, size: 1, alpha: 1, speed: 1, col: '228,224,216', dx: 0, dy: 0 },
+    house:      { n: 3, size: 0.6, alpha: 0.8, speed: 0.9, col: '226,222,214', dx: 0, dy: 0 },
+    blacksmith: { n: 5, size: 0.85, alpha: 1.1, speed: 1.3, col: '150,145,140', dx: 0, dy: 0 },
+    castle:     { n: 3, size: 0.7, alpha: 0.75, speed: 0.8, col: '222,218,210', dx: 0, dy: 0.05 }
+  };
   let chimneys = [];
   function drawChimneys() {
     for (const [e, g, z, sp] of chimneys) {
-        const tp = roofTop(sp), busy = e.queue && e.queue.length;
-        const cx = g.x + tp.x * z, cy = g.y + tp.y * z, n = busy ? 6 : 4;
+        const S = SMOKE[e.type], tp = roofTop(sp), busy = (e.queue && e.queue.length) || e.research;
+        const cx = g.x + (tp.x + S.dx * sp.w) * z, cy = g.y + (tp.y + S.dy * sp.h) * z, n = busy ? S.n + 2 : S.n;
         for (let i = 0; i < n; i++) {
-          const t = (G.time * (busy ? 0.32 : 0.22) + i / n + (e.id % 7) * 0.13) % 1;
-          const px = cx + (Math.sin(t * 5 + i * 1.7 + e.id) * 3 + t * 22) * z, py = cy - (4 + t * 60) * z;
-          const r = (5 + t * 18) * z, a = Math.sin(Math.PI * Math.min(1, t * 1.2)) * (busy ? 0.75 : 0.6);
-          const grd = ctx.createRadialGradient(px, py, 0, px, py, r);
-          grd.addColorStop(0, `rgba(232,228,220,${a.toFixed(3)})`); grd.addColorStop(0.55, `rgba(205,200,192,${(a * 0.55).toFixed(3)})`); grd.addColorStop(1, 'rgba(200,196,188,0)');
+          const t = (G.time * (busy ? 0.32 : 0.22) * S.speed + i / n + (e.id % 7) * 0.13) % 1;
+          const px = cx + (Math.sin(t * 5 + i * 1.7 + e.id) * 3 + t * 22) * z * S.size, py = cy - (4 + t * 60) * z * S.size;
+          const r = (5 + t * 18) * z * S.size, a = Math.sin(Math.PI * Math.min(1, t * 1.2)) * (busy ? 0.75 : 0.6) * S.alpha;
+          const grd = ctx.createRadialGradient(px, py, 0, px, py, r), c = S.col;
+          grd.addColorStop(0, `rgba(${c},${a.toFixed(3)})`); grd.addColorStop(0.55, `rgba(${c},${(a * 0.55).toFixed(3)})`); grd.addColorStop(1, `rgba(${c},0)`);
           ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill();
         }
     }
@@ -630,7 +637,7 @@
         for (let k = 0; k < 4; k++) { ctx.rotate(Math.PI / 2); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -22 * z); ctx.stroke(); ctx.fillRect(1 * z, -22 * z, 6 * z, 16 * z); }
         ctx.restore();
       }
-      if (e.type === 'towncenter' && e.built && sp && sp.cv && !G.gfxLow) chimneys.push([e, g, z, sp]);
+      if (SMOKE[e.type] && e.built && sp && sp.cv && !G.gfxLow && (e.owner === 1 || G.revealAll || G.isVisible(e.x, e.y))) chimneys.push([e, g, z, sp]);
       const top = g.y - (sp.art ? sp.ay + 6 : e.size * 32 + 30) * z;
       if (selected || e.hp < e.maxHp * 0.999 || !e.built || (G.hpAlways && e.type !== 'farm')) {
         hpBar(g.x, top, 20 + e.size * 14, Math.max(0, e.hp / e.maxHp), own);
