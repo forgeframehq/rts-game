@@ -1,0 +1,53 @@
+{
+ "out": "build/art/villagers",
+ "jobs": [
+  [
+   "franks_villager_m",
+   "",
+   "A Frankish man of the early Middle Ages in his own people's dress: a knee-length green wool tunic with a contrasting woven red-and-ochre border at the hem and cuffs, a short brown wool cloak fastened at the right shoulder with a round bronze brooch, russet trousers bound crosswise to the knee with pale cloth leg-wrappings, a leather belt with a bronze buckle under a magenta cloth sash, leather turnshoes. Fair skin, short fair-blond hair and a long drooping moustache, broad farmer's build.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "franks_villager_f",
+   "",
+   "A Frankish woman of the early Middle Ages in her own people's dress: a long ankle-length linen under-gown in pale cream with long sleeves, and over it a sleeveless green wool overdress (a peplos-style pinafore) fastened at each shoulder with a round bronze brooch, a string of amber beads hanging between the two brooches, a magenta cloth sash at the waist, leather shoes. Fair skin, long fair-blond hair in two braids, uncovered.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "byzantines_villager_m",
+   "",
+   "A Byzantine (Eastern Roman) man, 10th century, in his own people's dress: a long belted crimson tunic (sticharion) reaching below the knee, with a wide gold-ochre embroidered collar and gold bands at the cuffs and hem, slit at the sides, close-fitting ochre hose, tall soft leather boots, a magenta cloth sash at the waist. Olive Mediterranean skin, short dark curly hair and a full short dark beard.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "byzantines_villager_f",
+   "",
+   "A Byzantine (Eastern Roman) woman, 10th century, in her own people's dress: a long loose ankle-length tunic (dalmatica) with wide sleeves in deep crimson, with broad gold-ochre embroidered bands down from both shoulders to the hem and around the wide cuffs, a cream mantle (palla) draped over one shoulder and across the body, a magenta cloth sash at the waist, simple shoes. Olive Mediterranean skin, dark hair gathered in a low bun, uncovered.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "chinese_villager_m",
+   "",
+   "A Song-dynasty Chinese man in his own people's dress: a knee-length indigo-blue robe (shan) with a cross-over collar closing to the right and slits at the sides, sleeves rolled to the forearm, over loose cream trousers tucked into dark cloth leggings at the shin, black cloth shoes, a magenta cloth sash at the waist. East Asian features, black hair tied in a topknot wrapped with a small dark cloth band, clean-shaven.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "chinese_villager_f",
+   "",
+   "A Song-dynasty Chinese woman in her own people's dress: a long indigo-blue beizi, a straight open-fronted outer jacket reaching the knees with contrasting slate-blue borders down both front edges, worn over a short cream cross-collar top and a long pleated sky-blue skirt to the ankle, a magenta cloth sash at the waist, black cloth shoes. East Asian features, black hair in a neat bun, uncovered.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "britons_villager_m",
+   "",
+   "An Anglo-Saxon English man of the early Middle Ages in his own people's dress: a knee-length undyed oatmeal wool tunic with a woven blue border at the neck and cuffs, a short dark-blue wool hood-cape (cowl) folded down around the shoulders, not over the head, brown wool trousers with cross-gartered leather thongs up the shins, a leather belt with a small knife sheath under a magenta cloth sash, leather turnshoes. Fair, ruddy skin, short brown hair and a short brown beard.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ],
+  [
+   "britons_villager_f",
+   "",
+   "An Anglo-Saxon English woman of the early Middle Ages in her own people's dress: a long ankle-length blue wool gown (kirtle) with fitted long sleeves, a shorter undyed oatmeal over-tunic reaching to the knee, a white linen veil draped over the back of the head and shoulders with the face and front hair showing, a magenta cloth sash at the waist, leather shoes. Fair skin, auburn hair.",
+   "Full-body front view of ONE character standing in a relaxed A-pose, arms held slightly away from the body, palms in, feet a little apart, looking straight ahead, neutral expression. Realistic 3D game character render, PBR materials, soft even studio lighting, the whole body from head to feet in frame and centred. Plain flat light grey background, nothing else in the image: no props in the hands, no tools, no weapons, no hat, no hood, no text, no border. The belt sash must be pure magenta #FF00FF; nothing else may be magenta or pink."
+  ]
+ ]
+}
