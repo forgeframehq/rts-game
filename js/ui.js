@@ -191,9 +191,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' },
       { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
     ],
-    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'rect', mode: 'conquest', time: '0', age: '1'
+    size: 'medium', res: 'standard', pop: '200', reveal: 'normal', shape: 'diamond', mode: 'conquest', time: '0', age: '1'
   };
-  if (!setup.shape) setup.shape = 'rect';
+  setup.shape = 'diamond';   // the classic AoE diamond is the only map shape
   if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
   if (setup.time == null) setup.time = '0';     // ...and from before the time limit
   if (setup.age == null) setup.age = '1';
@@ -255,7 +255,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function launch(cfg, players) {
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: cfg.shape || 'rect', mode: cfg.mode || 'conquest', time: +cfg.time || 0, startAge: +cfg.age || 1 });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: 'diamond', mode: cfg.mode || 'conquest', time: +cfg.time || 0, startAge: +cfg.age || 1 });
     G.buildGround();
     enterGame();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
@@ -283,7 +283,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
       ],
       // a smaller map and Regicide keep a Quick Match to roughly 15–20 minutes
-      size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'rect', mode: 'regicide', time: 0
+      size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'diamond', mode: 'regicide', time: 0
     }, true);
   });
 
@@ -664,12 +664,59 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     return iconHTML('i:' + (e.type === 'villager' && e.sex === 'f' ? 'villager_f' : e.type));
   }
   function costTxt(c) { return Object.keys(c).map(k => `<img class="ci" src="${ICONP}${k}.png" alt="${k}">${c[k]}`).join(' '); }
+  // ---- press and hold any command for an explanation ----
+  const CMD_TIPS = {
+    'Deselect': 'Clear your selection.', 'Back': 'Back to the previous set of buttons.',
+    'Build': 'Choose a building for the selected villagers to construct.',
+    'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
+    'Stop': 'Stop whatever the selected units are doing.', 'Formation': 'Change how your army lines up when it moves: line, staggered or box.',
+    'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
+    'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
+    'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
+    'Ungarrison': 'Send everyone back out of this building.', 'Delete': 'Destroy this. Tap twice to confirm.',
+    'Train': 'Show the units this building trains.', 'Research': 'Show the technologies this building can research.'
+  };
+  const costLine = c => Object.entries(c || {}).map(([k, v]) => `${v} ${k}`).join(' · ');
+  function tipFor(lb) {
+    lb = String(lb).replace(/<[^>]*>/g, '').trim();
+    if (CMD_TIPS[lb]) return { t: lb, d: CMD_TIPS[lb] };
+    if (/^Re-sow/.test(lb)) return { t: 'Re-sow', d: CMD_TIPS['Re-sow'] };
+    for (const id in G.TECHS) { const t = G.TECHS[id]; if (t.name === lb) return { t: t.name, d: t.desc + '.', c: costLine(t.cost), a: G.AGES[t.age].name }; }
+    for (const id in G.UPGRADES) { const t = G.UPGRADES[id]; if (t.name === lb) { const U = G.UNITS[t.line]; return { t: t.name, d: `Upgrades every ${U.name} you own and train: ${t.stats.hp ? t.stats.hp + ' HP, ' : ''}${t.stats.atk ? t.stats.atk + ' attack' : 'stronger'}.`, c: costLine(t.cost), a: G.AGES[t.age].name }; } }
+    for (const k in G.UNITS) { const U = G.UNITS[k]; if (U.name === lb || (G.unitDef && G.unitDef(1, k).name === lb)) {
+      const D = G.unitDef ? G.unitDef(1, k) : U, good = { spearman: 'Strong against cavalry.', archer: 'Shoots from range; good against foot soldiers.', knight: 'Fast and tough; runs down archers.', militia: 'Solid foot soldier; good at knocking down buildings.', scout: 'Very fast; scouts the map and raids.', villager: 'Gathers resources and builds.', monk: 'Heals your units.', ram: 'Smashes buildings; arrows barely hurt it.', trebuchet: 'Hurls boulders at buildings from very far away.' }[k] || '';
+      return { t: D.name, d: `${good} ${D.hp} HP, ${D.atk} attack${D.range > 1 ? ', range ' + D.range : ''}.`.trim(), c: costLine(G.unitCost ? G.unitCost(1, k) : U.cost) }; } }
+    for (const k in G.BUILDINGS) { const B = G.BUILDINGS[k]; if (B.name === lb) {
+      const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
+      return { t: B.name, d: what, c: costLine(B.cost), a: G.BUILD_AGE[k] > 1 ? G.AGES[G.BUILD_AGE[k]].name : null }; } }
+    const ag = G.AGES.find(a => a && (a.short + ' Age' === lb || a.name === lb));
+    if (ag) return { t: ag.name, d: (ag.bonus || '') + (ag.needs ? ` Needs 2 of: ${ag.needs.map(n => G.BUILDINGS[n].name).join(', ')}.` : ''), c: costLine(ag.cost) };
+    return null;
+  }
+  let tipTimer = null, tipShown = false;
+  function showTip(b, tip) {
+    const el = $('tip'); if (!el || !tip) return;
+    el.innerHTML = `<b>${tip.t}</b>${tip.a ? `<em>${tip.a}</em>` : ''}<p>${tip.d}</p>${tip.c ? `<small>${tip.c}</small>` : ''}`;
+    el.classList.remove('hidden');
+    const r = b.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
+    el.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px';
+    el.style.top = Math.max(8, r.top - h - 10) + 'px';
+    tipShown = true; if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate(10);
+  }
+  function hideTip() { clearTimeout(tipTimer); tipTimer = null; const el = $('tip'); if (el) el.classList.add('hidden'); }
+  function holdTip(b, lb) {
+    b.addEventListener('pointerdown', () => { tipShown = false; clearTimeout(tipTimer); tipTimer = setTimeout(() => showTip(b, tipFor(lb)), 450); });
+    for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, () => { clearTimeout(tipTimer); if (tipShown) setTimeout(hideTip, ev === 'pointerup' ? 1800 : 0); });
+    b.addEventListener('contextmenu', e => e.preventDefault());
+    b.addEventListener('mouseenter', () => { const t = tipFor(lb); if (t) b.title = t.t + ': ' + t.d; });
+  }
   function btn(ic, lb, cs, fn, poor) {
     const b = document.createElement('button');
     b.className = 'cmd' + (poor ? ' poor' : '');
     b.innerHTML = `<span class="ic">${iconHTML(ic)}</span><span class="lb">${lb}</span>${cs ? `<span class="cs">${cs}</span>` : ''}`;
     if (UI.tutGlow && lb === UI.tutGlow) b.classList.add('tut-glow');
-    b.onclick = e => { e.stopPropagation(); fn(); };
+    b.onclick = e => { e.stopPropagation(); if (tipShown) { tipShown = false; return; } fn(); };   // a long press explains, it doesn't press
+    holdTip(b, lb);
     return b;
   }
   let buildMenu = false;

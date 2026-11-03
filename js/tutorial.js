@@ -86,7 +86,7 @@
 
   T.start = function () {
     G.clearSave();
-    G.newGame({ players: [{ civ: 'britons' }, { civ: 'franks', ai: 'easy' }], size: 'small', res: 'standard', reveal: 'explored', shape: 'rect', mode: 'conquest', seed: 4242 });
+    G.newGame({ players: [{ civ: 'britons' }, { civ: 'franks', ai: 'easy' }], size: 'small', res: 'standard', reveal: 'explored', shape: 'diamond', mode: 'conquest', seed: 4242 });
     G.ais = [];                                           // the outpost does not play
     const home = tc(), foeTc = G.ents.find(e => e.owner === FOE && e.type === 'towncenter');
     // the outpost: a Barracks and a House part way between the two towns

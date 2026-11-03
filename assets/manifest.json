@@ -36,8 +36,8 @@
   "size": 3,
   "w": 205.5,
   "h": 132.0,
-  "ax": 107.5,
-  "ay": 83.0
+  "ax": 101.5,
+  "ay": 83.5
  },
  "mill": {
   "file": "assets/mill.png",
@@ -2412,25 +2412,25 @@
  "eastasian_barracks": {
   "file": "assets/eastasian_barracks.png",
   "size": 3,
-  "w": 268.0,
-  "h": 219.0,
-  "ax": 134.0,
-  "ay": 170.0
+  "w": 325.16,
+  "h": 265.71,
+  "ax": 162.28,
+  "ay": 217.1
  },
  "eastasian_range": {
   "file": "assets/eastasian_range.png",
   "size": 3,
-  "w": 276.44,
-  "h": 219.14,
-  "ax": 137.72,
-  "ay": 170.14
+  "w": 335.84,
+  "h": 266.23,
+  "ax": 167.62,
+  "ay": 217.62
  },
  "eastasian_stable": {
   "file": "assets/eastasian_stable.png",
   "size": 3,
   "w": 253.16,
   "h": 182.98,
-  "ax": 115.05,
+  "ax": 110.79,
   "ay": 134.48
  },
  "eastasian_mill": {
@@ -2468,10 +2468,10 @@
  "eastasian_blacksmith": {
   "file": "assets/eastasian_blacksmith.png",
   "size": 3,
-  "w": 238.62,
-  "h": 230.1,
-  "ax": 117.05,
-  "ay": 181.1
+  "w": 276.17,
+  "h": 266.31,
+  "ax": 155.78,
+  "ay": 217.73
  },
  "eastasian_castle": {
   "file": "assets/eastasian_castle.png",
@@ -2492,18 +2492,18 @@
  "eastasian_lumbercamp": {
   "file": "assets/eastasian_lumbercamp.png",
   "size": 2,
-  "w": 165.5,
-  "h": 130.5,
-  "ax": 98.5,
-  "ay": 98.0
+  "w": 188.52,
+  "h": 148.65,
+  "ax": 123.59,
+  "ay": 116.08
  },
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
   "size": 4,
-  "w": 275.88,
-  "h": 272.36,
-  "ax": 116.16,
-  "ay": 201.76
+  "w": 337.74,
+  "h": 333.43,
+  "ax": 168.33,
+  "ay": 268.89
  },
  "mediterranean_siegeworkshop": {
   "file": "assets/mediterranean_siegeworkshop.png",
@@ -2752,8 +2752,8 @@
   "size": 3,
   "w": 251.15,
   "h": 216.56,
-  "ax": 114.55,
-  "ay": 167.56
+  "ax": 129.08,
+  "ay": 168.06
  },
  "unit3d_britons_king_m_attack": {
   "file": "assets/units/pack_unit3d_britons_king_m.png",
@@ -3221,8 +3221,8 @@
   "size": 2,
   "w": 147.0,
   "h": 134.0,
-  "ax": 71.0,
-  "ay": 101.0
+  "ax": 76.25,
+  "ay": 101.5
  },
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
@@ -3235,10 +3235,10 @@
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 249.85,
-  "h": 219.93,
-  "ax": 124.92,
-  "ay": 170.93
+  "w": 301.96,
+  "h": 265.8,
+  "ax": 150.98,
+  "ay": 217.2
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
@@ -3277,7 +3277,7 @@
   "size": 2,
   "w": 139.5,
   "h": 102.5,
-  "ax": 75.0,
+  "ax": 70.0,
   "ay": 70.0
  },
  "eastasian_house_dark": {
@@ -8146,8 +8146,8 @@
   "size": 3,
   "w": 192.22,
   "h": 198.39,
-  "ax": 96.0,
-  "ay": 149.95
+  "ax": 100.62,
+  "ay": 150.23
  },
  "mediterranean_university": {
   "file": "assets/mediterranean_university.png",

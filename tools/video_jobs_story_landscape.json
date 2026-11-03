@@ -1,0 +1,54 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "sound": false,
+ "jobs": [
+  [
+   "intro_1",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/i1_dawn.jpg",
+   "The villager swings his axe into the tree, the other raises the timber frame; the camera slowly tilts up past the village to the castle on the hill as the sun rises, smoke drifting, birds flying. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "intro_2",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/i2_march.jpg",
+   "The armies march toward the camera, banners whipping in the wind high above them, horses tossing their heads, dust rising in the low sun. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "intro_3",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/i3_siege.jpg",
+   "The burning boulder streaks across the sky and smashes into the tower in a burst of fire and stone; soldiers clash below; smoke billows. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "intro_4",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/i4_logo.jpg",
+   "A slow, majestic push toward the castle at sunset; glowing embers drift upward through the dark sky; clouds roll slowly. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "dyn_britons",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/d_britons.jpg",
+   "The longbowman draws and looses his arrow into the sky, then reaches for another; behind him the line of archers looses a great volley that fills the grey sky with arrows; blue lion banners ripple. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ],
+  [
+   "dyn_franks",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/d_franks.jpg",
+   "The knight charges toward the camera on his white warhorse, lance lowered, more knights thundering behind, green fleur-de-lis banners streaming, clods of earth flying. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ],
+  [
+   "dyn_byzantines",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/d_byzantines.jpg",
+   "Greek fire pours from the tower in a roaring stream; the cataphract in the foreground lifts his chin as his purple double-eagle banner waves; the camera slowly rises toward the golden domes. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ],
+  [
+   "dyn_chinese",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/d_chinese.jpg",
+   "The crossbowman shoots bolt after bolt from his repeating crossbow toward distant enemies off screen; the red dragon banner ripples; the paper lantern stays hanging; mist rolls over the mountains behind the wall. Nothing flies toward the camera. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ]
+ ]
+}

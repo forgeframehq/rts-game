@@ -556,3 +556,15 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 #start.begun .mgrid > *:nth-child(1) { animation-delay: 0.24s; } #start.begun .mgrid > *:nth-child(2) { animation-delay: 0.3s; }
 #start.begun .mgrid > *:nth-child(3) { animation-delay: 0.36s; } #start.begun .mgrid > *:nth-child(4) { animation-delay: 0.42s; }
 @keyframes menuIn { from { opacity: 0; transform: translateY(14px); } }
+
+/* press-and-hold explanation card */
+#tip { position: fixed; z-index: 30; width: min(260px, calc(100vw - 16px)); padding: 10px 12px; border-radius: 10px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(52,36,20,0.98), rgba(24,16,9,0.98)) padding-box, linear-gradient(180deg, #e9c46a, #6e4d1a) border-box;
+  border: 1.5px solid transparent; box-shadow: 0 8px 24px #000c; color: #f1e2bd; font: 13px/1.35 system-ui, sans-serif; animation: tipIn .15s ease-out; }
+#tip.hidden { display: none; }
+#tip b { display: block; font: 700 15px var(--heading); color: var(--gold); letter-spacing: 0.04em; }
+#tip em { display: block; font-style: normal; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #c9a24a; margin-top: 1px; }
+#tip p { margin: 4px 0 0; }
+#tip small { display: block; margin-top: 6px; color: #e8cf8a; font-weight: 600; }
+@keyframes tipIn { from { opacity: 0; transform: translateY(4px); } }
+.cmd { -webkit-touch-callout: none; }
