@@ -17,7 +17,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', zoombtns: 'on' };
+  const prefs = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal' };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
   // (Android in full screen or as an installed app); elsewhere the phone's own rotation decides.
@@ -43,7 +43,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
-    document.body.classList.toggle('no-zoombtns', prefs.zoombtns === 'off');
     lockOrientation();
     G.resize();
     [...$('speed').children].forEach(x => x.classList.toggle('on', +x.dataset.s === G.speed));
@@ -770,7 +769,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   cv.addEventListener('contextmenu', e => e.preventDefault());
   cv.addEventListener('pointerdown', e => {
-    cv.setPointerCapture(e.pointerId);
+    // A new first touch always starts clean. A phone can lose a finger's "up" (the app the
+    // game sits in takes it), and a stale finger left here made every later tap look like
+    // half of a two-finger gesture, so nothing could be tapped.
+    if (e.isPrimary) { pts.clear(); gesture = null; clearHold(); G.boxSel = null; }
+    // Pinch is gone (it glitched in the app); the zoom buttons zoom. A second finger is ignored.
+    if (e.pointerType !== 'mouse' && pts.size >= 1) return;
+    try { cv.setPointerCapture(e.pointerId); } catch (err) { /* already released */ }
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
     if (e.pointerType === 'mouse') {
       if (e.button === 1) gesture = { type: 'pan', lx: e.clientX, ly: e.clientY, moved: true };
@@ -788,10 +793,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           if (navigator.vibrate) navigator.vibrate(15);
         }
       }, 420);
-    } else if (pts.size === 2) {
-      clearHold(); G.boxSel = null;
-      const [a, b] = [...pts.values()];
-      gesture = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y), z: G.camera.zoom, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 };
     }
   });
   cv.addEventListener('pointermove', e => {
@@ -814,18 +815,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (gesture.samples) { gesture.samples.push({ dx, dy, t: performance.now() }); if (gesture.samples.length > 5) gesture.samples.shift(); }
     } else if (gesture.type === 'box') {
       G.boxSel.x1 = e.clientX; G.boxSel.y1 = e.clientY;
-    } else if (gesture.type === 'pinch' && pts.size >= 2) {
-      const [a, b] = [...pts.values()];
-      const d = Math.hypot(a.x - b.x, a.y - b.y);
-      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-      const before = G.toWorld(gesture.mx, gesture.my);
-      G.camera.zoom = Math.max(G.minZoom || 0.45, Math.min(2.2, gesture.z * d / gesture.d));
-      // keep pinch midpoint anchored, and pan with midpoint movement
-      const after = G.toWorld(gesture.mx, gesture.my);
-      const pb = G.iso(before.x, before.y), pa = G.iso(after.x, after.y);
-      G.camera.x += pb.x - pa.x; G.camera.y += pb.y - pa.y;
-      G.camera.x -= (mx - gesture.mx) / G.camera.zoom; G.camera.y -= (my - gesture.my) / G.camera.zoom;
-      gesture.mx = mx; gesture.my = my;
     }
   });
   function up(e) {
@@ -843,7 +832,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         G.camera.vx = -vx * 60 / G.camera.zoom; G.camera.vy = -vy * 60 / G.camera.zoom;
       }
     }
-    if (gesture.type === 'pinch' && pts.size === 1) { gesture = { type: 'pan' }; return; } // continue panning with remaining finger
     if (!pts.size) gesture = null;
   }
   cv.addEventListener('pointerup', up);

@@ -29,7 +29,7 @@ def model(img, out):
     rec = json.load(open(rec_p)) if os.path.exists(rec_p) else {}
     if not rec.get("model"):
         uri = "data:image/png;base64," + base64.b64encode(open(img, "rb").read()).decode()
-        rec["model"] = call("POST", "/image-to-3d", {"image_url": uri, "ai_model": "latest", "should_texture": True,
+        rec["model"] = call("POST", "/image-to-3d", {"image_url": uri, "ai_model": os.environ.get("MESHY_MODEL", "latest"), "should_texture": True,
                             "enable_pbr": False, "pose_mode": "a-pose", "should_remesh": True, "topology": "triangle", "target_polycount": 30000})["result"]
         rec["light"] = True          # simplified by Meshy as it was built: rigs as it is
         json.dump(rec, open(rec_p, "w"))
@@ -46,7 +46,11 @@ def model(img, out):
         if rm["status"] != "SUCCEEDED": sys.exit(f"{stem}: remesh {rm['status']} {rm.get('task_error')}")
         src = rec["remesh"]
     if not rec.get("rig"):
-        rec["rig"] = call("POST", "/rigging", {"input_task_id": src, "height_meters": 1.75})["result"]
+        # Rig from the model FILE, not the task: rigging a Meshy 6 Lite task by its id returns a
+        # skeleton with no body attached, while the same model handed over as a file rigs fine.
+        kind = "remesh" if src == rec.get("remesh") else "image-to-3d"
+        url = call("GET", f"/{kind}/{src}")["model_urls"]["glb"]
+        rec["rig"] = call("POST", "/rigging", {"model_url": url, "height_meters": 1.75})["result"]
         json.dump(rec, open(rec_p, "w"))
     r = wait("rigging", rec["rig"])
     if r["status"] != "SUCCEEDED": sys.exit(f"{stem}: rig {r['status']} {r.get('task_error')}")

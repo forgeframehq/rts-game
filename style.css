@@ -403,4 +403,3 @@ body.mm-off #minimap { display: none; }
   color: #f1d68a; font: 700 26px/1 Georgia, serif; box-shadow: 0 2px 6px rgba(0,0,0,.5); padding: 0; }
 .zbtn:active { transform: scale(0.94); }
 
-body.no-zoombtns .zoombtns { display: none; }

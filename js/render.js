@@ -99,7 +99,7 @@
     // per-tile fields, bilinearly sampled per pixel: dirt, and forest (from where the trees stand)
     const dirt = new Float32Array(N * N), forest = new Float32Array(N * N);
     for (let i = 0; i < N * N; i++) dirt[i] = G.terrain[i] === 4 ? 1 : 0;
-    for (const e of G.ents) if (e.kind === 'res' && e.type === 'tree')
+    for (const e of G.ents) if (!e.dead && e.kind === 'res' && e.type === 'tree')
       for (let j = -2; j <= 2; j++) for (let i = -2; i <= 2; i++) {
         const x = e.tx + i, y = e.ty + j; if (x < 0 || y < 0 || x >= N || y >= N) continue;
         forest[y * N + x] = Math.min(1, forest[y * N + x] + (i === 0 && j === 0 ? 0.6 : Math.abs(i) + Math.abs(j) <= 2 ? 0.25 : 0.1));
@@ -192,7 +192,7 @@
       }
     }
     // the shade right under each tree
-    for (const e of G.ents) if (e.kind === 'res' && e.type === 'tree') {
+    for (const e of G.ents) if (!e.dead && e.kind === 'res' && e.type === 'tree') {
       g.fillStyle = 'rgba(20,35,10,0.28)'; g.beginPath(); g.arc((e.tx + 0.5) * GT, (e.ty + 0.5) * GT, GT * 0.75, 0, 7); g.fill();
     }
     fogCv = document.createElement('canvas'); fogCv.width = fogCv.height = N;
@@ -542,25 +542,15 @@
       if (selected) selRingTile(e, own ? '#fff' : '#ff6b5e');
       const g = G.toScreen(e.tx + e.size / 2, e.ty + e.size / 2);
       let sp;
-      if (e.built) sp = G.buildingSprite(e.type, e.owner, e.type !== 'farm' ? 0
-        : e.food <= 0 ? 'spent' : Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)),
-        e.def.wall ? wallMask(e) : 0);
-      else sp = G.foundationSprite(e.type, Math.min(3, Math.floor(e.progress * 4)));
-      if (e.hitT) ctx.globalAlpha = 0.85;
-      drawSprite(sp, g.x, g.y, z);
-      // under construction: the finished building rises out of the scaffolding, revealed
-      // from the ground up as the work goes on. No stage art — one clip of the real sprite.
-      if (!e.built && e.progress > 0.04) {
-        const fin = G.buildingSprite(e.type, e.owner, e.type === 'farm' ? 0 : undefined);
-        if (fin) {
-          const top = g.y - fin.ay * z, full = fin.h * z, shown = full * Math.min(1, e.progress);
-          ctx.save();
-          ctx.beginPath();
-          ctx.rect(g.x - fin.ax * z - 2, top + full - shown, fin.w * z + 4, shown + 2);
-          ctx.clip();
-          drawSprite(fin, g.x, g.y, z);
-          ctx.restore();
-        }
+      if (e.built) {
+        sp = G.buildingSprite(e.type, e.owner, e.type !== 'farm' ? 0
+          : e.food <= 0 ? 'spent' : Math.min(2, Math.floor((1 - e.food / G.BUILDINGS.farm.farm) * 3)),
+          e.def.wall ? wallMask(e) : 0);
+        if (e.hitT) ctx.globalAlpha = 0.85;
+        drawSprite(sp, g.x, g.y, z);
+      } else {
+        sp = G.buildingSprite(e.type, e.owner, e.type === 'farm' ? 0 : undefined);
+        drawConstruction(e, g, z, sp);
       }
       ctx.globalAlpha = 1;
       if (e.built && e.hp < e.maxHp * 0.74 && e.type !== 'farm') burning.push([e, g, z, sp]);
@@ -600,6 +590,72 @@
     if (e.atkAnim > 0) e.atkAnim -= 0.016;
     if (!G.drawUnitArt || !G.drawUnitArt(ctx, e, s.x, s.y, z)) G.drawUnit(ctx, e, s.x, s.y, z * 1.6);
     if (selected || e.hp < e.maxHp || G.hpAlways) hpBar(s.x, s.y - ((G.unitArtHeight && G.unitArtHeight(e)) || (G.mounted(e) ? 34 : 28)) * z, 18, Math.max(0, e.hp / e.maxHp), e.owner === 1);
+  }
+
+  // ---------- Construction ----------
+  // Drawn in code from the footprint itself, so every building, whatever its size, is built
+  // exactly on its own square: the plot is staked out and dug, scaffold poles go up at its
+  // four corners, and the building rises inside them from the ground up while dust kicks
+  // up. A farm is not scaffolded: its field is tilled row by row inside a fence of stakes.
+  function corner(e, i, j) { return G.toScreen(e.tx + i * e.size, e.ty + j * e.size); }
+  function pole(p, h, z) {
+    ctx.strokeStyle = '#5a3d22'; ctx.lineWidth = Math.max(1.5, 2.4 * z);
+    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y - h); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,220,160,0.35)'; ctx.lineWidth = Math.max(0.6, 0.8 * z);
+    ctx.beginPath(); ctx.moveTo(p.x - 0.8 * z, p.y); ctx.lineTo(p.x - 0.8 * z, p.y - h); ctx.stroke();
+  }
+  // two or three walkways up the scaffold, not a cage
+  function planks(a, b, h, z) {
+    ctx.strokeStyle = 'rgba(138,98,56,0.9)'; ctx.lineWidth = Math.max(1.2, 1.8 * z);
+    const step = Math.max(18 * z, h / 3);
+    for (let y = step * 0.6; y < h - 4 * z; y += step) { ctx.beginPath(); ctx.moveTo(a.x, a.y - y); ctx.lineTo(b.x, b.y - y); ctx.stroke(); }
+  }
+  function drawConstruction(e, g, z, fin) {
+    const p = Math.max(0, Math.min(1, e.progress || 0));
+    const N_ = corner(e, 0, 0), E_ = corner(e, 1, 0), S_ = corner(e, 1, 1), W_ = corner(e, 0, 1);  // back, right, front, left
+    // the dug plot, exactly the footprint
+    ctx.fillStyle = 'rgba(96,70,42,0.78)';
+    ctx.beginPath(); ctx.moveTo(N_.x, N_.y); ctx.lineTo(E_.x, E_.y); ctx.lineTo(S_.x, S_.y); ctx.lineTo(W_.x, W_.y); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(230,210,170,0.55)'; ctx.lineWidth = Math.max(1, 1.2 * z); ctx.setLineDash([4 * z, 3 * z]); ctx.stroke(); ctx.setLineDash([]);
+    if (e.type === 'farm') {
+      // tilled row by row along the field, each strip a slice of the footprint itself
+      if (fin && p > 0.02) {
+        const a = G.toScreen(e.tx, e.ty), b = G.toScreen(e.tx + e.size * p, e.ty),
+              c = G.toScreen(e.tx + e.size * p, e.ty + e.size), d = G.toScreen(e.tx, e.ty + e.size), up = 26 * z;
+        ctx.save(); ctx.beginPath();
+        ctx.moveTo(a.x, a.y - up); ctx.lineTo(b.x, b.y - up); ctx.lineTo(c.x, c.y + 4 * z); ctx.lineTo(d.x, d.y + 4 * z); ctx.closePath(); ctx.clip();
+        drawSprite(fin, g.x, g.y, z); ctx.restore();
+      }
+      for (const c of [N_, E_, S_, W_]) pole(c, 9 * z, z);
+      return;
+    }
+    // the scaffold reaches the eaves, not the roof ridge: about half the art's height above the ground point
+    const top = fin ? fin.ay * z * 0.62 : 40 * z;
+    const h = 10 * z + top * Math.min(1, p * 1.15);          // scaffold runs a little ahead of the walls
+    // behind the building: the back pole and the two back runs of planks
+    pole(N_, h, z); planks(W_, N_, h, z); planks(N_, E_, h, z);
+    // the building itself, revealed from the ground up
+    if (fin && p > 0.04) {
+      const t = g.y - fin.ay * z, full = fin.h * z, shown = full * p;
+      ctx.save(); ctx.beginPath(); ctx.rect(g.x - fin.ax * z - 2, t + full - shown, fin.w * z + 4, shown + 2); ctx.clip();
+      drawSprite(fin, g.x, g.y, z); ctx.restore();
+    }
+    // in front: the other three poles and the front runs, until the last stretch of work
+    if (p < 0.97) { pole(W_, h, z); pole(E_, h, z); pole(S_, h, z); planks(W_, S_, h, z); planks(S_, E_, h, z); }
+    // timber and stone waiting by the front corner, used up as the building rises
+    const left = 1 - p;
+    if (left > 0.08) {
+      const bx = S_.x + 10 * z, by = S_.y - 2 * z;
+      for (let i = 0; i < Math.ceil(left * 4); i++) { ctx.fillStyle = i % 2 ? '#9a6a3c' : '#7c5230'; ctx.fillRect(bx + i * 1.5 * z, by - i * 3 * z, 16 * z, 3 * z); }
+      for (let i = 0; i < Math.ceil(left * 3); i++) { ctx.fillStyle = '#a9a39a'; ctx.beginPath(); ctx.ellipse(bx - 8 * z - i * 5 * z, by + 2 * z, 3.4 * z, 2.4 * z, 0, 0, 7); ctx.fill(); }
+    }
+    // dust while someone is working on it
+    const working = G.ents.some(u => !u.dead && u.task && u.task.t === 'build' && u.task.id === e.id && u.working);
+    if (working) for (let k = 0; k < 3; k++) {
+      const ph = (G.time * 0.9 + k / 3 + e.id * 0.13) % 1, c = [W_, S_, E_][k];
+      ctx.fillStyle = `rgba(190,165,125,${0.35 * (1 - ph)})`;
+      ctx.beginPath(); ctx.arc(c.x + (g.x - c.x) * 0.3, c.y - ph * 18 * z, (4 + ph * 9) * z, 0, 7); ctx.fill();
+    }
   }
 
   function drawGhost(z) {
