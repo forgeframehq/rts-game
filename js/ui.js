@@ -358,7 +358,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const end = () => { sx = null; }; ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => el.addEventListener(ev, end));
     el.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
   })($('tree-wrap'));
-  const civPor = (civ, u, tier) => { const L = LINES[u]; if (L) u = L[Math.min(L.length - 1, tier)]; else if (!SOLO.has(u)) return null; return `assets/ui/icons/u/${civ}_${u}.jpg`; };
+  const civPor = (civ, u, tier) => { const L = LINES[u]; if (L) u = L[Math.min(L.length - 1, tier)]; else if (!SOLO.has(u)) return null; return ATL[`u/${civ}_${u}`] || null; };
   function buildTree(civ) {
     const uniq = G.CIVS[civ].unique && G.CIVS[civ].unique.type;
     const cols = TREE_COLS.map(b => {
@@ -697,15 +697,30 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   const SOLO = new Set(['scout', 'monk', 'king', 'queen', 'villager', 'villager_f', 'villagers']);
   const UPKEY = { elitelongbow: 'elitelongbowman', eliteaxe: 'eliteaxethrower', elitecata: 'elitecataphract' };
   const TECHIC = new Set('architecture arrowslits beardedaxe blastfurnace bodkin bowsaw bracer chainmail chivalry doublebit fletching forging fortwalls goldmining goldshaft greatwall greekfire handcart heavyplow horsecollar ironcasting logistica loom masonry platemail rocketry scalemail stonemining treadmill warwolf wheelbarrow yeomen'.split(' '));
-  // portrait file for a unit of this owner; tier forces a rank (for upgrade buttons)
+  // portraits and tech icons come packed in a few atlas images; each is cut into its own small
+  // image once loaded (until then the plain painted icon shows)
+  const ATL = {};
+  fetch('assets/ui/icons/atlas.json').then(r => r.json()).then(idx => {
+    const groups = {}; for (const k in idx) (groups[idx[k][0]] = groups[idx[k][0]] || []).push(k);
+    for (const g in groups) {
+      const im = new Image();
+      im.onload = () => {
+        const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
+        for (const k of groups[g]) { const [, cx, cy] = idx[k]; x.drawImage(im, cx * 128, cy * 128, 128, 128, 0, 0, 128, 128); try { ATL[k] = c.toDataURL('image/jpeg', 0.9); } catch (e) { /* no pixel access */ } }
+        panelKey = '';
+      };
+      im.src = `assets/ui/icons/atlas_${g}.jpg`;
+    }
+  }).catch(() => {});
+  // portrait image for a unit of this owner; tier forces a rank (for upgrade buttons)
   G.portrait = function (owner, type, tier) {
     const p = G.players && G.players[owner || 1]; if (!p) return null;
     let k = type;
     if (LINES[type]) k = LINES[type][Math.min(LINES[type].length - 1, tier != null ? tier : ((p.up && p.up[type]) || 0))];
     else if (!SOLO.has(type)) return null;
-    return `${ICONP}u/${p.civ}_${k}.jpg`;
+    return ATL[`u/${p.civ}_${k}`] || null;
   };
-  G.techIcon = id => (TECHIC.has(id) ? `${ICONP}t/${id}.jpg` : null);
+  G.techIcon = id => ATL['t/' + id] || null;
   function iconHTML(ic, owner) {
     if (ic && ic.startsWith('u:')) {   // u:<type>[@tier][|lock]  a dynasty portrait
       const [body, lock] = ic.slice(2).split('|'), [t, tier] = body.split('@'), src = G.portrait(owner || 1, t, tier != null ? +tier : null);

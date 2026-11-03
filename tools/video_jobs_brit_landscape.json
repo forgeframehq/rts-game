@@ -1,0 +1,12 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "sound": false,
+ "jobs": [
+  [
+   "dyn_britons",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/sbl/d_britons.jpg",
+   "The longbowman slowly draws his bow, holds his aim steady, and looses one single arrow that flies away out of the frame; he lowers the bow with a confident smile. Behind him the other archers stand ready holding their bows, no one else shoots. Blue lion banners ripple gently in the wind, clouds drift. The sky stays clear: no volley, no streaks, no flying arrows in the sky. Gentle, storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ]
+ ]
+}
