@@ -610,6 +610,36 @@
     const step = Math.max(18 * z, h / 3);
     for (let y = step * 0.6; y < h - 4 * z; y += step) { ctx.beginPath(); ctx.moveTo(a.x, a.y - y); ctx.lineTo(b.x, b.y - y); ctx.stroke(); }
   }
+  const rise = document.createElement('canvas'), riseCtx = rise.getContext('2d');
+  function drawRising(fin, g, z, e, p) {
+    const W2 = Math.ceil(fin.w * z), H2 = Math.ceil(fin.h * z);
+    if (W2 < 2 || H2 < 2) return;
+    if (rise.width < W2 || rise.height < H2) { rise.width = Math.max(rise.width, W2); rise.height = Math.max(rise.height, H2); }
+    const x = riseCtx;
+    const grow = Math.min(1, p / 0.7);                      // how high the frame stands
+    const color = Math.max(0, Math.min(1, (p - 0.45) / 0.5)); // how far it has been finished
+    const soft = H2 * 0.18, edge = H2 * (1 - grow) - soft * (1 - grow);
+    // mask: solid below the rising edge, fading out above it, the edge wavering a little
+    const paint = (filter, alpha) => {
+      x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, W2 + 2, H2 + 2);
+      x.filter = filter; x.drawImage(fin.cv, 0, 0, W2, H2); x.filter = 'none';
+      if (grow < 1) {
+        x.globalCompositeOperation = 'destination-in';
+        const gr = x.createLinearGradient(0, edge, 0, edge + soft);
+        gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,1)');
+        x.fillStyle = gr; x.fillRect(0, 0, W2, H2);
+      }
+      x.restore();
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(rise, 0, 0, W2, H2, g.x - fin.ax * z, g.y - fin.ay * z, W2, H2);
+      ctx.globalAlpha = 1;
+    };
+    // the raw frame: darker, browner, less saturated
+    if (color < 1) paint('brightness(0.62) sepia(0.55) saturate(0.7)', 1);
+    // the finished building fading in over it
+    if (color > 0) paint('none', color);
+  }
+
   function drawConstruction(e, g, z, fin) {
     const p = Math.max(0, Math.min(1, e.progress || 0));
     const N_ = corner(e, 0, 0), E_ = corner(e, 1, 0), S_ = corner(e, 1, 1), W_ = corner(e, 0, 1);  // back, right, front, left
@@ -634,12 +664,9 @@
     const h = 10 * z + top * Math.min(1, p * 1.15);          // scaffold runs a little ahead of the walls
     // behind the building: the back pole and the two back runs of planks
     pole(N_, h, z); planks(W_, N_, h, z); planks(N_, E_, h, z);
-    // the building itself, revealed from the ground up
-    if (fin && p > 0.04) {
-      const t = g.y - fin.ay * z, full = fin.h * z, shown = full * p;
-      ctx.save(); ctx.beginPath(); ctx.rect(g.x - fin.ax * z - 2, t + full - shown, fin.w * z + 4, shown + 2); ctx.clip();
-      drawSprite(fin, g.x, g.y, z); ctx.restore();
-    }
+    // the building itself: first a bare timber frame rises with a soft, uneven top edge, then
+    // it warms into the finished colours and thatch. No hard line sweeping up the picture.
+    if (fin && p > 0.03) drawRising(fin, g, z, e, p);
     // in front: the other three poles and the front runs, until the last stretch of work
     if (p < 0.97) { pole(W_, h, z); pole(E_, h, z); pole(S_, h, z); planks(W_, S_, h, z); planks(S_, E_, h, z); }
     // timber and stone waiting by the front corner, used up as the building rises
