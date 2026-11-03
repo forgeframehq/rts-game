@@ -568,3 +568,44 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 #tip small { display: block; margin-top: 6px; color: #e8cf8a; font-weight: 600; }
 @keyframes tipIn { from { opacity: 0; transform: translateY(4px); } }
 .cmd { -webkit-touch-callout: none; }
+
+#tree-wrap { touch-action: pan-y; cursor: grab; }
+#cine { background: #000 center / cover no-repeat; }
+#cine-v { opacity: 0; transition: opacity .25s; } #cine-v.playing { opacity: 1; }
+#cine-skip { opacity: 1 !important; background: rgba(12,8,4,0.82) padding-box, var(--bevel) border-box; padding: 10px 22px; font-size: 15px; color: #ffe7a8; box-shadow: 0 4px 14px #000a; }
+.mgrid { grid-template-columns: 1fr 1fr; }
+
+/* skirmish: colour gem button, swatches, neutral team number, royal names */
+.gembtn { width: 22px; height: 22px; border: 0; padding: 0; border-radius: 50%; flex: none; cursor: pointer; }
+.slot.pl { flex-wrap: wrap; }
+.swatches, .royalnames { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 2px 2px 28px; align-items: center; }
+.sw { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #5a4322; background: radial-gradient(circle at 35% 30%, #fff8 0 15%, var(--c) 40%, #0007 100%); }
+.sw.on { border-color: #ffe08a; box-shadow: 0 0 10px #ffcc33; } .sw.taken { opacity: 0.25; }
+.badge .tnum { font: 700 17px var(--heading); color: #f3d98a; line-height: 1; }
+.badge.crown { font-size: 16px; padding: 2px 6px; }
+.badge.crown small { font: 600 8px system-ui; letter-spacing: 0.1em; text-transform: uppercase; color: #bfa77a; }
+.royalnames label { display: flex; flex-direction: column; gap: 3px; font: 700 10px var(--heading); color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; flex: 1; min-width: 120px; }
+.royalnames input { height: 34px; border-radius: 8px; border: 1.5px solid #8a6a2c; background: #1e150c; color: #f3e2b8; font: 15px var(--heading); padding: 0 10px; user-select: text; -webkit-user-select: text; }
+.royalnames .hint { flex-basis: 100%; margin: 0; }
+/* ---- briefing, pause, saves, results ---- */
+.bchip{display:inline-flex;align-items:center;gap:6px;margin:2px 6px 2px 0}
+.bchip img,.ps-top img,.savecard img,.rp img{width:34px;height:34px;object-fit:contain;flex:none}
+.brief-sides{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.brief-sides small{display:block;opacity:.7;font-size:12px}
+.brief-goal{font-size:16px;margin-bottom:6px}.brief-meta,.brief-tip{font-size:13px;margin:6px 0}
+.ps-top{display:flex;align-items:center;gap:10px;text-align:left}
+.ps-top small{display:block;opacity:.75;font-size:12px}.ps-scores{font-size:13px;margin-top:6px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pgrid button{width:100%;text-align:left}
+.savecard{display:flex;gap:10px;align-items:center;width:100%;text-align:left;margin:0 0 8px;padding:10px;background:rgba(40,28,14,.85);border:1px solid #8a6a2f;border-radius:10px;color:#f3e3bd}
+.savecard small{display:block;font-size:12px;opacity:.8}.savecard em{font-size:11px;opacity:.6}
+.savemanage{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.savemanage input{flex:1 1 100%;padding:8px}
+.rb{text-align:center}.rb img{width:90px;height:90px;object-fit:contain}.rb p{font-size:13px;margin:4px 0}
+.res-tabs{display:flex;gap:4px;overflow-x:auto}.res-tabs button{flex:none;padding:6px 8px;font-size:12px}
+.rt-wrap{overflow-x:auto;margin:8px 0}.rt{border-collapse:collapse;font-size:13px;white-space:nowrap}
+.rt th,.rt td{padding:5px 8px;border-bottom:1px solid rgba(233,196,106,.2);text-align:center}
+.rp{display:flex;align-items:center;gap:6px;text-align:left!important}.rp img{width:24px;height:24px}
+#res-chart{width:100%;height:auto}.chart-key{display:flex;gap:10px;font-size:12px;flex-wrap:wrap}
+.chart-key i{display:inline-block;width:10px;height:10px;margin-right:4px;border-radius:2px}
+.newrec{color:#ffd76a;font-weight:bold;margin:6px 0}
+#objpanel{position:absolute;top:52px;left:8px;right:8px;z-index:30;background:rgba(30,20,10,.94);border:1px solid #c9a24a;border-radius:10px;padding:10px;font-size:13px;color:#f3e3bd}
+#objpanel ul{margin:6px 0 0;padding-left:18px}

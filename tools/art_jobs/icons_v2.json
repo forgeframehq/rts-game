@@ -1,0 +1,725 @@
+{
+ "out": "build/icons",
+ "jobs": [
+  [
+   "u_britons_villager",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with an English (Briton) peasant in blue and undyed wool, a man, holding an axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_villager_f",
+   "repo:assets/ui/icons/villager_f.png",
+   "Replace the subject with an English (Briton) peasant in blue and undyed wool, a woman, holding a basket.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_villagers",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with two villagers side by side: an English (Briton) peasant in blue and undyed wool man with an axe and a woman with a basket, both in the frame.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_militia",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: with a short sword and round shield, light padded armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_manatarms",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Man-at-Arms with a sword, mail shirt and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_longsword",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Long Swordsman with a long sword, full mail and a great helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_champion",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Champion, a veteran swordsman in heavy plate over mail, ornate helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_spearman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Spearman with a long spear and light armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_pikeman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Pikeman with a long pike and a mail shirt.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_halberdier",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Halberdier with a halberd and plate armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_archer",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: an Archer with a short bow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_crossbow",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Crossbowman with a crossbow and quilted armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_arbalester",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: an Arbalester with a heavy steel crossbow and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_scout",
+   "repo:assets/ui/icons/scout.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Scout Rider on a light horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_knight",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a mounted Knight in mail on a barded horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_cavalier",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Cavalier, a knight in plate on an armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_paladin",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with an English (Briton) soldier of the British Isles: blue and gold tunic with a golden lion badge, English kit: a Paladin, a splendid knight in gilded plate on a fully armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_king",
+   "repo:assets/ui/icons/king.png",
+   "Replace the subject with an English king with a golden crown and blue ermine-trimmed robe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_queen",
+   "repo:assets/ui/icons/queen.png",
+   "Replace the subject with an English queen with a golden circlet and blue gown.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_monk",
+   "repo:assets/ui/icons/monk.png",
+   "Replace the subject with a Christian monk in a brown habit holding a staff.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_longbowman",
+   "repo:assets/ui/icons/longbowman.png",
+   "Replace the subject with an English longbowman with a tall yew longbow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_britons_elitelongbowman",
+   "repo:assets/ui/icons/longbowman.png",
+   "Replace the subject with an elite English longbowman in a steel cap and padded jack, grander and more decorated.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_villager",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with a Frankish peasant in green and russet wool, a man, holding an axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_villager_f",
+   "repo:assets/ui/icons/villager_f.png",
+   "Replace the subject with a Frankish peasant in green and russet wool, a woman, holding a basket.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_villagers",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with two villagers side by side: a Frankish peasant in green and russet wool man with an axe and a woman with a basket, both in the frame.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_militia",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: with a short sword and round shield, light padded armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_manatarms",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Man-at-Arms with a sword, mail shirt and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_longsword",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Long Swordsman with a long sword, full mail and a great helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_champion",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Champion, a veteran swordsman in heavy plate over mail, ornate helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_spearman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Spearman with a long spear and light armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_pikeman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Pikeman with a long pike and a mail shirt.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_halberdier",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Halberdier with a halberd and plate armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_archer",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: an Archer with a short bow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_crossbow",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Crossbowman with a crossbow and quilted armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_arbalester",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: an Arbalester with a heavy steel crossbow and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_scout",
+   "repo:assets/ui/icons/scout.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Scout Rider on a light horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_knight",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a mounted Knight in mail on a barded horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_cavalier",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Cavalier, a knight in plate on an armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_paladin",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Frankish soldier: green tunic with golden fleur-de-lis, Norman-style nasal helmet and kite shield, Frankish kit: a Paladin, a splendid knight in gilded plate on a fully armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_king",
+   "repo:assets/ui/icons/king.png",
+   "Replace the subject with a Frankish king with a golden crown, green mantle with fleur-de-lis.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_queen",
+   "repo:assets/ui/icons/queen.png",
+   "Replace the subject with a Frankish queen with a golden crown and green gown.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_monk",
+   "repo:assets/ui/icons/monk.png",
+   "Replace the subject with a Christian monk in a brown habit holding a staff.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_axethrower",
+   "repo:assets/ui/icons/axethrower.png",
+   "Replace the subject with a Frankish axe thrower holding a francisca throwing axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_franks_eliteaxethrower",
+   "repo:assets/ui/icons/axethrower.png",
+   "Replace the subject with an elite Frankish axe thrower in mail with two franciscas, grander and more decorated.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_villager",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with a Byzantine peasant in crimson and cream linen, a man, holding an axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_villager_f",
+   "repo:assets/ui/icons/villager_f.png",
+   "Replace the subject with a Byzantine peasant in crimson and cream linen, a woman, holding a basket.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_villagers",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with two villagers side by side: a Byzantine peasant in crimson and cream linen man with an axe and a woman with a basket, both in the frame.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_militia",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: with a short sword and round shield, light padded armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_manatarms",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Man-at-Arms with a sword, mail shirt and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_longsword",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Long Swordsman with a long sword, full mail and a great helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_champion",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Champion, a veteran swordsman in heavy plate over mail, ornate helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_spearman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Spearman with a long spear and light armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_pikeman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Pikeman with a long pike and a mail shirt.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_halberdier",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Halberdier with a halberd and plate armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_archer",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: an Archer with a short bow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_crossbow",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Crossbowman with a crossbow and quilted armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_arbalester",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: an Arbalester with a heavy steel crossbow and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_scout",
+   "repo:assets/ui/icons/scout.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Scout Rider on a light horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_knight",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a mounted Knight in mail on a barded horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_cavalier",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Cavalier, a knight in plate on an armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_paladin",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Byzantine soldier: purple and gold, gilded scale (lamellar) armour, plumed Greek-style helmet: a Paladin, a splendid knight in gilded plate on a fully armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_king",
+   "repo:assets/ui/icons/king.png",
+   "Replace the subject with a Byzantine emperor with a jewelled stemma crown and purple robe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_queen",
+   "repo:assets/ui/icons/queen.png",
+   "Replace the subject with a Byzantine empress with a jewelled crown with pearl pendants and purple robe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_monk",
+   "repo:assets/ui/icons/monk.png",
+   "Replace the subject with a Orthodox monk in black robes holding a staff.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_cataphract",
+   "repo:assets/ui/icons/cataphract.png",
+   "Replace the subject with a Byzantine cataphract, a horseman in full scale armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_byzantines_elitecataphract",
+   "repo:assets/ui/icons/cataphract.png",
+   "Replace the subject with an elite Byzantine cataphract, horse and rider both fully armoured in gilded scale, grander and more decorated.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_villager",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with a Chinese peasant in indigo hemp with a conical straw hat, a man, holding an axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_villager_f",
+   "repo:assets/ui/icons/villager_f.png",
+   "Replace the subject with a Chinese peasant in indigo hemp with a conical straw hat, a woman, holding a basket.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_villagers",
+   "repo:assets/ui/icons/villager.png",
+   "Replace the subject with two villagers side by side: a Chinese peasant in indigo hemp with a conical straw hat man with an axe and a woman with a basket, both in the frame.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_militia",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: with a short sword and round shield, light padded armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_manatarms",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Man-at-Arms with a sword, mail shirt and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_longsword",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Long Swordsman with a long sword, full mail and a great helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_champion",
+   "repo:assets/ui/icons/militia.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Champion, a veteran swordsman in heavy plate over mail, ornate helm.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_spearman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Spearman with a long spear and light armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_pikeman",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Pikeman with a long pike and a mail shirt.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_halberdier",
+   "repo:assets/ui/icons/spearman.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Halberdier with a halberd and plate armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_archer",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: an Archer with a short bow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_crossbow",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Crossbowman with a crossbow and quilted armour.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_arbalester",
+   "repo:assets/ui/icons/archer.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: an Arbalester with a heavy steel crossbow and helmet.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_scout",
+   "repo:assets/ui/icons/scout.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Scout Rider on a light horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_knight",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a mounted Knight in mail on a barded horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_cavalier",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Cavalier, a knight in plate on an armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_paladin",
+   "repo:assets/ui/icons/knight.png",
+   "Replace the subject with a Chinese soldier of the Tang-Song era: red and black lacquered lamellar armour, Chinese helmet with a red tassel: a Paladin, a splendid knight in gilded plate on a fully armoured horse.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_king",
+   "repo:assets/ui/icons/king.png",
+   "Replace the subject with a Chinese emperor in a red and gold dragon robe with a mianguan crown.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_queen",
+   "repo:assets/ui/icons/queen.png",
+   "Replace the subject with a Chinese empress in a red and gold phoenix robe with a golden headdress.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_monk",
+   "repo:assets/ui/icons/monk.png",
+   "Replace the subject with a Buddhist monk in saffron robes holding a staff.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_repeater",
+   "repo:assets/ui/icons/repeater.png",
+   "Replace the subject with a Chinese soldier aiming a repeating crossbow (chu-ko-nu).",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "u_chinese_eliterepeater",
+   "repo:assets/ui/icons/repeater.png",
+   "Replace the subject with an elite Chinese repeating crossbowman in heavy lacquered armour, grander and more decorated.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_forging",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a glowing sword blade being hammered on an anvil.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_ironcasting",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with molten iron pouring from a crucible into a sword mould.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_blastfurnace",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a roaring stone blast furnace with bellows.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_fletching",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a bundle of arrows with fresh feather fletching.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_bodkin",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with sharp narrow bodkin arrowheads on a cloth.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_bracer",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a leather archer's bracer on a forearm drawing a bow.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_scalemail",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a scale-mail shirt on a stand.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_chainmail",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a chain-mail hauberk on a stand.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_platemail",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a polished steel breastplate on a stand.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_loom",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a wooden spindle with spun wool thread and a small hand loom.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_wheelbarrow",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a wooden wheelbarrow loaded with logs.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_handcart",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a two-wheeled hand cart full of sacks.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_horsecollar",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a padded horse collar on a fence post.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_heavyplow",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a heavy iron-shod plough.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_doublebit",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a double-bit woodcutting axe in a log.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_bowsaw",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a wooden bow saw cutting a log.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_goldmining",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a pickaxe and a pile of gold nuggets.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_goldshaft",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a timber-propped mine shaft entrance glowing with gold.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_stonemining",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a stone-cutter's chisel and mallet on a cut block.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_masonry",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with stonemason's tools on a carved stone block.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_architecture",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a parchment building plan with compass and set square.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_arrowslits",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a tower wall with narrow arrow slits and an arrow flying out.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_treadmill",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a wooden treadwheel crane lifting a stone block.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_fortwalls",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a thick fortified stone wall with battlements.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_yeomen",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with an English longbow and a yeoman's green hood.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_warwolf",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a giant trebuchet called Warwolf with a boulder.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_chivalry",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a knight's helm with plume and spurs.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_beardedaxe",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a bearded francisca throwing axe.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_logistica",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a cataphract's lance and Byzantine shield with a double eagle.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_greekfire",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a bronze siphon spraying Greek fire.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_rocketry",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with Chinese fire arrows with gunpowder tubes.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "t_greatwall",
+   "repo:assets/ui/icons/blacksmith.png",
+   "Replace the subject with a section of the Great Wall of China.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ]
+ ]
+}

@@ -58,6 +58,7 @@
   G.cancelAge = function (tc) { if (tc.aging) { G.refund(tc.owner, tc.aging.cost); tc.aging = null; } };
   function finishAge(tc) {
     const p = G.players[tc.owner], to = tc.aging.to; tc.aging = null; p.age = to;
+    p.stats = p.stats || {}; (p.stats.ageT = p.stats.ageT || {})[to] = Math.round(G.time);
     if (to === 4) for (const e of G.ents) if (e.owner === tc.owner && e.kind === 'building' && !e.dead) { e.maxHp = Math.round(e.maxHp * 1.2); e.hp = Math.round(e.hp * 1.2); }
     if (tc.owner === 1) snd('ageup');
     if (G.onAgeUp) G.onAgeUp(tc.owner, to);
@@ -170,7 +171,7 @@
   };
   G.buildCost = (p, type) => ({ ...G.BUILDINGS[type].cost });
   G.canAfford = (p, cost) => Object.keys(cost).every(k => G.players[p].res[k] >= cost[k]);
-  G.pay = function (p, cost) { if (!G.canAfford(p, cost)) return false; for (const k in cost) G.players[p].res[k] -= cost[k]; return true; };
+  G.pay = function (p, cost) { if (!G.canAfford(p, cost)) return false; const pl = G.players[p], st = pl.stats = pl.stats || {}; for (const k in cost) { pl.res[k] -= cost[k]; st.spent = (st.spent || 0) + cost[k]; } return true; };
   G.refund = function (p, cost) { for (const k in cost) G.players[p].res[k] += cost[k]; };
 
   G.popOf = function (p) {
@@ -287,7 +288,7 @@
     if (e.kind === 'unit' && G.corpses) G.corpses.push({ type: e.type, def: { tier: (e.def && e.def.tier) || 0 }, owner: e.owner, sex: e.sex, face: e.face, dir: e.dir || 0, x: e.x, y: e.y, t: 0 });
     if (e.kind !== 'res') {
       G.effects.push({ t: 'die', x: e.x, y: e.y, life: 0.8, big: e.kind === 'building', size: e.size || 1 });
-      if (e.owner > 0) G.players[e.owner].lost++;
+      if (e.owner > 0) { const pl = G.players[e.owner]; pl.lost++; const st = pl.stats = pl.stats || {}; if (e.kind === 'building') st.bldLost = (st.bldLost || 0) + 1; else st.unitsLost = (st.unitsLost || 0) + 1; }
     }
     G.byId.delete(e.id);
     snd(e.kind === 'building' ? 'buildingdown' : e.type === 'king' ? 'kingdown' : 'die', e.x, e.y);
@@ -554,7 +555,10 @@
     if (t.dead) return;
     t.hp -= dmg; t.hitT = 0.2; if (t.kind === 'unit') t.hurtT = 0.6;
     if (t.hp <= 0) {
-      if (att.owner > 0) { const pl = G.players[att.owner]; pl.killed++; pl.killValue = (pl.killValue || 0) + G.valueOf(t); }
+      if (att.owner > 0) { const pl = G.players[att.owner]; pl.killed++; pl.killValue = (pl.killValue || 0) + G.valueOf(t);
+        // the results screen's detail: what killed what
+        const st = pl.stats = pl.stats || {}; st.killsBy = st.killsBy || {}; st.killsBy[att.type] = (st.killsBy[att.type] || 0) + 1;
+        if (t.kind === 'building') st.razed = (st.razed || 0) + 1; else st.unitsKilled = (st.unitsKilled || 0) + 1; }
       G.kill(t); return;
     }
     // Fight back. A soldier marching on a building (an attack wave, an attack-move) turns on

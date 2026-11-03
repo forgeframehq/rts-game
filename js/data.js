@@ -7,6 +7,16 @@ G.MAP = 72;         // map size in tiles
 
 G.PLAYER_COLORS = { 0: '#bbbbbb', 1: '#2f6fd6', 2: '#d63a2f', 3: '#3aa04a', 4: '#e0a91c' };
 G.PLAYER_COLOR_NAMES = { 1: 'Blue', 2: 'Red', 3: 'Green', 4: 'Yellow' };
+// the colours a player can pick in Skirmish; G.PLAYER_COLORS is filled from these for each game
+G.PALETTE = [['Blue', '#2f6fd6'], ['Red', '#d63a2f'], ['Green', '#3aa04a'], ['Yellow', '#e0a91c'], ['Purple', '#8e44ad'], ['Orange', '#e67e22'], ['Teal', '#16a085'], ['White', '#e8e8e8']];
+// royal titles and suggested names per dynasty (the player can type their own)
+G.ROYALS = {
+  britons:    { king: 'King', queen: 'Queen', names: [['Edward', 'Eleanor'], ['Alfred', 'Ealhswith'], ['Henry', 'Matilda'], ['Richard', 'Berengaria']] },
+  franks:     { king: 'King', queen: 'Queen', names: [['Charles', 'Bertha'], ['Clovis', 'Clotilde'], ['Louis', 'Blanche'], ['Pepin', 'Bertrada']] },
+  byzantines: { king: 'Emperor', queen: 'Empress', names: [['Basil', 'Theodora'], ['Justinian', 'Zoe'], ['Alexios', 'Irene'], ['Constantine', 'Helena']] },
+  chinese:    { king: 'Emperor', queen: 'Empress', names: [['Taizong', 'Zhangsun'], ['Taizu', 'Du'], ['Wendi', 'Dugu'], ['Renzong', 'Cao']] }
+};
+G.royalName = (p, type) => { const pl = G.players[p]; if (!pl) return type; const R = G.ROYALS[pl.civ] || G.ROYALS.britons, n = (pl.royals || {})[type]; return (R[type] || type) + (n ? ' ' + n : ''); };
 
 G.CIVS = {
   britons: {

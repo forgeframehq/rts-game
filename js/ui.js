@@ -79,12 +79,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     box.classList.remove('hidden'); box.classList.remove('show-skip');
     $('cine-title').classList.add('hidden');
     if (title) { $('cine-crest').src = title.crest; $('cine-name').textContent = title.name; $('cine-role').textContent = title.role; }
+    v.poster = src.replace('.mp4', '.jpg'); box.style.backgroundImage = `url(${v.poster})`; v.classList.remove('playing');
+    v.onplaying = () => v.classList.add('playing');
     v.src = src; v.currentTime = 0; v.muted = !(G.sound && G.sound.enabled);
     v.onended = () => cineDone && cineDone();
     v.onerror = () => cineDone && cineDone();   // a film that can't load must never block the game
     v.ontimeupdate = () => { if (title && v.currentTime > 1.2) $('cine-title').classList.remove('hidden'); };
     const p = v.play(); if (p) p.catch(() => { v.muted = true; v.play().catch(() => cineDone && cineDone()); });
-    setTimeout(() => box.classList.add('show-skip'), 600);
+    box.classList.add('show-skip');
   }
   $('cine-skip').onclick = e => { e.stopPropagation(); cineDone && cineDone(); };
   $('cine').onclick = () => $('cine').classList.add('show-skip');
@@ -94,6 +96,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
   let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
+  if (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen)) { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'video'; l.href = film('intro'); document.head.appendChild(l); }
   $('start').addEventListener('click', e => { if (!$('start').classList.contains('begun') && e.target.id !== 'tap-begin') $('tap-begin').click(); });
   $('tap-begin').onclick = () => {
     if (G.sound) G.sound.wake();
@@ -111,13 +114,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }));
 
   // ---------- Screens ----------
-  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over', 'picker'];
+  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over', 'picker', 'saves', 'results', 'brief'];
   function show(id) {
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
     if (G.sound && (id === 'start' || id === 'over')) G.sound.setScene('menu');
     if (id === 'start') refreshContinue();
   }
-  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show('start'));
+  // Back goes to the main menu, or straight back to the pause menu when a sheet was opened mid-game
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
   function enterGame() {
     if (G.sound) G.sound.setScene('game');
     for (const s of SCREENS) $(s).classList.add('hidden');
@@ -134,7 +138,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function refreshContinue() {
     let s = G.hasSave();
-    if (s && s.time < 60) s = null;   // a game left in its first minute isn't worth resuming
     $('m-continue').classList.toggle('hidden', !s);
     $('m-skirmish').classList.toggle('primary', !s);
     if (s) {
@@ -197,24 +200,48 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   if (!setup.mode) setup.mode = 'conquest';   // saved setups from before Regicide existed
   if (setup.time == null) setup.time = '0';     // ...and from before the time limit
   if (setup.age == null) setup.age = '1';
+  if (setup.teamColors == null) setup.teamColors = 'off';
+  if (setup.map == null) setup.map = 'grasslands';
+  const slotColor = i => { const sl = setup.slots[i]; if (setup.teamColors === 'on' && sl.team > 0) return sl.team - 1; return sl.color != null ? sl.color : i; };
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
+    setup.slots.forEach((sl, i) => { if (sl.color == null) sl.color = i; });
     setup.slots.forEach((sl, i) => {
-      const row = document.createElement('div');
+      const row = document.createElement('div'), col = G.PALETTE[slotColor(i)][1];
       if (sl.type === 'closed') {
         row.className = 'slot seat';
-        row.innerHTML = `<i class="gem" style="--c:${G.PLAYER_COLORS[i + 1]}"></i><span>+ Add computer player</span>`;
+        row.innerHTML = `<i class="gem" style="--c:${col}"></i><span>+ Add computer player</span>`;
         row.onclick = () => { sl.type = 'ai'; sl.ai = sl.ai || 'normal'; renderSlots(); };
         box.appendChild(row); return;
       }
-      const c = G.CIVS[sl.civ];
+      const c = G.CIVS[sl.civ], R = G.ROYALS[sl.civ] || G.ROYALS.britons, sug = R.names[0];
       row.className = 'slot pl';
-      row.innerHTML = `<i class="gem" style="--c:${G.PLAYER_COLORS[i + 1]}"></i>` +
+      row.innerHTML = `<button class="gem gembtn" style="--c:${col}" aria-label="Colour"></button>` +
         `<button class="civpick">${sl.civ === 'random' ? '<div class="qcrest sm">?</div>' : `<img src="${crestOf(sl.civ)}" alt="">`}` +
         `<span><small class="who">${i === 0 ? 'You' : 'Computer'}</small><b>${c ? c.name : 'Random'}</b><em>${c ? c.role : 'Any dynasty'}</em></span></button>` +
-        `<div class="badges"><button class="badge team" aria-label="Team">${shield(sl.team || 0)}<small>Team</small></button>` +
+        `<div class="badges">` + (i === 0 ? `<button class="badge crown" aria-label="Royal names">👑<small>Names</small></button>` : '') +
+        `<button class="badge team" aria-label="Team"><b class="tnum">${sl.team || '–'}</b><small>Team</small></button>` +
         (sl.type === 'ai' ? `<button class="badge diff d-${sl.ai}">${DIFF_TXT[sl.ai] || 'Normal'}</button>` : '') +
         (i > 1 ? `<button class="badge xbtn" aria-label="Remove player">✕</button>` : '') + `</div>`;
+      // the colour row and the royal names open beneath the player when asked for
+      if (sl._open === 'color') {
+        const taken = new Set(setup.slots.filter((o, j) => j !== i && o.type !== 'closed').map((o, j2) => slotColor(setup.slots.indexOf(o))));
+        const sw = document.createElement('div'); sw.className = 'swatches';
+        sw.innerHTML = (setup.teamColors === 'on' && sl.team > 0 ? '<p class="hint">Team colours are on: everyone on this team shares one colour.</p>' :
+          G.PALETTE.map(([n, h], k) => `<button class="sw${k === slotColor(i) ? ' on' : ''}${taken.has(k) ? ' taken' : ''}" style="--c:${h}" data-k="${k}" aria-label="${n}" ${taken.has(k) ? 'disabled' : ''}></button>`).join(''));
+        sw.onclick = e => { const k = e.target.dataset && e.target.dataset.k; if (k == null) return; sl.color = +k; sl._open = null; renderSlots(); };
+        row.appendChild(sw);
+      }
+      if (sl._open === 'names') {
+        const nm = document.createElement('div'); nm.className = 'royalnames';
+        nm.innerHTML = `<label>${R.king}<input maxlength="16" data-k="kingName" placeholder="${sug[0]}" value="${(sl.kingName || '').replace(/"/g, '')}"></label>` +
+          `<label>${R.queen}<input maxlength="16" data-k="queenName" placeholder="${sug[1]}" value="${(sl.queenName || '').replace(/"/g, '')}"></label>` +
+          `<p class="hint">Leave blank for a historical name. Your royals take the field in Regicide; their names appear in alerts and on the results screen.</p>`;
+        nm.querySelectorAll('input').forEach(inp => { inp.oninput = () => { sl[inp.dataset.k] = inp.value.trim(); }; inp.onclick = e => e.stopPropagation(); });
+        row.appendChild(nm);
+      }
+      row.querySelector('.gembtn').onclick = () => { sl._open = sl._open === 'color' ? null : 'color'; renderSlots(); };
+      const cr = row.querySelector('.crown'); if (cr) cr.onclick = () => { sl._open = sl._open === 'names' ? null : 'names'; renderSlots(); };
       row.querySelector('.civpick').onclick = () => pickCiv(sl.civ, k => { sl.civ = k; renderSlots(); });
       row.querySelector('.team').onclick = () => { sl.team = ((sl.team || 0) + 1) % 5; renderSlots(); };
       const d = row.querySelector('.diff'); if (d) d.onclick = () => { const o = ['easy', 'normal', 'hard']; sl.ai = o[(o.indexOf(sl.ai) + 1) % 3]; renderSlots(); };
@@ -231,6 +258,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const ok = foes.length > 0;
     $('btn-start').disabled = !ok;
     const big = act.length > 2 && setup.size === 'small';
+    G.MODE_TXT = G.MODE_TXT || { conquest: 'Destroy every enemy building and unit.', regicide: 'Kill the enemy King and Queen. Protect your own.', tcrush: 'Destroy every enemy Town Center. Lose yours and you lose.' };
+    $('mode-hint').textContent = G.MODE_TXT[setup.mode] || '';
     $('rule-hint').textContent = !ok ? 'Everyone is on your team. Put at least one computer player on another team.'
       : big ? 'Tip: Medium or Large maps give 3–4 players more room.' : `${act.length} players · ${foes.length} ${foes.length === 1 ? 'enemy' : 'enemies'}`;
   }
@@ -247,7 +276,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       let civ = s.civ;
       if (civ === 'random') { const pool = Object.keys(G.CIVS).filter(k => !used.has(k)); civ = pool[Math.floor(Math.random() * pool.length)] || 'britons'; }
       used.add(civ);
-      return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null };
+      return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null, color: s.color, kingName: s.kingName, queenName: s.queenName };
     });
     // from the menus (not a restart) the player's dynasty film plays first
     if (film && UI.playDynFilm) return UI.playDynFilm(players[0].civ, () => launch(cfg, players));
@@ -255,9 +284,10 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function launch(cfg, players) {
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: 'diamond', mode: cfg.mode || 'conquest', time: +cfg.time || 0, startAge: +cfg.age || 1 });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: 'diamond', mode: cfg.mode || 'conquest', teamColors: cfg.teamColors === 'on', map: cfg.map || 'grasslands', time: +cfg.time || 0, startAge: +cfg.age || 1 });
     G.buildGround();
     enterGame();
+    if (UI.onMatchStart) UI.onMatchStart();
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
     UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: lose your King and Queen and you lose. ' : '')
       + (G.rules.time ? `⏳ ${G.rules.time} min limit. ` : '')
@@ -318,6 +348,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   const TREE_COLS = ['towncenter', 'mill', 'lumbercamp', 'miningcamp', 'barracks', 'range', 'stable', 'siegeworkshop', 'blacksmith', 'monastery', 'university', 'castle'];
   const ROMAN = ['', 'I', 'II', 'III', 'IV'];
   const fmtCost = c => Object.entries(c || {}).map(([k, v]) => `${v} ${k}`).join(', ');
+  (function dragScroll(el) {
+    let sx = null, sl = 0, moved = false;
+    el.addEventListener('pointerdown', e => { sx = e.clientX; sl = el.scrollLeft; moved = false; });
+    el.addEventListener('pointermove', e => { if (sx == null) return; const dx = e.clientX - sx; if (Math.abs(dx) > 6) moved = true; el.scrollLeft = sl - dx; });
+    const end = () => { sx = null; }; ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => el.addEventListener(ev, end));
+    el.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+  })($('tree-wrap'));
   function buildTree(civ) {
     const uniq = G.CIVS[civ].unique && G.CIVS[civ].unique.type;
     const cols = TREE_COLS.map(b => {
@@ -377,6 +414,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     $('over-stats').innerHTML = `Time: ${m}:${String(s).padStart(2, '0')}<br>Enemies defeated: ${p.killed}<br>Units & buildings lost: ${p.lost}<br>` +
       `Gathered: 🍖${p.gathered.food} 🪵${p.gathered.wood} 🪙${p.gathered.gold} 🪨${p.gathered.stone}<br>Score: ${scores}`;
     G.clearSave();
+    if (!tut && UI.results) return UI.results(res);
     setTimeout(() => $('over').classList.remove('hidden'), 900);
   };
   let royalAlertT = -99;
@@ -385,7 +423,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (t.owner === 1 && t.def.cls === 'hero' && G.enemies(att.owner, 1) && G.time - royalAlertT > 8) {
       royalAlertT = G.time; lastAlertT = G.time;
       if (G.sound) G.sound.play('attacked'); if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate([60, 40, 60]);
-      UI.alert(`👑 Your ${t.def.name} is under attack! Garrison them in the Town Center.`);
+      UI.alert(`👑 ${G.royalName(1, t.type)} is under attack! Garrison them in the Town Center.`);
       UI.lastAttack = { x: t.x, y: t.y };
       return;
     }
@@ -745,7 +783,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     } else {
       $('sel-icon').innerHTML = selIcon(e);
       const civ = G.CIVS[G.players[e.owner].civ].name;
-      $('sel-name').textContent = e.def.name + (own ? '' : ` (${civ})`);
+      $('sel-name').textContent = (e.def.cls === 'hero' ? G.royalName(e.owner, e.type) : e.def.name) + (own ? '' : ` (${civ})`);
       let sub = `HP ${Math.ceil(e.hp)}/${e.maxHp}`;
       if (e.kind === 'unit') {
         sub += ` · ⚔${e.def.atk} 🛡${e.def.armor}/${e.def.pierce}`;
@@ -1071,6 +1109,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }, { passive: false });
 
   window.addEventListener('keydown', e => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;   // typing a name, not commanding
     const k = e.key.toLowerCase(); keys.add(k);
     if (k === 'escape') { if (mode) setMode(null); else select([], false); }
     if (k === 'h') $('btn-home').click();
@@ -1101,5 +1140,6 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   if (G.loadArt) G.loadArt();
   G.start();
   // expose for testing
+  UI._enterGame = enterGame; UI._toMenu = toMenu; UI._prefs = prefs; UI._savePrefs = savePrefs; UI._applyPrefs = applyPrefs; UI._refreshContinue = refreshContinue; UI._showDyn = k => showDyn(k); UI._lastConfig = () => lastConfig;
   UI._tap = tap; UI._startSkirmish = startSkirmish; UI._setup = setup; UI._show = show; UI._select = select; UI._startPlace = startPlace; UI._confirmPlace = confirmPlace; UI._moveGhost = moveGhost;
 })();

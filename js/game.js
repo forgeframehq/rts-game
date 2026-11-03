@@ -27,6 +27,9 @@
 
   // config: { players: [{ civ, team, ai }], size, res, pop, reveal, seed }
   // players[0] is always the human. ai is a difficulty ('easy'|'normal'|'hard') for computer players.
+  G.applyColors = function () {
+    for (const id in G.players) { const c = G.PALETTE[G.players[id].color != null ? G.players[id].color : (+id - 1)] || G.PALETTE[0]; G.PLAYER_COLORS[id] = c[1]; G.PLAYER_COLOR_NAMES[id] = c[0]; }
+  };
   G.newGame = function (config) {
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
@@ -40,6 +43,16 @@
     const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);
     G.players = {};
     slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
+    // colours: each player's pick, or with team colours on, one colour per team
+    const used = new Set();
+    slots.forEach((s, i) => {
+      let c = config.teamColors && s.team > 0 ? s.team - 1 : (s.color != null ? s.color : i);
+      if (!config.teamColors) { while (used.has(c)) c = (c + 1) % G.PALETTE.length; used.add(c); }
+      G.players[i + 1].color = c;
+      const R = G.ROYALS[s.civ] || G.ROYALS.britons, pick = R.names[Math.floor(G.mapRng ? (i * 7 + seed) % R.names.length : 0)];
+      G.players[i + 1].royals = { king: s.kingName || pick[0], queen: s.queenName || pick[1] };
+    });
+    G.applyColors();
     // a later starting Age, as in AoE2's setup: everyone begins already advanced
     for (const id in G.players) G.players[id].age = G.rules.startAge;
     if (G.loadCivArt && !config.demo) for (const id in G.players) G.loadCivArt(G.players[id].civ);
@@ -111,6 +124,8 @@
   const hasStuff = p => G.unitsOf(p).length > 0 || G.ents.some(x => x.owner === p && x.kind === 'building' && counts(x));
   // Regicide: the dynasty stands while either royal lives; when the King falls the Queen rules on
   const royalsDown = p => G.rules && G.rules.mode === 'regicide' && !G.royal(p, 'king') && !G.royal(p, 'queen');
+  // Town Center Rush: a dynasty without a standing Town Center is beaten
+  const tcsDown = p => G.rules && G.rules.mode === 'tcrush' && !G.ents.some(e => !e.dead && e.owner === p && e.type === 'towncenter' && e.built);
   const nameOf = id => +id === 1 ? 'Your' : `The ${G.CIVS[G.players[id].civ].name}'`;
   G.MOURN = 120;
 
@@ -151,20 +166,21 @@
       const p = G.players[e.owner];
       if (e.type === 'king') {
         p.mourn = G.time + G.MOURN;
-        if (G.ui) G.ui.alert(`👑 ${nameOf(e.owner)} King has fallen! The Queen takes the throne.`);
-      } else if (G.ui) G.ui.alert(`👸 ${nameOf(e.owner)} Queen has fallen!`);
+        if (G.ui) G.ui.alert(`👑 ${e.owner === 1 ? 'Your ' : ''}${G.royalName(e.owner, 'king')} has fallen! ${G.royalName(e.owner, 'queen')} takes the throne.`);
+      } else if (G.ui) G.ui.alert(`👸 ${e.owner === 1 ? 'Your ' : ''}${G.royalName(e.owner, 'queen')} has fallen!`);
     }
     for (const id in G.players) {
       const p = G.players[id];
       if (!p.alive) continue;
-      const lostCrown = royalsDown(+id);
-      if (!hasStuff(+id) || lostCrown) {
+      const lostCrown = royalsDown(+id), lostTC = tcsDown(+id);
+      if (!hasStuff(+id) || lostCrown || lostTC) {
         p.alive = false;
         if (G.ui) {
           if (lostCrown) G.ui.alert(+id === 1 ? '👑 Your King and Queen are dead. Your dynasty has fallen.' : `👑 ${nameOf(id)} King and Queen are dead. Their dynasty has fallen!`);
+          else if (lostTC) G.ui.alert(+id === 1 ? '🏚️ Your last Town Center has fallen.' : `🏚️ The ${G.CIVS[p.civ].name}' last Town Center has fallen!`);
           else if (+id !== 1) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`);
         }
-        if (lostCrown && +id !== 1) G.eliminate(+id);
+        if ((lostCrown || lostTC) && +id !== 1) G.eliminate(+id);
       }
     }
     // when an enemy is down to its last few pieces, show them on the minimap so the hunt doesn't drag
@@ -205,6 +221,20 @@
     if (G.tutorial && G.tutorial.on) G.tutorial.update();
     if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
     fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; checkTime(); }
+    // every 30 s: a point on each player's score timeline, and their peak army and workforce
+    if (Math.floor(G.time / 30) !== Math.floor((G.time - dt) / 30)) for (const id in G.players) {
+      const p = G.players[id], st = p.stats = p.stats || {};
+      (st.timeline = st.timeline || []).push([Math.round(G.time), G.scoreOf(+id)]);
+      const army = G.ents.filter(e => !e.dead && e.owner === +id && e.kind === 'unit' && e.type !== 'villager' && e.def.cls !== 'hero').length;
+      const vils = G.ents.filter(e => !e.dead && e.owner === +id && e.type === 'villager').length;
+      st.peakArmy = Math.max(st.peakArmy || 0, army); st.peakVils = Math.max(st.peakVils || 0, vils);
+    }
+  };
+  // AoE2's four score categories, for the results screen
+  G.scoreParts = function (id) {
+    const p = G.players[id], g = p.gathered;
+    const ups = Object.values(p.up || {}).reduce((a, b) => a + b, 0) + Object.keys(p.techs || {}).length;
+    return { military: Math.round((p.killValue || 0) / 5), economy: Math.round((g.food + g.wood + g.gold + g.stone) / 10), technology: ups * 20, society: (p.age - 1) * 150 };
   };
   function frame(t) {
     const real = Math.min(0.05, (t - last) / 1000 || 0); last = t;

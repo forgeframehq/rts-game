@@ -29,6 +29,7 @@
     <div class="res" id="r-stone"><img src="assets/ui/icons/stone.png" alt="stone"><b>0</b></div>
     <div class="res" id="r-pop"><img src="assets/ui/icons/pop.png" alt="pop"><b>0/0</b></div>
     <div id="clock">0:00</div>
+    <button id="btn-obj" class="iconbtn objbtn" aria-label="Objectives">📜</button>
     <button id="btn-menu" class="iconbtn" aria-label="Menu"><img src="assets/ui/icons/gear.png" alt=""></button>
   </div>
 
@@ -59,6 +60,7 @@
   </div>
 
   <div id="toast"></div>
+  <div id="objpanel" class="hidden"></div>
   <div id="tip" class="hidden"></div>
 </div>
 
@@ -80,6 +82,8 @@
       <button id="m-skirmish" class="mbtn primary"><span>Skirmish</span><small>Custom battle against the computer</small></button>
       <div class="mgrid">
         <button id="m-campaign" class="mbtn" disabled><span>Campaign</span><small>Coming soon</small></button>
+        <button id="m-multi" class="mbtn" disabled><span>Multiplayer</span><small>Coming soon</small></button>
+        <button id="m-saves" class="mbtn"><span>Saved Games</span><small>Load a match</small></button>
         <button id="m-dynasties" class="mbtn"><span>Dynasties</span><small>History &amp; bonuses</small></button>
         <button id="m-learn" class="mbtn"><span>Learn to Play</span><small>Guided tutorial match</small></button>
         <button id="m-options" class="mbtn"><span>Options</span><small>Speed, graphics</small></button>
@@ -114,7 +118,8 @@
       </section>
       <section class="opts frame">
         <h3 class="ribbon">Battle settings</h3>
-        <div class="opt"><label>Game mode</label><div class="seg" data-opt="mode"><button data-v="conquest" class="on">Conquest</button><button data-v="regicide">Regicide</button></div></div>
+        <div class="opt"><label>Game mode</label><div class="seg" data-opt="mode"><button data-v="conquest" class="on">Conquest</button><button data-v="regicide">Regicide</button><button data-v="tcrush">TC Rush</button></div><p class="hint" id="mode-hint"></p></div>
+        <div class="opt"><label>Team colours</label><div class="seg" data-opt="teamColors"><button data-v="off" class="on">Off</button><button data-v="on">On</button></div></div>
         <div class="opt"><label>Starting Age</label><div class="seg" data-opt="age"><button data-v="1" class="on">Dark</button><button data-v="2">Feudal</button><button data-v="3">Castle</button><button data-v="4">Imperial</button></div></div>
         <div class="opt"><label>Time limit</label><div class="seg" data-opt="time"><button data-v="0" class="on">Off</button><button data-v="15">15 min</button><button data-v="20">20 min</button><button data-v="30">30 min</button></div></div>
         <div class="opt"><label>Map size</label><div class="seg" data-opt="size"><button data-v="small">Small</button><button data-v="medium" class="on">Medium</button><button data-v="large">Large</button></div></div>
@@ -237,12 +242,52 @@
 
 <!-- Pause menu -->
 <div id="menu" class="screen hidden">
-  <div class="card small">
-    <h2>Paused</h2>
+  <div class="card small pausecard">
+    <h3 class="ribbon">Paused</h3>
+    <div id="pause-summary"></div>
+    <p id="pause-objective" class="objline"></p>
+    <label class="mini-label">Game speed</label>
     <div class="seg" id="speed"><button data-s="1" class="on">1×</button><button data-s="1.5">1.5×</button><button data-s="2">2×</button></div>
     <button id="btn-resume" class="big">Resume</button>
-    <button id="btn-restart">Restart with same settings</button>
-    <button id="btn-quit">Save &amp; quit to menu</button>
+    <div class="pgrid">
+      <button id="btn-psave" class="mbtn"><span>Save game</span><small>Keep a copy of this match</small></button>
+      <button id="btn-poptions" class="mbtn"><span>Options</span><small>Sound, speed, controls</small></button>
+      <button id="btn-ptree" class="mbtn"><span>Tech tree</span><small>Plan your research</small></button>
+      <button id="btn-phelp" class="mbtn"><span>How to play</span><small>Controls &amp; tips</small></button>
+      <button id="btn-restart" class="mbtn"><span>Restart</span><small>Same settings</small></button>
+      <button id="btn-quit" class="mbtn"><span>Save &amp; quit</span><small>Back to the menu</small></button>
+    </div>
+    <button id="btn-resign" class="resign">Resign</button>
+  </div>
+</div>
+
+<!-- Saved games -->
+<div id="saves" class="screen title hidden">
+  <div class="sheet">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Saved Games</h2></header>
+    <div class="sheet-body"><div id="save-list"></div><p class="hint">Tap a save to load it. Press and hold to rename or delete it. Up to 10 saves, plus the autosave.</p></div>
+  </div>
+</div>
+
+<!-- Results -->
+<div id="results" class="screen title hidden">
+  <div class="sheet wide">
+    <div class="sheet-body res-body">
+      <div id="res-banner"></div>
+      <div class="seg res-tabs"><button data-t="summary" class="on">Summary</button><button data-t="military">Military</button><button data-t="economy">Economy</button><button data-t="tech">Technology</button><button data-t="timeline">Timeline</button></div>
+      <div id="res-page"></div>
+      <div id="res-records"></div>
+    </div>
+    <footer class="sheet-foot res-foot"><button id="res-again" class="play grand">Play again</button><div class="res-btns"><button id="res-menu" class="plain">Main menu</button></div></footer>
+  </div>
+</div>
+
+<!-- Briefing: what this match is about, before it starts -->
+<div id="brief" class="screen hidden">
+  <div class="card small briefcard">
+    <h3 class="ribbon" id="brief-mode">Conquest</h3>
+    <div id="brief-body"></div>
+    <button id="brief-go" class="big">To battle!</button>
   </div>
 </div>
 
@@ -268,5 +313,6 @@
 <script src="js/save.js"></script>
 <script src="js/tutorial.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/screens.js"></script>
 </body>
 </html>
