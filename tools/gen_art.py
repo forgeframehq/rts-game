@@ -76,6 +76,8 @@ def credits():
 
 
 def ref_url(ref):
+    if ref.startswith("http"):
+        return ref
     if ref.startswith("repo:"):
         return ROOT + "/" + ref[5:]
     return RAW + "/" + (ref if ref.endswith((".png", ".jpg")) else ref + ".png")
