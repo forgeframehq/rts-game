@@ -426,11 +426,11 @@
   "file": "assets/units/unit3d_britons_villager_m_farm.png",
   "frames": 10,
   "rows": 8,
-  "cycle": 5.64,
-  "fw": 50.67,
-  "fh": 49.87,
-  "ax": 25.33,
-  "ay": 39.82
+  "cycle": 11.8,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
  },
  "unit3d_britons_villager_m_forage": {
   "file": "assets/units/unit3d_britons_villager_m_forage.png",
@@ -456,10 +456,10 @@
   "file": "assets/units/unit3d_britons_villager_m_mine.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 2.22,
-  "fw": 49.6,
-  "fh": 56.27,
-  "ax": 24.8,
+  "cycle": 2.952,
+  "fw": 56.8,
+  "fh": 55.47,
+  "ax": 28.53,
   "ay": 49.15
  },
  "unit3d_britons_villager_m_walk": {
@@ -540,11 +540,11 @@
   "file": "assets/units/unit3d_britons_villager_f_farm.png",
   "frames": 10,
   "rows": 8,
-  "cycle": 5.64,
-  "fw": 50.13,
-  "fh": 47.2,
-  "ax": 25.07,
-  "ay": 39.82
+  "cycle": 11.8,
+  "fw": 68.27,
+  "fh": 67.73,
+  "ax": 34.13,
+  "ay": 49.15
  },
  "unit3d_britons_villager_f_forage": {
   "file": "assets/units/unit3d_britons_villager_f_forage.png",
@@ -570,10 +570,10 @@
   "file": "assets/units/unit3d_britons_villager_f_mine.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 2.22,
-  "fw": 45.87,
+  "cycle": 2.952,
+  "fw": 54.4,
   "fh": 55.47,
-  "ax": 22.93,
+  "ax": 27.2,
   "ay": 49.15
  },
  "unit3d_britons_villager_f_walk": {
@@ -611,11 +611,11 @@
   "file": "assets/units/unit3d_western_knight_m_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
-  "fw": 71.27,
+  "cycle": 2.133,
+  "fw": 73.45,
   "fh": 66.18,
-  "ax": 35.64,
-  "ay": 56.84
+  "ax": 36.73,
+  "ay": 56.48
  },
  "unit3d_western_knight_m_walk": {
   "file": "assets/units/unit3d_western_knight_m_walk.png",
@@ -1452,11 +1452,11 @@
   "file": "assets/units/unit3d_western_knight_m_t1_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
-  "fw": 71.27,
-  "fh": 69.82,
-  "ax": 35.64,
-  "ay": 60.48
+  "cycle": 2.133,
+  "fw": 73.45,
+  "fh": 68.73,
+  "ax": 36.73,
+  "ay": 59.03
  },
  "unit3d_western_knight_m_t1_walk": {
   "file": "assets/units/unit3d_western_knight_m_t1_walk.png",
@@ -1493,11 +1493,11 @@
   "file": "assets/units/unit3d_western_knight_m_t2_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
-  "fw": 71.27,
-  "fh": 69.82,
-  "ax": 35.64,
-  "ay": 60.48
+  "cycle": 2.133,
+  "fw": 73.45,
+  "fh": 68.73,
+  "ax": 36.73,
+  "ay": 59.03
  },
  "unit3d_western_knight_m_t2_walk": {
   "file": "assets/units/unit3d_western_knight_m_t2_walk.png",
@@ -2019,11 +2019,11 @@
   "file": "assets/units/unit3d_western_scout_m_idle.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 10.667,
-  "fw": 71.27,
-  "fh": 66.55,
-  "ax": 35.64,
-  "ay": 57.21
+  "cycle": 2.133,
+  "fw": 73.45,
+  "fh": 66.18,
+  "ax": 36.73,
+  "ay": 56.48
  },
  "unit3d_western_scout_m_walk": {
   "file": "assets/units/unit3d_western_scout_m_walk.png",
@@ -2579,11 +2579,11 @@
   "file": "assets/units/unit3d_franks_villager_m_farm.png",
   "frames": 10,
   "rows": 8,
-  "cycle": 5.64,
-  "fw": 50.93,
-  "fh": 48.8,
-  "ax": 25.6,
-  "ay": 39.55
+  "cycle": 11.8,
+  "fw": 68.27,
+  "fh": 68.27,
+  "ax": 34.13,
+  "ay": 49.15
  },
  "unit3d_franks_villager_m_forage": {
   "file": "assets/units/unit3d_franks_villager_m_forage.png",
@@ -2609,10 +2609,10 @@
   "file": "assets/units/unit3d_franks_villager_m_mine.png",
   "frames": 12,
   "rows": 8,
-  "cycle": 2.22,
-  "fw": 46.93,
+  "cycle": 2.952,
+  "fw": 56.0,
   "fh": 55.73,
-  "ax": 23.47,
+  "ax": 28.0,
   "ay": 49.15
  },
  "unit3d_franks_villager_m_walk": {
@@ -5940,5 +5940,69 @@
   "fh": 41.07,
   "ax": 13.87,
   "ay": 36.35
+ },
+ "unit3d_western_ram_m_attack": {
+  "file": "assets/units/unit3d_western_ram_m_attack.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 72.0,
+  "fh": 57.14,
+  "ax": 36.0,
+  "ay": 45.33
+ },
+ "unit3d_western_ram_m_death": {
+  "file": "assets/units/unit3d_western_ram_m_death.png",
+  "frames": 10,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 65.14,
+  "fh": 62.86,
+  "ax": 32.57,
+  "ay": 45.33
+ },
+ "unit3d_western_ram_m_idle": {
+  "file": "assets/units/unit3d_western_ram_m_idle.png",
+  "frames": 4,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 59.43,
+  "fh": 57.14,
+  "ax": 29.71,
+  "ay": 45.33
+ },
+ "unit3d_western_ram_m_walk": {
+  "file": "assets/units/unit3d_western_ram_m_walk.png",
+  "frames": 8,
+  "rows": 8,
+  "cycle": 1,
+  "fw": 58.29,
+  "fh": 57.14,
+  "ax": 29.14,
+  "ay": 45.33
+ },
+ "university": {
+  "file": "assets/university.png",
+  "size": 3,
+  "w": 192.22,
+  "h": 198.39,
+  "ax": 96.0,
+  "ay": 149.95
+ },
+ "mediterranean_university": {
+  "file": "assets/mediterranean_university.png",
+  "size": 3,
+  "w": 198.56,
+  "h": 168.0,
+  "ax": 99.28,
+  "ay": 119.79
+ },
+ "eastasian_university": {
+  "file": "assets/eastasian_university.png",
+  "size": 3,
+  "w": 267.33,
+  "h": 210.17,
+  "ax": 140.25,
+  "ay": 161.65
  }
 }

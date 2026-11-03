@@ -342,11 +342,21 @@
       const keys = Object.keys(man);
       let left = keys.length;
       const fin = () => { if (--left === 0 && done) done(); };
+      // packed unit images (tools/pack_units.py) hold several sheets: load each file once
+      // and cut every sheet back out to a canvas of its own
+      const files = {};
+      const get = f => files[f] || (files[f] = new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = f; }));
       for (const k of keys) {
-        const img = new Image();
-        img.onload = () => { art[k] = { img, def: man[k] }; fin(); };
-        img.onerror = fin;
-        img.src = man[k].file;
+        const d = man[k];
+        get(d.file).then(img => {
+          if (img && d.sh) {
+            const c = document.createElement('canvas'); c.width = d.sw; c.height = d.sh;
+            c.getContext('2d').drawImage(img, d.sx || 0, d.sy || 0, d.sw, d.sh, 0, 0, d.sw, d.sh);
+            c.naturalWidth = d.sw; c.naturalHeight = d.sh;
+            art[k] = { img: c, def: d };
+          } else if (img) art[k] = { img, def: d };
+          fin();
+        });
       }
     }).catch(() => done && done());
   };
