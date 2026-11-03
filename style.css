@@ -610,9 +610,10 @@ body.bigbtn .cmd { height: 64px; } body.bigbtn .sidebtn { width: 58px; height: 5
 #objpanel{position:absolute;top:52px;left:8px;right:8px;z-index:30;background:rgba(30,20,10,.94);border:1px solid #c9a24a;border-radius:10px;padding:10px;font-size:13px;color:#f3e3bd}
 #objpanel ul{margin:6px 0 0;padding-left:18px}
 /* map picker: a swipeable strip of painted thumbnails */
-.seg.mapseg{display:flex;overflow-x:auto;gap:8px;padding:2px 2px 6px;scroll-snap-type:x mandatory;flex-wrap:nowrap}
-.seg.mapseg button{flex:0 0 92px;padding:4px;display:flex;flex-direction:column;align-items:center;gap:4px;scroll-snap-align:start;font-size:12px;line-height:1.1}
-.seg.mapseg img{width:82px;height:82px;border-radius:6px;object-fit:cover;border:2px solid rgba(0,0,0,.4)}
-.seg.mapseg button.on img{border-color:#ffd76a;box-shadow:0 0 10px rgba(255,215,106,.6)}
+.opt .seg.mapseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.opt .seg.mapseg button{height:auto;padding:5px 5px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;line-height:1.15;text-transform:none;letter-spacing:0}
+.opt .seg.mapseg img{width:100%;aspect-ratio:1;border-radius:6px;object-fit:cover;border:1px solid rgba(0,0,0,.5);display:block}
+.opt .seg.mapseg button.on{background:#6b5323;border-color:#ffd76a;box-shadow:0 0 12px rgba(255,215,106,.45)}
+.opt .seg.mapseg button.on span{color:#ffe7a3}
 .ico.por{object-fit:cover;border-radius:6px}
 .tile img[src*="/u/"],.tile img[src*="/t/"]{object-fit:cover;border-radius:6px}
