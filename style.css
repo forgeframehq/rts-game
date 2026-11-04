@@ -661,3 +661,8 @@ details.more summary::after{content:' ▾'}details.more[open] summary::after{con
 details.more > .opt{margin-top:14px}
 details.more > .opt:first-of-type{margin-top:8px}
 details.more summary{margin-bottom:2px}
+/* side column: everything on one centre line, army buttons stacked as slim pills the width of the big buttons */
+#side{align-items:center}
+.grpbtns{flex-direction:column;gap:4px;margin:0}
+.grp{width:50px;height:26px;border-radius:8px;font-size:13px;line-height:1}
+body.bigbtn .grp{width:58px}

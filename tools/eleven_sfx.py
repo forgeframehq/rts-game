@@ -30,6 +30,8 @@ SFX = {  # key: (variants, seconds, category, prompt)
  'build':   (6, 0.7, 'work', 'one wooden mallet blow on a timber beam, carpentry knock'),
  'place':   (2, 1.0, 'work', 'a heavy wooden stake hammered into the ground, deep thud'),
  'complete':(2, 1.6, 'work', 'a building finished: a few final hammer knocks and a heavy wooden beam settling into place, satisfying'),
+ 'ack_f':   (6, 0.8, 'voice', 'a medieval peasant woman answering an order with a short soft "aye" or "mm-hm", single word, natural, close'),
+ 'die_f':   (4, 0.9, 'combat', 'a medieval peasant woman falling to the ground with a short pained gasp'),
  'ack':     (6, 0.8, 'voice', 'a medieval peasant man answering an order with a short grunt "aye" or "hm", single word, natural, close'),
  # battle
  'sword':   (6, 0.7, 'combat', 'a steel sword slash hitting another steel blade, one sharp metallic clash with ring'),

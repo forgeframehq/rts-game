@@ -255,5 +255,19 @@
  ],
  "victory": [
   "sfx/victory_1.mp3"
+ ],
+ "ack_f": [
+  "sfx/ack_f_1.mp3",
+  "sfx/ack_f_2.mp3",
+  "sfx/ack_f_3.mp3",
+  "sfx/ack_f_4.mp3",
+  "sfx/ack_f_5.mp3",
+  "sfx/ack_f_6.mp3"
+ ],
+ "die_f": [
+  "sfx/die_f_1.mp3",
+  "sfx/die_f_2.mp3",
+  "sfx/die_f_3.mp3",
+  "sfx/die_f_4.mp3"
  ]
 }

@@ -291,7 +291,7 @@
       if (e.owner > 0) { const pl = G.players[e.owner]; pl.lost++; const st = pl.stats = pl.stats || {}; if (e.kind === 'building') st.bldLost = (st.bldLost || 0) + 1; else st.unitsLost = (st.unitsLost || 0) + 1; }
     }
     G.byId.delete(e.id);
-    snd(e.kind === 'building' ? 'buildingdown' : e.type === 'king' ? 'kingdown' : 'die', e.x, e.y);
+    snd(e.kind === 'building' ? 'buildingdown' : e.type === 'king' ? 'kingdown' : (e.sex === 'f' || e.type === 'queen') ? 'die_f' : 'die', e.x, e.y);
     if (G.onKilled) G.onKilled(e);
   };
 

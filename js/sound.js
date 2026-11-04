@@ -48,6 +48,8 @@
     fire:       { vol: 0.35, throttle: 3.0, bus: 'combat' },
     special:    { vol: 0.8, throttle: 1.0, bus: 'combat' },
     ack:        { vol: 0.55, throttle: 1.2, bus: 'ui' },
+    ack_f:      { vol: 0.55, throttle: 1.2, bus: 'ui' },
+    die_f:      { vol: 0.5, throttle: 0.12, bus: 'combat' },
     capture:    { vol: 0.9, throttle: 2.0, bus: 'alert' },
     record:     { vol: 0.9, throttle: 2.0, bus: 'alert' },
     // moments

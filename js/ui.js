@@ -672,7 +672,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // so a tap that did nothing is never silent.
   function cmdFx(r, x, y) {
     const t = G.cmdTarget;
-    if (G.sound && ownUnits().some(u => u.type === 'villager')) G.sound.play('ack');
+    const vs = ownUnits().filter(u => u.type === 'villager');
+    if (G.sound && vs.length) G.sound.play(vs.filter(v => v.sex === 'f').length > vs.length / 2 ? 'ack_f' : 'ack');   // a woman answers in a woman's voice
     else if (G.sound && r === 'move' && ownUnits().length >= 4) G.sound.play('march');
     if (r === 'farm-busy') { UI.alert('Every farm is already being worked'); outline(t, '#f5c242'); return; }
     const col = r === 'attack' ? '#ff4a3a' : r === 'build' ? '#ffd34a' : r === 'move' ? '#ffffff' : '#7dff7a';
