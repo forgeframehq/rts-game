@@ -57,7 +57,7 @@ SFX = {  # key: (variants, seconds, category, prompt)
  # moments
  'train':   (3, 1.0, 'alert', 'a soldier steps forward and stamps to attention, armour rattle'),
  'research':(2, 1.6, 'alert', 'a heavy book page turning and a quill scratching, then a soft bright bell chime'),
- 'ageup':   (1, 3.5, 'alert', 'a triumphant medieval brass fanfare by several heralds trumpets, regal and bright'),
+ 'ageup':   (4, 4.0, 'alert', 'age-up: four approved variants (brass fanfare; bells and choir; war horns and drums; horn and cheering crowd), made without STYLE'),
  'bell':    (2, 2.5, 'alert', 'a large town bell ringing twice in alarm'),
  'attacked':(2, 2.0, 'alert', 'a deep war horn blowing a short urgent alarm'),
  'capture': (3, 2.5, 'alert', 'a heavy wooden castle gate slamming shut followed by one deep resonant bell toll, grand and final'),

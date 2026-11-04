@@ -1,0 +1,90 @@
+{
+ "out": "build/art/dark_v2",
+ "jobs": [
+  [
+   "med_town_center_dark",
+   "mediterranean/town_center.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this the Dark Age Town Center: a hall with a raised central block and a small square lookout tower on one corner, a wide double door under a porch, smoke from the roof, one tall pennant on the tower."
+  ],
+  [
+   "med_house_dark",
+   "mediterranean/house.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this a Dark Age house: a small one-room cottage with a gable roof, a plank door, one shuttered window, a woodpile against the side wall."
+  ],
+  [
+   "med_mill_dark",
+   "mediterranean/mill.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this a Dark Age mill: a granary barn with a small attached hand-quern shed, sacks of grain and baskets at the door. No windmill sails."
+  ],
+  [
+   "med_barracks_dark",
+   "mediterranean/barracks.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this a Dark Age barracks: a long muster hall, shields on the wall, a rack of spears and a straw training dummy in a small fenced yard at the front corner."
+  ],
+  [
+   "med_lumber_camp_dark",
+   "mediterranean/lumber_camp.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this a Dark Age lumber camp: an open-sided shed on stout posts, stacks of sawn logs and split planks under it, a chopping block with an axe, a sawhorse."
+  ],
+  [
+   "med_mining_camp_dark",
+   "mediterranean/mining_camp.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. Mediterranean Byzantine Dark Age materials: walls of rough honey-coloured stone and mud brick with timber lintels, roofs of plain low-pitched terracotta tiles with straight ridges. Make this a Dark Age mining camp: an open-sided shed on stout posts, a wooden ore cart, piles of grey stone and glinting gold ore, pickaxes and baskets."
+  ],
+  [
+   "ea_town_center_dark",
+   "eastasian/town_center.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this the Dark Age Town Center: a hall with a raised central block and a small square lookout tower on one corner, a wide double door under a porch, smoke from the roof, one tall pennant on the tower."
+  ],
+  [
+   "ea_house_dark",
+   "eastasian/house.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this a Dark Age house: a small one-room cottage with a gable roof, a plank door, one shuttered window, a woodpile against the side wall."
+  ],
+  [
+   "ea_mill_dark",
+   "eastasian/mill.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this a Dark Age mill: a granary barn with a small attached hand-quern shed, sacks of grain and baskets at the door. No windmill sails."
+  ],
+  [
+   "ea_barracks_dark",
+   "eastasian/barracks.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this a Dark Age barracks: a long muster hall, shields on the wall, a rack of spears and a straw training dummy in a small fenced yard at the front corner."
+  ],
+  [
+   "ea_lumber_camp_dark",
+   "eastasian/lumber_camp.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this a Dark Age lumber camp: an open-sided shed on stout posts, stacks of sawn logs and split planks under it, a chopping block with an axe, a sawhorse."
+  ],
+  [
+   "ea_mining_camp_dark",
+   "eastasian/mining_camp.jpg",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building standing square on a low footing of rough fieldstone, short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a later stone town but not a hovel. East Asian Chinese Dark Age materials: walls of dark timber posts and rammed earth with pale plaster panels, roofs of grey clay tiles with gently upturned eaves, on a low stone platform. Make this a Dark Age mining camp: an open-sided shed on stout posts, a wooden ore cart, piles of grey stone and glinting gold ore, pickaxes and baskets."
+  ],
+  [
+   "med_siege_workshop",
+   "mediterranean/siege_workshop.jpg",
+   "Make this a Castle Age siege workshop: a large solid workshop with a tall wide arched timber gate on the front through which a battering ram is half visible, a half-built trebuchet arm and stacked beams in a small walled yard at one corner. It sits flat and square on its plot, with no dark rim or shadow under it. Clearly a strong later-age building, not a wooden yard. Byzantine: dressed honey-coloured stone with banded brick courses, terracotta tile roof."
+  ],
+  [
+   "ea_siege_workshop",
+   "eastasian/siege_workshop.jpg",
+   "Make this a Castle Age siege workshop: a large solid workshop with a tall wide arched timber gate on the front through which a battering ram is half visible, a half-built trebuchet arm and stacked beams in a small walled yard at one corner. It sits flat and square on its plot, with no dark rim or shadow under it. Clearly a strong later-age building, not a wooden yard. Chinese: grey brick and dark timber, grey tiled roof with upturned eaves."
+  ],
+  [
+   "w_infirmary",
+   "monastery.jpg",
+   "Make this an Infirmary, a medieval house of healing: a calm two-storey hall with a covered porch where a few straw cots with white linen are visible, a small walled herb garden at one front corner with green herbs in rows, bundles of drying herbs hanging under the eaves, a water barrel, a small white banner with a red cross over the door. Clearly not a church: no tower, no spire, no bell. It sits flat and square on its plot. Western European: grey stone ground floor, timber-framed upper storey with white plaster, steep brown tile roof."
+  ],
+  [
+   "med_infirmary",
+   "mediterranean/monastery.jpg",
+   "Make this an Infirmary, a medieval house of healing: a calm two-storey hall with a covered porch where a few straw cots with white linen are visible, a small walled herb garden at one front corner with green herbs in rows, bundles of drying herbs hanging under the eaves, a water barrel, a small white banner with a red cross over the door. Clearly not a church: no tower, no spire, no bell. It sits flat and square on its plot. Byzantine: honey-coloured stone and plaster, terracotta tile roof, a small arcade instead of a porch."
+  ],
+  [
+   "ea_infirmary",
+   "eastasian/monastery.jpg",
+   "Make this an Infirmary, a medieval house of healing: a calm two-storey hall with a covered porch where a few straw cots with white linen are visible, a small walled herb garden at one front corner with green herbs in rows, bundles of drying herbs hanging under the eaves, a water barrel, a small white banner with a red cross over the door. Clearly not a church: no tower, no spire, no bell. It sits flat and square on its plot. Chinese: dark timber and pale plaster, grey tiled roof with upturned eaves, paper lanterns."
+  ]
+ ]
+}

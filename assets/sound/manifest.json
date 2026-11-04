@@ -24,7 +24,10 @@
   "sfx/ack_6.mp3"
  ],
  "ageup": [
-  "sfx/ageup_1.mp3"
+  "sfx/ageup_1.mp3",
+  "sfx/ageup_2.mp3",
+  "sfx/ageup_3.mp3",
+  "sfx/ageup_4.mp3"
  ],
  "armor": [
   "sfx/armor_1.mp3",

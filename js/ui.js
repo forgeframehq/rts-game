@@ -371,7 +371,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     buildTree(k);
   }
   // ---- tech tree, laid out like AoE2's: one column per building, one row per Age ----
-  const TREE_COLS = ['towncenter', 'mill', 'lumbercamp', 'miningcamp', 'barracks', 'range', 'stable', 'siegeworkshop', 'blacksmith', 'monastery', 'university', 'castle'];
+  const TREE_COLS = ['towncenter', 'mill', 'lumbercamp', 'miningcamp', 'barracks', 'range', 'stable', 'siegeworkshop', 'blacksmith', 'infirmary', 'monastery', 'university', 'castle'];
   const ROMAN = ['', 'I', 'II', 'III', 'IV'];
   const fmtCost = c => Object.entries(c || {}).map(([k, v]) => `${v} ${k}`).join(', ');
   (function dragScroll(el) {
@@ -961,7 +961,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('back cancel gate guard heal infirmary palisade special stonewall research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   // per-dynasty portraits: each unit line shows its current rank (Militia -> Man-at-Arms -> ...)
   const LINES = { militia: ['militia', 'manatarms', 'longsword', 'champion'], spearman: ['spearman', 'pikeman', 'halberdier'], archer: ['archer', 'crossbow', 'arbalester'],
@@ -1024,7 +1024,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     'Deselect': 'Clear your selection.', 'Back': 'Back to the previous set of buttons.',
     'Build': 'Choose a building for the selected villagers to construct.',
     'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
-    'Stop': 'Stop whatever the selected units are doing.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Monastery and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
+    'Stop': 'Stop whatever the selected units are doing.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Infirmary and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
     'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
     'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
     'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
@@ -1043,7 +1043,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const D = G.unitDef ? G.unitDef(1, k) : U, good = { spearman: 'Strong against cavalry.', archer: 'Shoots from range; good against foot soldiers.', knight: 'Fast and tough; runs down archers.', militia: 'Solid foot soldier; good at knocking down buildings.', scout: 'Very fast; scouts the map and raids.', villager: 'Gathers resources and builds.', monk: 'Heals your units.', ram: 'Smashes buildings; arrows barely hurt it.', trebuchet: 'Hurls boulders at buildings from very far away.' }[k] || '';
       return { t: D.name, d: `${good} ${D.hp} HP, ${D.atk} attack${D.range > 1 ? ', range ' + D.range : ''}.`.trim(), c: costLine(G.unitCost ? G.unitCost(1, k) : U.cost) }; } }
     for (const k in G.BUILDINGS) { const B = G.BUILDINGS[k]; if (B.name === lb) {
-      const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal. Wounded units sheltered inside heal fast.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
+      const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal.', infirmary: 'Wounded units sheltered inside heal fast. One per player (two in the Imperial Age). Can\'t be built with enemy soldiers nearby.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
       return { t: B.name, d: what, c: costLine(B.cost), a: G.BUILD_AGE[k] > 1 ? G.AGES[G.BUILD_AGE[k]].name : null }; } }
     const ag = G.AGES.find(a => a && (a.short + ' Age' === lb || a.name === lb));
     if (ag) return { t: ag.name, d: (ag.bonus || '') + (ag.needs ? ` Needs 2 of: ${ag.needs.map(n => G.BUILDINGS[n].name).join(', ')}.` : ''), c: costLine(ag.cost) };
@@ -1167,10 +1167,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (vils.length && buildMenu) {
         for (const t of G.VIL_BUILDS) {
           const c = G.buildCost(1, t);
+          if (G.atBuildLimit(1, t) && G.ageOf(1) >= (G.BUILD_AGE[t] || 1)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, 'limit ' + G.buildLimit(1, t), () => UI.alert(`You can only have ${G.buildLimit(1, t)} ${G.BUILDINGS[t].name}${G.buildLimit(1, t) > 1 ? 's' : ''}` + (G.buildLimit(1, t) < 2 ? ' (two in the Imperial Age)' : '')), true)); continue; }
           if (!G.canBuildType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
           cmds.appendChild(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
         }
-        cmds.appendChild(btn('↩', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
+        cmds.appendChild(btn('i:back', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
       }
       if (vils.length && vils.every(v => v.task.t === 'idle')) {
@@ -1193,7 +1194,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         cmds.appendChild(btn('i:garrison', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager' && u.def.cls !== 'hero') ? 'Castle' : 'Town Center', () => {
           let full = 0;
           for (const u of canHide) {
-            const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter' || e.type === 'monastery') && G.canGarrison(u, e));
+            const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter' || e.type === 'infirmary') && G.canGarrison(u, e));
             if (b) G.garrisonTo(u, b); else full++;
           }
           if (full) UI.alert(hasCastle ? 'No room left inside' : 'No room in a Town Center');
@@ -1202,19 +1203,19 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       cmds.appendChild(btn('i:stop', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       // 🛡 Guard: tap a unit or building of yours, and these soldiers stay by it and fight off anything that comes near
       const guards = units.filter(u => u.type !== 'villager' && !u.def.heal);
-      if (guards.length) cmds.appendChild(btn('i:box', 'Guard', '', () => setMode('guard')));
+      if (guards.length) cmds.appendChild(btn('i:guard', 'Guard', '', () => setMode('guard')));
       // 🏥 Heal: wounded soldiers go to the nearest Monastery and heal inside
       const hurt = guards.filter(u => u.hp < u.maxHp * 0.95 && !u.def.siege);
-      if (hurt.length && G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'monastery' && e.built)) cmds.appendChild(btn('✚', 'Heal', 'Monastery', () => {
+      if (hurt.length && G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'infirmary' && e.built)) cmds.appendChild(btn('i:heal', 'Heal', 'Infirmary', () => {
         let full = 0;
-        for (const u of hurt) { const b = G.nearest(u, e => e.type === 'monastery' && G.canGarrison(u, e)); if (b) G.garrisonTo(u, b); else full++; }
-        if (full) UI.alert('The Monastery is full'); else if (G.sound) G.sound.play('command');
+        for (const u of hurt) { const b = G.nearest(u, e => e.type === 'infirmary' && G.canGarrison(u, e)); if (b) G.garrisonTo(u, b); else full++; }
+        if (full) UI.alert('The Infirmary is full'); else if (G.sound) G.sound.play('command');
       }));
       // ⭐ Special: one button for every soldier's move
       const sold = units.filter(u => G.specialOf && G.specialOf(u));
       if (sold.length) {
         const kinds = [...new Set(sold.map(G.specialOf))], names = kinds.map(k => G.SPECIALS[k].name);
-        const b = btn('⭐', names.length > 2 ? 'Special ×' + names.length : names.join(' + '), '<span class="sp-cool"></span>', () => {
+        const b = btn('i:special', names.length > 2 ? 'Special ×' + names.length : names.join(' + '), '<span class="sp-cool"></span>', () => {
           const n = G.useSpecial(sold);
           if (!n) UI.alert(sold.some(G.specialReady) ? 'Nothing in range to use it on yet' : 'Still recharging');
           else { UI.buzz(25); if (G.sound) G.sound.play('command'); }
@@ -1282,7 +1283,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (resPage) {
         if (e.research) {
           const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id];
-          cmds.appendChild(btn('⏹', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
+          cmds.appendChild(btn('i:cancel', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
         } else for (const r of res) {
           const ic = r.kind === 'up' ? 'u:' + r.def.line + '@' + r.def.tier + (r.why ? '|lock' : '') : 't:' + r.id + (r.why ? '|lock' : '');
           const b = btn(ic, r.def.name, r.why || costTxt(r.def.cost), () => {
@@ -1304,7 +1305,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
       if (e.type === 'towncenter' && e.owner === 1) {
         const nx = G.AGES[G.ageOf(1) + 1];
-        if (e.aging) cmds.appendChild(btn('⏹', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
+        if (e.aging) cmds.appendChild(btn('i:cancel', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
         else if (nx) {
           const why = G.ageBlock(1, e);
           cmds.appendChild(btn('i:ageup', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {

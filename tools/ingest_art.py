@@ -25,6 +25,7 @@ STEMS = {
     "lumbercamp": "lumber_camp", "miningcamp": "mining_camp", "farm": "farm",
     "farm_spent": "farm_spent", "tower": "watch_tower", "blacksmith": "blacksmith",
     "castle": "castle", "university": "university", "siege_workshop": "siege_workshop", "monastery": "monastery",
+    "lumber_camp": "lumber_camp", "mining_camp": "mining_camp", "infirmary": "infirmary",
 }
 
 

@@ -24,7 +24,11 @@
 
   // ---------- Ages ----------
   G.ageOf = p => (G.players[p] && G.players[p].age) || 1;
-  G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1);
+  G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1) && !G.atBuildLimit(p, type);
+  // some buildings are limited per player: one Infirmary (two in the Imperial Age)
+  G.buildLimit = (p, type) => type === 'infirmary' ? (G.ageOf(p) >= 4 ? 2 : 1) : 0;
+  G.atBuildLimit = (p, type) => { const n = G.buildLimit(p, type); return n > 0 && G.ents.filter(e => !e.dead && e.owner === p && e.type === type).length >= n; };
+  G.enemySoldierNear = (p, x, y, r) => G.ents.some(e => !e.dead && e.kind === 'unit' && e.type !== 'villager' && !e.inside && G.enemies(e.owner, p) && Math.hypot(e.x - x, e.y - y) < r);
   G.canTrainType = (p, type) => G.ageOf(p) >= (G.UNIT_AGE[type] || 1);
   // what still blocks advancing: returns null if ready, else a short reason
   G.ageBlock = function (p, tc) {
@@ -240,7 +244,7 @@
   // and every unit inside adds an arrow to what the building shoots.
   // The King and Queen may hide in a Town Center too, so they have shelter from the first minute.
   G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner
-    && (u.type === 'villager' || u.def.cls === 'hero' || b.type === 'castle' || (b.type === 'monastery' && !u.def.siege))
+    && (u.type === 'villager' || u.def.cls === 'hero' || b.type === 'castle' || (b.type === 'infirmary' && !u.def.siege))
     && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
   G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
   G.ringBell = function (owner) {
@@ -494,8 +498,8 @@
       if (t.owner === units[0].owner && (t.kind === 'unit' || t.kind === 'building')) {
         const sold = units.filter(u => u.type !== 'villager' && u !== t && !u.def.heal);
         if (sold.length) {
-          // wounded to the Monastery: shelter and heal there
-          if (t.type === 'monastery' && sold.some(u => u.hp < u.maxHp)) { let n = 0; for (const u of sold) if (G.canGarrison(u, t)) { G.garrisonTo(u, t); n++; } if (n) return 'shelter'; }
+          // wounded to the Infirmary: shelter and heal there
+          if (t.type === 'infirmary' && sold.some(u => u.hp < u.maxHp)) { let n = 0; for (const u of sold) if (G.canGarrison(u, t)) { G.garrisonTo(u, t); n++; } if (n) return 'shelter'; }
           G.cmdGuard(sold, t); return 'guard';
         }
       }
@@ -688,8 +692,10 @@
       }
       // shelter heals: wounded units inside slowly recover (faster in a Monastery)
       if (b.garrison && b.garrison.length) {
-        const rate = b.type === 'monastery' ? 3 : 1.5;
-        for (const g of b.garrison) if (!g.dead && g.hp < g.maxHp) g.hp = Math.min(g.maxHp, g.hp + rate * dt);
+        // the Infirmary heals fast; any other shelter slowly. Nobody heals while the building is being hit.
+        b.calmT = b.hitT ? 3 : Math.max(0, (b.calmT || 0) - dt);
+        const rate = b.calmT > 0 ? 0 : b.def.heal || 1;
+        if (rate) for (const g of b.garrison) if (!g.dead && g.hp < g.maxHp) g.hp = Math.min(g.maxHp, g.hp + rate * dt);
       }
     }
     // Units
@@ -1050,6 +1056,7 @@
         if (G.edgeDist(u, b) <= 0.8 || (b.type === 'farm' && u.x >= b.tx && u.x <= b.tx + b.size && u.y >= b.ty && u.y <= b.ty + b.size)) {
           u.path = []; faceTo(u, b); u.working = true;
           workSnd(u, 'build');
+          if (!b.built && b.type === 'infirmary' && G.enemySoldierNear(b.owner, b.x, b.y, 12)) { if (b.owner === 1 && G.ui && !(b.warnT > G.time)) { b.warnT = G.time + 8; G.ui.alert('Infirmary: work stops while enemies are near'); } break; }
           if (!b.built) {
             const inc = dt / b.def.time * (G.fastBuild || 1) * (1 + G.techEff(u.owner, 'build'));
             b.progress = Math.min(1, b.progress + inc);

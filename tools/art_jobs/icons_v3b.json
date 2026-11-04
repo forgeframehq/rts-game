@@ -1,0 +1,11 @@
+{
+ "out": "build/art/icons_v3",
+ "jobs": [
+  [
+   "icon_infirmary",
+   "repo:assets/ui/icons/house.png",
+   "Replace the subject with a small medieval stone and timber house of healing with a white banner bearing a red cross over its door and a little herb garden, on a small patch of grass.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ]
+ ]
+}

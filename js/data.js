@@ -92,9 +92,10 @@ G.BUILDINGS = {
   range:      { name: 'Archery Range', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['archer'], icon: '🏹' },
   stable:     { name: 'Stable', cost: { wood: 175 }, time: 30, hp: 1200, size: 3, los: 5, trains: ['scout','knight'], icon: '🐎' },
   blacksmith: { name: 'Blacksmith', cost: { wood: 150 }, time: 35, hp: 1500, size: 3, los: 5, icon: '⚒️' },
-  monastery:  { name: 'Monastery', cost: { wood: 175 }, time: 40, hp: 1050, size: 3, los: 6, trains: ['monk'], garrison: 10, icon: '✝️' },
+  monastery:  { name: 'Monastery', cost: { wood: 175 }, time: 40, hp: 1050, size: 3, los: 6, trains: ['monk'], icon: '✝️' },
   siegeworkshop: { name: 'Siege Workshop', cost: { wood: 200 }, time: 40, hp: 1050, size: 4, los: 5, trains: ['ram','trebuchet'], icon: '⚙️' },
   university: { name: 'University', cost: { wood: 200 }, time: 50, hp: 1500, size: 3, los: 5, icon: '🎓' },
+  infirmary:  { name: 'Infirmary', cost: { wood: 150, gold: 50 }, time: 60, hp: 1200, size: 3, los: 5, garrison: 10, heal: 4, icon: '✚' },
   castle:     { name: 'Castle', cost: { stone: 350 }, time: 80, hp: 3000, size: 4, los: 9, garrison: 20, atk: 11, range: 8, rate: 2, icon: '🏯' },
   // ---- walls: cheap, quick, and built in runs. size 1 so they follow a line. ----
   palisade:   { name: 'Palisade Wall', cost: { wood: 5 }, time: 3, hp: 250, size: 1, los: 2, wall: 'wood', icon: '🪵' },
@@ -110,7 +111,7 @@ G.AGES = [
   { name: 'Castle Age', short: 'Castle', cost: { food: 800, gold: 200 }, time: 60, needs: ['range', 'stable', 'tower', 'blacksmith'], bonus: 'Unlocks Castle, Siege Workshop, Monastery, Stone Wall, Gate, Knight, Battering Ram, Monk and unique units. All soldiers +1 attack' },
   { name: 'Imperial Age', short: 'Imperial', cost: { food: 1000, gold: 800 }, time: 75, needs: ['castle'], bonus: 'Unlocks the Trebuchet. All soldiers +1 attack, +1 armor. Buildings +20% HP' }
 ];
-G.BUILD_AGE = { university: 3, tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3, monastery: 3, palisade: 2, stonewall: 3, gate: 3 };
+G.BUILD_AGE = { university: 3, tower: 2, range: 2, stable: 2, blacksmith: 2, castle: 3, siegeworkshop: 3, monastery: 3, infirmary: 2, palisade: 2, stonewall: 3, gate: 3 };
 // ---- Unit upgrade lines (AoE2): researched at a building, upgrade every unit of that line ----
 // stats are the unit's new values (any field of G.UNITS); tier picks the upgraded look.
 G.UPGRADES = {
@@ -179,7 +180,7 @@ G.TECHS = {
   greatwall:   { name: 'Great Wall',    icon: 'stone',      at: 'castle', civ: 'chinese', age: 4, cost: { wood: 400, stone: 400 }, time: 60, eff: { wallHp: 0.3 }, desc: 'Walls and towers +30% HP' }
 };
 G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, ram: 3, trebuchet: 4, monk: 3 };
-G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','siegeworkshop','monastery','university','castle','tower','palisade','stonewall','gate','towncenter'];
+G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','infirmary','siegeworkshop','monastery','university','castle','tower','palisade','stonewall','gate','towncenter'];
 
 G.RES = {
   tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },

@@ -32,6 +32,7 @@
     const def = G.BUILDINGS[type]; if (!def) return '';
     const p = G.players[owner]; if (!p) return '';
     const cx = tx + def.size / 2, cy = ty + def.size / 2;
+    if (type === 'infirmary' && G.enemySoldierNear(owner, cx, cy, 12)) return 'enemy soldiers nearby';
     const near = (e, r) => { const ex = Math.max(e.tx - r, Math.min(e.tx + e.size + r, cx)), ey = Math.max(e.ty - r, Math.min(e.ty + e.size + r, cy)); return Math.abs(ex - cx) < def.size / 2 + 0.01 && Math.abs(ey - cy) < def.size / 2 + 0.01; };
     if (type === 'towncenter') {
       if (G.ageOf(owner) < 3) return 'the Castle Age (new Town Centers need it)';

@@ -6852,26 +6852,26 @@
  "siegeworkshop": {
   "file": "assets/siegeworkshop.png",
   "size": 4,
-  "w": 337.74,
-  "h": 333.43,
-  "ax": 168.33,
-  "ay": 268.89
+  "w": 268.23,
+  "h": 204.02,
+  "ax": 139.67,
+  "ay": 139.47
  },
  "mediterranean_siegeworkshop": {
   "file": "assets/mediterranean_siegeworkshop.png",
   "size": 4,
-  "w": 302.03,
-  "h": 257.78,
-  "ax": 151.74,
-  "ay": 193.62
+  "w": 385.16,
+  "h": 308.59,
+  "ax": 256.0,
+  "ay": 244.21
  },
  "eastasian_siegeworkshop": {
   "file": "assets/eastasian_siegeworkshop.png",
   "size": 4,
-  "w": 307.32,
-  "h": 248.27,
-  "ax": 162.01,
-  "ay": 183.65
+  "w": 260.58,
+  "h": 221.55,
+  "ax": 130.18,
+  "ay": 157.33
  },
  "unit_britons_ram_m_idle": {
   "file": "assets/units/pack_unit_britons_ram_m.png",
@@ -9067,98 +9067,98 @@
  "house_dark": {
   "file": "assets/house_dark.png",
   "size": 2,
-  "w": 151.73,
-  "h": 159.1,
-  "ax": 75.33,
-  "ay": 126.92
+  "w": 134.08,
+  "h": 138.59,
+  "ax": 68.34,
+  "ay": 106.42
  },
  "towncenter_dark": {
   "file": "assets/towncenter_dark.png",
   "size": 4,
-  "w": 276.82,
-  "h": 237.15,
-  "ax": 138.13,
-  "ay": 172.87
+  "w": 278.57,
+  "h": 264.32,
+  "ax": 128.3,
+  "ay": 200.02
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 213.31,
-  "h": 202.18,
-  "ax": 107.36,
-  "ay": 153.94
+  "w": 251.48,
+  "h": 223.82,
+  "ax": 154.1,
+  "ay": 175.26
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
   "size": 2,
-  "w": 149.21,
-  "h": 147.24,
-  "ax": 74.79,
-  "ay": 115.06
+  "w": 131.59,
+  "h": 122.22,
+  "ax": 64.47,
+  "ay": 90.06
  },
  "mediterranean_house_dark": {
   "file": "assets/mediterranean_house_dark.png",
   "size": 2,
-  "w": 136.06,
-  "h": 133.66,
-  "ax": 67.95,
-  "ay": 101.49
+  "w": 128.34,
+  "h": 121.79,
+  "ax": 64.17,
+  "ay": 89.46
  },
  "mediterranean_towncenter_dark": {
   "file": "assets/mediterranean_towncenter_dark.png",
   "size": 4,
-  "w": 268.07,
-  "h": 278.83,
-  "ax": 133.87,
-  "ay": 214.5
+  "w": 256.87,
+  "h": 247.63,
+  "ax": 128.58,
+  "ay": 183.34
  },
  "mediterranean_barracks_dark": {
   "file": "assets/mediterranean_barracks_dark.png",
   "size": 3,
-  "w": 214.12,
-  "h": 198.28,
-  "ax": 106.3,
-  "ay": 150.03
+  "w": 193.79,
+  "h": 153.02,
+  "ax": 96.0,
+  "ay": 104.57
  },
  "mediterranean_mill_dark": {
   "file": "assets/mediterranean_mill_dark.png",
   "size": 2,
-  "w": 139.89,
-  "h": 141.08,
-  "ax": 71.53,
-  "ay": 108.88
+  "w": 132.12,
+  "h": 96.99,
+  "ax": 65.53,
+  "ay": 64.84
  },
  "eastasian_house_dark": {
   "file": "assets/eastasian_house_dark.png",
   "size": 2,
-  "w": 151.5,
-  "h": 142.52,
-  "ax": 76.42,
-  "ay": 110.33
+  "w": 135.22,
+  "h": 137.12,
+  "ax": 67.8,
+  "ay": 104.74
  },
  "eastasian_towncenter_dark": {
   "file": "assets/eastasian_towncenter_dark.png",
   "size": 4,
-  "w": 287.14,
-  "h": 224.0,
-  "ax": 145.43,
-  "ay": 159.71
+  "w": 264.53,
+  "h": 275.81,
+  "ax": 132.57,
+  "ay": 211.5
  },
  "eastasian_barracks_dark": {
   "file": "assets/eastasian_barracks_dark.png",
   "size": 3,
-  "w": 225.39,
-  "h": 216.52,
-  "ax": 112.96,
-  "ay": 168.26
+  "w": 248.16,
+  "h": 218.91,
+  "ax": 149.03,
+  "ay": 170.38
  },
  "eastasian_mill_dark": {
   "file": "assets/eastasian_mill_dark.png",
   "size": 2,
-  "w": 144.51,
-  "h": 161.41,
-  "ax": 77.6,
-  "ay": 129.21
+  "w": 134.2,
+  "h": 125.82,
+  "ax": 64.0,
+  "ay": 93.65
  },
  "unit3d_franks_villager_m_build": {
   "file": "assets/units/pack_unit3d_franks_villager_m.png",
@@ -25572,5 +25572,77 @@
   "h": 214.02,
   "ax": 96.48,
   "ay": 165.79
+ },
+ "infirmary": {
+  "file": "assets/infirmary.png",
+  "size": 3,
+  "w": 200.61,
+  "h": 181.71,
+  "ax": 98.52,
+  "ay": 133.5
+ },
+ "mediterranean_infirmary": {
+  "file": "assets/mediterranean_infirmary.png",
+  "size": 3,
+  "w": 192.78,
+  "h": 149.25,
+  "ax": 96.58,
+  "ay": 100.86
+ },
+ "eastasian_infirmary": {
+  "file": "assets/eastasian_infirmary.png",
+  "size": 3,
+  "w": 213.86,
+  "h": 172.29,
+  "ax": 104.79,
+  "ay": 124.07
+ },
+ "lumbercamp_dark": {
+  "file": "assets/lumbercamp_dark.png",
+  "size": 2,
+  "w": 131.76,
+  "h": 116.28,
+  "ax": 65.01,
+  "ay": 84.14
+ },
+ "miningcamp_dark": {
+  "file": "assets/miningcamp_dark.png",
+  "size": 2,
+  "w": 131.18,
+  "h": 123.75,
+  "ax": 66.88,
+  "ay": 91.6
+ },
+ "mediterranean_lumbercamp_dark": {
+  "file": "assets/mediterranean_lumbercamp_dark.png",
+  "size": 2,
+  "w": 128.23,
+  "h": 101.79,
+  "ax": 64.0,
+  "ay": 69.68
+ },
+ "mediterranean_miningcamp_dark": {
+  "file": "assets/mediterranean_miningcamp_dark.png",
+  "size": 2,
+  "w": 130.47,
+  "h": 101.96,
+  "ax": 64.15,
+  "ay": 69.82
+ },
+ "eastasian_lumbercamp_dark": {
+  "file": "assets/eastasian_lumbercamp_dark.png",
+  "size": 2,
+  "w": 143.0,
+  "h": 123.23,
+  "ax": 71.5,
+  "ay": 91.06
+ },
+ "eastasian_miningcamp_dark": {
+  "file": "assets/eastasian_miningcamp_dark.png",
+  "size": 2,
+  "w": 128.33,
+  "h": 120.75,
+  "ax": 64.0,
+  "ay": 88.59
  }
 }
