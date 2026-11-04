@@ -743,9 +743,22 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       return;
     }
     if (target) { select([target], false); return; }
+    // double-tap empty ground: every soldier of yours you can see
+    if (dbl) { const army = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager' && e.def.cls !== 'hero' && onScreen(e)); if (army.length) { select(army, false); UI.alert(`${army.length} soldier${army.length === 1 ? '' : 's'} selected`); return; } }
     select([], false);
   }
-  const onScreen = e => { const s = G.toScreen(e.x, e.y); return s.x > 0 && s.y > 0 && s.x < G.W && s.y < G.H; };
+  // on screen AND not hidden under the HUD (top bar, side buttons, minimap, command panel), so a
+  // double-tap only ever picks units you can actually see
+  const onScreen = e => {
+    const s = G.toScreen(e.x, e.y), y = s.y - 12;   // the body, not the feet
+    if (s.x < 4 || y < 4 || s.x > innerWidth - 4 || s.y > innerHeight - 4) return false;
+    for (const id of ['topbar', 'side', 'minimap', 'panel', 'place-bar']) {
+      const el = $(id); if (!el || el.classList.contains('hidden') || !el.getClientRects().length) continue;
+      const r = el.getBoundingClientRect();
+      if (s.x >= r.left && s.x <= r.right && y >= r.top && y <= r.bottom) return false;
+    }
+    return true;
+  };
 
   function boxSelect(b) {
     const x0 = Math.min(b.x0, b.x1), x1 = Math.max(b.x0, b.x1), y0 = Math.min(b.y0, b.y1), y1 = Math.max(b.y0, b.y1);
