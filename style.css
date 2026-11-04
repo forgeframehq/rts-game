@@ -666,3 +666,5 @@ details.more summary{margin-bottom:2px}
 .grpbtns{flex-direction:column;gap:4px;margin:0}
 .grp{width:50px;height:26px;border-radius:8px;font-size:13px;line-height:1}
 body.bigbtn .grp{width:58px}
+.qmrow{display:block}
+.mbtn.qmgo{width:100%;margin:0 0 10px}

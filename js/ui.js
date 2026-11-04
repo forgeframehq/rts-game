@@ -272,7 +272,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     // settings that don't apply to this mode are hidden
     document.querySelectorAll('#skirmish .opt[data-modes]').forEach(o => o.classList.toggle('hidden', !o.dataset.modes.split(' ').includes(setup.mode)));
     if ($('map-hint')) $('map-hint').textContent = setup.map === 'random' ? 'A surprise: one of the eight maps, revealed when the battle starts.' : (G.MAPS[setup.map] || G.MAPS.grasslands).desc;
-    validate();
+    validate(); if ($('qm-sub')) quickSub();
   }
   function validate() {
     const act = setup.slots.map((s, i) => ({ ...s, id: i + 1 })).filter(s => s.type !== 'closed');
@@ -324,7 +324,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // Quick Match: pick a difficulty and go. One opponent, high resources, so you are
   // fighting within a couple of minutes instead of gathering for ten. Keeps your last civ.
-  const quickSub = () => { $('qm-sub').textContent = `${G.CIVS[(setup.slots[0] && setup.slots[0].civ !== 'random' && setup.slots[0].civ) || 'britons'].name} vs a ${DIFF_TXT[prefs.quickAI || 'normal'] || 'Normal'} computer · Regicide · small map`; };
+  // Quick Match plays your dynasty against one computer at the difficulty set on its row below
+  const qmLevel = () => { const ai = setup.slots.find((sl, i) => i > 0 && sl.type === 'ai'); return (ai && ai.ai) || prefs.quickAI || 'normal'; };
+  const quickSub = () => { $('qm-sub').textContent = `${G.CIVS[(setup.slots[0] && setup.slots[0].civ !== 'random' && setup.slots[0].civ) || 'britons'].name} vs a ${DIFF_TXT[qmLevel()] || 'Normal'} computer · Regicide · small map`; };
   const quickGo = lvl => {
     prefs.quickAI = lvl; savePrefs();
     startSkirmish({
@@ -338,8 +340,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'diamond', mode: 'regicide', time: 0, map: 'grasslands'
     }, true);
   };
-  $('qm-go').onclick = () => quickGo(prefs.quickAI || 'normal');
-  $('qm-edit').onclick = () => { const lvl = prefs.quickAI || 'normal'; document.querySelectorAll('#quick .qd').forEach(b => b.classList.toggle('primary', b.dataset.ai === lvl)); UI.backToSkirmish = true; show('quick'); };
+  $('qm-go').onclick = () => quickGo(qmLevel());
   document.querySelectorAll('#quick .qd').forEach(b => b.onclick = () => quickGo(b.dataset.ai));
 
   // ---------- Dynasties ----------
