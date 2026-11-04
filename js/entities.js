@@ -851,6 +851,13 @@
         } else {
           if (u.pathFor !== t.id || u.repath <= 0 || !u.path.length) pathTo(u, t, true);
           moveAlong(u, dt);
+          // standing beside it but a hair out of reach (the path ends on the next tile): close the gap directly
+          if (!u.path.length && d < u.range + 1.6) {
+            const cx = t.kind === 'building' ? Math.max(t.tx, Math.min(t.tx + t.size, u.x)) : t.x, cy = t.kind === 'building' ? Math.max(t.ty, Math.min(t.ty + t.size, u.y)) : t.y;
+            const dx = cx - u.x, dy = cy - u.y, l = Math.hypot(dx, dy) || 1, st = u.def.speed * dt * (G.speedMul ? G.speedMul(u) : 1);
+            const nx = u.x + dx / l * st, ny = u.y + dy / l * st;
+            if (G.freeFor(nx | 0, ny | 0, u.owner) || (t.kind === 'building' && G.block[G.idx(nx | 0, ny | 0)] === t.id)) { u.x = nx; u.y = ny; }
+          }
           // the way is shut by an enemy wall (Fortress maps, or walls they built): break through it
           if (!u.path.length && d > u.range + 1.5 && !t.def.wall) {
             const w = nearest(u, e => e.kind === 'building' && e.def.wall && G.enemies(e.owner, u.owner), 2.5);

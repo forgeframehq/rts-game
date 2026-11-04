@@ -158,6 +158,8 @@
     }
     // stragglers that lose their way are sent at the town again
     if (S.active && Math.floor(G.time) % 5 === 0 && Math.floor(G.time - dt) % 5 !== 0) for (const u of alive) if (u.task.t === 'idle') aim([u]);
+    // a wave that drags on (stragglers lost in a forest) doesn't hold up the next one
+    if (S.active && G.time - S.started > 150) { S.active = false; S.done = S.wave; S.next = G.time; }
     if (!S.active && G.time >= S.next) spawnWave();
     if (G.ui && G.ui.waveBar) G.ui.waveBar(S, alive.length);
   }
@@ -171,7 +173,7 @@
   }
   function spawnWave() {
     const S = G.surv, n = ++S.wave, k = LVL[S.lvl] || 1, raid = G.players[S.raider];
-    S.active = true;
+    S.active = true; S.started = G.time;
     raid.age = Math.min(4, 1 + Math.floor(n / 4));
     const tier = Math.floor(n / 5);
     raid.up = { militia: Math.min(3, tier), spearman: Math.min(2, tier), archer: Math.min(2, tier), knight: Math.min(2, Math.max(0, tier - 1)) };

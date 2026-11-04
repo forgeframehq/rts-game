@@ -85,7 +85,8 @@
  ],
  "capture": [
   "sfx/capture_1.mp3",
-  "sfx/capture_2.mp3"
+  "sfx/capture_2.mp3",
+  "sfx/capture_3.mp3"
  ],
  "charge": [
   "sfx/charge_1.mp3",
@@ -222,7 +223,8 @@
  "special": [
   "sfx/special_1.mp3",
   "sfx/special_2.mp3",
-  "sfx/special_3.mp3"
+  "sfx/special_3.mp3",
+  "sfx/special_4.mp3"
  ],
  "stonehit": [
   "sfx/stonehit_1.mp3",
