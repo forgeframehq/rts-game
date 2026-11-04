@@ -13,51 +13,113 @@
   "battle_1.mp3",
   "battle_2.mp3"
  ],
+ "ack": [
+  "sfx/ack_1.mp3",
+  "sfx/ack_2.mp3",
+  "sfx/ack_3.mp3",
+  "sfx/ack_4.mp3",
+  "sfx/ack_5.mp3",
+  "sfx/ack_6.mp3"
+ ],
  "ageup": [
   "sfx/ageup_1.mp3"
  ],
+ "armor": [
+  "sfx/armor_1.mp3",
+  "sfx/armor_2.mp3",
+  "sfx/armor_3.mp3",
+  "sfx/armor_4.mp3"
+ ],
+ "arrowhit": [
+  "sfx/arrowhit_1.mp3",
+  "sfx/arrowhit_2.mp3",
+  "sfx/arrowhit_3.mp3",
+  "sfx/arrowhit_4.mp3",
+  "sfx/arrowhit_5.mp3"
+ ],
  "attacked": [
-  "sfx/attacked_1.mp3"
+  "sfx/attacked_1.mp3",
+  "sfx/attacked_2.mp3"
  ],
  "axethrow": [
   "sfx/axethrow_1.mp3",
-  "sfx/axethrow_2.mp3"
+  "sfx/axethrow_2.mp3",
+  "sfx/axethrow_3.mp3",
+  "sfx/axethrow_4.mp3"
+ ],
+ "back": [
+  "sfx/back_1.mp3",
+  "sfx/back_2.mp3",
+  "sfx/back_3.mp3"
  ],
  "bell": [
-  "sfx/bell_1.mp3"
+  "sfx/bell_1.mp3",
+  "sfx/bell_2.mp3"
  ],
  "bolt": [
   "sfx/bolt_1.mp3",
-  "sfx/bolt_2.mp3"
+  "sfx/bolt_2.mp3",
+  "sfx/bolt_3.mp3",
+  "sfx/bolt_4.mp3"
  ],
  "bow": [
   "sfx/bow_1.mp3",
   "sfx/bow_2.mp3",
-  "sfx/bow_3.mp3"
+  "sfx/bow_3.mp3",
+  "sfx/bow_4.mp3",
+  "sfx/bow_5.mp3",
+  "sfx/bow_6.mp3"
  ],
  "build": [
   "sfx/build_1.mp3",
   "sfx/build_2.mp3",
-  "sfx/build_3.mp3"
+  "sfx/build_3.mp3",
+  "sfx/build_4.mp3",
+  "sfx/build_5.mp3",
+  "sfx/build_6.mp3"
  ],
  "buildingdown": [
   "sfx/buildingdown_1.mp3",
-  "sfx/buildingdown_2.mp3"
+  "sfx/buildingdown_2.mp3",
+  "sfx/buildingdown_3.mp3"
+ ],
+ "capture": [
+  "sfx/capture_1.mp3",
+  "sfx/capture_2.mp3"
+ ],
+ "charge": [
+  "sfx/charge_1.mp3",
+  "sfx/charge_2.mp3"
  ],
  "chop": [
   "sfx/chop_1.mp3",
   "sfx/chop_2.mp3",
-  "sfx/chop_3.mp3"
+  "sfx/chop_3.mp3",
+  "sfx/chop_4.mp3",
+  "sfx/chop_5.mp3",
+  "sfx/chop_6.mp3"
  ],
  "click": [
-  "sfx/click_1.mp3"
+  "sfx/click_1.mp3",
+  "sfx/click_2.mp3",
+  "sfx/click_3.mp3",
+  "sfx/click_4.mp3"
+ ],
+ "coin": [
+  "sfx/coin_1.mp3",
+  "sfx/coin_2.mp3",
+  "sfx/coin_3.mp3"
  ],
  "command": [
   "sfx/command_1.mp3",
-  "sfx/command_2.mp3"
+  "sfx/command_2.mp3",
+  "sfx/command_3.mp3",
+  "sfx/command_4.mp3",
+  "sfx/command_5.mp3"
  ],
  "complete": [
-  "sfx/complete_1.mp3"
+  "sfx/complete_1.mp3",
+  "sfx/complete_2.mp3"
  ],
  "defeat": [
   "sfx/defeat_1.mp3"
@@ -65,73 +127,131 @@
  "die": [
   "sfx/die_1.mp3",
   "sfx/die_2.mp3",
-  "sfx/die_3.mp3"
+  "sfx/die_3.mp3",
+  "sfx/die_4.mp3",
+  "sfx/die_5.mp3",
+  "sfx/die_6.mp3"
  ],
  "error": [
-  "sfx/error_1.mp3"
+  "sfx/error_1.mp3",
+  "sfx/error_2.mp3"
  ],
  "farm": [
   "sfx/farm_1.mp3",
-  "sfx/farm_2.mp3"
+  "sfx/farm_2.mp3",
+  "sfx/farm_3.mp3",
+  "sfx/farm_4.mp3"
+ ],
+ "fire": [
+  "sfx/fire_1.mp3",
+  "sfx/fire_2.mp3"
+ ],
+ "gallop": [
+  "sfx/gallop_1.mp3",
+  "sfx/gallop_2.mp3",
+  "sfx/gallop_3.mp3"
  ],
  "heal": [
-  "sfx/heal_1.mp3"
+  "sfx/heal_1.mp3",
+  "sfx/heal_2.mp3"
+ ],
+ "horse": [
+  "sfx/horse_1.mp3",
+  "sfx/horse_2.mp3",
+  "sfx/horse_3.mp3",
+  "sfx/horse_4.mp3"
  ],
  "kingdown": [
   "sfx/kingdown_1.mp3"
  ],
+ "march": [
+  "sfx/march_1.mp3",
+  "sfx/march_2.mp3",
+  "sfx/march_3.mp3"
+ ],
  "mine": [
   "sfx/mine_1.mp3",
   "sfx/mine_2.mp3",
-  "sfx/mine_3.mp3"
+  "sfx/mine_3.mp3",
+  "sfx/mine_4.mp3",
+  "sfx/mine_5.mp3",
+  "sfx/mine_6.mp3"
+ ],
+ "open": [
+  "sfx/open_1.mp3",
+  "sfx/open_2.mp3",
+  "sfx/open_3.mp3"
  ],
  "place": [
-  "sfx/place_1.mp3"
+  "sfx/place_1.mp3",
+  "sfx/place_2.mp3"
  ],
  "ram": [
   "sfx/ram_1.mp3",
-  "sfx/ram_2.mp3"
+  "sfx/ram_2.mp3",
+  "sfx/ram_3.mp3"
+ ],
+ "record": [
+  "sfx/record_1.mp3"
  ],
  "research": [
-  "sfx/research_1.mp3"
+  "sfx/research_1.mp3",
+  "sfx/research_2.mp3"
  ],
  "select": [
   "sfx/select_1.mp3",
-  "sfx/select_2.mp3"
+  "sfx/select_2.mp3",
+  "sfx/select_3.mp3",
+  "sfx/select_4.mp3",
+  "sfx/select_5.mp3"
+ ],
+ "slash": [
+  "sfx/slash_1.mp3",
+  "sfx/slash_2.mp3",
+  "sfx/slash_3.mp3",
+  "sfx/slash_4.mp3",
+  "sfx/slash_5.mp3"
  ],
  "spear": [
   "sfx/spear_1.mp3",
-  "sfx/spear_2.mp3"
+  "sfx/spear_2.mp3",
+  "sfx/spear_3.mp3",
+  "sfx/spear_4.mp3",
+  "sfx/spear_5.mp3"
+ ],
+ "special": [
+  "sfx/special_1.mp3",
+  "sfx/special_2.mp3",
+  "sfx/special_3.mp3"
  ],
  "stonehit": [
   "sfx/stonehit_1.mp3",
-  "sfx/stonehit_2.mp3"
+  "sfx/stonehit_2.mp3",
+  "sfx/stonehit_3.mp3"
  ],
  "sword": [
   "sfx/sword_1.mp3",
   "sfx/sword_2.mp3",
-  "sfx/sword_3.mp3"
- ],
- "train": [
-  "sfx/train_1.mp3"
- ],
- "trebuchet": [
-  "sfx/trebuchet_1.mp3"
- ],
- "victory": [
-  "sfx/victory_1.mp3"
- ],
- "back": [
-  "sfx/back_1.mp3"
- ],
- "coin": [
-  "sfx/coin_1.mp3"
- ],
- "open": [
-  "sfx/open_1.mp3"
+  "sfx/sword_3.mp3",
+  "sfx/sword_4.mp3",
+  "sfx/sword_5.mp3",
+  "sfx/sword_6.mp3"
  ],
  "toggle": [
   "sfx/toggle_1.mp3",
-  "sfx/toggle_2.mp3"
+  "sfx/toggle_2.mp3",
+  "sfx/toggle_3.mp3"
+ ],
+ "train": [
+  "sfx/train_1.mp3",
+  "sfx/train_2.mp3",
+  "sfx/train_3.mp3"
+ ],
+ "trebuchet": [
+  "sfx/trebuchet_1.mp3",
+  "sfx/trebuchet_2.mp3"
+ ],
+ "victory": [
+  "sfx/victory_1.mp3"
  ]
 }

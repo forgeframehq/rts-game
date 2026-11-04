@@ -1,0 +1,36 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "sound": false,
+ "jobs": [
+  [
+   "i1_peace",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/l/i1_peace.jpg",
+   "The young man shifts the firewood on his shoulder and slowly turns his head toward the hills as the two war banners rise and flutter; morning mist drifts, the sun climbs. Gentle storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the young man's face and clothes exactly the same. No text on screen.",
+   5
+  ],
+  [
+   "i2_clash",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/l/i2_clash.jpg",
+   "The two armies charge and crash together across the field, horses galloping, banners whipping, dust flying; in the foreground the young man ducks lower behind the wall. Gentle storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the young man's face and clothes exactly the same. No text on screen.",
+   5
+  ],
+  [
+   "i3_run",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/l/i3_run.jpg",
+   "The young man sprints forward through the battle, ducking under a swinging sword as a horse rears beside him; the camera tracks with him. Gentle storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the young man's face and clothes exactly the same. No text on screen.",
+   5
+  ],
+  [
+   "i4_sword",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/l/i4_sword.jpg",
+   "Slow, quiet moment: the young man reaches down and slowly lifts the fallen knight's sword from the grass; the beam of light brightens on the blade; smoke drifts. Gentle storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the young man's face and clothes exactly the same. No text on screen.",
+   5
+  ],
+  [
+   "i5_rise",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/l/i5_rise.jpg",
+   "The young man slowly rises to his feet among the fallen, grips the sword, and lifts it upright before him with grim determination; the torn banner beside him catches the wind and unfurls; embers drift through the smoky red sky; the camera slowly pushes in on his face. Gentle storybook-like motion: keep it a hand-painted illustration with soft brush texture, do not turn it photorealistic. Keep the young man's face and clothes exactly the same. No text on screen.",
+   10
+  ]
+ ]
+}

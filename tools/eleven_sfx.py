@@ -7,7 +7,7 @@ in the repo. Processing is gentle on purpose: only near-silence at the start is 
 tail and ring are kept, with a short fade at the end and loudness matched per category. (The first
 version trimmed hard and left 0.1 s blips that sounded cheap.) Ambient beds are made as seamless loops.
 """
-import json, os, subprocess, sys, tempfile, urllib.request
+import json, os, re, subprocess, sys, tempfile, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__)); OUT = os.path.join(os.path.dirname(HERE), 'assets/sound/sfx')
 STYLE = ', high quality foley recording, realistic, close and dry, no music, no voices, no background ambience'
@@ -88,7 +88,12 @@ def gen(text, dur, cat, path):
         af = (f'silenceremove=start_periods=1:start_threshold=-55dB:start_silence=0.02,'
               f'loudnorm=I={LOUD[cat]}:TP=-1.5,afade=t=out:st={max(0.05, dur - fade):.2f}:d={fade:.2f}')
         br = '96k'
-    subprocess.run(['ffmpeg', '-nostdin', '-y', '-loglevel', 'error', '-i', t.name, '-ac', '1' if not loop else '2', '-af', af, '-b:a', br, path], check=True)
+    # loudness: measure first, then a plain gain change (ffmpeg's one-pass loudnorm can hang on some files)
+    m = subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-i', t.name, '-af', 'ebur128', '-f', 'null', '-'], capture_output=True, text=True, timeout=60).stderr
+    found = re.findall(r'I:\s+(-?[\d.]+) LUFS', m)
+    gain = (LOUD[cat] - float(found[-1])) if found and float(found[-1]) > -70 else 0
+    af = af.replace(f'loudnorm=I={LOUD[cat]}:TP=-1.5', f'volume={gain:.1f}dB,alimiter=limit=0.89').replace(f'loudnorm=I={LOUD[cat]}:TP=-2', f'volume={gain:.1f}dB,alimiter=limit=0.8')
+    subprocess.run(['ffmpeg', '-nostdin', '-y', '-loglevel', 'error', '-i', t.name, '-ac', '1' if not loop else '2', '-af', af, '-b:a', br, path], check=True, timeout=60)
     os.unlink(t.name)
 
 
