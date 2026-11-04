@@ -24,6 +24,10 @@
 
   // ---------- Ages ----------
   G.ageOf = p => (G.players[p] && G.players[p].age) || 1;
+  // Stances, as in AoE2. Defensive is the default: fight what comes near, chase a little, go back.
+  G.STANCES = ['aggressive', 'defensive', 'stand', 'passive'];
+  G.stanceOf = u => u.stance || 'defensive';
+  const LEASH = { aggressive: Infinity, defensive: 8, stand: 0, passive: 0 };
   G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1) && !G.atBuildLimit(p, type);
   // some buildings are limited per player: one Infirmary (two in the Imperial Age)
   G.buildLimit = (p, type) => type === 'infirmary' ? (G.ageOf(p) >= 4 ? 2 : 1) : 0;
@@ -507,6 +511,18 @@
     G.cmdMove(units, x, y);
     return 'move';
   };
+  // turn a finished wall piece into a gate foundation on the same tile; the nearest villager builds it
+  G.wallToGate = function (w) {
+    if (!w || w.dead || !w.def.wall || w.type === 'gate' || !w.built) return 'not a wall';
+    if (!G.canBuildType(w.owner, 'gate')) return 'needs the ' + G.AGES[G.BUILD_AGE.gate].name;
+    const cost = G.buildCost(w.owner, 'gate'); if (!G.canAfford(w.owner, cost)) return 'cost';
+    const tx = w.tx, ty = w.ty, owner = w.owner;
+    w.dead = true; G.setBlock(w, 0); G.byId.delete(w.id); G.ents = G.ents.filter(e => e !== w);
+    const vil = nearest(w, e => e.kind === 'unit' && e.owner === owner && e.type === 'villager' && !e.inside, 40);
+    const g = G.placeBuilding(owner, 'gate', tx, ty, vil ? [vil] : null);
+    if (!g) { const back = G.addBuilding(w.type, owner, tx, ty, true); back.hp = w.hp; return 'blocked'; }
+    return g;
+  };
   G.cmdGuard = function (units, t) {
     for (const u of units) if (u.kind === 'unit' && !u.dead && u !== t) { u.task = { t: 'guard', id: t.id }; u.path = []; u.pathFor = 0; u.repath = 0; }
   };
@@ -609,7 +625,7 @@
     // Fight back. A soldier marching on a building (an attack wave, an attack-move) turns on
     // the unit that hits it, as in AoE2: without this four archers could shoot down a whole
     // army that kept walking at a Town Center. Siege and the royals keep to their orders.
-    if (t.kind === 'unit' && att.kind === 'unit' && t.task.t === 'attack' && t.type !== 'villager' && !t.def.heal
+    if (t.kind === 'unit' && att.kind === 'unit' && t.task.t === 'attack' && t.type !== 'villager' && !t.def.heal && G.stanceOf(t) !== 'passive'
         && !t.def.siege && t.def.cls !== 'hero' && G.enemies(att.owner, t.owner)) {
       const cur = G.byId.get(t.task.id);
       if (!cur || cur.kind === 'building' || G.dist(t, cur) > G.dist(t, att) + 2) {
@@ -625,7 +641,7 @@
       }
     }
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
-      if (t.type !== 'villager' && !t.def.heal) t.task = { t: 'attack', id: att.id };
+      if (t.type !== 'villager' && !t.def.heal && G.stanceOf(t) !== 'passive') t.task = { t: 'attack', id: att.id, home: { x: t.x, y: t.y } };
       else if (att.kind === 'unit' && att.def.cls !== 'cav' && t.hp < t.maxHp * 0.4) {
         // flee toward town center
         const tc = nearest(t, e => e.type === 'towncenter' && e.owner === t.owner && e.built);
@@ -841,7 +857,10 @@
           u.scan = (u.scan || 0) - dt;
           if (u.scan <= 0) {
             u.scan = 0.5;
-            const t = nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);
+            const st = G.stanceOf(u);
+            // passive: never; stand ground: only what is already in reach; otherwise anything in sight
+            const reach = st === 'passive' ? 0 : st === 'stand' ? Math.max(1.2, (u.range || 1) + 0.3) : u.def.los;
+            const t = reach && nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), reach);
             if (t) u.task = { t: 'attack', id: t.id, home: { x: u.x, y: u.y } };
           }
         }
@@ -894,8 +913,11 @@
         // a guard doesn't chase far from what it protects
         if (task.guard) { const ward = G.byId.get(task.guard); if (ward && !ward.dead && G.dist(t, ward) > 10) { u.task = { t: 'guard', id: ward.id }; u.path = []; break; } }
         // leash for auto-acquired targets
-        if (task.home && !task.forced && Math.hypot(u.x - task.home.x, u.y - task.home.y) > 9) {
-          G.cmdMove([u], task.home.x, task.home.y); break;
+        if (task.home && !task.forced) {
+          const st = G.stanceOf(u);
+          // stand ground: never step off the spot; a target out of reach is let go
+          if ((st === 'stand' || st === 'passive') && G.edgeDist(u, t) > (u.range || 1) + 0.4) { u.task = { t: 'idle' }; u.path = []; break; }
+          if (Math.hypot(u.x - task.home.x, u.y - task.home.y) > LEASH[st]) { G.cmdMove([u], task.home.x, task.home.y); break; }
         }
         const d = G.edgeDist(u, t);
         if (d <= u.range + (t.kind === 'unit' ? 0.25 : 0.3)) {

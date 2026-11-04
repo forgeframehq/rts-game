@@ -238,7 +238,8 @@
   }
   // where in each attack animation the blow lands (0..1)
   const IMPACT = { militia: { attack: 0.5, attack2: 0.4 }, spearman: { attack: 0.55, attack2: 0.35 }, archer: { attack: 0.92 }, longbowman: { attack: 0.92 }, knight: { attack: 0.45 },
-    axethrower: { attack: 0.62, attack2: 0.45 }, cataphract: { attack: 0.45 }, repeater: { attack: 0.92 } };
+    axethrower: { attack: 0.62, attack2: 0.45 }, cataphract: { attack: 0.45 }, repeater: { attack: 0.92 },
+    ram: { attack: 0.8 }, trebuchet: { attack: 0.45 } };   // ram: the head drives home; trebuchet: the sling lets go
   function drawShadow(ctx, x, y, z) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(x, y, 9 * z, 4 * z, 0, 0, 7); ctx.fill(); }
   function draw3d(ctx, u, x, y, z) {
     if (!G.use3d) return false;

@@ -1037,7 +1037,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     'Deselect': 'Clear your selection.', 'Back': 'Back to the previous set of buttons.',
     'Build': 'Choose a building for the selected villagers to construct.',
     'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
-    'Stop': 'Stop whatever the selected units are doing.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Infirmary and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
+    'Stop': 'Stop whatever the selected units are doing.', 'Stance': 'Tap to switch: Aggressive chases anywhere, Defensive (the default) fights nearby enemies then comes back, Stand Ground holds the spot, No Attack never fights.', 'Make gate': 'Turns this piece of wall into a gate on the same spot. A villager comes to build it.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Infirmary and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
     'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
     'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
     'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
@@ -1218,6 +1218,17 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       // 🛡 Guard: tap a unit or building of yours, and these soldiers stay by it and fight off anything that comes near
       const guards = units.filter(u => u.type !== 'villager' && !u.def.heal);
       if (guards.length) cmds.appendChild(btn('i:guard', 'Guard', '', () => setMode('guard')));
+      // stance: tap to cycle Aggressive → Defensive → Stand Ground → No Attack
+      if (guards.length) {
+        const ST = { aggressive: ['i:attack', 'Aggressive'], defensive: ['i:guard', 'Defensive'], stand: ['i:stop', 'Stand Ground'], passive: ['i:cancel', 'No Attack'] };
+        const cur = G.stanceOf(guards[0]), mixed = guards.some(u => G.stanceOf(u) !== cur);
+        cmds.appendChild(btn(ST[cur][0], 'Stance', mixed ? 'mixed' : ST[cur][1], () => {
+          const next = G.STANCES[(G.STANCES.indexOf(cur) + 1) % G.STANCES.length];
+          for (const u of guards) u.stance = next;
+          UI.alert({ aggressive: '⚔ Aggressive: chases enemies anywhere', defensive: '🛡 Defensive: fights nearby enemies, then comes back', stand: '✋ Stand Ground: holds this spot, fights only what is in reach', passive: '🚫 No Attack: never fights back' }[next]);
+          panelKey = ''; refreshPanel(true);
+        }));
+      }
       // 🏥 Heal: wounded soldiers go to the nearest Monastery and heal inside
       const hurt = guards.filter(u => u.hp < u.maxHp * 0.95 && !u.def.siege);
       if (hurt.length && G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'infirmary' && e.built)) cmds.appendChild(btn('i:heal', 'Heal', 'Infirmary', () => {
@@ -1338,6 +1349,17 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
     }
     if (e.kind === 'building' && e.owner === 1) {
+      // a finished wall piece can become a gate where it stands
+      if (own && e.def.wall && e.type !== 'gate' && e.built && sel.length === 1) {
+        const gc = G.buildCost(1, 'gate');
+        if (!G.canBuildType(1, 'gate')) cmds.appendChild(btn('i:gate|lock', 'Make gate', G.AGES[G.BUILD_AGE.gate].short + ' Age', () => UI.alert(`Gates need the ${G.AGES[G.BUILD_AGE.gate].name}`), true));
+        else cmds.appendChild(btn('i:gate', 'Make gate', costTxt(gc), () => {
+          const r = G.wallToGate(e);
+          if (r === 'cost') { UI.alert('Not enough resources'); flashCost(gc); return; }
+          if (typeof r === 'string') { UI.alert("Can't make a gate here"); return; }
+          select([r], false); UI.alert('Gate laid out: a villager is on the way to build it'); if (G.sound) G.sound.play('place');
+        }, !G.canAfford(1, gc)));
+      }
       const del = btn('i:delete', 'Delete', '', () => {
         const nope = G.deleteBlock && G.deleteBlock(e); if (nope) { UI.alert(nope); return; }
         if (del.dataset.armed) { G.kill(e); G.onKilled(e); return; }

@@ -1,0 +1,7 @@
+{"height": 92, "frame": 320, "model": "", "vehicle": "trebuchet",
+ "anims": [
+  {"name": "walk",   "clip": "__static", "gait": "walk",   "frames": 8},
+  {"name": "idle",   "clip": "__static", "gait": "idle",   "frames": 4},
+  {"name": "attack", "clip": "__static", "gait": "attack", "frames": 16},
+  {"name": "death",  "clip": "__static", "gait": "death",  "frames": 10, "loop": false}
+ ]}
