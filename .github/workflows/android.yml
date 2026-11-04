@@ -1,4 +1,4 @@
-# Builds the Android app on every push to main.
+# Builds the Android app when asked: a commit message with [release], a v* tag, or a manual run.
 #  - Always: a debug APK you can install straight onto a phone (Actions run > Artifacts).
 #  - When the signing secrets are set: a signed release APK and an .aab for Google Play.
 #  - Pushing a tag like v1.0.0 also attaches the APK to a GitHub Release.
@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    # only when asked: a [release] commit, a v* tag, or a manual run (no APK on every push)
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[release]')
     runs-on: ubuntu-latest
     permissions:
       contents: write

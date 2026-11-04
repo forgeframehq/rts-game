@@ -100,12 +100,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
   let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
-  if (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen)) { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'video'; l.href = film('intro'); document.head.appendChild(l); }
+  const INTRO = false;   // no intro film for now: the game opens straight on the title screen
+  if (INTRO && (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen))) { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'video'; l.href = film('intro'); document.head.appendChild(l); }
   $('start').addEventListener('click', e => { if (!$('start').classList.contains('begun') && e.target.id !== 'tap-begin') $('tap-begin').click(); });
   $('tap-begin').onclick = () => {
     if (G.sound) G.sound.wake();
     const show = () => $('start').classList.add('begun');
-    if (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen)) {
+    if (INTRO && (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen))) {
       introSeen = true; try { localStorage.setItem('dod.intro', '1'); } catch (e) { /* ignore */ }
       playFilm(film('intro'), null, show);
     } else show();
@@ -162,7 +163,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('m-options').onclick = () => show('options');
   $('btn-resetprefs').onclick = () => { const keep = prefs.setup; Object.assign(prefs, PREF_DEFAULTS, { setup: keep }); savePrefs(); applyPrefs(); UI.alert('Settings reset'); };
   $('btn-replaytut').onclick = () => { G.tutorial.start(); enterGame(); };
-  $('btn-watchintro').onclick = () => playFilm(film('intro'), null, null);
+
   const delBtn = $('btn-delsave');
   delBtn.onclick = () => {
     if (!G.hasSave()) { delBtn.textContent = 'No saved game'; setTimeout(() => delBtn.textContent = 'Delete saved game', 1500); return; }
