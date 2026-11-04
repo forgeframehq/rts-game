@@ -17,7 +17,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', intro: 'first', dynfilm: 'on', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small', reseed: 'on', tips: 'on' };
+  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', intro: 'first', dynfilm: 'on', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small', reseed: 'on', tips: 'on', voice: 'on' };
   const prefs = { ...PREF_DEFAULTS };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
@@ -126,7 +126,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // Back goes to the main menu, or straight back to the pause menu when a sheet was opened mid-game
   document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToSkirmish && !$('quick').classList.contains('hidden')) { UI.backToSkirmish = false; show('skirmish'); return; } if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
   function enterGame() {
-    if (G.sound) G.sound.setScene('game');
+    if (G.sound) { G.sound.setScene('game'); if (G.sound.ambient) G.sound.ambient(G.rules && G.rules.map); }
     for (const s of SCREENS) $(s).classList.add('hidden');
     $('hud').classList.remove('hidden');
     G.paused = false; G.demo = false; saveT = 20;
@@ -136,6 +136,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (G.tutorial && G.tutorial.on) { G.tutorial.stop(); G.over = 'quit'; }
     if (!G.over) G.saveGame();
     G.paused = true; G.demo = true; G.inGame = false;
+    if (G.sound && G.sound.ambient) G.sound.ambient(null);
     $('hud').classList.add('hidden');
     show('start');
   }
@@ -479,7 +480,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (G.selection.length > 1 && G.selection.some(e => e.kind === 'unit')) G.selection = G.selection.filter(e => e.kind === 'unit');
     if (G.selection.length > 1 && G.selection.every(e => e.kind === 'building')) G.selection = G.selection.filter(e => e.type === G.selection[0].type);
     panelKey = ''; refreshPanel(true);
-    if (G.sound && G.selection.length) G.sound.play('select');
+    if (G.sound && G.selection.length) G.sound.play(G.selection.some(e => e.kind === 'unit' && e.def.cls === 'cav' && e.owner === 1) ? 'horse' : 'select');
   }
   // haptics: a buzz for moments that matter (Options can turn it off)
   // haptics for a finished building
@@ -669,6 +670,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // so a tap that did nothing is never silent.
   function cmdFx(r, x, y) {
     const t = G.cmdTarget;
+    if (G.sound && ownUnits().some(u => u.type === 'villager')) G.sound.play('ack');
+    else if (G.sound && r === 'move' && ownUnits().length >= 4) G.sound.play('march');
     if (r === 'farm-busy') { UI.alert('Every farm is already being worked'); outline(t, '#f5c242'); return; }
     const col = r === 'attack' ? '#ff4a3a' : r === 'build' ? '#ffd34a' : r === 'move' ? '#ffffff' : '#7dff7a';
     outline(t, col);

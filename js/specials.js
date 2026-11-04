@@ -32,7 +32,7 @@
       const k = G.specialOf(u); if (!k) continue;
       if (doSpecial(u, k)) { u.spReady = G.time + COOL; u.spKind = k; n++; }
     }
-    if (n && G.sound) G.sound.play('special', units[0].x, units[0].y);
+    if (n && G.sound) G.sound.play(units.some(u => u.spKind === 'charge' && u.spReady > G.time) ? 'charge' : 'special', units[0].x, units[0].y);
     return n;
   };
   function doSpecial(u, k) {

@@ -38,6 +38,18 @@
     die:        { vol: 0.5, throttle: 0.12, bus: 'combat' },
     buildingdown: { vol: 0.9, throttle: 0.4, bus: 'combat' },
     heal:       { vol: 0.4, throttle: 0.5,  bus: 'combat' },
+    slash:      { vol: 0.5, throttle: 0.07, bus: 'combat' },
+    armor:      { vol: 0.45, throttle: 0.1, bus: 'combat' },
+    arrowhit:   { vol: 0.4, throttle: 0.08, bus: 'combat' },
+    horse:      { vol: 0.5, throttle: 1.5, bus: 'combat' },
+    gallop:     { vol: 0.5, throttle: 1.2, bus: 'combat' },
+    charge:     { vol: 0.8, throttle: 2.0, bus: 'combat' },
+    march:      { vol: 0.4, throttle: 2.5, bus: 'combat' },
+    fire:       { vol: 0.35, throttle: 3.0, bus: 'combat' },
+    special:    { vol: 0.8, throttle: 1.0, bus: 'combat' },
+    ack:        { vol: 0.55, throttle: 1.2, bus: 'ui' },
+    capture:    { vol: 0.9, throttle: 2.0, bus: 'alert' },
+    record:     { vol: 0.9, throttle: 2.0, bus: 'alert' },
     // moments
     train:      { vol: 0.5, throttle: 0.1, bus: 'alert' },
     research:   { vol: 0.6, throttle: 0.2, bus: 'alert' },
@@ -105,7 +117,7 @@
     if (last[key] !== undefined && now - last[key] < (def.throttle || 0)) return;
     const list = buffers[key]; if (!list || !list.length) return;
     const buf = list[(Math.random() * list.length) | 0]; if (!buf) return;
-    let gain = def.vol;
+    let gain = def.vol * (0.88 + Math.random() * 0.24);   // a little louder or softer every time
     if (x !== undefined && G.toScreen) {
       if (G.isVisible && !G.isVisible(x, y) && !G.revealAll) return;   // not seen, not heard
       const s = G.toScreen(x, y);
@@ -115,12 +127,23 @@
     }
     last[key] = now;
     const src = ctx.createBufferSource(); src.buffer = buf;
-    src.playbackRate.value = 0.94 + Math.random() * 0.12;   // so repeats don't sound stamped
+    src.playbackRate.value = 0.93 + Math.random() * 0.14;   // a little higher or lower too, so repeats never sound stamped
     const g = ctx.createGain(); g.gain.value = gain;
     src.connect(g); g.connect(buses[def.bus] || master);
     src.start();
   };
 
+  // ---- ambience: a quiet looping bed for each kind of map, under the music ----
+  const AMB = { grasslands: 'meadow', goldrush: 'meadow', fortress: 'meadow', blackforest: 'forest', greatlake: 'river', twinrivers: 'river', desertoasis: 'desert', highlands: 'highland' };
+  let amb = null;
+  S.ambient = function (map) {
+    const want = map ? 'assets/sound/sfx/amb_' + (AMB[map] || 'meadow') + '_1.mp3' : null;
+    if (amb && amb.dataset.src === want) return;
+    if (amb) { amb.pause(); amb = null; }
+    if (!want || !S.enabled) return;
+    amb = new Audio(want); amb.dataset.src = want; amb.loop = true; amb.volume = Math.min(1, 0.55 * S.volume);
+    const p = amb.play(); if (p && p.catch) p.catch(() => {});
+  };
   // ---- music ----------------------------------------------------------------
   // Played through an <audio> element rather than the audio graph on purpose: decoding a
   // three-minute track into a buffer costs about 60 MB of memory, which is not something

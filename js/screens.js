@@ -49,7 +49,7 @@
   const prevKilled = G.onKilled;
   G.onKilled = function (e) {
     prevKilled(e);
-    if (G.over || !G.ui || !e || e.type !== 'towncenter' || !G.enemies(1, e.owner) || !G.players[e.owner]) return;
+    if (G.over || !G.ui || !e || G.time < 1 || (G.tutorial && G.tutorial.on) || e.type !== 'towncenter' || !G.enemies(1, e.owner) || !G.players[e.owner]) return;
     if (G.rules.mode === 'conquest') {
       const n = G.ents.filter(x => !x.dead && x.owner === e.owner && x.kind === 'building').length;
       if (n) UI.alert(`🏚️ The ${civName(G.players[e.owner].civ)}' Town Center has fallen! Destroy their remaining ${n} building${n === 1 ? '' : 's'}.`);
@@ -234,6 +234,8 @@
     const sc = G.scoreOf(1); if (sc > (r.best || 0)) { if (r.best) news.push('Highest score'); r.best = sc; }
     if (SV) { r.bestWave = r.bestWave || {}; if (SV.done > (r.bestWave[SV.lvl] || 0)) { news.push(`Best Siege Survival (${SV.lvl}): wave ${SV.done}`); r.bestWave[SV.lvl] = SV.done; } }
     saveRec(r);
+    if (news.length && G.sound) setTimeout(() => G.sound.play('record'), 1800);
+    if (G.sound && G.sound.ambient) G.sound.ambient(null);
     $('res-records').innerHTML = (news.length ? `<div class="newrec">🏅 New record! ${news.join(' · ')}</div>` : '') +
       `<p class="hint">Your records: ${r.wins || 0} wins from ${r.games} games · best score ${r.best || 0} · largest army ${r.bigArmy || 0}${r.fastest ? ' · fastest win ' + clock(r.fastest) : ''}</p>`;
     resTab = 'summary'; document.querySelectorAll('.res-tabs button').forEach(x => x.classList.toggle('on', x.dataset.t === 'summary')); resPage();

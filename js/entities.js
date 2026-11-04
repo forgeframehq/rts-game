@@ -613,7 +613,10 @@
     const W = { militia: 'sword', king: 'sword', spearman: 'spear', knight: 'sword', scout: 'spear',
       cataphract: 'sword', archer: 'bow', longbowman: 'bow', repeater: 'bolt', axethrower: 'axethrow',
       ram: 'ram', trebuchet: 'stonehit' };
-    snd(W[att.type] || (att.kind === 'building' ? 'bow' : 'sword'), t.x, t.y);
+    let k = W[att.type] || (att.kind === 'building' ? 'bow' : 'sword');
+    // melee blows vary with what they land on: armour clanks, cloth and leather slash
+    if (k === 'sword' && t.kind === 'unit') k = (t.def.cls === 'cav' || t.def.armor >= 2) ? (Math.random() < 0.5 ? 'armor' : 'sword') : (Math.random() < 0.5 ? 'slash' : 'sword');
+    snd(k, t.x, t.y);
     // the music turns when the player's own war starts, not when two AIs scrap elsewhere
     if (G.sound && G.sound.fighting && (att.owner === 1 || t.owner === 1) && G.enemies(att.owner, t.owner)) G.sound.fighting();
     if (G.onHit) G.onHit(att, t);

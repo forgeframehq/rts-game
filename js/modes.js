@@ -139,7 +139,7 @@
     const sf = G.players[from] && (G.players[from].stats = G.players[from].stats || {}), st = G.players[to].stats = G.players[to].stats || {};
     st.tcCaptured = (st.tcCaptured || 0) + 1; if (sf) sf.tcLost = (sf.tcLost || 0) + 1;
     if (G.ui && G.ui.onKilled) G.ui.onKilled(t);   // drops it from anyone's selection
-    if (to === 1) { alert('🏰 Town Center captured! It is yours now: repair it, and hold it.'); if (G.sound) G.sound.play('ageup'); }
+    if (to === 1) { alert('🏰 Town Center captured! It is yours now: repair it, and hold it.'); if (G.sound) G.sound.play('capture'); }
     else if (from === 1) { alert(`🏳️ ${nameOf(to)} captured your Town Center!`); if (G.sound) G.sound.play('kingdown'); }
     else alert(`🏰 ${nameOf(to)} captured ${from ? nameOf(from).replace(/^The /, 'the ') + "'s" : 'the neutral'} Town Center`);
     if (G.effects) G.effects.push({ t: 'ping', x: t.x, y: t.y, col: '#ffd76a', life: 0.6 });

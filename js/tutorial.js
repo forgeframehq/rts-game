@@ -17,57 +17,51 @@
 
   // text: what to do. target(): where the ring goes. glow: panel button label to light up.
   // done(): true once the player has done it. next: a "Next" button instead of a check.
+  // text: what to do (the subtitle of the voice line). target(): where the ring goes. glow: panel button
+  // label to light up. done(): true once the player has done it. next: a "Next" button instead.
+  // Each step has a voice line: assets/sound/voice/tut_<n>.mp3 (made by tools/tutorial_voice.py).
   const STEPS = [
-    { title: 'Welcome, my liege', next: true,
-      text: 'You lead the <b>Britons</b>. This short match teaches the basics. Drag the map to look around and use <b>+</b> / <b>−</b> to zoom.' },
-    { title: 'Select a villager',
-      text: 'Tap one of your <b>villagers</b> to select it.',
+    { title: 'Your people await',
+      text: 'Welcome, my lord. Your people look to you now. <b>Tap a villager</b> to choose one.',
       target: () => vils()[0], done: () => G.selection.some(e => e.type === 'villager') },
-    { title: 'Gather food',
-      text: 'With the villager selected, tap the <b>berry bush</b>. Villagers gather and carry food back to the Town Center.',
-      target: () => near(tc(), e => e.kind === 'res' && e.type === 'berry'), done: () => gathering('berry') },
     { title: 'Gather wood',
-      text: 'Select another villager and tap a <b>tree</b> to chop wood.',
+      text: 'Now <b>tap a tree</b>. Your villager will chop wood and carry it home. A glow shows where the order landed.',
       target: () => near(tc(), e => e.kind === 'res' && e.type === 'tree'), done: () => gathering('tree') },
-    { title: 'Train a villager',
-      text: 'Tap your <b>Town Center</b>, then <b>Villager</b>. More villagers means a bigger economy: keep the Town Center busy all game!',
-      target: () => tc(), glow: 'Villager', enter: () => grant({ food: 100 }),
-      done: () => vils().length > start.vils || (tc() && tc().queue.some(q => q.type === 'villager')) },
-    { title: 'Build a House',
-      text: 'Each House lets you have 5 more people. Select a villager, tap <b>Build</b>, then <b>House</b>, and tap the ground to place it.',
+    { title: 'Build a house',
+      text: 'Your people need homes. Select a villager, tap <b>Build</b>, then <b>House</b>, and tap open ground to place it.',
       glow: ['Build', 'House'], enter: () => grant({ wood: 60 }), done: () => count('house') > start.house },
-    { title: 'Build a Lumber Camp',
-      text: 'Woodcutters walk all the way home with every load. Build a <b>Lumber Camp</b> right next to the trees so they walk less.',
-      target: () => near(tc(), e => e.kind === 'res' && e.type === 'tree'), glow: ['Build', 'Lumber Camp'],
-      enter: () => grant({ wood: 120 }), done: () => count('lumbercamp') > 0 },
-    { title: 'Construction',
-      text: 'Your villagers are building. <b>More builders finish faster</b>: select another villager and tap the building site to help.',
-      target: () => mine(e => e.kind === 'building' && !e.built)[0],
-      done: () => mine(e => (e.type === 'house' || e.type === 'lumbercamp') && !e.built).length === 0 },
-    { title: 'Build a Barracks',
-      text: 'Time for soldiers. Select a villager and build a <b>Barracks</b> near your Town Center.',
-      glow: ['Build', 'Barracks'], enter: () => grant({ wood: 200 }),
-      done: () => mine(e => e.type === 'barracks' && e.built).length > 0,
-      hint: () => count('barracks') ? 'Waiting for the Barracks to finish…' : null },
-    { title: 'Train soldiers',
-      text: 'Tap the <b>Barracks</b> and train <b>3 Swordsmen</b>. Tap the button three times to queue them.',
-      target: () => mine(e => e.type === 'barracks')[0], glow: 'Swordsman', enter: () => grant({ food: 220, gold: 80 }),
-      done: () => count('militia') >= 3, hint: () => `Swordsmen ready: ${count('militia')} / 3` },
+    { title: 'More villagers',
+      text: 'Tap your <b>Town Center</b> and train villagers. <b>Hold</b> the Villager button to queue five at once.',
+      target: () => tc(), glow: 'Villager', enter: () => grant({ food: 250 }),
+      done: () => (tc() && tc().queue.filter(q => q.type === 'villager').length >= 2) || vils().length >= start.vils + 2 },
+    { title: 'Raise an army',
+      text: 'Build a <b>Barracks</b>, then train <b>3 Swordsmen</b> there. Idle hands? The villager button on the right finds them work.',
+      glow: ['Build', 'Barracks', 'Swordsman'], enter: () => grant({ wood: 200, food: 200, gold: 80 }),
+      target: () => mine(e => e.type === 'barracks')[0] || null,
+      done: () => count('militia') >= 3, hint: () => count('barracks') ? `Swordsmen ready: ${count('militia')} / 3` : null },
+    { title: 'Their Special',
+      text: 'Every soldier has one special move. Select your swordsmen and tap <b>⭐ Special</b>: they will Rush forward.',
+      side: 'btn-army', glow: 'Rush', done: () => mine(e => e.type === 'militia' && e.spReady > G.time).length > 0 },
     { title: 'Defend your town!',
-      text: 'Frankish raiders are coming! Tap <b>⚔️</b> on the left to select your whole army, then tap an <b>enemy</b> to attack.',
+      text: 'Raiders are coming! Tap the <b>army button</b> on the right to select your soldiers, then <b>tap an enemy</b> to attack.',
       side: 'btn-army', enter: () => spawnRaid(),
       target: () => raiders()[0], done: () => !raiders().length,
       hint: () => raiders().length ? `Raiders left: ${raiders().length}` : null },
-    { title: 'Know your soldiers', next: true,
-      text: 'Every soldier has a counter. <b>Spearmen</b> beat cavalry, <b>Archers</b> beat foot soldiers from range, and <b>Knights</b> run down archers. Mix your army!' },
-    { title: 'Advance through the Ages', next: true,
-      text: 'In a full game, build up your economy and tap <b>Feudal Age</b> on the Town Center. Each new Age unlocks buildings, soldiers and upgrades at the Blacksmith and University.' },
     { title: 'Destroy the outpost',
-      text: 'Now take the fight to them. Select your army and attack the <b>Frankish outpost</b>. Swordsmen are good at knocking buildings down.',
+      text: 'Well fought! Now take the fight to them: send your army to destroy the <b>enemy outpost</b>.',
       side: 'btn-army', enter: () => { grant({ food: 120, gold: 40 }); },
       target: () => G.ents.find(e => !e.dead && e.owner === FOE && e.kind === 'building'),
       done: () => !G.players[FOE].alive }
   ];
+  T.LINES = STEPS.map(s => s.text.replace(/<[^>]+>/g, '').replace('⭐ ', ''));
+  // the narrator: one line per step, cut off when the next step starts
+  let voice = null;
+  function say(i) {
+    if (voice) { voice.pause(); voice = null; }
+    if (!G.sound || !G.sound.enabled || (G.ui && G.ui._prefs && G.ui._prefs.voice === 'off')) return;
+    voice = new Audio(`assets/sound/voice/tut_${i + 1}.mp3`); voice.volume = Math.min(1, (G.sound.volume || 0.7) * 1.2);
+    const p = voice.play(); if (p && p.catch) p.catch(() => {});
+  }
 
   let raidIds = [];
   const raiders = () => raidIds.map(id => G.byId.get(id)).filter(e => e && !e.dead);
@@ -103,14 +97,14 @@
     if (G.camera) G.camera.focus(home.x + 1, home.y + 3);
     go(0);
   };
-  T.stop = function () { T.on = false; document.body.classList.remove('tut-on'); UI_glow(null); $('tut').classList.add('hidden'); };
+  T.stop = function () { if (voice) { voice.pause(); voice = null; } T.on = false; document.body.classList.remove('tut-on'); UI_glow(null); $('tut').classList.add('hidden'); };
 
   const $ = id => document.getElementById(id);
   function UI_glow(lbl) { if (G.ui) G.ui.tutGlow = lbl; }
   function go(i) {
     T.i = i; const s = STEPS[i]; if (!s) return;
     if (s.enter) s.enter();
-    if (s.title === 'Train a villager') start.vils = vils().length;
+    if (s.title === 'More villagers') start.vils = vils().length;
     const card = $('tut'); card.classList.remove('hidden');
     $('tut-step').textContent = `Step ${i + 1} of ${STEPS.length}`;
     $('tut-title').textContent = s.title;
@@ -121,6 +115,7 @@
     document.querySelectorAll('.sidebtn.tut-glow').forEach(b => b.classList.remove('tut-glow'));
     if (s.side) $(s.side).classList.add('tut-glow');
     if (G.sound && i) G.sound.play('research');
+    say(i);
   }
   function advance() { go(T.i + 1); }
 
@@ -130,7 +125,7 @@
     const s = STEPS[T.i]; if (!s) return;
     // which panel button to light: a multi-step path (Build → House) lights the next one along
     let g = s.glow || null;
-    if (Array.isArray(g)) g = document.querySelector('#cmds .cmd .lb') && [...document.querySelectorAll('#cmds .cmd .lb')].some(l => l.textContent === g[1]) ? g[1] : g[0];
+    if (Array.isArray(g)) { const labels = [...document.querySelectorAll('#cmds .cmd .lb')].map(l => l.textContent); g = [...g].reverse().find(x => labels.includes(x)) || g[0]; }
     UI_glow(g);
     if (s.hint) { const h = s.hint(); $('tut-hint').textContent = h || ''; }
     if (!s.next && s.done && s.done()) advance();
