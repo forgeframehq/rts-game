@@ -13,5 +13,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^7.0.0"
-  }
+  },
+  "license": "UNLICENSED"
 }
