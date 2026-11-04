@@ -1,0 +1,11 @@
+{
+ "out": "build/art/appicon2",
+ "jobs": [
+  [
+   "launcher",
+   "repo:build/art/apk_artwork.png",
+   "Mobile app launcher icon for Dawn of Dynasties, in exactly the same painted style, colours and gold metalwork as the reference. One bold emblem in the centre: the reference's ornate golden crown with red and blue jewels, sitting above a silver sword pointing down, with two small red banners hanging either side, all on the reference's glowing orange sunset sky with a dark castle silhouette on a hill low in the background. The emblem is large and fills the middle 60% of the square, simple and readable at very small sizes.",
+   "Full-bleed square, the sky fills every edge. No text, no letters, no words, no frame, no border, no rounded corners."
+  ]
+ ]
+}
