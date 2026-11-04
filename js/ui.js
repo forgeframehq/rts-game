@@ -1178,19 +1178,19 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const R = G.players[1].res, need = ['food', 'wood', 'gold', 'stone'].sort((a, b) => R[a] - R[b])[0];
         const JOBS = { food: ['i:food', 'Food'], wood: ['i:wood', 'Wood'], gold: ['i:gold', 'Gold'], stone: ['i:stone', 'Stone'] };
         const site = G.ents.filter(b => !b.dead && b.owner === 1 && b.kind === 'building' && b.type !== 'farm' && (!b.built || b.hp < b.maxHp * 0.95)).sort((a, b) => G.dist(a, vils[0]) - G.dist(b, vils[0]))[0];
-        if (site) cmds.appendChild(btn('🔨', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }));
+        if (site) cmds.appendChild(btn('i:build', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }));
         for (const k of [need, ...['food', 'wood', 'gold', 'stone'].filter(x => x !== need)]) {
           const b = btn(JOBS[k][0], JOBS[k][1], k === need ? '<b class="need">Needed</b>' : '', () => sendTo(vils, k));
           if (k === need) b.classList.add('suggest');
           cmds.appendChild(b);
         }
       }
-      if (vils.length) cmds.appendChild(btn('🔨', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
+      if (vils.length) cmds.appendChild(btn('i:build', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
       // villagers shelter in a Town Center or Castle; soldiers only in a Castle
       const canHide = units.filter(u => G.ents.some(e => !e.dead && e.owner === 1 && G.canGarrison(u, e)));
       if (canHide.length) {
         const hasCastle = G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'castle' && e.built);
-        cmds.appendChild(btn('🛡️', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager' && u.def.cls !== 'hero') ? 'Castle' : 'Town Center', () => {
+        cmds.appendChild(btn('i:garrison', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager' && u.def.cls !== 'hero') ? 'Castle' : 'Town Center', () => {
           let full = 0;
           for (const u of canHide) {
             const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter' || e.type === 'monastery') && G.canGarrison(u, e));
@@ -1199,7 +1199,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           if (full) UI.alert(hasCastle ? 'No room left inside' : 'No room in a Town Center');
         }));
       }
-      cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
+      cmds.appendChild(btn('i:stop', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
       // 🛡 Guard: tap a unit or building of yours, and these soldiers stay by it and fight off anything that comes near
       const guards = units.filter(u => u.type !== 'villager' && !u.def.heal);
       if (guards.length) cmds.appendChild(btn('i:box', 'Guard', '', () => setMode('guard')));
@@ -1228,7 +1228,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const cur = units[0].form || G.players[1].formation || 'line';
         cmds.appendChild(btn('i:army', 'Formation', FORM_NAMES[cur], () => openForm(units)));
       }
-      if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
+      if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('i:dropoff', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
       }));
       if (units.length > 1) cmds.appendChild(btn('⛺', 'Keep only', vils.length && vils.length < units.length ? 'soldiers' : '', () => {
@@ -1277,7 +1277,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           tb.hold5 = () => { let n = 0; for (let i = 0; i < 5; i++) { if (!trainOnce()) break; n++; } if (n) UI.alert(`Queued ${n} × ${G.unitDef(1, t).name}`); };
           cmds.appendChild(tb);
         }
-        cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
+        cmds.appendChild(btn('i:rally', 'Rally point', '', () => setMode('rally')));
       }
       if (resPage) {
         if (e.research) {
@@ -1307,7 +1307,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         if (e.aging) cmds.appendChild(btn('⏹', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
         else if (nx) {
           const why = G.ageBlock(1, e);
-          cmds.appendChild(btn('⬆️', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {
+          cmds.appendChild(btn('i:ageup', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {
             const r = G.advanceAge(e);
             if (r === 'res') { UI.alert('Not enough resources'); flashCost(G.ageCost(1, G.ageOf(1) + 1)); }
             else if (!r) UI.alert(G.ageBlock(1, e) || 'Cannot advance now');
@@ -1317,13 +1317,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         }
       }
       if (e.def.garrison && e.owner === 1) {
-        cmds.appendChild(btn('🔔', 'Ring bell', 'all villagers in', () => { G.ringBell(1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
+        cmds.appendChild(btn('i:bell', 'Ring bell', 'all villagers in', () => { G.ringBell(1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
         const n = (e.garrison || []).length;
-        if (n) cmds.appendChild(btn('🚪', 'Ungarrison', n + ' inside', () => { for (const b of sel) if (b.garrison) G.ungarrison(b); panelKey = ''; }));
+        if (n) cmds.appendChild(btn('i:ungarrison', 'Ungarrison', n + ' inside', () => { for (const b of sel) if (b.garrison) G.ungarrison(b); panelKey = ''; }));
       }
     }
     if (e.kind === 'building' && e.owner === 1) {
-      const del = btn('🗑️', 'Delete', '', () => {
+      const del = btn('i:delete', 'Delete', '', () => {
         const nope = G.deleteBlock && G.deleteBlock(e); if (nope) { UI.alert(nope); return; }
         if (del.dataset.armed) { G.kill(e); G.onKilled(e); return; }
         del.dataset.armed = '1'; del.querySelector('.lb').textContent = 'Tap again'; del.style.borderColor = 'var(--bad)';

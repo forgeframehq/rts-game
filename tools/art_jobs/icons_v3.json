@@ -1,0 +1,53 @@
+{
+ "out": "build/art/icons_v3",
+ "jobs": [
+  [
+   "icon_palisade",
+   "repo:assets/ui/icons/tower.png",
+   "Replace the subject with a short section of a wooden palisade wall: five tall sharpened tree-trunk stakes lashed side by side with rope, on a small patch of earth.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_stonewall",
+   "repo:assets/ui/icons/tower.png",
+   "Replace the subject with a short section of a medieval grey stone wall with square crenellations on top, on a small patch of grass.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_gate",
+   "repo:assets/ui/icons/tower.png",
+   "Replace the subject with a medieval stone wall gatehouse: a squat stone arch with a closed heavy oak double door banded with iron, crenellations on top, on a small patch of grass.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_heal",
+   "repo:assets/ui/icons/bell.png",
+   "Replace the subject with a healer's satchel: a small leather bag open at the top with rolled linen bandages, a clay jar of salve and a sprig of green herbs, a small red cross stitched on its flap.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_guard",
+   "repo:assets/ui/icons/garrison.png",
+   "Replace the subject with a round wooden shield with an iron boss and rim, with a spear standing upright behind it, as if standing guard.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_special",
+   "repo:assets/ui/icons/bell.png",
+   "Replace the subject with a golden war horn banded with brass, glowing faintly with golden light, as if sounding a battle cry.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_cancel",
+   "repo:assets/ui/icons/stop.png",
+   "Replace the subject with a red wax seal stamped with a bold X, broken across the middle.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ],
+  [
+   "icon_back",
+   "repo:assets/ui/icons/stop.png",
+   "Replace the subject with a rolled-up parchment scroll tied with a red ribbon, with a curved wooden arrow pointing back to the left above it.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One object only, no text, no border, no frame."
+  ]
+ ]
+}

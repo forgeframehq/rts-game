@@ -1,0 +1,40 @@
+{
+ "out": "build/art/dark_v2",
+ "jobs": [
+  [
+   "w_town_center_dark",
+   "town_center",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this the Dark Age Town Center: a timber great hall with a raised central block and a small square lookout tower of timber on one corner, a wide double plank door under a porch, a ring of sharpened palisade stakes only at the two front corners, smoke from a roof louvre, one tall pennant on the tower."
+  ],
+  [
+   "w_house_dark",
+   "house",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this a Dark Age house: a small one-room timber cottage with a shingled gable roof, a plank door, one shuttered window, a stone chimney, a woodpile against the side wall."
+  ],
+  [
+   "w_mill_dark",
+   "mill",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this a Dark Age mill: a timber granary barn with a shingled roof, a small wooden waterless horse-mill or hand-quern shed attached, sacks of grain and baskets at the door. No windmill sails."
+  ],
+  [
+   "w_barracks_dark",
+   "barracks",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this a Dark Age barracks: a long timber muster hall with a shingled roof, round wooden shields on the wall, a rack of spears and a straw training dummy in a small fenced yard at the front corner."
+  ],
+  [
+   "w_lumber_camp_dark",
+   "lumber_camp",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this a Dark Age lumber camp: an open-sided timber shed with a shingled roof on stout posts, stacks of sawn logs and split planks under it, a chopping block with an axe, a sawhorse."
+  ],
+  [
+   "w_mining_camp_dark",
+   "mining_camp",
+   "Dark Age look in the spirit of Age of Empires 2: a compact, tidy, well-proportioned building whose walls stand square on a low footing of rough grey fieldstone, walls of vertical split-oak planks and dark timber posts, a roof of neat wooden shingles (not thatch) with crisp straight ridges and short eaves that do not overhang the footprint, so the whole building fills its square plot cleanly. Warm, readable, sturdy; poorer than a stone town but not a hovel. Make this a Dark Age mining camp: an open-sided timber shed with a shingled roof on stout posts, a wooden ore cart, piles of grey stone and glinting gold ore, pickaxes and baskets."
+  ],
+  [
+   "w_siege_workshop",
+   "siege_workshop",
+   "Make this a Castle Age siege workshop: a large solid workshop of dressed grey stone ground floor and heavy dark timber frame upper storey under a steep slate-grey roof, with a tall wide arched timber gate on the front through which a battering ram is half visible, a half-built trebuchet arm and stacked beams in a small walled yard at one corner. It sits flat and square on its plot, with no dark rim or shadow under it. Clearly a stronger, later-age building than a wooden yard."
+  ]
+ ]
+}
