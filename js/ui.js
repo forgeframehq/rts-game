@@ -423,6 +423,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('btn-again').onclick = () => { if (G.tutorial.last) { G.tutorial.start(); enterGame(); } else if (lastConfig) startSkirmish(lastConfig); else show('start'); };
   $('btn-over-menu').onclick = () => { $('hud').classList.add('hidden'); G.demo = true; show('start'); };
   $('btn-menu').onclick = () => { G.paused = true; G.saveGame(); $('menu').classList.remove('hidden'); };
+  // the game opens it itself when the player switches to another app (game.js)
+  UI.openPause = () => { if (!$('hud').classList.contains('hidden') && $('menu').classList.contains('hidden')) $('btn-menu').onclick(); else G.paused = true; };
   $('btn-resume').onclick = () => { G.paused = false; $('menu').classList.add('hidden'); };
   $('btn-restart').onclick = () => { $('menu').classList.add('hidden'); if (lastConfig) startSkirmish(lastConfig); else if (G.config) { G.clearSave(); G.newGame({ ...G.config, seed: 0 }); G.buildGround(); enterGame(); } };
   $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); toMenu(); };
@@ -781,16 +783,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     lastWhy = '';
   }
   // a wall line from one tile to another, every piece touching the next by a side (no gaps at corners)
+  // Walls run straight along the ground grid. If the end isn't on the same line, the wall goes
+  // straight along the longer side first, then turns one corner to reach it (no zigzags).
   function wallLine(a, b) {
     const out = [{ tx: a.tx, ty: a.ty }]; let x = a.tx, y = a.ty;
-    while ((x !== b.tx || y !== b.ty) && out.length < 40) {
-      const dx = b.tx - x, dy = b.ty - y;
-      // step along whichever axis is further behind the straight line from a to b
-      const ex = Math.abs((x + Math.sign(dx) - a.tx) * (b.ty - a.ty) - (y - a.ty) * (b.tx - a.tx));
-      const ey = Math.abs((x - a.tx) * (b.ty - a.ty) - (y + Math.sign(dy) - a.ty) * (b.tx - a.tx));
-      if (dx && (!dy || ex <= ey)) x += Math.sign(dx); else y += Math.sign(dy);
-      out.push({ tx: x, ty: y });
-    }
+    const dx = b.tx - a.tx, dy = b.ty - a.ty, xFirst = Math.abs(dx) >= Math.abs(dy);
+    const run = (axis) => { while ((axis === 'x' ? x !== b.tx : y !== b.ty) && out.length < 40) { if (axis === 'x') x += Math.sign(dx); else y += Math.sign(dy); out.push({ tx: x, ty: y }); } };
+    if (xFirst) { run('x'); run('y'); } else { run('y'); run('x'); }
     return out;
   }
   function wallHint() {
@@ -839,7 +838,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (!placed) { UI.alert(poor ? 'Not enough resources' : 'Something is in the way (red tiles)'); if (poor) flashCost(G.buildCost(1, gh.type)); return; }
       const last = gh.line[gh.line.length - 1]; ping(last.tx + 0.5, last.ty + 0.5, '#8f8');
       UI.alert(`Wall: ${placed} piece${placed === 1 ? '' : 's'} laid out` + (blocked ? `, ${blocked} blocked` : '') + (poor ? ', ran out of resources' : ''));
-      setMode(null); select([], false); return;
+      const builders = ownUnits().filter(u => u.type === 'villager');
+      setMode(null); buildMenu = false; select(builders, false); return;
     }
     if (!gh.ok) {   // nudge to the nearest open spot instead of just refusing
       const s = G.BUILDINGS[gh.type].size;
@@ -858,7 +858,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (!b) { UI.alert('Not enough resources'); flashCost(G.buildCost(1, gh.type)); setMode(null); return; }
     ping(b.x, b.y, '#8f8');
     if (keep && G.canAfford(1, G.buildCost(1, gh.type))) return; // shift-place multiple
-    setMode(null); select([], false);
+    // the builders stay selected, so the next order doesn't mean selecting them all again
+    const builders = ownUnits().filter(u => u.type === 'villager');
+    setMode(null); buildMenu = false; select(builders, false);
   }
   $('place-ok').onclick = () => confirmPlace(false);
   $('place-cancel').onclick = () => setMode(null);

@@ -274,5 +274,10 @@
     G.fpsCap = Math.round(1 / cap);
     requestAnimationFrame(frame);
   }
+  // leaving the app pauses the match (and with it all the work), and opens the pause menu on return
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden || !G.ents.length || G.over || G.paused) return;
+    if (G.ui && G.ui.openPause) G.ui.openPause(); else G.paused = true;
+  });
   G.start = function () { requestAnimationFrame(t => { last = t; frame(t); }); };
 })();

@@ -493,6 +493,10 @@
             }
             G.cmdTarget = f;
             G.cmdFarm(who, f);   // the farm task builds it first when unbuilt
+            // the others spread out over your other free farms (one farmer each, as in AoE2)
+            let left = 0;
+            for (const v of vils.slice(1)) { const g = G.freeFarmNear(v.x, v.y, t.owner, v); if (g) G.cmdFarm([v], g); else left++; }
+            if (left && t.owner === 1 && G.ui) G.ui.alert(`${left} villager${left === 1 ? ' has' : 's have'} no free farm. Build more farms.`);
             return f === t ? 'gather' : 'gather-moved';
           }
           if (!t.built || t.hp < t.maxHp) { G.cmdBuild(vils, t); return 'build'; }

@@ -306,10 +306,18 @@
     if (a && !a.paused) fade(cur, vol(), 1.2);
   };
   // a game in a hidden tab should not be playing music at someone
+  // ...nor ambience or effects: everything goes quiet when the app is in the background
   document.addEventListener('visibilitychange', () => {
-    const a = deck[cur]; if (!a) return;
-    if (document.hidden) a.pause();
-    else if (S.musicEnabled && a.src) a.play().catch(() => {});
+    const a = deck[cur];
+    if (document.hidden) {
+      if (a) a.pause();
+      if (amb) amb.pause();
+      if (ctx && ctx.state === 'running') ctx.suspend();
+    } else {
+      if (a && S.musicEnabled && a.src && !S.hushed) a.play().catch(() => {});
+      if (amb && S.enabled) amb.play().catch(() => {});
+      if (ctx && ctx.state === 'suspended') ctx.resume();
+    }
   });
 
   S.setVolume = function (v) {
