@@ -17,7 +17,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // ---------- Preferences ----------
   const PREF_KEY = 'dod.prefs.v1';
-  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', intro: 'first', dynfilm: 'on', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small' };
+  const PREF_DEFAULTS = { speed: '1', gfx: 'high', hp: 'damaged', orient: 'auto', setup: null, quickAI: 'normal', intro: 'first', dynfilm: 'on', sound: 'full', music: 'normal', autovil: 'off', idlealert: 'on', attackalert: 'on', camspeed: '1', btnsize: 'normal', haptics: 'on', grid: 'on', mmsize: 'small', reseed: 'on', tips: 'on' };
   const prefs = { ...PREF_DEFAULTS };
   try { Object.assign(prefs, JSON.parse(localStorage.getItem(PREF_KEY) || '{}')); } catch (e) { /* storage unavailable */ }
   // Screen orientation: the game plays in both. Locking works where the browser allows it
@@ -33,6 +33,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
   function applyPrefs() {
+    G.autoReseed = prefs.reseed !== 'off';
     G.speed = +prefs.speed || 1;
     if (G.sound) {
       const v = prefs.sound === undefined ? 'full' : prefs.sound;
@@ -423,7 +424,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); toMenu(); };
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
-  UI.reset = function () { if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
+  UI.reset = function () { if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
   UI.alert = function (msg) {
     if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
   UI.gameOver = function (res) {
@@ -481,6 +482,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (G.sound && G.selection.length) G.sound.play('select');
   }
   // haptics: a buzz for moments that matter (Options can turn it off)
+  // haptics for a finished building
+  const prevBuilt = G.onBuilt; G.onBuilt = b => { if (prevBuilt) prevBuilt(b); if (b.owner === 1 && G.ui) UI.buzz(35); };
   UI.buzz = p => { try { if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate(p); } catch (e) { /* not supported */ } };
   // Siege Survival: which wave, and how long until the next
   UI.waveBar = function (S, left) {
@@ -495,7 +498,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const sold = ownUnits().filter(u => G.specialOf && G.specialOf(u)); if (!sold.length) return;
     const ready = sold.filter(G.specialReady).length;
     el.textContent = ready ? (ready === sold.length ? 'Ready' : `${ready} ready`) : `${Math.ceil(Math.min(...sold.map(u => u.spReady - G.time)))}s`;
-    el.parentNode.parentNode.classList.toggle('cooling', !ready);
+    const btnEl = el.closest('.cmd'); if (btnEl.classList.contains('cooling') && ready) UI.buzz(20);   // ready again
+    btnEl.classList.toggle('cooling', !ready);
   }
   setInterval(spCool, 500);
   // ---- formation card ----
@@ -530,6 +534,76 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       x.fill();
     });
   }
+  // send villagers to the nearest source of a resource (food: a free farm first, then berries)
+  function sendTo(vils, k) {
+    const v = vils[0];
+    if (k === 'food') { const f = G.freeFarmNear(v.x, v.y, 1); if (f) { G.cmdSmart(vils.slice(0, 1), f.x, f.y, f); outline(f, '#7dff7a'); if (vils.length > 1) sendTo(vils.slice(1), 'food'); panelKey = ''; return; } }
+    const type = { food: 'berry', wood: 'tree', gold: 'gold', stone: 'stone' }[k];
+    const r = G.nearest(v, e => e.kind === 'res' && e.type === type && e.amount > 0 && (G.revealAll || G.isExplored(e.tx, e.ty)), 999);
+    if (!r) { UI.alert(`No ${k} found yet: explore with a scout`); return; }
+    G.cmdGather(vils, r); outline(r, '#7dff7a'); ping(r.x, r.y, '#7dff7a'); panelKey = '';
+    if (G.sound) G.sound.play('command');
+  }
+  // ---- Army buttons 1-3: hold to save the selection, tap to select it, double-tap to jump to it ----
+  const groups = [[], [], []]; let grpTap = { g: -1, t: 0 };
+  document.querySelectorAll('.grp').forEach(b => {
+    const g = +b.dataset.g; let hold = null, held = false;
+    b.onpointerdown = () => { held = false; hold = setTimeout(() => {
+      held = true; const units = G.selection.filter(e => e.kind === 'unit' && e.owner === 1);
+      if (!units.length) { UI.alert('Select some units first, then hold a number to save them'); return; }
+      groups[g] = units.map(u => u.id); for (const u of units) u.grp = g;
+      b.classList.add('set'); UI.alert(`Army ${g + 1} saved: ${units.length} unit${units.length === 1 ? '' : 's'}`); UI.buzz(30);
+    }, 500); };
+    b.onpointerup = b.onpointerleave = () => clearTimeout(hold);
+    b.oncontextmenu = e => e.preventDefault();
+    b.onclick = e => {
+      e.stopPropagation(); if (held) return;
+      const units = groups[g].map(id => G.byId.get(id)).filter(u => u && !u.dead && u.owner === 1);
+      if (!units.length) { UI.alert(`Hold ${g + 1} to save your selected army there`); b.classList.remove('set'); return; }
+      const now = performance.now(), dbl = grpTap.g === g && now - grpTap.t < 400; grpTap = { g, t: now };
+      select(units, false);
+      if (dbl) { const cx = units.reduce((a, u) => a + u.x, 0) / units.length, cy = units.reduce((a, u) => a + u.y, 0) / units.length; G.camera.focus(cx, cy); }
+    };
+  });
+  UI.resetGroups = () => { for (const g of groups) g.length = 0; document.querySelectorAll('.grp').forEach(b => b.classList.remove('set')); };
+  // ---- enemy spotted: the first time an enemy army comes into view ----
+  let spotT = -99; const seen = new Set();
+  function spotCheck() {
+    if (G.time - spotT < 40 || (G.tutorial && G.tutorial.on)) return;
+    const fresh = G.ents.filter(e => !e.dead && e.kind === 'unit' && e.type !== 'villager' && G.enemies(1, e.owner) && !seen.has(e.id) && G.isVisible(e.x, e.y));
+    for (const e of fresh) seen.add(e.id);
+    if (fresh.length < 3) return;
+    const cx = fresh.reduce((a, u) => a + u.x, 0) / fresh.length, cy = fresh.reduce((a, u) => a + u.y, 0) / fresh.length;
+    spotT = G.time; G.spotted = { x: cx, y: cy, until: G.time + 8 };
+    toastJump(`👁️ Enemy army spotted (${fresh.length}): tap to look`, cx, cy);
+    UI.buzz([40, 40, 40]);
+  }
+  // a toast you can tap to jump the camera
+  function toastJump(msg, x, y) { UI.alert(msg); const t = $('toast'); t.classList.add('jump'); t.onclick = () => { G.camera.focus(x, y); t.classList.remove('show'); }; setTimeout(() => { t.classList.remove('jump'); t.onclick = null; }, 2600); }
+  // ---- tips in the first few games ----
+  let tipT = 40; const tipsSaid = new Set();
+  function gameTips(dt) {
+    if (prefs.tips === 'off' || (G.tutorial && G.tutorial.on) || G.demo) return;
+    let games = 0; try { games = JSON.parse(localStorage.getItem('dod.records.v1') || '{}').games || 0; } catch (e) { /* none */ }
+    if (games >= 4) return;
+    tipT -= dt; if (tipT > 0) return; tipT = 45;
+    const me = G.players[1], tc = G.ents.find(e => !e.dead && e.owner === 1 && e.type === 'towncenter'), pc = G.popOf(1);
+    const idle = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && e.task.t === 'idle').length;
+    const foeCav = G.ents.some(e => !e.dead && e.def && e.def.cls === 'cav' && G.enemies(1, e.owner) && G.isVisible(e.x, e.y));
+    const tips = [
+      ['tcidle', tc && !tc.queue.length && G.time < 900, '💡 Your Town Center is idle: keep training villagers. Hold the Villager button to queue 5.'],
+      ['pop', pc.pop >= pc.cap - 1, '💡 You are out of housing: build a House (+5 population).'],
+      ['idle', idle > 0, '💡 Idle villagers! Tap the villager button on the right: it suggests a job.'],
+      ['barracks', G.time > 360 && !G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'barracks'), '💡 Build a Barracks to raise soldiers before the enemy comes.'],
+      ['spears', foeCav, '💡 Enemy cavalry spotted: Spearmen beat cavalry, and their Special (Brace) hurts a charge.'],
+      ['special', G.ents.some(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager'), '💡 Select soldiers and tap ⭐ Special for their move: Volley, Charge, Brace or Rush.'],
+      ['groups', G.time > 420, '💡 Hold 1, 2 or 3 on the right to save an army, then tap to select it again.'],
+      ['age', me.age === 1 && G.time > 600, '💡 Advance to the Feudal Age at your Town Center for new buildings and soldiers.']
+    ];
+    const t = tips.find(([k, ok]) => ok && !tipsSaid.has(k));
+    if (t) { tipsSaid.add(t[0]); UI.alert(t[2]); }
+  }
+  UI.resetTips = () => { tipsSaid.clear(); tipT = 40; seen.clear(); spotT = -99; };
   const ownUnits = () => G.selection.filter(e => e.kind === 'unit' && e.owner === 1);
 
   function pick(sx, sy) {
@@ -883,7 +957,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function hideTip() { clearTimeout(tipTimer); tipTimer = null; const el = $('tip'); if (el) el.classList.add('hidden'); }
   function holdTip(b, lb) {
-    b.addEventListener('pointerdown', () => { tipShown = false; clearTimeout(tipTimer); tipTimer = setTimeout(() => showTip(b, tipFor(lb)), 450); });
+    b.addEventListener('pointerdown', () => { tipShown = false; clearTimeout(tipTimer); tipTimer = setTimeout(() => {
+      if (b.hold5) { tipShown = true; b.hold5(); UI.buzz(30); return; }   // hold a Train button: queue five
+      showTip(b, tipFor(lb)); }, 450); });
     for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) b.addEventListener(ev, () => { clearTimeout(tipTimer); if (tipShown) setTimeout(hideTip, ev === 'pointerup' ? 1800 : 0); });
     b.addEventListener('contextmenu', e => e.preventDefault());
     b.addEventListener('mouseenter', () => { const t = tipFor(lb); if (t) b.title = t.t + ': ' + t.d; });
@@ -991,6 +1067,18 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         cmds.appendChild(btn('↩', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
       }
+      if (vils.length && vils.every(v => v.task.t === 'idle')) {
+        // idle villagers: suggest a job, one tap to send them
+        const R = G.players[1].res, need = ['food', 'wood', 'gold', 'stone'].sort((a, b) => R[a] - R[b])[0];
+        const JOBS = { food: ['i:food', 'Food'], wood: ['i:wood', 'Wood'], gold: ['i:gold', 'Gold'], stone: ['i:stone', 'Stone'] };
+        const site = G.ents.filter(b => !b.dead && b.owner === 1 && b.kind === 'building' && b.type !== 'farm' && (!b.built || b.hp < b.maxHp * 0.95)).sort((a, b) => G.dist(a, vils[0]) - G.dist(b, vils[0]))[0];
+        if (site) cmds.appendChild(btn('🔨', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }));
+        for (const k of [need, ...['food', 'wood', 'gold', 'stone'].filter(x => x !== need)]) {
+          const b = btn(JOBS[k][0], JOBS[k][1], k === need ? '<b class="need">Needed</b>' : '', () => sendTo(vils, k));
+          if (k === need) b.classList.add('suggest');
+          cmds.appendChild(b);
+        }
+      }
       if (vils.length) cmds.appendChild(btn('🔨', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
       // villagers shelter in a Town Center or Castle; soldiers only in a Castle
       const canHide = units.filter(u => G.ents.some(e => !e.dead && e.owner === 1 && G.canGarrison(u, e)));
@@ -1060,15 +1148,18 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         for (const t of trains) {
           const c = G.unitCost(1, t);
           if (!G.canTrainType(1, t)) { cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t) + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
-          cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t), G.unitDef(1, t).name, costTxt(c), () => {
+          const trainOnce = () => {
             for (const b of sel) {
               const r = G.train(b, t);
-              if (r === 'pop') { UI.alert('Need more houses!'); break; }
-              if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); break; }
-              if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); break; }
+              if (r === 'pop') { UI.alert('Need more houses!'); return false; }
+              if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); return false; }
+              if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); return false; }
             }
-            panelKey = '';
-          }, !G.canAfford(1, c)));
+            panelKey = ''; return true;
+          };
+          const tb = btn('u:' + (t === 'villager' ? 'villagers' : t), G.unitDef(1, t).name, costTxt(c), trainOnce, !G.canAfford(1, c));
+          tb.hold5 = () => { let n = 0; for (let i = 0; i < 5; i++) { if (!trainOnce()) break; n++; } if (n) UI.alert(`Queued ${n} × ${G.unitDef(1, t).name}`); };
+          cmds.appendChild(tb);
         }
         cmds.appendChild(btn('🚩', 'Rally point', '', () => setMode('rally')));
       }
@@ -1129,6 +1220,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // ---------- Per-frame UI update ----------
   let uiT = 0;
   UI.update = function (dt) {
+    if (G.players && G.players[1] && !G.over && !G.paused && G.ents.length) { spotCheck(); gameTips(dt); }
     if (toastT > 0) { toastT -= dt; if (toastT <= 0) $('toast').classList.remove('show'); }
     if (!G.players || $('hud').classList.contains('hidden')) return;
     uiT -= dt;

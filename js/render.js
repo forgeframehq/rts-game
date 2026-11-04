@@ -712,6 +712,7 @@
         }
         if (e.hold > 0) { ctx.fillStyle = '#ffd76a'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; const left = Math.max(0, (G.CAPTURE ? G.CAPTURE.HOLD : 180) - e.hold); ctx.fillText(`Held · ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, '0')} to win`, g.x, top - 30); }
       }
+      if (e.type === 'farm' && own && e.fallow && e.food <= 0) { ctx.font = `${Math.round(16 * Math.max(0.8, z))}px sans-serif`; ctx.textAlign = 'center'; ctx.globalAlpha = 0.75 + 0.25 * Math.sin(G.realTime() * 4); ctx.fillText('🪵', g.x, g.y - 6 * z); ctx.globalAlpha = 1; }
       if (e.housed && own && selected) { ctx.fillStyle = '#ffcc00'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Need houses!', g.x, top - 6); }
       // rally point
       if (selected && e.rally && own) {
@@ -935,6 +936,7 @@
     // a Town Center being captured pulses; the raiders' arrival point is marked
     const pul = 1.5 + Math.sin(G.realTime() * 8) * 1;
     for (const e of G.ents) if (!e.dead && e.type === 'towncenter' && e.cap && e.cap.v > 0) { m.strokeStyle = '#fff'; m.lineWidth = 0.6; m.beginPath(); m.arc(e.x, e.y, 3 + pul, 0, 7); m.stroke(); }
+    if (G.spotted && G.spotted.until > G.time) { m.strokeStyle = '#ffb02e'; m.lineWidth = 0.8; m.beginPath(); m.arc(G.spotted.x, G.spotted.y, 3 + pul * 1.5, 0, 7); m.stroke(); }
     if (G.surv && G.surv.from && G.surv.from.until > G.time) { m.strokeStyle = '#ff3b2f'; m.lineWidth = 0.8; m.beginPath(); m.arc(G.surv.from.x, G.surv.from.y, 3 + pul * 1.5, 0, 7); m.stroke(); }
     // camera view
     m.setTransform(1, 0, 0, 1, 0, 0);

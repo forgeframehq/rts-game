@@ -56,7 +56,7 @@
     // a later starting Age, as in AoE2's setup: everyone begins already advanced
     for (const id in G.players) G.players[id].age = G.rules.startAge;
     if (G.loadCivArt && !config.demo) for (const id in G.players) G.loadCivArt(G.players[id].civ);
-    G.time = 0; G.over = null; G.overReason = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
+    G.time = 0; G.over = null; G.overReason = null; G.replay = []; if (G.resetTimeWarnings) G.resetTimeWarnings();
     const r = G.mapRng;
     // corner spots: bottom-left, top-right, top-left, bottom-right on screen
     let spots;
@@ -229,6 +229,12 @@
     if (G.specialsStep) G.specialsStep(dt);
     if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
     fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; checkTime(); }
+    // every 6 s: a frame for the results screen's replay (buildings and armies as dots)
+    if (Math.floor(G.time / 6) !== Math.floor((G.time - dt) / 6)) {
+      const fr = [];
+      for (const e of G.ents) if (!e.dead && e.owner > 0 && (e.kind === 'building' ? e.type !== 'farm' && !e.def.wall : e.type !== 'villager')) fr.push(Math.round(e.x * 2), Math.round(e.y * 2), e.owner, e.kind === 'building' ? (e.type === 'towncenter' ? 2 : 1) : 0);
+      (G.replay = G.replay || []).push(fr);
+    }
     // every 30 s: a point on each player's score timeline, and their peak army and workforce
     if (Math.floor(G.time / 30) !== Math.floor((G.time - dt) / 30)) for (const id in G.players) {
       const p = G.players[id], st = p.stats = p.stats || {};

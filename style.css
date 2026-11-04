@@ -646,3 +646,10 @@ details.more summary::after{content:' ▾'}details.more[open] summary::after{con
 #formcard .fopt canvas{width:100%;max-width:150px;height:auto;background:rgba(0,0,0,.25);border-radius:6px}
 #formcard .fopt small{font-size:10.5px;opacity:.8;text-align:center;line-height:1.25}
 #formcard .fopt.on{border-color:#ffd76a;background:#6b5323}
+.grpbtns{display:flex;gap:4px;justify-content:center;margin:2px 0}
+.grp{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:rgba(30,20,10,.85);color:#cdb98a;font:bold 14px serif;padding:0}
+.grp.set{border-color:#ffd76a;color:#ffd76a;box-shadow:0 0 8px rgba(255,215,106,.4)}
+.cmd.suggest{border-color:#7dff7a;box-shadow:0 0 8px rgba(125,255,122,.35)}
+.cmd .need{color:#7dff7a;font-size:10px}
+#toast.jump{cursor:pointer;border-color:#ffb02e}
+#res-replay{width:100%;height:auto;display:block}

@@ -166,10 +166,41 @@
       sideRows(p => { const g = p.gathered, a = ages(p); return `<td>${g.food}</td><td>${g.wood}</td><td>${g.gold}</td><td>${g.stone}</td><td>${st(p).spent || 0}</td><td>${st(p).peakVils || 0}</td><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td>`; }) + '</table>';
     if (resTab === 'tech') html = `<table class="rt"><tr><th></th><th>Technologies</th><th>Unit upgrades</th><th>Final Age</th></tr>` +
       sideRows(p => `<td>${Object.keys(p.techs || {}).length}</td><td>${Object.values(p.up || {}).reduce((a, b) => a + b, 0)}</td><td>${G.AGES[p.age].name}</td>`) + '</table>';
+    if (resTab === 'replay') html = '<canvas id="res-replay" width="640" height="340"></canvas><p class="hint" id="replay-t"></p>';
     if (resTab === 'timeline') html = '<canvas id="res-chart" width="900" height="320"></canvas><div class="chart-key">' +
       Object.keys(G.players).map(id => `<span><i style="background:${G.PLAYER_COLORS[id]}"></i>${+id === 1 ? 'You' : pName(id)}</span>`).join('') + '</div>';
     $('res-page').innerHTML = `<div class="rt-wrap">${html}</div>`;
     if (resTab === 'timeline') drawChart();
+    if (resTab === 'replay') playReplay();
+  }
+  // the whole match in ten seconds, on a map: towns spread, armies march, Town Centers fall
+  let replayRaf = 0;
+  function playReplay() {
+    cancelAnimationFrame(replayRaf);
+    const cv = $('res-replay'); if (!cv) return;
+    const c = cv.getContext('2d'), W = cv.width, H = cv.height, N = G.MAP, frames = G.replay || [];
+    if (!frames.length) { $('replay-t').textContent = 'No replay for this match.'; return; }
+    const sx = W / (2 * N), sy = H / (2 * N);
+    const toP = (x, y) => [(x - y + N) * sx, (x + y) * sy];
+    const ground = document.createElement('canvas'); ground.width = W; ground.height = H; const gc = ground.getContext('2d');
+    gc.fillStyle = '#4f7a30'; gc.beginPath(); gc.moveTo(W / 2, 0); gc.lineTo(W, H / 2); gc.lineTo(W / 2, H); gc.lineTo(0, H / 2); gc.closePath(); gc.fill();
+    const TC = { 5: '#2f6a96', 6: '#5aa0a8', 7: '#cdb37a', 8: '#7d7468' };
+    for (let y = 0; y < N; y += 1) for (let x = 0; x < N; x += 1) { const t = TC[G.terrain[y * N + x]]; if (t) { gc.fillStyle = t; const [px, py] = toP(x, y); gc.fillRect(px - sx, py, sx * 2, sy * 2); } }
+    const t0 = performance.now(), DUR = 10000;
+    const step = () => {
+      const k = Math.min(1, (performance.now() - t0) / DUR), fi = Math.min(frames.length - 1, Math.floor(k * frames.length)), fr = frames[fi];
+      c.clearRect(0, 0, W, H); c.drawImage(ground, 0, 0);
+      for (let i = 0; i < fr.length; i += 4) {
+        const [px, py] = toP(fr[i] / 2, fr[i + 1] / 2), kind = fr[i + 3];
+        c.fillStyle = G.PLAYER_COLORS[fr[i + 2]] || '#fff';
+        if (kind === 2) { c.fillRect(px - 5, py - 4, 10, 8); c.strokeStyle = '#fff'; c.lineWidth = 1; c.strokeRect(px - 5, py - 4, 10, 8); }
+        else if (kind === 1) c.fillRect(px - 2.5, py - 2, 5, 4);
+        else { c.beginPath(); c.arc(px, py, 1.6, 0, 7); c.fill(); }
+      }
+      const t = fi * 6; $('replay-t').textContent = `${clock(t)} · tap Replay to watch again`;
+      if (k < 1) replayRaf = requestAnimationFrame(step);
+    };
+    step();
   }
   function drawChart() {
     const cv = $('res-chart'), c = cv.getContext('2d'), W = cv.width, H = cv.height, P = 36;

@@ -429,7 +429,7 @@
   G.resowFarm = function (f, owner) {
     if (!G.farmSpent(f) || f.owner !== owner) return false;
     if (!G.pay(owner, G.resowCost(owner))) return false;
-    f.food = G.farmFull(owner);
+    f.food = G.farmFull(owner); f.fallow = false;
     return true;
   };
 
@@ -928,7 +928,8 @@
             // The field is spent, not destroyed. Sow it again for a fraction of a new farm
             // and keep working; with no wood it lies fallow until someone comes back to it.
             f.food = 0;
-            if (!G.resowFarm(f, u.owner)) {
+            if ((u.owner === 1 && G.autoReseed === false) || !G.resowFarm(f, u.owner)) {
+              f.fallow = true;
               u.atFarm = false;
               if (u.carry && u.carry.amt > 0) goDrop(u); else u.task = { t: 'idle' };
             }
