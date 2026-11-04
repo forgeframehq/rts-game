@@ -13,3 +13,5 @@ tools/render3d/_work.json
 
 node_modules/
 www/
+
+tools/.kie_upload_cache.json

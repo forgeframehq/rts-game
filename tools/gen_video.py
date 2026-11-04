@@ -37,6 +37,10 @@ def main(jobs_file, out, only=None):
     model = J.get('model', 'kling-2.6/image-to-video'); kling = not model.startswith('veo')
     for job in todo:
         stem, img, prompt = job[:3]; secs = str(job[3]) if len(job) > 3 else '5'
+        # the repo is private: a still on the models branch (or in the tree) is uploaded to Kie first
+        if not img.startswith('http') or 'raw.githubusercontent.com/forgeframehq/rts-game/models/' in img:
+            import kie_upload
+            img = kie_upload.upload('models:' + img.split('/models/', 1)[1] if img.startswith('http') else img, KEY)
         if stem in tasks: continue
         r = market('/createTask', {"model": model, "input": {"prompt": prompt, "image_urls": [img], "sound": J.get("sound", True), "duration": secs}}) if kling \
             else call('/generate', {"prompt": prompt, "imageUrls": [img], "model": model, "aspectRatio": "16:9"})

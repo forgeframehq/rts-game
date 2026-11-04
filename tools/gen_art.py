@@ -76,11 +76,17 @@ def credits():
 
 
 def ref_url(ref):
+    # The repo is private now, so a reference is uploaded to Kie's file store rather than linked.
+    #   "repo:<path>"   any file in the working tree     "models:<path>"  a file on the models branch
+    #   "<name>"        assets/source/<name>(.png)        "http..."        an already public URL
+    if ref.startswith("http") and "raw.githubusercontent.com/forgeframehq/rts-game/models/" in ref:
+        ref = "models:" + ref.split("/models/", 1)[1]
     if ref.startswith("http"):
         return ref
-    if ref.startswith("repo:"):
-        return ROOT + "/" + ref[5:]
-    return RAW + "/" + (ref if ref.endswith((".png", ".jpg")) else ref + ".png")
+    import kie_upload
+    if not ref.startswith(("repo:", "models:")):
+        ref = "assets/source/" + (ref if ref.endswith((".png", ".jpg")) else ref + ".png")
+    return kie_upload.upload(ref, KEY)
 
 
 def create(prompt, ref):
