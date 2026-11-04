@@ -668,3 +668,15 @@ details.more summary{margin-bottom:2px}
 body.bigbtn .grp{width:58px}
 .qmrow{display:block}
 .mbtn.qmgo{width:100%;margin:0 0 10px}
+/* population card: tap the population counter */
+#popcard { position: fixed; z-index: 31; top: calc(env(safe-area-inset-top, 0px) + 44px); left: 50%; transform: translateX(-50%); width: min(280px, calc(100vw - 16px)); padding: 10px 14px;
+  border-radius: 12px; background: linear-gradient(180deg, rgba(52,36,20,0.98), rgba(24,16,9,0.98)) padding-box, linear-gradient(180deg, #e9c46a, #6e4d1a) border-box;
+  border: 1.5px solid transparent; box-shadow: 0 8px 24px #000c; color: #f1e2bd; font: 13px/1.35 system-ui, sans-serif; animation: tipIn .15s ease-out; }
+#popcard.hidden { display: none; }
+#popcard h4 { margin: 0 0 4px; font: 700 16px var(--heading); color: var(--gold); letter-spacing: 0.04em; }
+#popcard h5 { margin: 8px 0 2px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #c9a24a; }
+#popcard ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px 12px; }
+#popcard li { display: flex; justify-content: space-between; }
+#popcard li.idle { color: #ff9a7a; }
+#popcard p { margin: 6px 0 0; }
+#popcard .hint { font-size: 10px; opacity: 0.6; }

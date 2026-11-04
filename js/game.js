@@ -223,6 +223,7 @@
   let last = 0, fogT = 0;
   G.step = function (dt) {
     G.time += dt;
+    G.pathBudget = 8;
     G.updateEntities(dt);
     if (G.tutorial && G.tutorial.on) G.tutorial.update();
     if (G.modeStep) G.modeStep(dt);
@@ -250,8 +251,13 @@
     const ups = Object.values(p.up || {}).reduce((a, b) => a + b, 0) + Object.keys(p.techs || {}).length;
     return { military: Math.round((p.killValue || 0) / 5), economy: Math.round((g.food + g.wood + g.gold + g.stone) / 10), technology: ups * 20, society: (p.age - 1) * 150 };
   };
+  // Frame cap: 60 fps, falling to 30 if the device struggles (saves battery and heat on phones)
+  let cap = 1 / 60, slow = 0;
   function frame(t) {
-    const real = Math.min(0.05, (t - last) / 1000 || 0); last = t;
+    const gap = (t - last) / 1000;
+    if (gap < cap - 0.002) { requestAnimationFrame(frame); return; }
+    const t0 = performance.now();
+    const real = Math.min(0.05, gap || 0); last = t;
     if (!G.paused && !G.over && G.ents.length) {
       const dt = real * G.speed;
       // substeps keep movement stable at higher speeds
@@ -262,6 +268,10 @@
     G.camera.update(real);
     G.render();
     if (G.ui) G.ui.update(real);
+    const work = (performance.now() - t0) / 1000;
+    slow = slow * 0.95 + (work > 0.012 ? 1 : 0) * 0.05;
+    cap = slow > 0.5 ? 1 / 30 : slow < 0.2 ? 1 / 60 : cap;
+    G.fpsCap = Math.round(1 / cap);
     requestAnimationFrame(frame);
   }
   G.start = function () { requestAnimationFrame(t => { last = t; frame(t); }); };

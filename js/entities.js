@@ -240,7 +240,7 @@
   // and every unit inside adds an arrow to what the building shoots.
   // The King and Queen may hide in a Town Center too, so they have shelter from the first minute.
   G.canGarrison = (u, b) => b && !b.dead && b.built && b.def.garrison && b.owner === u.owner
-    && (u.type === 'villager' || u.def.cls === 'hero' || b.type === 'castle')
+    && (u.type === 'villager' || u.def.cls === 'hero' || b.type === 'castle' || (b.type === 'monastery' && !u.def.siege))
     && (b.garrison || []).length + (b.incoming || 0) < b.def.garrison;
   G.garrisonTo = function (u, b) { if (G.canGarrison(u, b)) { u.task = { t: 'garrison', id: b.id }; u.path = []; u.pathFor = 0; } };
   G.ringBell = function (owner) {
@@ -321,6 +321,9 @@
   function rectOf(t) { const s = t.size || 1; return { x0: t.tx, y0: t.ty, x1: t.tx + s - 1, y1: t.ty + s - 1 }; }
 
   function pathTo(u, t, adjacent) {
+    // budget: a big battle can't spend the whole frame on A*; units with a path keep it a moment longer
+    if (u.path && u.path.length && u.pathFor === t.id && (G.pathBudget | 0) <= 0) { u.repath = 0.15 + Math.random() * 0.2; return; }
+    G.pathBudget = (G.pathBudget | 0) - 1;
     if (t.kind === 'unit') {
       const tx = t.x | 0, ty = t.y | 0;
       u.path = G.findPath(u.x, u.y, { x0: tx, y0: ty, x1: tx, y1: ty }, false, 0, u.owner);
@@ -488,9 +491,20 @@
           if (t.def.drop) { G.cmdDeposit(vils, t); return 'move'; }
         }
       }
+      if (t.owner === units[0].owner && (t.kind === 'unit' || t.kind === 'building')) {
+        const sold = units.filter(u => u.type !== 'villager' && u !== t && !u.def.heal);
+        if (sold.length) {
+          // wounded to the Monastery: shelter and heal there
+          if (t.type === 'monastery' && sold.some(u => u.hp < u.maxHp)) { let n = 0; for (const u of sold) if (G.canGarrison(u, t)) { G.garrisonTo(u, t); n++; } if (n) return 'shelter'; }
+          G.cmdGuard(sold, t); return 'guard';
+        }
+      }
     }
     G.cmdMove(units, x, y);
     return 'move';
+  };
+  G.cmdGuard = function (units, t) {
+    for (const u of units) if (u.kind === 'unit' && !u.dead && u !== t) { u.task = { t: 'guard', id: t.id }; u.path = []; u.pathFor = 0; u.repath = 0; }
   };
 
   // a field never overlaps another field or a building (fields don't block walking, so the
@@ -672,6 +686,11 @@
           if (t) { const n = 1 + (b.garrison ? b.garrison.length : 0); for (let i = 0; i < n; i++) fire(b, t); b.cool = b.def.rate; }
         }
       }
+      // shelter heals: wounded units inside slowly recover (faster in a Monastery)
+      if (b.garrison && b.garrison.length) {
+        const rate = b.type === 'monastery' ? 3 : 1.5;
+        for (const g of b.garrison) if (!g.dead && g.hp < g.maxHp) g.hp = Math.min(g.maxHp, g.hp + rate * dt);
+      }
     }
     // Units
     for (const u of G.ents) if (!u.dead && u.kind === 'unit' && !u.inside) updateUnit(u, dt);
@@ -835,6 +854,24 @@
         moveAlong(u, dt);
         break;
       }
+      case 'guard': {
+        // stay by a friendly unit or building and fight anything that comes near it
+        const g = G.byId.get(task.id);
+        if (!g || g.dead || g.inside) { if (g && g.inside) { u.path = []; break; } u.task = { t: 'idle' }; u.path = []; break; }
+        task.scan = (task.scan || 0) - dt;
+        if (task.scan <= 0) {
+          task.scan = 0.4;
+          const reach = g.kind === 'building' ? 4 + (g.size || 1) : 6;
+          const foe = nearest(g, e => (e.kind === 'unit' || (e.kind === 'building' && e.def.atk)) && !e.dead && G.enemies(e.owner, u.owner) && (G.revealAll || u.owner !== 1 || G.isVisible(e.x, e.y)), reach);
+          if (foe) { u.task = { t: 'attack', id: foe.id, guard: g.id }; u.path = []; u.pathFor = 0; break; }
+        }
+        const close = g.kind === 'building' ? G.edgeDist(u, g) <= 1.6 : G.dist(u, g) <= 1.8;
+        if (!close) {
+          if (!u.path.length || u.repath <= 0) { if (g.kind === 'unit') { const off = ((u.id % 6) / 6) * 6.283; u.path = G.findPath(u.x, u.y, { x0: (g.x + Math.cos(off)) | 0, y0: (g.y + Math.sin(off)) | 0, x1: (g.x + Math.cos(off)) | 0, y1: (g.y + Math.sin(off)) | 0 }, false, 0, u.owner); u.pathFor = g.id; u.repath = 0.8; } else pathTo(u, g, true); }
+          moveAlong(u, dt);
+        } else u.path = [];
+        break;
+      }
       case 'attack': {
         let t = G.byId.get(task.id);
         // the target ran inside: attack the building that shelters it
@@ -842,10 +879,14 @@
         if (!t || t.dead) {
           // look for another enemy nearby
           const n = (u.type === 'villager' || u.def.heal) ? null : nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);
-          if (n) u.task = { t: 'attack', id: n.id, home: task.home }; else u.task = { t: 'idle' };
+          const ward = task.guard && G.byId.get(task.guard);
+          if (ward && !ward.dead) u.task = { t: 'guard', id: ward.id };   // back to guard duty
+          else if (n) u.task = { t: 'attack', id: n.id, home: task.home }; else u.task = { t: 'idle' };
           u.path = [];
           break;
         }
+        // a guard doesn't chase far from what it protects
+        if (task.guard) { const ward = G.byId.get(task.guard); if (ward && !ward.dead && G.dist(t, ward) > 10) { u.task = { t: 'guard', id: ward.id }; u.path = []; break; } }
         // leash for auto-acquired targets
         if (task.home && !task.forced && Math.hypot(u.x - task.home.x, u.y - task.home.y) > 9) {
           G.cmdMove([u], task.home.x, task.home.y); break;
@@ -904,7 +945,16 @@
           if (u.pathFor !== r.id || !u.path.length) {
             if (u.repath <= 0 || u.pathFor !== r.id) pathTo(u, r, true);
           }
-          if (moveAlong(u, dt) && G.edgeDist(u, r) > 0.75) {
+          const px = u.x, py = u.y, arrived = moveAlong(u, dt);
+          if (Math.hypot(u.x - px, u.y - py) < 0.002) task.still = (task.still || 0) + dt; else task.still = 0;
+          if (task.still > 3) {   // standing still, not working: give up on this one
+            task.still = 0; r.unreach = (r.unreach || 0) + 3;
+            const alt = findNewResource(u, task.rtype, u.x, u.y);
+            if (alt && alt !== r) { task.id = alt.id; u.path = []; u.pathFor = 0; }
+            else if (u.carry && u.carry.amt > 0) goDrop(u); else { u.task = { t: 'idle' }; u.path = []; }
+            break;
+          }
+          if (arrived && G.edgeDist(u, r) > 0.75) {
             // reached the end of path but not adjacent: resource probably unreachable, try another
             u.stuck = (u.stuck || 0) + 1;
             if (u.stuck > 3) { u.stuck = 0; r.unreach = (r.unreach || 0) + 1; const alt = nearest(u, e => e.kind === 'res' && e.type === r.type && e !== r && e.amount > 0 && !(e.unreach > 2), 14); if (alt) { task.id = alt.id; u.path = []; u.pathFor = 0; } }
@@ -980,7 +1030,16 @@
           u.task = task.back || { t: 'idle' };
         } else {
           if (u.pathFor !== b.id || !u.path.length) { if (u.repath <= 0 || u.pathFor !== b.id) pathTo(u, b, true); }
+          // can't reach this drop site: try another, else go idle so the idle button finds him
+          const px = u.x, py = u.y;
           moveAlong(u, dt);
+          if (Math.hypot(u.x - px, u.y - py) < 0.002) task.still = (task.still || 0) + dt; else task.still = 0;
+          if (task.still > 3) {
+            task.still = 0; task.tried = task.tried || []; task.tried.push(b.id);
+            const alt = nearest(u, e => e.kind === 'building' && e.owner === u.owner && e.built && e.def.drop && e.def.drop.includes(u.carry ? u.carry.res : '') && !task.tried.includes(e.id));
+            if (alt && task.tried.length < 4) { task.id = alt.id; u.path = []; u.pathFor = 0; }
+            else { u.task = { t: 'idle' }; u.path = []; }
+          }
         }
         break;
       }
@@ -1021,6 +1080,8 @@
   }
 
   function afterBuild(u, b) {
+    // a wall is built piece by piece: move on to the next unbuilt piece nearby
+    if (b.def.wall) { const nx = nearest(u, e => e.kind === 'building' && e.owner === u.owner && e.def.wall && !e.built && !e.dead, 10); if (nx) { G.cmdBuild([u], nx); return; } }
     const map = { lumbercamp: 'tree', miningcamp: 'gold', mill: 'berry' };
     if (b.type === 'farm') { G.cmdFarm([u], b); return; }
     if (map[b.type]) {

@@ -150,7 +150,7 @@
     if (amb && amb.dataset.src === want) return;
     if (amb) { amb.pause(); amb = null; }
     if (!want || !S.enabled) return;
-    amb = new Audio(want); amb.dataset.src = want; amb.loop = true; amb.volume = Math.min(1, 0.2 * S.volume);
+    amb = new Audio(want); amb.dataset.src = want; amb.loop = true; amb.volume = Math.min(1, 0.1 * S.volume);
     const p = amb.play(); if (p && p.catch) p.catch(() => {});
   };
   // ---- music ----------------------------------------------------------------
@@ -182,7 +182,7 @@
   S.musicEnabled = true;
   // 0.75 against files normalised to -24.4 LUFS puts the music out at about -26.9 LUFS:
   // present on a phone speaker, but a clear step under the game. Soft is -31.3.
-  S.musicVolume = 0.36;
+  S.musicVolume = 0.5;
   const CALM_AFTER = 12;      // seconds without a blow before the fighting is over
   const CROSSFADE = 5;      // seconds to hand over between moods
 
@@ -231,7 +231,7 @@
     }, 50);
   }
   // the town music sits furthest back: it plays for most of a match and must never crowd it
-  const MOOD_VOL = { menu: 1, peace: 0.85, battle: 1 };
+  const MOOD_VOL = { menu: 1, peace: 0.95, battle: 1 };
   function vol(m) { return S.musicEnabled ? S.musicVolume * (MOOD_VOL[m || mood] || 1) : 0; }
 
   // start a track of this mood on the free deck, handing over from whatever is playing
@@ -315,7 +315,7 @@
   S.setVolume = function (v) {
     S.volume = v;
     if (master) master.gain.value = v;
-    if (amb) amb.volume = Math.min(1, 0.2 * v);
+    if (amb) amb.volume = Math.min(1, 0.1 * v);
   };
   S.setEnabled = function (on) {
     S.enabled = !!on;

@@ -497,6 +497,21 @@
     }
     chimneys = [];
   }
+  // brightness variants made once per sprite (ctx.filter per frame is very slow on Android)
+  const shadeCache = new WeakMap();
+  function shadedOf(sp, shade) {
+    const lv = Math.round((shade - 1) * 20);   // steps of 0.05
+    if (!lv || !sp.cv) return sp;
+    let m = shadeCache.get(sp); if (!m) { m = {}; shadeCache.set(sp, m); }
+    if (m[lv]) return m[lv];
+    const c = document.createElement('canvas'); c.width = sp.cv.width; c.height = sp.cv.height;
+    const x = c.getContext('2d'); x.drawImage(sp.cv, 0, 0);
+    x.globalCompositeOperation = 'source-atop';
+    x.fillStyle = lv < 0 ? `rgba(0,0,0,${-lv * 0.05})` : `rgba(255,255,255,${lv * 0.04})`;
+    x.fillRect(0, 0, c.width, c.height);
+    m[lv] = Object.assign({}, sp, { cv: c });
+    return m[lv];
+  }
   function drawSprite(sp, x, y, z) {
     ctx.drawImage(sp.cv, x - sp.ax * z, y - sp.ay * z, sp.w * z, sp.h * z);
   }
@@ -678,12 +693,11 @@
       const shade = 0.9 + ((v >>> 6) & 15) / 15 * 0.2;
       const zz = (sp.art ? z : z * 0.9) * scale;
       ctx.save();
-      if (shade !== 1) ctx.filter = 'brightness(' + shade.toFixed(2) + ')';
       if (flip < 0) { ctx.translate(g.x * 2, 0); ctx.scale(-1, 1); }
       const fl = flashOf(e);
-      if (fl) { ctx.save(); ctx.filter = 'none'; drawGlow(sp, g.x, g.y, zz, fl.col, fl.a); ctx.restore(); }
-      drawSprite(sp, g.x, g.y, zz);
-      if (selected) { ctx.save(); ctx.filter = 'none'; drawGlow(sp, g.x, g.y, zz, '#fff', 0.8); ctx.restore(); }
+      if (fl) drawGlow(sp, g.x, g.y, zz, fl.col, fl.a);
+      drawSprite(shadedOf(sp, shade), g.x, g.y, zz);
+      if (selected) drawGlow(sp, g.x, g.y, zz, '#fff', 0.8);
       ctx.restore();
       if (selected) hpBar(g.x, g.y - 70 * z, 30, e.amount / G.RES[e.type].amount, true);
       return;
@@ -894,6 +908,17 @@
 
   function drawGhost(z) {
     const gh = G.ghost, def = G.BUILDINGS[gh.type], s = def.size;
+    if (gh.line) {   // a wall line: each piece green if it can go there, red if not
+      for (const t of gh.line) {
+        const free = G.inMap(t.tx, t.ty) && G.isFree(t.tx, t.ty) && (G.isExplored(t.tx + 0.5, t.ty + 0.5) || G.revealAll) && !(G.farmOverlap && G.farmOverlap(t.tx, t.ty, 1));
+        const g = G.toScreen(t.tx + 0.5, t.ty + 0.5);
+        ctx.globalAlpha = free ? 0.6 : 0.3; drawSprite(G.buildingSprite(gh.type, 1), g.x, g.y, z); ctx.globalAlpha = 1;
+        const a = G.toScreen(t.tx, t.ty), b = G.toScreen(t.tx + 1, t.ty), c = G.toScreen(t.tx + 1, t.ty + 1), d = G.toScreen(t.tx, t.ty + 1);
+        ctx.fillStyle = free ? 'rgba(80,220,100,0.32)' : 'rgba(255,50,40,0.55)';
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.fill();
+      }
+      gh.ok = true; return;
+    }
     // A tile is buildable when nothing stands on it and you have seen it. Say which it is:
     // red is something in the way (named in the hint bar), grey is land you have not explored.
     let why = '', allSeen = true, ok = true;

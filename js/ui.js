@@ -41,7 +41,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       G.sound.setVolume(v === 'quiet' ? 0.35 : 0.75);
       const mv = prefs.music === undefined ? 'normal' : prefs.music;
       G.sound.setMusicEnabled(mv !== 'off');
-      G.sound.setMusicVolume(mv === 'soft' ? 0.22 : 0.36);
+      G.sound.setMusicVolume(mv === 'soft' ? 0.3 : 0.55);
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';
@@ -691,7 +691,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     // the off-screen selection arrow: jump back to what you have selected
     if (G.selArrow && Math.hypot(sx - G.selArrow.x, sy - G.selArrow.y) < 26 && mode !== 'place') { G.camera.focus(G.selArrow.wx, G.selArrow.wy); if (G.sound) G.sound.play('click'); return; }
     const w = G.toWorld(sx, sy);
-    if (mode === 'place') { moveGhost(sx, sy); if (opts.mouse) { G.render(); confirmPlace(opts.add); } return; }
+    if (mode === 'place') {
+      if (G.ghost && G.ghost.wall && !G.ghost.start) {   // first tap: where the wall starts
+        moveGhost(sx, sy); G.ghost.start = { tx: G.ghost.tx, ty: G.ghost.ty }; G.ghost.line = [G.ghost.start];
+        $('place-hint').textContent = `${G.BUILDINGS[G.ghost.type].name}: now tap where it ends`; return;
+      }
+      moveGhost(sx, sy); if (opts.mouse) { G.render(); confirmPlace(opts.add); } return;
+    }
     const target = pick(sx, sy);
     if (mode === 'rally') {
       const b = G.selection[0];
@@ -699,6 +705,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       setMode(null); return;
     }
     const units = ownUnits();
+    if (mode === 'guard') {
+      const sold = units.filter(u => u.type !== 'villager' && !u.def.heal && u !== target);
+      if (target && target.owner === 1 && (target.kind === 'unit' || target.kind === 'building') && sold.length) {
+        G.cmdGuard(sold, target); outline(target, '#6fc3ff'); ping(target.x, target.y, '#6fc3ff');
+        if (G.sound) G.sound.play('command'); UI.alert(`🛡 Guarding the ${target.def.name || 'unit'}`);
+      } else UI.alert('Tap one of your own units or buildings');
+      setMode(null); refreshPanel(true); return;
+    }
     const now = performance.now();
     const dbl = now - lastTap.t < 350 && Math.hypot(sx - lastTap.x, sy - lastTap.y) < 30;
     lastTap = { t: now, x: sx, y: sy, id: target ? target.id : 0 };
@@ -750,7 +764,27 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const s = G.BUILDINGS[type].size;
     G.ghost = { type, tx: Math.floor(c.x - s / 2 + 0.5), ty: Math.floor(c.y - s / 2 + 0.5) };
     $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap the map to move it`;
+    if (G.BUILDINGS[type].wall && type !== 'gate') { G.ghost.wall = true; $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap where the wall starts`; }
     lastWhy = '';
+  }
+  // a wall line from one tile to another, every piece touching the next by a side (no gaps at corners)
+  function wallLine(a, b) {
+    const out = [{ tx: a.tx, ty: a.ty }]; let x = a.tx, y = a.ty;
+    while ((x !== b.tx || y !== b.ty) && out.length < 40) {
+      const dx = b.tx - x, dy = b.ty - y;
+      // step along whichever axis is further behind the straight line from a to b
+      const ex = Math.abs((x + Math.sign(dx) - a.tx) * (b.ty - a.ty) - (y - a.ty) * (b.tx - a.tx));
+      const ey = Math.abs((x - a.tx) * (b.ty - a.ty) - (y + Math.sign(dy) - a.ty) * (b.tx - a.tx));
+      if (dx && (!dy || ex <= ey)) x += Math.sign(dx); else y += Math.sign(dy);
+      out.push({ tx: x, ty: y });
+    }
+    return out;
+  }
+  function wallHint() {
+    const gh = G.ghost, n = gh.line ? gh.line.length : 1, c = G.buildCost(1, gh.type), tot = {};
+    for (const k in c) tot[k] = c[k] * n;
+    const short = Object.keys(tot).some(k => G.players[1].res[k] < tot[k]);
+    $('place-hint').textContent = `${G.BUILDINGS[gh.type].name}: ${n} piece${n === 1 ? '' : 's'} · ${Object.entries(tot).map(([k, v]) => v + ' ' + k).join(' · ')}${short ? ' (you can afford fewer)' : ''}. Tap Build`;
   }
   // Say what is in the way of a building, so a red footprint is never a mystery.
   let lastWhy = '';
@@ -763,6 +797,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   function moveGhost(sx, sy) {
     if (!G.ghost) return;
     const w = G.toWorld(sx, sy), s = G.BUILDINGS[G.ghost.type].size;
+    if (G.ghost.wall && G.ghost.start) { G.ghost.line = wallLine(G.ghost.start, { tx: Math.floor(w.x), ty: Math.floor(w.y) }); wallHint(); return; }
     G.ghost.tx = Math.floor(w.x - s / 2 + 0.5); G.ghost.ty = Math.floor(w.y - s / 2 + 0.5);
     // fields snap flush beside a nearby field, in line with it, so rows of farms are easy with a finger
     if (G.ghost.type === 'farm') {
@@ -779,6 +814,20 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function confirmPlace(keep) {
     const gh = G.ghost; if (!gh) return;
+    if (gh.wall) {
+      if (!gh.line) { UI.alert('Tap where the wall starts, then where it ends'); return; }
+      const vils = ownUnits().filter(u => u.type === 'villager');
+      let placed = 0, blocked = 0, poor = false;
+      for (const t of gh.line) {
+        if (!G.canAfford(1, G.buildCost(1, gh.type))) { poor = true; break; }
+        const b = G.placeBuilding(1, gh.type, t.tx, t.ty, placed === 0 ? vils : null);
+        if (b) placed++; else blocked++;
+      }
+      if (!placed) { UI.alert(poor ? 'Not enough resources' : 'Something is in the way (red tiles)'); if (poor) flashCost(G.buildCost(1, gh.type)); return; }
+      const last = gh.line[gh.line.length - 1]; ping(last.tx + 0.5, last.ty + 0.5, '#8f8');
+      UI.alert(`Wall: ${placed} piece${placed === 1 ? '' : 's'} laid out` + (blocked ? `, ${blocked} blocked` : '') + (poor ? ', ran out of resources' : ''));
+      setMode(null); select([], false); return;
+    }
     if (!gh.ok) {   // nudge to the nearest open spot instead of just refusing
       const s = G.BUILDINGS[gh.type].size;
       const fits = (x, y) => G.areaFree(x, y, s) && !G.farmOverlap(x, y, s) && G.isExplored(x + s / 2, y + s / 2) && !(G.ruleBlock && G.ruleBlock(1, gh.type, x, y));
@@ -804,16 +853,50 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   function setMode(m) {
     mode = m;
     if (m !== 'place') G.ghost = null;
-    $('place-bar').classList.toggle('hidden', m !== 'place' && m !== 'rally' && m !== 'move');
-    $('place-ok').classList.toggle('hidden', m === 'rally' || m === 'move');
+    $('place-bar').classList.toggle('hidden', m !== 'place' && m !== 'rally' && m !== 'move' && m !== 'guard');
+    $('place-ok').classList.toggle('hidden', m === 'rally' || m === 'move' || m === 'guard');
     if (m === 'move') $('place-hint').textContent = 'Tap where to move';
+    if (m === 'guard') $('place-hint').textContent = 'Tap a unit or building to guard';
     if (m === 'rally') $('place-hint').textContent = 'Tap where new units should gather';
     $('btn-box').classList.toggle('on', m === 'box');
-    $('panel').classList.toggle('hidden', m === 'place' || m === 'rally' || m === 'move' || !G.selection.length);
+    $('panel').classList.toggle('hidden', m === 'place' || m === 'rally' || m === 'move' || m === 'guard' || !G.selection.length);
     document.body.classList.toggle('has-panel', !$('panel').classList.contains('hidden'));
   }
 
   function flashCost(cost) { for (const k in cost) if (G.players[1].res[k] < cost[k]) { const el = $('r-' + k); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }
+
+  // ---------- Population card: tap the population counter to see who is doing what ----------
+  $('r-pop').style.cursor = 'pointer';
+  $('r-pop').onclick = e => {
+    e.stopPropagation();
+    const el = $('popcard');
+    if (!el.classList.contains('hidden')) { el.classList.add('hidden'); return; }
+    const mine = G.ents.filter(u => !u.dead && u.owner === 1 && u.kind === 'unit');
+    const inside = G.ents.filter(b => !b.dead && b.owner === 1 && b.garrison).reduce((n, b) => n + b.garrison.filter(g => !g.dead).length, 0);
+    const vils = mine.filter(u => u.type === 'villager');
+    const job = { food: 0, wood: 0, gold: 0, stone: 0, build: 0, idle: 0 };
+    for (const v of vils) {
+      const t = v.task.t;
+      if (t === 'farm') job.food++;
+      else if (t === 'gather') { const r = G.byId.get(v.task.id), k = r && G.RES[r.type] ? G.RES[r.type].res : v.task.rtype; job[k === 'tree' || k === 'wood' ? 'wood' : k === 'gold' ? 'gold' : k === 'stone' ? 'stone' : 'food']++; }
+      else if (t === 'return') job[v.carry ? (v.carry.res === 'tree' ? 'wood' : v.carry.res === 'berry' ? 'food' : v.carry.res in job ? v.carry.res : 'food') : 'idle']++;
+      else if (t === 'build' || t === 'repair') job.build++;
+      else if (t === 'idle') job.idle++;
+      else job.build++;
+    }
+    const army = {};
+    for (const u of mine) if (u.type !== 'villager') { const n = u.def.name || u.type; army[n] = (army[n] || 0) + 1; }
+    const pc = G.popOf(1);
+    const row = (ic, lb, n) => `<li><span>${ic} ${lb}</span><b>${n}</b></li>`;
+    el.innerHTML = `<h4>Population ${pc.pop}/${pc.cap}</h4>` +
+      `<h5>Villagers · ${vils.length}</h5><ul>` +
+      row('🌾', 'Food', job.food) + row('🪵', 'Wood', job.wood) + row('🪙', 'Gold', job.gold) + row('🪨', 'Stone', job.stone) + row('🔨', 'Building', job.build) +
+      (job.idle ? `<li class="idle"><span>💤 Idle</span><b>${job.idle}</b></li>` : '') + '</ul>' +
+      `<h5>Army · ${mine.length - vils.length}</h5><ul>` + (Object.keys(army).length ? Object.entries(army).sort((a, b) => b[1] - a[1]).map(([k, n]) => row('⚔️', k, n)).join('') : '<li><span>No soldiers yet</span></li>') + '</ul>' +
+      (inside ? `<p>🛡 ${inside} sheltering inside buildings</p>` : '') + '<p class="hint">Tap anywhere to close</p>';
+    el.classList.remove('hidden');
+  };
+  document.addEventListener('pointerdown', ev => { const el = $('popcard'); if (el && !el.classList.contains('hidden') && !el.contains(ev.target) && ev.target.closest && !ev.target.closest('#r-pop')) el.classList.add('hidden'); }, true);
 
   // ---------- Side buttons ----------
   $('btn-idle').onclick = () => {
@@ -941,7 +1024,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     'Deselect': 'Clear your selection.', 'Back': 'Back to the previous set of buttons.',
     'Build': 'Choose a building for the selected villagers to construct.',
     'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
-    'Stop': 'Stop whatever the selected units are doing.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
+    'Stop': 'Stop whatever the selected units are doing.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Monastery and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
     'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
     'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
     'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
@@ -960,20 +1043,22 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const D = G.unitDef ? G.unitDef(1, k) : U, good = { spearman: 'Strong against cavalry.', archer: 'Shoots from range; good against foot soldiers.', knight: 'Fast and tough; runs down archers.', militia: 'Solid foot soldier; good at knocking down buildings.', scout: 'Very fast; scouts the map and raids.', villager: 'Gathers resources and builds.', monk: 'Heals your units.', ram: 'Smashes buildings; arrows barely hurt it.', trebuchet: 'Hurls boulders at buildings from very far away.' }[k] || '';
       return { t: D.name, d: `${good} ${D.hp} HP, ${D.atk} attack${D.range > 1 ? ', range ' + D.range : ''}.`.trim(), c: costLine(G.unitCost ? G.unitCost(1, k) : U.cost) }; } }
     for (const k in G.BUILDINGS) { const B = G.BUILDINGS[k]; if (B.name === lb) {
-      const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
+      const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal. Wounded units sheltered inside heal fast.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
       return { t: B.name, d: what, c: costLine(B.cost), a: G.BUILD_AGE[k] > 1 ? G.AGES[G.BUILD_AGE[k]].name : null }; } }
     const ag = G.AGES.find(a => a && (a.short + ' Age' === lb || a.name === lb));
     if (ag) return { t: ag.name, d: (ag.bonus || '') + (ag.needs ? ` Needs 2 of: ${ag.needs.map(n => G.BUILDINGS[n].name).join(', ')}.` : ''), c: costLine(ag.cost) };
     return null;
   }
-  let tipTimer = null, tipShown = false;
+  let tipTimer = null, tipShown = false, tipAuto = null;
+  document.addEventListener('pointerup', () => { if (!$('tip') || $('tip').classList.contains('hidden')) return; setTimeout(hideTip, 1800); }, true);
   function showTip(b, tip) {
-    const el = $('tip'); if (!el || !tip) return;
+    const el = $('tip'); if (!el || !tip || !b.isConnected) return;
     el.innerHTML = `<b>${tip.t}</b>${tip.a ? `<em>${tip.a}</em>` : ''}<p>${tip.d}</p>${tip.c ? `<small>${tip.c}</small>` : ''}`;
     el.classList.remove('hidden');
     const r = b.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
     el.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px';
     el.style.top = Math.max(8, r.top - h - 10) + 'px';
+    clearTimeout(tipAuto); tipAuto = setTimeout(hideTip, 4000);   // never stays up for good
     tipShown = true; if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate(10);
   }
   function hideTip() { clearTimeout(tipTimer); tipTimer = null; const el = $('tip'); if (el) el.classList.add('hidden'); }
@@ -1108,13 +1193,23 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         cmds.appendChild(btn('🛡️', 'Garrison', hasCastle && canHide.some(u => u.type !== 'villager' && u.def.cls !== 'hero') ? 'Castle' : 'Town Center', () => {
           let full = 0;
           for (const u of canHide) {
-            const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter') && G.canGarrison(u, e));
+            const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter' || e.type === 'monastery') && G.canGarrison(u, e));
             if (b) G.garrisonTo(u, b); else full++;
           }
           if (full) UI.alert(hasCastle ? 'No room left inside' : 'No room in a Town Center');
         }));
       }
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
+      // 🛡 Guard: tap a unit or building of yours, and these soldiers stay by it and fight off anything that comes near
+      const guards = units.filter(u => u.type !== 'villager' && !u.def.heal);
+      if (guards.length) cmds.appendChild(btn('i:box', 'Guard', '', () => setMode('guard')));
+      // 🏥 Heal: wounded soldiers go to the nearest Monastery and heal inside
+      const hurt = guards.filter(u => u.hp < u.maxHp * 0.95 && !u.def.siege);
+      if (hurt.length && G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'monastery' && e.built)) cmds.appendChild(btn('✚', 'Heal', 'Monastery', () => {
+        let full = 0;
+        for (const u of hurt) { const b = G.nearest(u, e => e.type === 'monastery' && G.canGarrison(u, e)); if (b) G.garrisonTo(u, b); else full++; }
+        if (full) UI.alert('The Monastery is full'); else if (G.sound) G.sound.play('command');
+      }));
       // ⭐ Special: one button for every soldier's move
       const sold = units.filter(u => G.specialOf && G.specialOf(u));
       if (sold.length) {

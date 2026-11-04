@@ -6,9 +6,9 @@
     // research: how keen it is on upgrades (0-1). match: the most soldiers it keeps for each
     // one the player has, so an easier opponent grows with the player rather than ahead of them.
     // retreat: pulls a wave back home from a fight it is clearly losing.
-    easy:   { maxVils: 15, firstAttack: 720, wave: 3, grow: 1, armyCap: 8, think: 1.8, armyPerVil: 0.4, research: 0.25, match: 0.7, minArmy: 4, retreat: false, counter: 0.3 },
-    normal: { maxVils: 26, firstAttack: 420, wave: 6, grow: 3, armyCap: 24, think: 0.7, research: 0.7, match: 1.15, minArmy: 8, retreat: true, counter: 0.7 },
-    hard:   { maxVils: 34, firstAttack: 330, wave: 8, grow: 4, armyCap: 40, think: 0.4, research: 1, match: 0, retreat: true, counter: 1 }
+    easy:   { maxVils: 15, firstAttack: 720, wave: 3, grow: 1, armyCap: 8, think: 1.8, armyPerVil: 0.4, research: 0.25, match: 0.7, minArmy: 4, retreat: false, counter: 0.3, maxAge: 3, ageAt: [0, 0, 600, 1320] },
+    normal: { maxVils: 26, firstAttack: 420, wave: 6, grow: 3, armyCap: 24, think: 0.7, research: 0.7, match: 1.15, minArmy: 8, retreat: true, counter: 0.7, maxAge: 4, ageAt: [0, 0, 360, 840, 1500] },
+    hard:   { maxVils: 34, firstAttack: 330, wave: 8, grow: 4, armyCap: 40, think: 0.4, research: 1, match: 0, retreat: true, counter: 1, maxAge: 4, ageAt: [0, 0, 0, 0, 0] }
   };
   // what each soldier is good against (AoE2's rock-paper-scissors): inf, arc, cav, sie
   const COUNTER = {
@@ -134,7 +134,8 @@ G.makeAI = function () {
     // will ever train, or an easier opponent waits for an economy it cannot build and stalls
     const ageVils = n => Math.min(AGE_VILS[n] || 0, AI.cfg.maxVils);
     let saving = false;
-    if (tc && tc.built && nxt && !tc.aging && vils.length >= ageVils(age + 1) && !G.ageBlock(p, null)) {
+    const ageOk = age + 1 <= (AI.cfg.maxAge || 4) && G.time >= ((AI.cfg.ageAt || [])[age + 1] || 0);
+    if (tc && tc.built && nxt && ageOk && !tc.aging && vils.length >= ageVils(age + 1) && !G.ageBlock(p, null)) {
       saving = true;
       if (!tc.queue.length && G.canAfford(p, nxtCost)) G.advanceAge(tc);
     }

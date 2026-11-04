@@ -232,7 +232,8 @@
     const a = art[key], sp = sprite(key, G.ownerColor(owner), civOf(owner)), d = a.def;
     const cw = sp.cv.width / d.frames, ch = sp.cv.height / d.rows;
     if (alpha < 1) { ctx.save(); ctx.globalAlpha = alpha; }
-    ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - d.ax * z, y - d.ay * z, d.fw * z, d.fh * z);
+    const fo = d.fo && d.fo[row] || [0, 0];   // per-direction foot correction (tools/foot_anchor.py)
+    ctx.drawImage(sp.cv, (f % d.frames) * cw, row * ch, cw, ch, x - (d.ax + fo[0]) * z, y - (d.ay + fo[1]) * z, d.fw * z, d.fh * z);
     if (alpha < 1) ctx.restore();
   }
   // where in each attack animation the blow lands (0..1)
