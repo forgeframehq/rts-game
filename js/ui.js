@@ -41,7 +41,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       G.sound.setVolume(v === 'quiet' ? 0.35 : 0.75);
       const mv = prefs.music === undefined ? 'normal' : prefs.music;
       G.sound.setMusicEnabled(mv !== 'off');
-      G.sound.setMusicVolume(mv === 'soft' ? 0.3 : 0.5);
+      G.sound.setMusicVolume(mv === 'soft' ? 0.22 : 0.36);
     }
     G.gfxLow = prefs.gfx === 'low';
     G.hpAlways = prefs.hp === 'always';

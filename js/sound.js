@@ -95,7 +95,7 @@
       if (m.battleMusic) lists.battle = [].concat(m.battleMusic);
       if (m.menuMusic) lists.menu = [].concat(m.menuMusic);
       if (S.musicLoaded()) {
-        for (const k in lists) order[k] = shuffle(lists[k].length);
+        for (const k in lists) { order[k] = []; at[k] = 0; }   // shuffled on first pick, never opening on last time's track
         if (!lists.menu.length) mood = 'peace';
         S.startMusic();
       }
@@ -169,9 +169,9 @@
   S.musicEnabled = true;
   // 0.75 against files normalised to -24.4 LUFS puts the music out at about -26.9 LUFS:
   // present on a phone speaker, but a clear step under the game. Soft is -31.3.
-  S.musicVolume = 0.5;
+  S.musicVolume = 0.36;
   const CALM_AFTER = 12;      // seconds without a blow before the fighting is over
-  const CROSSFADE = 3.5;      // seconds to hand over between moods
+  const CROSSFADE = 5;      // seconds to hand over between moods
 
   function shuffle(n) {              // play in a different order each session
     const a = [...Array(n).keys()];
@@ -183,14 +183,23 @@
     const key = lists[m].length ? m : 'peace';
     const l = lists[key];
     if (!l.length) return null;
-    if (at[key] >= order[key].length) { order[key] = shuffle(l.length); at[key] = 0; }
+    if (at[key] >= order[key].length) {
+      order[key] = shuffle(l.length); at[key] = 0;
+      // never open a session on the track the last one opened on
+      let lastF = null; try { lastF = localStorage.getItem('dod.lastTrack.' + key); } catch (e) { /* none */ }
+      if (l.length > 1 && l[order[key][0]] === lastF) order[key].push(order[key].shift());
+      try { localStorage.setItem('dod.lastTrack.' + key, l[order[key][0]]); } catch (e) { /* ignore */ }
+    }
     return l[order[key][at[key]++]];
   }
   function makeDeck(i) {
     if (deck[i]) return deck[i];
     const a = new Audio();
     a.preload = 'none';
-    a.addEventListener('ended', () => { if (i === cur) play(mood, 1.5); });
+    // a few seconds before a track ends the next one fades in over it, so there is never a hard stop
+    a.addEventListener('timeupdate', () => { if (i === cur && !a.handing && a.duration && a.duration - a.currentTime < 6) { a.handing = true; play(mood, 6); } });
+    a.addEventListener('playing', () => { a.handing = false; });
+    a.addEventListener('ended', () => { if (i === cur && !a.handing) play(mood, 4); });
     a.addEventListener('error', () => { if (i === cur) setTimeout(() => play(mood, 1.5), 2000); });
     deck[i] = a;
     return a;
@@ -202,7 +211,8 @@
     const from = a.volume, t0 = performance.now(), ms = Math.max(1, secs * 1000);
     fades[i] = setInterval(() => {
       const k = Math.min(1, (performance.now() - t0) / ms);
-      a.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+      const e = k * k * (3 - 2 * k);   // ease in and out: no sudden jump at either end
+      a.volume = Math.max(0, Math.min(1, from + (to - from) * e));
       if (k >= 1) { clearInterval(fades[i]); fades[i] = null; if (stop) { a.pause(); a.removeAttribute('src'); a.load(); } }
     }, 50);
   }
@@ -268,8 +278,8 @@
     if (!S.musicEnabled || !S.musicLoaded() || S.hushed) return;
     watchMood();
     const a = deck[cur];
-    if (a && a.src) { if (a.paused) { a.play().catch(() => {}); fade(cur, vol(), 2.0); } return; }
-    play(mood, 2.5);
+    if (a && a.src) { if (a.paused) { a.play().catch(() => {}); fade(cur, vol(), 4.0); } return; }
+    play(mood, 7);   // the first music rises slowly from silence
   };
   S.setMusicEnabled = function (on) {
     S.musicEnabled = !!on;
@@ -279,7 +289,7 @@
   S.setMusicVolume = function (v) {
     S.musicVolume = v;
     const a = deck[cur];
-    if (a && !a.paused) fade(cur, vol(), 0.4);
+    if (a && !a.paused) fade(cur, vol(), 1.2);
   };
   // a game in a hidden tab should not be playing music at someone
   document.addEventListener('visibilitychange', () => {
