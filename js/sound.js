@@ -94,6 +94,8 @@
       if (m.music) lists.peace = [].concat(m.music);
       if (m.battleMusic) lists.battle = [].concat(m.battleMusic);
       if (m.menuMusic) lists.menu = [].concat(m.menuMusic);
+      if (m.civMusic) civMusic = m.civMusic;
+      general = lists.peace.slice();
       if (S.musicLoaded()) {
         for (const k in lists) { order[k] = []; at[k] = 0; }   // shuffled on first pick, never opening on last time's track
         if (!lists.menu.length) mood = 'peace';
@@ -163,6 +165,17 @@
   // the town works, and the battle set takes over when the player is in a fight. Two
   // elements exist so one can come up while the other goes down, rather than cutting.
   const lists = { menu: [], peace: [], battle: [] };
+  // each dynasty has its own peaceful themes: a match opens on one of them, then shuffles
+  // through the general peaceful music and that dynasty's other theme
+  let civMusic = {}, general = [], civFirst = null;
+  S._music = () => ({ peace: lists.peace.slice(), civFirst, playing: deck[cur] && deck[cur].getAttribute('src') });
+  S.setCiv = function (civ) {
+    const own = (civMusic[civ] || []);
+    if (!general.length && lists.peace.length) general = lists.peace.filter(f => !Object.values(civMusic).flat().includes(f));
+    lists.peace = general.concat(own);
+    order.peace = []; at.peace = 0;
+    civFirst = own.length ? own[Math.floor(Math.random() * own.length)] : null;
+  };
   let deck = [], cur = 0;
   let order = { menu: [], peace: [], battle: [] }, at = { menu: 0, peace: 0, battle: 0 };
   let mood = 'menu', scene = 'menu', fades = [null, null], lastFight = -1e9, moodTimer = null;
@@ -180,6 +193,7 @@
   }
   // a set with nothing in it falls back to the peaceful one, so a half-filled pack still plays
   function pick(m) {
+    if (m === 'peace' && civFirst) { const f = civFirst; civFirst = null; if (lists.peace.length) { order.peace = shuffle(lists.peace.length).filter(i => lists.peace[i] !== f); at.peace = 0; } return f; }
     const key = lists[m].length ? m : 'peace';
     const l = lists[key];
     if (!l.length) return null;

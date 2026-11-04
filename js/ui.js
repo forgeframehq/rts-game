@@ -128,7 +128,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // Back goes to the main menu, or straight back to the pause menu when a sheet was opened mid-game
   document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToSkirmish && !$('quick').classList.contains('hidden')) { UI.backToSkirmish = false; show('skirmish'); return; } if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
   function enterGame() {
-    if (G.sound) { G.sound.setScene('game'); if (G.sound.ambient) G.sound.ambient(G.rules && G.rules.map); }
+    if (G.sound) { if (G.sound.setCiv && G.players && G.players[1]) G.sound.setCiv(G.players[1].civ); G.sound.setScene('game'); if (G.sound.ambient) G.sound.ambient(G.rules && G.rules.map); }
     for (const s of SCREENS) $(s).classList.add('hidden');
     $('hud').classList.remove('hidden');
     G.paused = false; G.demo = false; saveT = 20;
