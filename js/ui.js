@@ -763,12 +763,24 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (!G.ghost) return;
     const w = G.toWorld(sx, sy), s = G.BUILDINGS[G.ghost.type].size;
     G.ghost.tx = Math.floor(w.x - s / 2 + 0.5); G.ghost.ty = Math.floor(w.y - s / 2 + 0.5);
+    // fields snap flush beside a nearby field, in line with it, so rows of farms are easy with a finger
+    if (G.ghost.type === 'farm') {
+      const fx = w.x - s / 2, fy = w.y - s / 2; let best = null, bd = 1.6;
+      for (const f of G.ents) {
+        if (f.dead || f.type !== 'farm' || f.owner !== 1) continue;
+        for (const [ox, oy] of [[f.size, 0], [-s, 0], [0, f.size], [0, -s]]) {
+          const tx = f.tx + ox, ty = f.ty + oy, d = Math.hypot(tx - fx, ty - fy);
+          if (d < bd && !G.farmOverlap(tx, ty, s)) { bd = d; best = [tx, ty]; }
+        }
+      }
+      if (best) { G.ghost.tx = best[0]; G.ghost.ty = best[1]; }
+    }
   }
   function confirmPlace(keep) {
     const gh = G.ghost; if (!gh) return;
     if (!gh.ok) {   // nudge to the nearest open spot instead of just refusing
       const s = G.BUILDINGS[gh.type].size;
-      const fits = (x, y) => G.areaFree(x, y, s) && G.isExplored(x + s / 2, y + s / 2) && !(G.ruleBlock && G.ruleBlock(1, gh.type, x, y));
+      const fits = (x, y) => G.areaFree(x, y, s) && !G.farmOverlap(x, y, s) && G.isExplored(x + s / 2, y + s / 2) && !(G.ruleBlock && G.ruleBlock(1, gh.type, x, y));
       for (let r = 1; r <= 5; r++) {
         let best = null, bd = 1e9;
         for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {

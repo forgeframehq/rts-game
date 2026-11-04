@@ -42,7 +42,7 @@ G.makeAI = function () {
       for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
         if (Math.max(Math.abs(i), Math.abs(j)) !== r) continue;
         const tx = Math.round(ax + i - s / 2), ty = Math.round(ay + j - s / 2);
-        if (G.areaFree(tx - gap, ty - gap, s + gap * 2) && !(G.ruleBlock && G.ruleBlock(AI.p, type, tx, ty))) cands.push({ tx, ty });   // the same placement rules as the player
+        if (G.areaFree(tx - gap, ty - gap, s + gap * 2) && !G.farmOverlap(tx, ty, s) && !(G.ruleBlock && G.ruleBlock(AI.p, type, tx, ty))) cands.push({ tx, ty });   // the same placement rules as the player
       }
       if (cands.length) return cands[Math.floor(Math.random() * cands.length)];
     }

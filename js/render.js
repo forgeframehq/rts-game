@@ -846,13 +846,18 @@
       return;
     }
     if (e.type === 'farm') {
-      // tilled row by row along the field, each strip a slice of the footprint itself
-      if (fin && p > 0.02) {
-        const a = G.toScreen(e.tx, e.ty), b = G.toScreen(e.tx + e.size * p, e.ty),
-              c = G.toScreen(e.tx + e.size * p, e.ty + e.size), d = G.toScreen(e.tx, e.ty + e.size), up = 26 * z;
-        ctx.save(); ctx.beginPath();
-        ctx.moveTo(a.x, a.y - up); ctx.lineTo(b.x, b.y - up); ctx.lineTo(c.x, c.y + 4 * z); ctx.lineTo(d.x, d.y + 4 * z); ctx.closePath(); ctx.clip();
-        drawSprite(G.buildingSprite('farm', e.owner, 'spent') || fin, g.x, g.y, z); ctx.restore();   // ploughed earth and fence; the wheat comes when it is done
+      // furrows ploughed one by one across the field, drawn on its exact outline; the wheat and
+      // fence of the finished farm appear when it is done
+      const rows = 9, sz = e.size;
+      for (let i = 0; i < rows; i++) {
+        const t = (i + 0.5) / rows; if (t > p + 0.02) break;
+        const a = G.toScreen(e.tx + sz * t, e.ty + 0.12), b = G.toScreen(e.tx + sz * t, e.ty + sz - 0.12);
+        ctx.strokeStyle = 'rgba(58,38,20,0.9)'; ctx.lineWidth = Math.max(1.5, 3.2 * z);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        ctx.strokeStyle = 'rgba(170,130,80,0.55)'; ctx.lineWidth = Math.max(1, 1.2 * z);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y - 2 * z); ctx.lineTo(b.x, b.y - 2 * z); ctx.stroke();
+        // young shoots on the furrows already sown
+        if (t < p - 0.15) { ctx.fillStyle = 'rgba(120,170,60,0.9)'; for (let k = 1; k < 6; k++) { const q = G.toScreen(e.tx + sz * t, e.ty + sz * k / 6); ctx.fillRect(q.x - z, q.y - 3 * z, 2 * z, 3 * z); } }
       }
       for (const c of [N_, E_, S_, W_]) pole(c, 9 * z, z);
       return;
@@ -909,6 +914,7 @@
       tiles.push({ x, y, free, seen });
     }
     if (!why && !allSeen) why = 'land you have not explored yet';
+    if (G.farmOverlap && G.farmOverlap(gh.tx, gh.ty, s)) { ok = false; if (!why) why = 'a farm'; for (const t of tiles) t.free = false; }
     const rule = G.ruleBlock && G.ruleBlock(1, gh.type, gh.tx, gh.ty);
     if (rule) { ok = false; if (!why) why = rule; for (const t of tiles) t.free = false; }
     gh.ok = ok;

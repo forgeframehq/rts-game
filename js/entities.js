@@ -493,10 +493,14 @@
     return 'move';
   };
 
+  // a field never overlaps another field or a building (fields don't block walking, so the
+  // blocking grid alone doesn't catch them)
+  G.farmOverlap = (tx, ty, s, ignore) => G.ents.some(f => !f.dead && f !== ignore && f.type === 'farm' && tx < f.tx + f.size && tx + s > f.tx && ty < f.ty + f.size && ty + s > f.ty);
   G.placeBuilding = function (owner, type, tx, ty, builders) {
     const def = G.BUILDINGS[type];
     if (!G.canBuildType(owner, type)) return null;
     if (!G.areaFree(tx, ty, def.size)) return null;
+    if (G.farmOverlap(tx, ty, def.size)) return null;
     if (G.ruleBlock && G.ruleBlock(owner, type, tx, ty)) return null;
     // keep units from being trapped: no own units standing in footprint is fine, they get pushed out
     const cost = G.buildCost(owner, type);

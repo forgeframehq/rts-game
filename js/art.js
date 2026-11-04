@@ -220,8 +220,10 @@
     if (u.working) {
       const t = u.task;
       if (t.t === 'gather') return [WORK[t.rtype] || 'chop', 'idle'];
-      if (t.t === 'farm') return ['farm', 'idle'];
-      if (t.t === 'build') return ['build', 'idle'];
+      // farming and sowing a new field: bending to the crop with a basket (the rendered 'farm'
+      // motion has no tool in hand and reads as flailing, so it is not used)
+      if (t.t === 'farm') return ['forage', 'idle'];
+      if (t.t === 'build') { const b = G.byId.get(t.id); return b && b.type === 'farm' ? ['forage', 'idle'] : ['build', 'idle']; }
       if (t.t === 'attack') return ['attack', 'chop', 'idle'];
     }
     return ['idle'];
