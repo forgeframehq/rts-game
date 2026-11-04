@@ -466,7 +466,10 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   function pick(sx, sy) {
     const z = G.camera.zoom;
-    let best = null, bd = 1e9;
+    // with soldiers or villagers selected, an enemy under the finger always wins over a friend
+    // standing beside it, so a tap on an enemy villager attacks it instead of selecting your own man
+    const preferFoe = ownUnits().length > 0;
+    let best = null, bd = 1e9, foe = null, fd = 1e9;
     for (const e of G.ents) {
       if (e.dead || e.kind !== 'unit') continue;
       if (e.owner !== 1 && !G.isVisible(e.x, e.y)) continue;
@@ -476,8 +479,27 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (dx > half || up < -10 * k || up > hgt + 8) continue;
       const d = Math.hypot(dx, up - hgt / 2);
       if (d < bd) { bd = d; best = e; }
+      if (preferFoe && G.enemies(1, e.owner) && d < fd) { fd = d; foe = e; }
     }
+    if (foe) return foe;
     if (best) return best;
+    // resources: the whole bush, rock or tree you can see is the target, not just the tile under it
+    let rb = null, rd = 1e9;
+    for (const e of G.ents) {
+      if (e.dead || e.kind !== 'res') continue;
+      if (!G.revealAll && !G.isExplored(e.tx, e.ty)) continue;
+      const g = G.toScreen(e.tx + 0.5, e.ty + 0.5), tall = e.type === 'tree';
+      const top = (tall ? 62 : 26) * z, half = (tall ? 18 : 22) * z + 6;
+      const dx = Math.abs(sx - g.x), up = g.y - sy;
+      if (dx > half || up < -12 * z - 4 || up > top) continue;
+      const d = Math.hypot(dx, up - top / 3);
+      if (d < rd) { rd = d; rb = e; }
+    }
+    if (rb) {
+      // a building drawn in front of the resource still wins
+      const w = G.toWorld(sx, sy), id = G.inMap(w.x | 0, w.y | 0) ? G.block[G.idx(w.x | 0, w.y | 0)] : 0, b = id && G.byId.get(id);
+      if (!(b && b.kind === 'building')) return rb;
+    }
     // buildings / resources: check tile under finger, and tiles "behind" it for tall sprites
     for (const off of [0, 16, 32, 48, 64]) {
       const w = G.toWorld(sx, sy + off * z);
@@ -496,13 +518,17 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
 
   function ping(x, y, col) { G.effects.push({ t: 'ping', x, y, col, life: 0.6 }); if (G.sound) G.sound.play('command'); }
-  function outline(e, col) { if (e && !e.dead && e.kind !== 'unit') G.effects.push({ t: 'target', id: e.id, col, life: 0.9 }); }
+  function outline(e, col) {
+    if (!e || e.dead) return;
+    G.flash.set(e.id, { col, t: G.realTime() });   // the target glows: white rim on buildings and resources, ring and chevron on units
+    if (e.kind !== 'unit') G.effects.push({ t: 'target', id: e.id, col, life: 0.9 });
+  }
   // Acknowledge an order: ping the ground and outline the tree/farm/building it landed on,
   // so a tap that did nothing is never silent.
   function cmdFx(r, x, y) {
     const t = G.cmdTarget;
     if (r === 'farm-busy') { UI.alert('Every farm is already being worked'); outline(t, '#f5c242'); return; }
-    const col = r === 'attack' ? '#ff5a4a' : r === 'move' ? '#fff' : '#8f8';
+    const col = r === 'attack' ? '#ff4a3a' : r === 'build' ? '#ffd34a' : r === 'move' ? '#ffffff' : '#7dff7a';
     outline(t, col);
     const on = t && !t.dead && t.kind !== 'unit';
     ping(on ? t.x : x, on ? t.y : y, col);

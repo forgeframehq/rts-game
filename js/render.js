@@ -585,6 +585,30 @@
     ctx.globalAlpha = 1;
   }
 
+  // A soft outline around a sprite's own silhouette: selected buildings and the target an order
+  // landed on glow, so it is always clear what was picked. Built once per sprite and colour.
+  const glowCache = new Map();
+  function glowOf(sp, col) {
+    const key = col; let m = glowCache.get(sp); if (!m) { m = {}; glowCache.set(sp, m); }
+    if (m[key]) return m[key];
+    const P = 8, sil = document.createElement('canvas'); sil.width = sp.cv.width; sil.height = sp.cv.height;
+    const sx = sil.getContext('2d'); sx.drawImage(sp.cv, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = col; sx.fillRect(0, 0, sil.width, sil.height);
+    const c = document.createElement('canvas'); c.width = sil.width + P * 2; c.height = sil.height + P * 2;
+    const x = c.getContext('2d'), k = sp.cv.width / sp.w;   // sprite pixels per display px
+    for (let a = 0; a < 16; a++) { const r = 3.2 * k; x.drawImage(sil, P + Math.cos(a / 16 * 6.283) * r, P + Math.sin(a / 16 * 6.283) * r); }
+    x.globalCompositeOperation = 'destination-out'; x.drawImage(sp.cv, P, P);   // keep only the rim
+    m[key] = { cv: c, pad: P / k };
+    return m[key];
+  }
+  function drawGlow(sp, x, y, z, col, alpha) {
+    if (!sp || !sp.cv) return;
+    const g = glowOf(sp, col);
+    ctx.globalAlpha = alpha; ctx.drawImage(g.cv, x - (sp.ax + g.pad) * z, y - (sp.ay + g.pad) * z, (sp.w + g.pad * 2) * z, (sp.h + g.pad * 2) * z); ctx.globalAlpha = 1;
+  }
+  // what an order just landed on: { id: { col, t } } set by the UI
+  G.flash = G.flash || new Map();
+  G.realTime = G.realTime || (() => performance.now() / 1000);
+  const flashOf = e => { const f = G.flash.get(e.id); if (!f) return null; const age = G.realTime() - f.t; if (age > 1.1) { G.flash.delete(e.id); return null; } return { col: f.col, a: age < 0.15 ? 1 : Math.max(0, 1 - (age - 0.15) / 0.95) * (0.75 + 0.25 * Math.sin(age * 18)) }; };
   function selRingTile(e, col, width) {
     const s = e.size || 1;
     const a = G.toScreen(e.tx, e.ty), b = G.toScreen(e.tx + s, e.ty), c = G.toScreen(e.tx + s, e.ty + s), d = G.toScreen(e.tx, e.ty + s);
@@ -608,7 +632,10 @@
       ctx.save();
       if (shade !== 1) ctx.filter = 'brightness(' + shade.toFixed(2) + ')';
       if (flip < 0) { ctx.translate(g.x * 2, 0); ctx.scale(-1, 1); }
+      const fl = flashOf(e);
+      if (fl) { ctx.save(); ctx.filter = 'none'; drawGlow(sp, g.x, g.y, zz, fl.col, fl.a); ctx.restore(); }
       drawSprite(sp, g.x, g.y, zz);
+      if (selected) { ctx.save(); ctx.filter = 'none'; drawGlow(sp, g.x, g.y, zz, '#fff', 0.8); ctx.restore(); }
       ctx.restore();
       if (selected) hpBar(g.x, g.y - 70 * z, 30, e.amount / G.RES[e.type].amount, true);
       return;
@@ -624,6 +651,9 @@
           e.def.wall ? wallMask(e) : 0);
         if (e.hitT) ctx.globalAlpha = 0.85;
         drawSprite(sp, g.x, g.y, z);
+        ctx.globalAlpha = 1;
+        if (selected) drawGlow(sp, g.x, g.y, z, own ? '#ffffff' : '#ff6b5e', 0.7 + 0.2 * Math.sin(G.realTime() * 4));
+        const fl = flashOf(e); if (fl) drawGlow(sp, g.x, g.y, z, fl.col, fl.a);
       } else {
         sp = G.buildingSprite(e.type, e.owner, e.type === 'farm' ? 0 : undefined);
         drawConstruction(e, g, z, sp);
@@ -653,6 +683,16 @@
       return;
     }
     // unit
+    const ufl = flashOf(e);
+    if (ufl) {
+      const rr = (G.mounted(e) ? 15 : 11) * z, k = 1 - ufl.a;
+      ctx.globalAlpha = ufl.a; ctx.strokeStyle = ufl.col; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(s.x, s.y, rr * (1 + k * 0.5), rr * 0.5 * (1 + k * 0.5), 0, 0, 7); ctx.stroke();
+      // a small chevron above the target's head
+      const hy = s.y - (G.mounted(e) ? 60 : 46) * z - 6 * Math.sin(G.realTime() * 10);
+      ctx.fillStyle = ufl.col; ctx.beginPath(); ctx.moveTo(s.x - 6, hy - 8); ctx.lineTo(s.x + 6, hy - 8); ctx.lineTo(s.x, hy); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
     if (selected) {
       ctx.strokeStyle = e.owner === 1 ? '#fff' : '#ff6b5e'; ctx.lineWidth = 1.5;
       const rr = G.mounted(e) ? 12 : 8;
