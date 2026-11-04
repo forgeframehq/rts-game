@@ -489,6 +489,47 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       : `🛡️ Wave <b>${S.wave + 1}</b> in ${Math.max(0, Math.ceil(S.next - G.time))}s` + (S.done ? ` · survived ${S.done}` : '');
     el.classList.toggle('fight', !!S.active);
   };
+  // ---- Special cooldown on the button, refreshed every second ----
+  function spCool() {
+    const el = document.querySelector('.cmd.special .sp-cool'); if (!el) return;
+    const sold = ownUnits().filter(u => G.specialOf && G.specialOf(u)); if (!sold.length) return;
+    const ready = sold.filter(G.specialReady).length;
+    el.textContent = ready ? (ready === sold.length ? 'Ready' : `${ready} ready`) : `${Math.ceil(Math.min(...sold.map(u => u.spReady - G.time)))}s`;
+    el.parentNode.parentNode.classList.toggle('cooling', !ready);
+  }
+  setInterval(spCool, 500);
+  // ---- formation card ----
+  const FORM_NAMES = { line: 'Line', box: 'Box', staggered: 'Staggered', wedge: 'Wedge' };
+  const FORM_TXT = { line: 'Melee in front, archers behind, cavalry on the ends. For open battles.', box: 'Melee around the outside, archers and siege safe inside. For escorts and defence.', staggered: 'Spread out with gaps. Fewer men hit by arrows, rocks and fire.', wedge: 'Cavalry at the point, infantry behind. For breaking through a line.' };
+  function openForm(units) {
+    const card = $('formcard'), grid = card.querySelector('.fgrid'); grid.innerHTML = '';
+    const cur = units[0].form || G.players[1].formation || 'line';
+    for (const k of G.FORMATIONS) {
+      const b = document.createElement('button'); b.className = 'fopt' + (k === cur ? ' on' : '');
+      b.innerHTML = `<canvas width="150" height="110"></canvas><b>${FORM_NAMES[k]}</b><small>${FORM_TXT[k]}</small>`;
+      drawFormPreview(b.querySelector('canvas'), units, k);
+      b.onclick = () => { for (const u of units) u.form = k; G.players[1].formation = k; card.classList.add('hidden'); UI.alert(`Formation: ${FORM_NAMES[k]}`); panelKey = ''; refreshPanel(true); };
+      grid.appendChild(b);
+    }
+    card.classList.remove('hidden');
+  }
+  // the selected army as shapes: squares melee, triangles archers, diamonds cavalry, blocks siege
+  function drawFormPreview(cv, units, kind) {
+    const x = cv.getContext('2d'), W = cv.width, H = cv.height, list = G.formationOrder(units, kind), sl = G.formationSlots(list, kind);
+    let mx = 0.5, my = 0.5; for (const o of sl) { mx = Math.max(mx, Math.abs(o.ox)); my = Math.max(my, Math.abs(o.oy)); }
+    const k = Math.min((W - 24) / (mx * 2 + 1), (H - 30) / (my * 2 + 1), 18), r = Math.max(2.5, Math.min(6, k * 0.32));
+    x.clearRect(0, 0, W, H);
+    x.fillStyle = 'rgba(255,215,106,0.5)'; x.beginPath(); x.moveTo(W / 2, 4); x.lineTo(W / 2 - 6, 12); x.lineTo(W / 2 + 6, 12); x.fill();   // the way they face
+    list.forEach((u, i) => {
+      const px = W / 2 + sl[i].ox * k, py = H / 2 + 6 - sl[i].oy * k;
+      x.beginPath();
+      if (u.def.siege) { x.fillStyle = '#b9b2a6'; x.fillRect(px - r, py - r * 0.7, r * 2, r * 1.4); return; }
+      if (u.def.ranged) { x.fillStyle = '#7fd1ff'; x.moveTo(px, py - r); x.lineTo(px + r, py + r); x.lineTo(px - r, py + r); }
+      else if (u.def.cls === 'cav') { x.fillStyle = '#ffd76a'; x.moveTo(px, py - r * 1.2); x.lineTo(px + r, py); x.lineTo(px, py + r * 1.2); x.lineTo(px - r, py); }
+      else { x.fillStyle = u.type === 'villager' ? '#c9b48a' : '#ff8a7a'; x.rect(px - r * 0.85, py - r * 0.85, r * 1.7, r * 1.7); }
+      x.fill();
+    });
+  }
   const ownUnits = () => G.selection.filter(e => e.kind === 'unit' && e.owner === 1);
 
   function pick(sx, sy) {
@@ -805,7 +846,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     'Deselect': 'Clear your selection.', 'Back': 'Back to the previous set of buttons.',
     'Build': 'Choose a building for the selected villagers to construct.',
     'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
-    'Stop': 'Stop whatever the selected units are doing.', 'Formation': 'Change how your army lines up when it moves: line, staggered or box.',
+    'Stop': 'Stop whatever the selected units are doing.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
     'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
     'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
     'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
@@ -816,6 +857,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   function tipFor(lb) {
     lb = String(lb).replace(/<[^>]*>/g, '').trim();
     if (CMD_TIPS[lb]) return { t: lb, d: CMD_TIPS[lb] };
+    if (G.SPECIALS) { const sp = Object.values(G.SPECIALS).filter(x => lb.includes(x.name)); if (sp.length || /^Special/.test(lb)) { const all = sp.length ? sp : [...new Set(ownUnits().map(G.specialOf).filter(Boolean))].map(k => G.SPECIALS[k]); return { t: '⭐ Special', d: all.map(x => `${x.icon} ${x.name}: ${x.desc}`).join(' ') + ' Recharges in 30 s.' }; } }
     if (/^Re-sow/.test(lb)) return { t: 'Re-sow', d: CMD_TIPS['Re-sow'] };
     for (const id in G.TECHS) { const t = G.TECHS[id]; if (t.name === lb) return { t: t.name, d: t.desc + '.', c: costLine(t.cost), a: G.AGES[t.age].name }; }
     for (const id in G.UPGRADES) { const t = G.UPGRADES[id]; if (t.name === lb) { const U = G.UNITS[t.line]; return { t: t.name, d: `Upgrades every ${U.name} you own and train: ${t.stats.hp ? t.stats.hp + ' HP, ' : ''}${t.stats.atk ? t.stats.atk + ' attack' : 'stronger'}.`, c: costLine(t.cost), a: G.AGES[t.age].name }; } }
@@ -964,14 +1006,23 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         }));
       }
       cmds.appendChild(btn('✋', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
-      // formation, for a group with soldiers in it: tap to cycle line, staggered, box
+      // ⭐ Special: one button for every soldier's move
+      const sold = units.filter(u => G.specialOf && G.specialOf(u));
+      if (sold.length) {
+        const kinds = [...new Set(sold.map(G.specialOf))], names = kinds.map(k => G.SPECIALS[k].name);
+        const b = btn('⭐', names.length > 2 ? 'Special ×' + names.length : names.join(' + '), '<span class="sp-cool"></span>', () => {
+          const n = G.useSpecial(sold);
+          if (!n) UI.alert(sold.some(G.specialReady) ? 'Nothing in range to use it on yet' : 'Still recharging');
+          else { UI.buzz(25); if (G.sound) G.sound.play('command'); }
+          spCool();
+        });
+        b.classList.add('special'); b.dataset.tip = kinds.map(k => `${G.SPECIALS[k].icon} ${G.SPECIALS[k].name}: ${G.SPECIALS[k].desc}`).join('\n');
+        cmds.appendChild(b); spCool();
+      }
+      // formation, for a group with soldiers in it: a card with a live preview of this army in each shape
       if (units.filter(u => u.type !== 'villager').length >= 2) {
-        const pl = G.players[1], cur = pl.formation || 'line', NAMES = { line: 'Line', staggered: 'Staggered', box: 'Box' };
-        cmds.appendChild(btn('i:army', 'Formation', NAMES[cur], () => {
-          pl.formation = G.FORMATIONS[(G.FORMATIONS.indexOf(cur) + 1) % G.FORMATIONS.length];
-          UI.alert(`Formation: ${NAMES[pl.formation]}` + (pl.formation === 'box' ? ' (archers and royals inside a ring of soldiers)' : pl.formation === 'staggered' ? ' (spread out against arrows and siege)' : ''));
-          panelKey = ''; refreshPanel(true);
-        }));
+        const cur = units[0].form || G.players[1].formation || 'line';
+        cmds.appendChild(btn('i:army', 'Formation', FORM_NAMES[cur], () => openForm(units)));
       }
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('📦', 'Drop off', '', () => {
         for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }

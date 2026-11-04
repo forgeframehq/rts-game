@@ -33,6 +33,7 @@
     <button id="btn-menu" class="iconbtn" aria-label="Menu"><img src="assets/ui/icons/gear.png" alt=""></button>
   </div>
   <div id="wavebar" class="hidden"></div>
+  <div id="formcard" class="hidden"><div class="fhead"><b>Formation</b><button class="plain fx" onclick="this.closest('#formcard').classList.add('hidden')">✕</button></div><div class="fgrid"></div><p class="hint">Your army, as it will stand. It keeps this shape on the march and moves at the pace of its slowest man.</p></div>
 
   <div id="side">
     <button id="btn-idle" class="sidebtn" aria-label="Next idle villager"><img src="assets/ui/icons/idle.png" alt=""><i id="idle-count">0</i></button>
@@ -331,6 +332,7 @@
 <script src="js/ai.js"></script>
 <script src="js/game.js"></script>
   <script src="js/modes.js"></script>
+  <script src="js/specials.js"></script>
 <script src="js/save.js"></script>
 <script src="js/tutorial.js"></script>
 <script src="js/ui.js"></script>

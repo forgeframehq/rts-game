@@ -374,6 +374,24 @@
       const a = G.toScreen(x, y, h), b2 = G.toScreen(x - (p.tx - p.from.x) * 0.04, y - (p.ty - p.from.y) * 0.04, h - Math.cos(k * Math.PI) * 3);
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b2.x, b2.y); ctx.stroke();
     }
+    // Greek Fire on the ground, and flames on buildings set alight by fire arrows
+    const fl = G.realTime();
+    for (const f of G.fires || []) {
+      if (!G.revealAll && !G.isVisible(f.x, f.y)) continue;
+      const s = G.toScreen(f.x, f.y), a = Math.min(1, f.until - G.time);
+      for (let k = 0; k < 3; k++) {
+        const h = (10 + 6 * Math.sin(fl * 9 + k * 2 + f.x)) * z, ox = (k - 1) * 6 * z;
+        const gr = ctx.createRadialGradient(s.x + ox, s.y - h / 2, 0, s.x + ox, s.y - h / 2, h);
+        gr.addColorStop(0, `rgba(255,230,120,${0.9 * a})`); gr.addColorStop(0.5, `rgba(255,120,30,${0.6 * a})`); gr.addColorStop(1, 'rgba(200,40,0,0)');
+        ctx.fillStyle = gr; ctx.beginPath(); ctx.ellipse(s.x + ox, s.y - h / 2, 6 * z, h, 0, 0, 7); ctx.fill();
+      }
+    }
+    for (const e of G.ents) if (e.burn && !e.dead && (G.revealAll || G.isVisible(e.x, e.y))) {
+      const s = G.toScreen(e.tx + e.size / 2, e.ty + e.size / 2);
+      for (let k = 0; k < 4; k++) { const ox = Math.sin(k * 2.3 + e.id) * e.size * 10 * z, h = (14 + 8 * Math.sin(fl * 8 + k)) * z, y = s.y - e.size * 12 * z;
+        const gr = ctx.createRadialGradient(s.x + ox, y - h / 2, 0, s.x + ox, y - h / 2, h); gr.addColorStop(0, 'rgba(255,220,110,0.9)'); gr.addColorStop(0.6, 'rgba(255,100,20,0.5)'); gr.addColorStop(1, 'rgba(200,40,0,0)');
+        ctx.fillStyle = gr; ctx.beginPath(); ctx.ellipse(s.x + ox, y - h / 2, 7 * z, h, 0, 0, 7); ctx.fill(); }
+    }
     // effects
     for (const f of G.effects) {
       const s = G.toScreen(f.x, f.y);
@@ -396,6 +414,8 @@
         const k = 1 - f.life / 0.6;
         ctx.strokeStyle = f.col; ctx.lineWidth = 2; ctx.globalAlpha = 1 - k;
         ctx.beginPath(); ctx.ellipse(s.x, s.y, (6 + k * 14) * z, (3 + k * 7) * z, 0, 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
+      } else if (f.t === 'formdot') {
+        ctx.globalAlpha = Math.min(1, f.life / 0.4) * 0.8; ctx.fillStyle = f.col; ctx.beginPath(); ctx.ellipse(s.x, s.y, 3.2 * z, 1.7 * z, 0, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
       } else if (f.t === 'target') {
         // outline the tile the command landed on, so a tap on a tree or farm is visibly acknowledged
         const e = G.byId.get(f.id);
@@ -711,6 +731,14 @@
       const hy = s.y - (G.mounted(e) ? 60 : 46) * z - 6 * Math.sin(G.realTime() * 10);
       ctx.fillStyle = ufl.col; ctx.beginPath(); ctx.moveTo(s.x - 6, hy - 8); ctx.lineTo(s.x + 6, hy - 8); ctx.lineTo(s.x, hy); ctx.closePath(); ctx.fill();
       ctx.globalAlpha = 1;
+    }
+    // what a Special is doing to this unit right now
+    if (e.brace > G.time || e.charge > G.time || e.rush > G.time || e.stun > G.time || e.combo) {
+      const hy = s.y - (G.mounted(e) ? 58 : 44) * z;
+      ctx.font = `${Math.round(11 * Math.max(0.8, z))}px sans-serif`; ctx.textAlign = 'center';
+      const ic = e.stun > G.time ? '💫' : e.brace > G.time ? '🛡️' : e.charge > G.time ? '🐎' : e.rush > G.time ? '💨' : '';
+      if (ic) ctx.fillText(ic, s.x, hy);
+      else if (e.combo && e.owner === 1 && selected) { ctx.fillStyle = '#ffd76a'; ctx.fillText('⚑', s.x + 8 * z, hy + 4); }
     }
     if (selected) {
       ctx.strokeStyle = e.owner === 1 ? '#fff' : '#ff6b5e'; ctx.lineWidth = 1.5;

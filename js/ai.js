@@ -77,6 +77,7 @@ G.makeAI = function () {
     if (AI.t > 0) return;
     AI.t = AI.cfg.think;
     const p = AI.p, R = res();
+    if (G.aiSpecials && AI.level !== 'easy') G.aiSpecials(p);
     const tc = mine(e => e.type === 'towncenter')[0];
     const vils = mine(e => e.type === 'villager');
     // the King and Queen are not soldiers: they never march with an attack wave

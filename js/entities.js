@@ -338,9 +338,19 @@
   //   line      ranks facing forward, melee first (AoE2's default)
   //   staggered the same ranks spread wide and offset, so arrows and stones hit fewer men
   //   box       melee and cavalry on the outside of a square, archers, siege and the royals inside
-  G.FORMATIONS = ['line', 'staggered', 'box'];
+  G.FORMATIONS = ['line', 'box', 'staggered', 'wedge'];
+  G.formationSlots = (units, kind) => formationSlots(units, kind);
+  // the order a group lines up in: melee first (cavalry first of all in a wedge), then archers, villagers last
+  G.formationOrder = (units, kind) => units.slice().sort((a, b) => (kind === 'wedge' ? (b.def.cls === 'cav') - (a.def.cls === 'cav') : 0) || (RANK[a.def.cls] || 0) - (RANK[b.def.cls] || 0) || a.id - b.id);
   function formationSlots(units, kind) {
     const n = units.length, out = [];
+    if (kind === 'wedge') {
+      // a triangle pointing forward: one at the tip, two behind, three behind them...
+      let r = 0, i = 0;
+      while (i < n) { const inRow = Math.min(r + 1, n - i); for (let c = 0; c < inRow; c++, i++) out.push({ ox: (c - (inRow - 1) / 2) * 0.9, oy: -r * 0.85 }); r++; }
+      const mid = (r - 1) * 0.85 / 2; for (const o of out) o.oy += mid;
+      return out;
+    }
     if (kind === 'box' && n >= 5) {
       const outer = units.filter(u => u.def.cls === 'inf' || u.def.cls === 'cav'), inner = units.filter(u => !outer.includes(u));
       const ring = [], gap = 0.9;
@@ -375,16 +385,22 @@
     let cx = 0, cy = 0; for (const u of units) { cx += u.x; cy += u.y; } cx /= n; cy /= n;
     let fx = x - cx, fy = y - cy; const fl = Math.hypot(fx, fy) || 1; fx /= fl; fy /= fl;   // forward
     const rx = -fy, ry = fx;                                                              // right
-    const sorted = units.slice().sort((a, b) => (RANK[a.def.cls] || 0) - (RANK[b.def.cls] || 0) || a.id - b.id);
+    // each group keeps the formation it was given; otherwise the player's last choice
+    const votes = {}; for (const u of units) if (u.form) votes[u.form] = (votes[u.form] || 0) + 1;
+    const kind = Object.keys(votes).sort((a, b) => votes[b] - votes[a])[0] || (G.players[units[0].owner] || {}).formation || 'line';
+    const sorted = G.formationOrder(units, kind);
     const military = units.some(u => u.type !== 'villager') && n > 1;
     const gs = military ? Math.min(...units.map(u => u.def.speed)) : 0;
-    const slots = formationSlots(sorted, (G.players[units[0].owner] || {}).formation || 'line');
+    const slots = formationSlots(sorted, kind);
+    const show = units[0].owner === 1 && military && G.effects;
     sorted.forEach((u, i) => {
       const { ox, oy } = slots[i];
       let tx = x + rx * ox + fx * oy, ty = y + ry * ox + fy * oy;
       const f = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
       if (!G.isFree(tx | 0, ty | 0)) { tx = f.x + 0.5; ty = f.y + 0.5; }
       u.task = { t: 'move', x: tx, y: ty, gs };
+      // ghost dots: where each man will stand
+      if (show) G.effects.push({ t: 'formdot', x: tx, y: ty, col: u.def.ranged ? '#7fd1ff' : u.def.cls === 'cav' ? '#ffd76a' : '#ff8a7a', life: 1.2 });
       u.path = G.findPath(u.x, u.y, { x0: tx | 0, y0: ty | 0, x1: tx | 0, y1: ty | 0 }, false, 0, u.owner);
       if (u.path.length) u.path[u.path.length - 1] = { x: tx, y: ty };
     });
@@ -551,8 +567,10 @@
         if (G.players[att.owner].mourn > G.time) dmg = Math.max(1, Math.round(dmg * 0.8));
       }
     }
+    if (G.dmgMod) dmg = G.dmgMod(att, t, dmg);
     return dmg;
   }
+  G.fire = (a, t) => fire(a, t);
   function hit(att, t, dmg) {
     if (t.dead) return;
     // Capture: a Town Center can be beaten down to a white flag, never burned
@@ -717,7 +735,7 @@
     const wp = u.path[0];
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
     const step = (u.task.gs && u.task.t === 'move' ? Math.min(u.def.speed, u.task.gs) : u.def.speed) * dt * (G.terrainSpeed || 1)
-      * (u.type === 'villager' ? 1 + G.techEff(u.owner, 'vilSpeed') : 1);
+      * (u.type === 'villager' ? 1 + G.techEff(u.owner, 'vilSpeed') : 1) * (G.speedMul ? G.speedMul(u) : 1);
     steer(u, dx / (d || 1), dy / (d || 1), dt);
     u.walk += dt;
     u.dist = (u.dist || 0) + Math.min(step, d);
