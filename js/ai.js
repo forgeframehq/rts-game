@@ -189,6 +189,19 @@ G.makeAI = function () {
     else if (vils.length >= 24 && age >= 3 && hasBuilt('stable') && !has('siegeworkshop')) build('siegeworkshop', home.x, home.y, 6, 2);
     else if (vils.length >= 26 && age >= 3 && hasBuilt('siegeworkshop') && !has('monastery')) build('monastery', home.x, home.y, 6, 2);
     else if (vils.length >= 28 && age >= 3 && hasBuilt('blacksmith') && !has('university') && R.wood > 250) build('university', home.x, home.y, 6, 2);
+    // an Infirmary once the army is real (a second in the Imperial Age), set well back near home
+    if (age >= 2 && hasBuilt('barracks') && vils.length >= Math.min(18, AI.cfg.maxVils) && army.length >= 4 && !G.atBuildLimit(p, 'infirmary')
+        && R.wood >= 150 && R.gold >= 50 && !blds.some(b => b.type === 'infirmary' && !b.built)) build('infirmary', home.x, home.y, 5, 1);
+    // the badly wounded go in to heal (not mid-charge on an enemy town); the healed come back out
+    const infs = blds.filter(b => b.type === 'infirmary' && b.built);
+    if (infs.length) {
+      for (const u of army) {
+        if (u.inside || u.task.t === 'garrison' || u.def.siege || u.hp > u.maxHp * 0.35) continue;
+        const b = infs.filter(i => G.canGarrison(u, i)).sort((a, c) => G.dist(u, a) - G.dist(u, c))[0];
+        if (b && G.dist(u, b) < 30) G.garrisonTo(u, b);
+      }
+      for (const b of infs) if (b.garrison && b.garrison.some(g => g.hp >= g.maxHp * 0.95)) G.ungarrison(b, g => g.hp >= g.maxHp * 0.95);   // the second argument picks who leaves
+    }
     // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
     else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
              && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);

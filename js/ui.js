@@ -1167,9 +1167,10 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (vils.length && buildMenu) {
         for (const t of G.VIL_BUILDS) {
           const c = G.buildCost(1, t);
-          if (G.atBuildLimit(1, t) && G.ageOf(1) >= (G.BUILD_AGE[t] || 1)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, 'limit ' + G.buildLimit(1, t), () => UI.alert(`You can only have ${G.buildLimit(1, t)} ${G.BUILDINGS[t].name}${G.buildLimit(1, t) > 1 ? 's' : ''}` + (G.buildLimit(1, t) < 2 ? ' (two in the Imperial Age)' : '')), true)); continue; }
+          if (G.atBuildLimit(1, t) && G.ageOf(1) >= (G.BUILD_AGE[t] || 1)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, `${G.buildLimit(1, t)}/${G.buildLimit(1, t)} built`, () => UI.alert(`You can only have ${G.buildLimit(1, t)} ${G.BUILDINGS[t].name}${G.buildLimit(1, t) > 1 ? 's' : ''}` + (G.buildLimit(1, t) < 2 ? ' (two in the Imperial Age)' : '')), true)); continue; }
           if (!G.canBuildType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
-          cmds.appendChild(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
+          const lim = G.buildLimit(1, t), cnt = lim ? ` · ${G.ents.filter(e => !e.dead && e.owner === 1 && e.type === t).length}/${lim} built` : '';
+          cmds.appendChild(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c) + cnt, () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
         }
         cmds.appendChild(btn('i:back', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
