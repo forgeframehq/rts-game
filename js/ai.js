@@ -117,7 +117,7 @@ G.makeAI = function () {
     // Regicide is won by killing royals, so attack waves go for the nearest one (hidden or not:
     // a royal inside a building turns the attack on the building)
     const royalTarget = () => {
-      if (G.rules.mode === 'tcrush') return G.nearest(home, e => !e.dead && e.type === 'towncenter' && G.enemies(e.owner, p), 999);
+      if (G.rules.mode === 'capture' || G.rules.mode === 'tcrush') return G.nearest(home, e => !e.dead && e.type === 'towncenter' && G.enemies(e.owner, p), 999);
       if (!regicide) return null;
       let best = null;
       for (const id in G.players) {

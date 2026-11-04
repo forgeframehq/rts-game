@@ -673,6 +673,25 @@
         hpBar(g.x, top, 20 + e.size * 14, Math.max(0, e.hp / e.maxHp), own);
         if (!e.built) { ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.fillRect(g.x - 10 - e.size * 7 - 1, top + 5, 20 + e.size * 14 + 2, 4); ctx.fillStyle = '#5ac8fa'; ctx.fillRect(g.x - 10 - e.size * 7, top + 6, (20 + e.size * 14) * e.progress, 2); }
       }
+      // Capture: a beaten Town Center flies a white flag, and shows how far a capture has got
+      if (e.type === 'towncenter' && G.rules && G.rules.mode === 'capture' && e.built) {
+        const low = e.hp < e.maxHp * (G.CAPTURE ? G.CAPTURE.LOW : 0.25), c = e.cap;
+        if (low && !(e.immune > G.time)) {
+          const fx = g.x + 14 * z, fy = top - 4, wv = Math.sin(G.realTime() * 6) * 2;
+          ctx.strokeStyle = '#5a4630'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(fx, fy - 30); ctx.stroke();
+          ctx.fillStyle = '#f7f4ea'; ctx.beginPath(); ctx.moveTo(fx, fy - 30); ctx.quadraticCurveTo(fx + 9, fy - 30 + wv, fx + 18, fy - 27); ctx.lineTo(fx + 18, fy - 17); ctx.quadraticCurveTo(fx + 9, fy - 20 - wv, fx, fy - 18); ctx.closePath(); ctx.fill();
+        }
+        if (e.immune > G.time) { ctx.fillStyle = 'rgba(255,215,106,0.9)'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('🛡 ' + Math.ceil(e.immune - G.time) + 's', g.x, top - 10); }
+        if (c && c.v > 0) {
+          const w = 70, x0 = g.x - w / 2, y0 = top - 16;
+          ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(x0 - 2, y0 - 2, w + 4, 9);
+          const capCol = c.side && c.side[0] === 'p' ? G.ownerColor(+c.side.slice(1)) : '#ffd76a';
+          ctx.fillStyle = capCol; ctx.fillRect(x0, y0, w * c.v, 5);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(c.contested ? 'Contested!' : 'Capturing ' + Math.round(c.v * 100) + '%', g.x, y0 - 5);
+        }
+        if (e.hold > 0) { ctx.fillStyle = '#ffd76a'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; const left = Math.max(0, (G.CAPTURE ? G.CAPTURE.HOLD : 180) - e.hold); ctx.fillText(`Held · ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, '0')} to win`, g.x, top - 30); }
+      }
       if (e.housed && own && selected) { ctx.fillStyle = '#ffcc00'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Need houses!', g.x, top - 6); }
       // rally point
       if (selected && e.rally && own) {
@@ -834,6 +853,8 @@
       tiles.push({ x, y, free, seen });
     }
     if (!why && !allSeen) why = 'land you have not explored yet';
+    const rule = G.ruleBlock && G.ruleBlock(1, gh.type, gh.tx, gh.ty);
+    if (rule) { ok = false; if (!why) why = rule; for (const t of tiles) t.free = false; }
     gh.ok = ok;
     if (G.ui && G.ui.placeWhy) G.ui.placeWhy(ok ? '' : why);
     const g = G.toScreen(gh.tx + s / 2, gh.ty + s / 2);
@@ -867,7 +888,7 @@
     for (const e of G.ents) {
       if (e.dead) continue;
       const x = e.kind === 'unit' ? e.x : e.tx, y = e.kind === 'unit' ? e.y : e.ty;
-      if (!G.revealAll && !G.isExplored(x, y)) continue;
+      if (!G.revealAll && !G.isExplored(x, y) && !(G.alwaysOnMap && G.alwaysOnMap(e))) continue;
       if (e.kind === 'unit' && !G.allied(1, e.owner) && !G.isVisible(x, y) && !G.revealAll) continue;
       if (e.kind === 'res') m.fillStyle = e.type === 'tree' ? '#1f4d1a' : e.type === 'gold' ? '#f2cf3a' : e.type === 'stone' ? '#bbb' : '#d14a6a';
       else m.fillStyle = G.ownerColor(e.owner);
@@ -883,6 +904,10 @@
       m.fillStyle = '#fff'; m.fillRect(x - s / 2 - 0.4, y - s / 2 - 0.4, s + 0.8, s + 0.8);
       m.fillStyle = G.ownerColor(e.owner); m.fillRect(x - s / 2, y - s / 2, s, s);
     }
+    // a Town Center being captured pulses; the raiders' arrival point is marked
+    const pul = 1.5 + Math.sin(G.realTime() * 8) * 1;
+    for (const e of G.ents) if (!e.dead && e.type === 'towncenter' && e.cap && e.cap.v > 0) { m.strokeStyle = '#fff'; m.lineWidth = 0.6; m.beginPath(); m.arc(e.x, e.y, 3 + pul, 0, 7); m.stroke(); }
+    if (G.surv && G.surv.from && G.surv.from.until > G.time) { m.strokeStyle = '#ff3b2f'; m.lineWidth = 0.8; m.beginPath(); m.arc(G.surv.from.x, G.surv.from.y, 3 + pul * 1.5, 0, 7); m.stroke(); }
     // camera view
     m.setTransform(1, 0, 0, 1, 0, 0);
     const corners = [G.toWorld(0, 0), G.toWorld(W, 0), G.toWorld(W, H), G.toWorld(0, H)];

@@ -123,7 +123,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (id === 'start') refreshContinue();
   }
   // Back goes to the main menu, or straight back to the pause menu when a sheet was opened mid-game
-  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
+  document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToSkirmish && !$('quick').classList.contains('hidden')) { UI.backToSkirmish = false; show('skirmish'); return; } if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
   function enterGame() {
     if (G.sound) G.sound.setScene('game');
     for (const s of SCREENS) $(s).classList.add('hidden');
@@ -151,7 +151,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (G.loadGame()) { G.buildGround(); enterGame(); UI.alert('Game resumed'); }
     else { UI.alert('Saved game could not be loaded'); refreshContinue(); }
   };
-  $('m-skirmish').onclick = () => { renderSlots(); show('skirmish'); };
+  $('m-skirmish').onclick = () => { renderSlots(); quickSub(); show('skirmish'); };
   $('m-dynasties').onclick = () => { showDyn(dynSel); show('dynasties'); };
   $('m-learn').onclick = () => show('help');
   $('m-tut').onclick = () => { G.tutorial.start(); enterGame(); };
@@ -204,15 +204,29 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   if (setup.age == null) setup.age = '1';
   if (setup.teamColors == null) setup.teamColors = 'off';
   if (setup.map == null) setup.map = 'grasslands';
+  if (setup.mode === 'tcrush') setup.mode = 'capture';          // the old Town Center mode became Capture
+  if (setup.wave == null) setup.wave = '60';
+  if (setup.neutral == null) setup.neutral = 'off';
+  if (setup.raidLvl == null) setup.raidLvl = 'normal';
+  const RAID_TXT = { easy: 'Easy', normal: 'Normal', hard: 'Hard', brutal: 'Brutal' };
+  const bestWave = () => { try { return (JSON.parse(localStorage.getItem('dod.records.v1') || '{}').bestWave || {})[setup.raidLvl] || 0; } catch (e) { return 0; } };
   const slotColor = i => { const sl = setup.slots[i]; if (setup.teamColors === 'on' && sl.team > 0) return sl.team - 1; return sl.color != null ? sl.color : i; };
   function renderSlots() {
     const box = $('slots'); box.innerHTML = '';
+    const surv = setup.mode === 'survival';
+    if (surv) {
+      const rr = document.createElement('div'); rr.className = 'slot pl raiders';
+      rr.innerHTML = `<i class="gem" style="--c:#7a1a12"></i><button class="civpick"><div class="qcrest sm">⚔</div><span><small class="who">Enemy</small><b>Raiders</b><em>${bestWave() ? 'Your best: wave ' + bestWave() : 'Waves grow every round'}</em></span></button>` +
+        `<div class="badges"><button class="badge diff d-${setup.raidLvl}">${RAID_TXT[setup.raidLvl]}</button></div>`;
+      rr.querySelector('.diff').onclick = () => { const o = ['easy', 'normal', 'hard', 'brutal']; setup.raidLvl = o[(o.indexOf(setup.raidLvl) + 1) % 4]; renderSlots(); };
+      box.appendChild(rr);
+    }
     setup.slots.forEach((sl, i) => { if (sl.color == null) sl.color = i; });
     setup.slots.forEach((sl, i) => {
       const row = document.createElement('div'), col = G.PALETTE[slotColor(i)][1];
       if (sl.type === 'closed') {
         row.className = 'slot seat';
-        row.innerHTML = `<i class="gem" style="--c:${col}"></i><span>+ Add computer player</span>`;
+        row.innerHTML = `<i class="gem" style="--c:${col}"></i><span>+ Add ${surv ? 'computer ally' : 'computer player'}</span>`;
         row.onclick = () => { sl.type = 'ai'; sl.ai = sl.ai || 'normal'; renderSlots(); };
         box.appendChild(row); return;
       }
@@ -220,9 +234,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       row.className = 'slot pl';
       row.innerHTML = `<button class="gem gembtn" style="--c:${col}" aria-label="Colour"></button>` +
         `<button class="civpick">${sl.civ === 'random' ? '<div class="qcrest sm">?</div>' : `<img src="${crestOf(sl.civ)}" alt="">`}` +
-        `<span><small class="who">${i === 0 ? 'You' : 'Computer'}</small><b>${c ? c.name : 'Random'}</b><em>${c ? c.role : 'Any dynasty'}</em></span></button>` +
+        `<span><small class="who">${i === 0 ? 'You' : surv ? 'Ally' : 'Computer'}</small><b>${c ? c.name : 'Random'}</b><em>${c ? c.role : 'Any dynasty'}</em></span></button>` +
         `<div class="badges">` + (i === 0 ? `<button class="badge crown" aria-label="Royal names">👑<small>Names</small></button>` : '') +
-        `<button class="badge team" aria-label="Team"><b class="tnum">${sl.team || '–'}</b><small>Team</small></button>` +
+        (surv ? '' : `<button class="badge team" aria-label="Team"><b class="tnum">${sl.team || '–'}</b><small>Team</small></button>`) +
         (sl.type === 'ai' ? `<button class="badge diff d-${sl.ai}">${DIFF_TXT[sl.ai] || 'Normal'}</button>` : '') +
         (i > 1 ? `<button class="badge xbtn" aria-label="Remove player">✕</button>` : '') + `</div>`;
       // the colour row and the royal names open beneath the player when asked for
@@ -245,12 +259,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       row.querySelector('.gembtn').onclick = () => { sl._open = sl._open === 'color' ? null : 'color'; renderSlots(); };
       const cr = row.querySelector('.crown'); if (cr) cr.onclick = () => { sl._open = sl._open === 'names' ? null : 'names'; renderSlots(); };
       row.querySelector('.civpick').onclick = () => pickCiv(sl.civ, k => { sl.civ = k; renderSlots(); });
-      row.querySelector('.team').onclick = () => { sl.team = ((sl.team || 0) + 1) % 5; renderSlots(); };
+      if (row.querySelector('.team')) row.querySelector('.team').onclick = () => { sl.team = ((sl.team || 0) + 1) % 5; renderSlots(); };
       const d = row.querySelector('.diff'); if (d) d.onclick = () => { const o = ['easy', 'normal', 'hard']; sl.ai = o[(o.indexOf(sl.ai) + 1) % 3]; renderSlots(); };
       const x = row.querySelector('.xbtn'); if (x) x.onclick = () => { sl.type = 'closed'; renderSlots(); };
       box.appendChild(row);
     });
     document.querySelectorAll('[data-opt]').forEach(seg => [...seg.children].forEach(x => x.classList.toggle('on', x.dataset.v === String(setup[seg.dataset.opt]))));
+    // settings that don't apply to this mode are hidden
+    document.querySelectorAll('#skirmish .opt[data-modes]').forEach(o => o.classList.toggle('hidden', !o.dataset.modes.split(' ').includes(setup.mode)));
     if ($('map-hint')) $('map-hint').textContent = setup.map === 'random' ? 'A surprise: one of the eight maps, revealed when the battle starts.' : (G.MAPS[setup.map] || G.MAPS.grasslands).desc;
     validate();
   }
@@ -258,12 +274,15 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const act = setup.slots.map((s, i) => ({ ...s, id: i + 1 })).filter(s => s.type !== 'closed');
     const me = act[0];
     const foes = act.filter(s => s.id !== 1 && !(me.team > 0 && s.team === me.team));
-    const ok = foes.length > 0;
+    const surv = setup.mode === 'survival', ok = surv || foes.length > 0;
     $('btn-start').disabled = !ok;
     const big = act.length > 2 && setup.size === 'small';
-    G.MODE_TXT = G.MODE_TXT || { conquest: 'Destroy every enemy building and unit.', regicide: 'Kill the enemy King and Queen. Protect your own.', tcrush: 'Burn down every enemy Town Center to win. Lose all of yours and you are beaten. Faster than Conquest: no need to hunt down every last house.' };
+    G.MODE_TXT = { conquest: 'Destroy every enemy building and unit.', regicide: 'Kill the enemy King and Queen. Protect your own.',
+      capture: 'Wear an enemy Town Center down until it shows a white flag, then stand your soldiers beside it to take it over. Hold every Town Center, or hold an enemy\'s for 3 minutes, to win.',
+      survival: 'Raiders attack in waves that grow every round; every 5th wave brings siege. Survive as many as you can. Lose your last Town Center and it is over.',
+      empirewars: 'Everyone starts in the Feudal Age with a working town: 20 villagers already at work, farms, houses and a barracks. Fighting starts in minutes.' };
     $('mode-hint').textContent = G.MODE_TXT[setup.mode] || '';
-    $('rule-hint').textContent = !ok ? 'Everyone is on your team. Put at least one computer player on another team.'
+    $('rule-hint').textContent = surv ? `You${act.length > 1 ? ' and ' + (act.length - 1) + ' ' + (act.length > 2 ? 'allies' : 'ally') : ''} against the Raiders` : !ok ? 'Everyone is on your team. Put at least one computer player on another team.'
       : big ? 'Tip: Medium or Large maps give 3–4 players more room.' : `${act.length} players · ${foes.length} ${foes.length === 1 ? 'enemy' : 'enemies'}`;
   }
   document.querySelectorAll('[data-opt]').forEach(seg => seg.addEventListener('click', e => {
@@ -279,7 +298,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       let civ = s.civ;
       if (civ === 'random') { const pool = Object.keys(G.CIVS).filter(k => !used.has(k)); civ = pool[Math.floor(Math.random() * pool.length)] || 'britons'; }
       used.add(civ);
-      return { civ, team: s.team || 0, ai: s.type === 'ai' ? s.ai : null, color: s.color, kingName: s.kingName, queenName: s.queenName };
+      return { civ, team: cfg.mode === 'survival' ? 1 : (s.team || 0), ai: s.type === 'ai' ? s.ai : null, color: s.color, kingName: s.kingName, queenName: s.queenName };
     });
     // from the menus (not a restart) the player's dynasty film plays first
     if (film && UI.playDynFilm) return UI.playDynFilm(players[0].civ, () => launch(cfg, players));
@@ -287,11 +306,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function launch(cfg, players) {
     G.clearSave();
-    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: 'diamond', mode: cfg.mode || 'conquest', teamColors: cfg.teamColors === 'on', map: cfg.map || 'grasslands', time: +cfg.time || 0, startAge: +cfg.age || 1 });
+    G.newGame({ players, size: cfg.size, res: cfg.res, pop: +cfg.pop, reveal: cfg.reveal, shape: 'diamond', mode: cfg.mode || 'conquest', teamColors: cfg.teamColors === 'on', map: cfg.map || 'grasslands', time: cfg.mode === 'survival' ? 0 : +cfg.time || 0, startAge: cfg.mode === 'empirewars' ? 2 : +cfg.age || 1, wave: +cfg.wave || 60, neutral: cfg.neutral === 'on', raidLvl: cfg.raidLvl || 'normal' });
     G.buildGround();
     enterGame();
     if (UI.onMatchStart) UI.onMatchStart();
-    const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.CIVS[G.players[id].civ].name);
+    const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)).map(id => G.players[id].raider ? 'the Raiders' : G.CIVS[G.players[id].civ].name);
     UI.alert((G.rules.mode === 'regicide' ? '👑 Regicide: lose your King and Queen and you lose. ' : '')
       + (G.rules.time ? `⏳ ${G.rules.time} min limit. ` : '')
       + (G.rules.startAge > 1 ? `Starting in the ${G.AGES[G.rules.startAge].name}. ` : '')
@@ -301,13 +320,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
 
   // Quick Match: pick a difficulty and go. One opponent, high resources, so you are
   // fighting within a couple of minutes instead of gathering for ten. Keeps your last civ.
-  $('m-quick').onclick = () => {
-    const lvl = prefs.quickAI || 'normal';
-    document.querySelectorAll('#quick .qd').forEach(b => b.classList.toggle('primary', b.dataset.ai === lvl));
-    show('quick');
-  };
-  document.querySelectorAll('#quick .qd').forEach(b => b.onclick = () => {
-    prefs.quickAI = b.dataset.ai; savePrefs();
+  const quickSub = () => { $('qm-sub').textContent = `${G.CIVS[(setup.slots[0] && setup.slots[0].civ !== 'random' && setup.slots[0].civ) || 'britons'].name} vs a ${DIFF_TXT[prefs.quickAI || 'normal'] || 'Normal'} computer · Regicide · small map`; };
+  const quickGo = lvl => {
+    prefs.quickAI = lvl; savePrefs();
     startSkirmish({
       slots: [
         { type: 'human', civ: (prefs.setup && prefs.setup.slots[0].civ) || 'britons', team: 0 },
@@ -316,9 +331,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         { type: 'closed', civ: 'random', team: 0, ai: 'normal' }
       ],
       // a smaller map and Regicide keep a Quick Match to roughly 15–20 minutes
-      size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'diamond', mode: 'regicide', time: 0
+      size: 'small', res: 'high', pop: '200', reveal: 'normal', shape: 'diamond', mode: 'regicide', time: 0, map: 'grasslands'
     }, true);
-  });
+  };
+  $('qm-go').onclick = () => quickGo(prefs.quickAI || 'normal');
+  $('qm-edit').onclick = () => { const lvl = prefs.quickAI || 'normal'; document.querySelectorAll('#quick .qd').forEach(b => b.classList.toggle('primary', b.dataset.ai === lvl)); UI.backToSkirmish = true; show('quick'); };
+  document.querySelectorAll('#quick .qd').forEach(b => b.onclick = () => quickGo(b.dataset.ai));
 
   // ---------- Dynasties ----------
   let dynSel = 'britons';
@@ -405,7 +423,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); toMenu(); };
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
-  UI.reset = function () { G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
+  UI.reset = function () { if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
   UI.alert = function (msg) {
     if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
   UI.gameOver = function (res) {
@@ -462,6 +480,15 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     panelKey = ''; refreshPanel(true);
     if (G.sound && G.selection.length) G.sound.play('select');
   }
+  // haptics: a buzz for moments that matter (Options can turn it off)
+  UI.buzz = p => { try { if (navigator.vibrate && prefs.haptics !== 'off') navigator.vibrate(p); } catch (e) { /* not supported */ } };
+  // Siege Survival: which wave, and how long until the next
+  UI.waveBar = function (S, left) {
+    const el = $('wavebar'); el.classList.remove('hidden');
+    el.innerHTML = S.active ? `⚔️ Wave <b>${S.wave}</b> · ${left} raider${left === 1 ? '' : 's'} left`
+      : `🛡️ Wave <b>${S.wave + 1}</b> in ${Math.max(0, Math.ceil(S.next - G.time))}s` + (S.done ? ` · survived ${S.done}` : '');
+    el.classList.toggle('fight', !!S.active);
+  };
   const ownUnits = () => G.selection.filter(e => e.kind === 'unit' && e.owner === 1);
 
   function pick(sx, sy) {
@@ -618,7 +645,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const gh = G.ghost; if (!gh) return;
     if (!gh.ok) {   // nudge to the nearest open spot instead of just refusing
       const s = G.BUILDINGS[gh.type].size;
-      const fits = (x, y) => G.areaFree(x, y, s) && G.isExplored(x + s / 2, y + s / 2);
+      const fits = (x, y) => G.areaFree(x, y, s) && G.isExplored(x + s / 2, y + s / 2) && !(G.ruleBlock && G.ruleBlock(1, gh.type, x, y));
       for (let r = 1; r <= 5; r++) {
         let best = null, bd = 1e9;
         for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
@@ -1039,6 +1066,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     if (e.kind === 'building' && e.owner === 1) {
       const del = btn('🗑️', 'Delete', '', () => {
+        const nope = G.deleteBlock && G.deleteBlock(e); if (nope) { UI.alert(nope); return; }
         if (del.dataset.armed) { G.kill(e); G.onKilled(e); return; }
         del.dataset.armed = '1'; del.querySelector('.lb').textContent = 'Tap again'; del.style.borderColor = 'var(--bad)';
         setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.querySelector('.lb').textContent = 'Delete'; del.style.borderColor = ''; } }, 2500);

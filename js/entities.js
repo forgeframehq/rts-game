@@ -481,11 +481,13 @@
     const def = G.BUILDINGS[type];
     if (!G.canBuildType(owner, type)) return null;
     if (!G.areaFree(tx, ty, def.size)) return null;
+    if (G.ruleBlock && G.ruleBlock(owner, type, tx, ty)) return null;
     // keep units from being trapped: no own units standing in footprint is fine, they get pushed out
     const cost = G.buildCost(owner, type);
     if (!G.pay(owner, cost)) return null;
     const b = G.addBuilding(type, owner, tx, ty, false);
     b.cost = cost;
+    if (G.onBuildingPlaced) G.onBuildingPlaced(b);
     // Push units standing inside the footprint out.
     for (const u of G.ents) if (u.kind === 'unit' && !u.dead && u.x >= tx && u.x < tx + def.size && u.y >= ty && u.y < ty + def.size) {
       const f = G.nearestFree(u.x, u.y, 6); if (f) { u.x = f.x + 0.5; u.y = f.y + 0.5; u.path = []; }
@@ -553,6 +555,9 @@
   }
   function hit(att, t, dmg) {
     if (t.dead) return;
+    // Capture: a Town Center can be beaten down to a white flag, never burned
+    const floor = G.hpFloor && G.hpFloor(t);
+    if (floor != null && t.hp - dmg < floor) { t.hp = Math.min(t.hp, floor); t.hitT = 0.2; return; }
     t.hp -= dmg; t.hitT = 0.2; if (t.kind === 'unit') t.hurtT = 0.6;
     if (t.hp <= 0) {
       if (att.owner > 0) { const pl = G.players[att.owner]; pl.killed++; pl.killValue = (pl.killValue || 0) + G.valueOf(t);
@@ -635,7 +640,7 @@
           spawn(b, q.type);
         }
       } else b.housed = false;
-      if (b.def.atk) {
+      if (b.def.atk && !(G.noShoot && G.noShoot(b))) {
         b.cool -= dt;
         if (b.cool <= 0) {
           const t = nearest(b, e => e.kind === 'unit' && G.enemies(e.owner, b.owner), b.def.range + G.techEff(b.owner, 'towerRange'));
@@ -957,7 +962,7 @@
             b.hp = Math.min(b.maxHp, b.hp + inc * b.maxHp);
             if (b.progress >= 1) { b.built = true; b.hp = Math.max(b.hp, b.maxHp * 0.999); snd('complete', b.x, b.y); if (G.onBuilt) G.onBuilt(b); }
           } else {
-            b.hp = Math.min(b.maxHp, b.hp + dt * b.maxHp / b.def.time * 0.5); // repair
+            if (!(G.noRepair && G.noRepair(b))) b.hp = Math.min(b.maxHp, b.hp + dt * b.maxHp / b.def.time * 0.5); // repair (not under the enemy's nose in Capture)
           }
         } else {
           if (u.pathFor !== b.id || !u.path.length) {

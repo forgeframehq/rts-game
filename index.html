@@ -32,6 +32,7 @@
     <button id="btn-obj" class="iconbtn objbtn" aria-label="Objectives">📜</button>
     <button id="btn-menu" class="iconbtn" aria-label="Menu"><img src="assets/ui/icons/gear.png" alt=""></button>
   </div>
+  <div id="wavebar" class="hidden"></div>
 
   <div id="side">
     <button id="btn-idle" class="sidebtn" aria-label="Next idle villager"><img src="assets/ui/icons/idle.png" alt=""><i id="idle-count">0</i></button>
@@ -78,8 +79,7 @@
     <button id="tap-begin" class="tap-begin"><i></i>Tap to begin<i></i></button>
     <nav class="mainmenu">
       <button id="m-continue" class="mbtn primary hidden"><span>Continue</span><small id="m-continue-sub"></small></button>
-      <button id="m-quick" class="mbtn primary"><span>Quick Match</span><small>Straight into battle, resources to spare</small></button>
-      <button id="m-skirmish" class="mbtn primary"><span>Skirmish</span><small>Custom battle against the computer</small></button>
+      <button id="m-skirmish" class="mbtn primary"><span>Play</span><small>Quick Match or a custom battle: 5 modes, 8 maps</small></button>
       <div class="mgrid">
         <button id="m-campaign" class="mbtn" disabled><span>Campaign</span><small>Coming soon</small></button>
         <button id="m-multi" class="mbtn" disabled><span>Multiplayer</span><small>Coming soon</small></button>
@@ -110,8 +110,23 @@
 <!-- Skirmish setup -->
 <div id="skirmish" class="screen title hidden">
   <div class="sheet wide">
-    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Skirmish</h2></header>
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Battle</h2></header>
     <div class="sheet-body two-col">
+      <section class="span2 qmrow">
+        <button id="qm-go" class="qmbar"><b>⚡ Quick Match</b><small id="qm-sub">Regicide · small map · Normal</small></button>
+        <button id="qm-edit" class="qmedit" aria-label="Change Quick Match difficulty">✎</button>
+      </section>
+      <section class="frame span2">
+        <h3 class="ribbon">Game mode</h3>
+        <div class="modecards" data-opt="mode">
+          <button data-v="conquest"><i>⚔️</i><b>Conquest</b><small>Destroy everything</small></button>
+          <button data-v="regicide"><i>👑</i><b>Regicide</b><small>Kill the King and Queen</small></button>
+          <button data-v="capture"><i>🏰</i><b>Capture</b><small>Take the Town Centers</small></button>
+          <button data-v="survival"><i>🛡️</i><b>Siege Survival</b><small>Hold off the waves</small></button>
+          <button data-v="empirewars"><i>⚡</i><b>Empire Wars</b><small>Skip the slow start</small></button>
+        </div>
+        <p class="hint" id="mode-hint"></p>
+      </section>
       <section class="frame">
         <h3 class="ribbon">Players</h3>
         <div id="slots"></div>
@@ -119,14 +134,17 @@
       <section class="opts frame">
         <h3 class="ribbon">Battle settings</h3>
         <div class="opt"><label>Map</label><div class="seg mapseg" data-opt="map"><button data-v="random"><img src="assets/ui/maps/random.jpg" alt="" loading="lazy"><span>Random</span></button><button data-v="grasslands"><img src="assets/ui/maps/grasslands.jpg" alt="" loading="lazy"><span>Grasslands</span></button><button data-v="blackforest"><img src="assets/ui/maps/blackforest.jpg" alt="" loading="lazy"><span>Black Forest</span></button><button data-v="highlands"><img src="assets/ui/maps/highlands.jpg" alt="" loading="lazy"><span>Highlands</span></button><button data-v="greatlake"><img src="assets/ui/maps/greatlake.jpg" alt="" loading="lazy"><span>Great Lake</span></button><button data-v="twinrivers"><img src="assets/ui/maps/twinrivers.jpg" alt="" loading="lazy"><span>Twin Rivers</span></button><button data-v="goldrush"><img src="assets/ui/maps/goldrush.jpg" alt="" loading="lazy"><span>Gold Rush</span></button><button data-v="fortress"><img src="assets/ui/maps/fortress.jpg" alt="" loading="lazy"><span>Fortress</span></button><button data-v="desertoasis"><img src="assets/ui/maps/desertoasis.jpg" alt="" loading="lazy"><span>Desert Oasis</span></button></div><p class="hint" id="map-hint"></p></div>
-        <div class="opt"><label>Game mode</label><div class="seg" data-opt="mode"><button data-v="conquest" class="on">Conquest</button><button data-v="regicide">Regicide</button><button data-v="tcrush">Town Centers</button></div><p class="hint" id="mode-hint"></p></div>
-        <div class="opt"><label>Team colours</label><div class="seg" data-opt="teamColors"><button data-v="off" class="on">Off</button><button data-v="on">On</button></div></div>
-        <div class="opt"><label>Starting Age</label><div class="seg" data-opt="age"><button data-v="1" class="on">Dark</button><button data-v="2">Feudal</button><button data-v="3">Castle</button><button data-v="4">Imperial</button></div></div>
-        <div class="opt"><label>Time limit</label><div class="seg" data-opt="time"><button data-v="0" class="on">Off</button><button data-v="15">15 min</button><button data-v="20">20 min</button><button data-v="30">30 min</button></div></div>
+        <div class="opt" data-modes="survival"><label>Break between waves</label><div class="seg" data-opt="wave"><button data-v="30">30 s</button><button data-v="60" class="on">60 s</button><button data-v="90">90 s</button></div></div>
+        <div class="opt" data-modes="capture"><label>Neutral Town Center in the middle</label><div class="seg" data-opt="neutral"><button data-v="off" class="on">Off</button><button data-v="on">On</button></div></div>
+        <div class="opt" data-modes="conquest regicide capture survival"><label>Starting Age</label><div class="seg" data-opt="age"><button data-v="1" class="on">Dark</button><button data-v="2">Feudal</button><button data-v="3">Castle</button><button data-v="4">Imperial</button></div></div>
+        <div class="opt" data-modes="conquest regicide capture empirewars"><label>Time limit</label><div class="seg" data-opt="time"><button data-v="0" class="on">Off</button><button data-v="15">15 min</button><button data-v="20">20 min</button><button data-v="30">30 min</button></div></div>
         <div class="opt"><label>Map size</label><div class="seg" data-opt="size"><button data-v="small">Small</button><button data-v="medium" class="on">Medium</button><button data-v="large">Large</button></div></div>
-        <div class="opt"><label>Starting resources</label><div class="seg" data-opt="res"><button data-v="standard" class="on">Standard</button><button data-v="medium">Medium</button><button data-v="high">High</button></div></div>
+        <details class="more"><summary>More settings</summary>
+        <div class="opt"><label>Team colours</label><div class="seg" data-opt="teamColors"><button data-v="off" class="on">Off</button><button data-v="on">On</button></div></div>
+        <div class="opt" data-modes="conquest regicide capture survival"><label>Starting resources</label><div class="seg" data-opt="res"><button data-v="standard" class="on">Standard</button><button data-v="medium">Medium</button><button data-v="high">High</button></div></div>
         <div class="opt"><label>Population limit</label><div class="seg" data-opt="pop"><button data-v="50">50</button><button data-v="100">100</button><button data-v="150">150</button><button data-v="200" class="on">200</button></div></div>
         <div class="opt"><label>Map visibility</label><div class="seg" data-opt="reveal"><button data-v="normal" class="on">Normal</button><button data-v="explored">Explored</button><button data-v="all">All visible</button></div></div>
+        </details>
         <p class="hint" id="rule-hint"></p>
       </section>
     </div>
@@ -312,6 +330,7 @@
 <script src="js/render.js"></script>
 <script src="js/ai.js"></script>
 <script src="js/game.js"></script>
+  <script src="js/modes.js"></script>
 <script src="js/save.js"></script>
 <script src="js/tutorial.js"></script>
 <script src="js/ui.js"></script>

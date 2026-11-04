@@ -3,33 +3,33 @@
  "jobs": [
   [
    "i1_peace",
-   "",
-   "Dawn over a small medieval village of thatched cottages. A young villager in a simple brown tunic carries a bundle of firewood on his shoulder and has stopped walking, looking at the distant hills, where two war banners are rising, a red one on the left hill and a blue one on the right hill. Soft mist, sunrise. Wide landscape framing.",
-   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture and warm golden light, medieval Europe, rich colours, cinematic composition, like a classic children's history book illustration. No text, no letters, no logo."
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/hero_sheet.jpg",
+   "The hero is exactly the young man from the reference sheet (about 19, shoulder-length wavy dark-brown hair, light stubble, scar over his left eyebrow, rust-red tunic, cream rolled sleeves, leather belt and pouch, short frayed brown cloak, worn boots). Keep his face, hair and clothes identical to the reference. Dawn over a small medieval village of thatched cottages. The hero carries a bundle of firewood on his shoulder and has stopped on the path, looking toward the distant hills where two war banners rise, a red one on the left hill and a blue one on the right hill. Soft mist, sunrise. Wide landscape framing.",
+   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture, medieval Europe, rich colours, cinematic composition. Do not copy the reference's parchment background or its three poses: paint a full new scene. No text, no letters, no logo."
   ],
   [
    "i2_clash",
-   "",
-   "A wide low view across a green field as two medieval armies charge into each other from left and right, red banners against blue banners, knights on horses, spearmen, dust and flying turf. In the near foreground at the edge, the same young villager in a brown tunic crouches behind a low stone wall, small and frightened. Wide landscape framing.",
-   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture and warm golden light, medieval Europe, rich colours, cinematic composition, like a classic children's history book illustration. No text, no letters, no logo."
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/hero_sheet.jpg",
+   "The hero is exactly the young man from the reference sheet (about 19, shoulder-length wavy dark-brown hair, light stubble, scar over his left eyebrow, rust-red tunic, cream rolled sleeves, leather belt and pouch, short frayed brown cloak, worn boots). Keep his face, hair and clothes identical to the reference. A wide low view across a green field as two medieval armies charge into each other from left and right, red banners against blue banners, knights on horses, spearmen, dust and flying turf. In the near foreground the hero crouches behind a low stone wall, watching, small in the frame. Wide landscape framing.",
+   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture, medieval Europe, rich colours, cinematic composition. Do not copy the reference's parchment background or its three poses: paint a full new scene. No text, no letters, no logo."
   ],
   [
    "i3_run",
-   "",
-   "Close behind the young villager in a brown tunic as he runs and ducks through the middle of a medieval battle, soldiers fighting on both sides of him, a horse rearing past, a splintered shield on the ground, arrows stuck in the earth at his feet. Dynamic, tense, at his eye level. Wide landscape framing.",
-   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture and warm golden light, medieval Europe, rich colours, cinematic composition, like a classic children's history book illustration. No text, no letters, no logo."
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/hero_sheet.jpg",
+   "The hero is exactly the young man from the reference sheet (about 19, shoulder-length wavy dark-brown hair, light stubble, scar over his left eyebrow, rust-red tunic, cream rolled sleeves, leather belt and pouch, short frayed brown cloak, worn boots). Keep his face, hair and clothes identical to the reference. Close behind and beside the hero as he runs and ducks through the middle of the battle, soldiers fighting on both sides of him, a horse rearing past, a splintered shield on the ground, arrows stuck in the earth at his feet. Dynamic, tense, at his eye level. Wide landscape framing.",
+   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture, medieval Europe, rich colours, cinematic composition. Do not copy the reference's parchment background or its three poses: paint a full new scene. No text, no letters, no logo."
   ],
   [
    "i4_sword",
-   "",
-   "Quiet moment in the smoke of a battlefield: the young villager in a brown tunic kneels beside a fallen knight in armour lying on the grass, the knight's gauntlet resting open beside a long sword and a torn golden banner. A single beam of sunlight breaks through the smoke onto the sword. Solemn, still. Wide landscape framing.",
-   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture and warm golden light, medieval Europe, rich colours, cinematic composition, like a classic children's history book illustration. No text, no letters, no logo."
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/hero_sheet.jpg",
+   "The hero is exactly the young man from the reference sheet (about 19, shoulder-length wavy dark-brown hair, light stubble, scar over his left eyebrow, rust-red tunic, cream rolled sleeves, leather belt and pouch, short frayed brown cloak, worn boots). Keep his face, hair and clothes identical to the reference. Quiet moment in the smoke of the battlefield: the hero kneels beside a fallen knight in armour lying on the grass, the knight's gauntlet open beside a long sword and a torn golden banner. A single beam of sunlight breaks through the smoke onto the sword. Solemn, still. Wide landscape framing.",
+   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture, medieval Europe, rich colours, cinematic composition. Do not copy the reference's parchment background or its three poses: paint a full new scene. No text, no letters, no logo."
   ],
   [
    "i5_rise",
-   "",
-   "The young villager, now standing tall on a hilltop holding a raised sword high, a golden banner beside him, an army of his own gathering behind him, and in the valley below a town with a stone castle and many houses glowing in the sunset. Triumphant, epic, heroic. Wide landscape framing.",
-   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture and warm golden light, medieval Europe, rich colours, cinematic composition, like a classic children's history book illustration. No text, no letters, no logo."
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro3/hero_sheet.jpg",
+   "The hero is exactly the young man from the reference sheet (about 19, shoulder-length wavy dark-brown hair, light stubble, scar over his left eyebrow, rust-red tunic, cream rolled sleeves, leather belt and pouch, short frayed brown cloak, worn boots). Keep his face, hair and clothes identical to the reference. The battle is lost: smoke drifts over a field of fallen soldiers and broken, trampled banners, a burning village on the horizon under a dark red sky. In the middle, alone, the hero rises from one knee, gripping the fallen knight's long sword in both hands and lifting it, his torn golden banner planted in the ground beside him. His face is grim and determined, not happy: a quiet vow to fight for his people and raise a new dynasty. A single shaft of light falls on him. No crowd, no army, no cheering. Wide landscape framing.",
+   "Illustrated storybook painting, hand-painted gouache and watercolour with soft brush texture, medieval Europe, rich colours, cinematic composition. Do not copy the reference's parchment background or its three poses: paint a full new scene. No text, no letters, no logo."
   ]
  ]
 }

@@ -34,7 +34,7 @@
     config = config || {};
     const seed = config.seed || (Math.random() * 1e9) | 0;
     G.config = { ...config, seed };
-    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: 'diamond', mode: config.mode || 'conquest', time: +config.time || 0, map: 'grasslands', startAge: Math.min(4, Math.max(1, +config.startAge || 1)) };
+    G.rules = { size: config.size || 'medium', res: config.res || 'standard', pop: config.pop || 200, reveal: config.reveal || 'normal', shape: 'diamond', mode: config.mode || 'conquest', time: +config.time || 0, map: 'grasslands', wave: +config.wave || 60, neutral: !!config.neutral, raidLvl: config.raidLvl || 'normal', startAge: Math.min(4, Math.max(1, +config.startAge || 1)) };
     G.MAP = (G.rules.shape === 'diamond' ? G.MAP_SIZES : G.MAP_SIZES_RECT)[G.rules.size] || 72;
     N = G.MAP;
     G.ents = []; G.byId = new Map(); G.projs = []; G.effects = []; G.decals = []; G.corpses = [];
@@ -109,6 +109,7 @@
         G.addUnit('villager', tc.owner, f.x + 0.5, f.y + 0.5);
       }
     }
+    if (G.modeSetup) G.modeSetup(starts, r);
     G.revealAll = G.rules.reveal === 'all';
     if (G.rules.reveal === 'explored') G.explored.fill(1);
     G.updateFog();
@@ -151,10 +152,11 @@
   G.scoreOf = function (id) {
     const p = G.players[id], g = p.gathered;
     const ups = Object.values(p.up || {}).reduce((a, b) => a + b, 0) + Object.keys(p.techs || {}).length;
-    return Math.round((g.food + g.wood + g.gold + g.stone) / 10 + (p.killValue || 0) / 5 + (p.age - 1) * 150 + ups * 20);
+    return Math.round((g.food + g.wood + g.gold + g.stone) / 10 + (p.killValue || 0) / 5 + (p.age - 1) * 150 + ups * 20 + (G.modeScore ? G.modeScore(id) : 0));
   };
   const sideOf = id => G.players[id].team > 0 ? 't' + G.players[id].team : 'p' + id;
 
+  G.checkEnd = () => checkEnd();
   function checkEnd() {
     if (G.over) return;
     if (!G.players[1].alive) { G.over = 'defeat'; if (G.ui) G.ui.gameOver(G.over); return; }
@@ -175,7 +177,7 @@
     }
     for (const id in G.players) {
       const p = G.players[id];
-      if (!p.alive) continue;
+      if (!p.alive || p.raider) continue;
       const lostCrown = royalsDown(+id), lostTC = tcsDown(+id);
       if (!hasStuff(+id) || lostCrown || lostTC) {
         p.alive = false;
@@ -223,6 +225,7 @@
     G.time += dt;
     G.updateEntities(dt);
     if (G.tutorial && G.tutorial.on) G.tutorial.update();
+    if (G.modeStep) G.modeStep(dt);
     if (G.ais) for (const a of G.ais) if (G.players[a.p] && G.players[a.p].alive) a.update(dt);
     fogT -= dt; if (fogT <= 0) { G.updateFog(); fogT = 0.2; checkTime(); }
     // every 30 s: a point on each player's score timeline, and their peak army and workforce

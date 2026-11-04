@@ -3,12 +3,16 @@
 (function () {
   const UI = G.ui, $ = id => document.getElementById(id);
   const civName = c => (G.CIVS[c] ? G.CIVS[c].name : c);
+  const pName = id => (G.players[id] && G.players[id].raider ? 'Raiders' : civName(G.players[id].civ));
   const crest = c => `assets/ui/crest_${c}.png`;
   const clock = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
   const MODE = {
     conquest: { name: 'Conquest', icon: '⚔️', goal: 'Destroy every enemy building and unit.', tip: 'Keep your Town Center training villagers; a strong economy wins long games.' },
     regicide: { name: 'Regicide', icon: '👑', goal: 'Kill the enemy King and Queen. Protect your own.', tip: 'When danger comes, garrison your royals in the Town Center (select them, then Garrison).' },
-    tcrush: { name: 'Town Center Siege', icon: '🏚️', goal: 'Burn down every enemy Town Center to win. Lose all of yours and you are beaten.', tip: 'Swordsmen and Rams knock buildings down fastest. Guard your own Town Center.' }
+    capture: { name: 'Capture', icon: '🏰', goal: 'Beat enemy Town Centers down to a white flag, then stand soldiers beside them to take them over. Hold every Town Center, or an enemy home Town Center for 3 minutes.', tip: 'Defenders standing at the walls freeze a capture. Repair a beaten Town Center quickly, and keep soldiers home.' },
+    survival: { name: 'Siege Survival', icon: '🛡️', goal: 'Hold out against growing waves of raiders. Lose your last Town Center and it is over.', tip: 'Build walls and towers between waves, and keep training soldiers: every 5th wave brings siege.' },
+    empirewars: { name: 'Empire Wars', icon: '⚡', goal: 'Destroy every enemy building and unit. Everyone starts in the Feudal Age with a working town.', tip: 'Your villagers are already at work: train soldiers at the barracks straight away.' },
+    tcrush: { name: 'Capture', icon: '🏰', goal: 'Take every enemy Town Center.', tip: '' }
   };
   G.MODES = MODE;
   const mode = () => MODE[(G.rules && G.rules.mode) || 'conquest'] || MODE.conquest;
@@ -20,7 +24,9 @@
     for (const id in G.players) {
       if (!G.enemies(1, +id)) continue;
       const p = G.players[id], col = G.PLAYER_COLORS[id], nm = `<b style="color:${col}">${civName(p.civ)}</b>`;
+      if (p.raider) { const S = G.surv || {}; out.push(`🛡️ Waves survived: <b>${S.done || 0}</b>${S.active ? ` · wave ${S.wave} attacking` : ''}`); continue; }
       if (!p.alive) { out.push(`${nm} ✔ defeated`); continue; }
+      if (G.rules.mode === 'capture') { const n = G.ents.filter(e => !e.dead && e.type === 'towncenter' && e.owner === +id).length, h = G.ents.filter(e => !e.dead && e.type === 'towncenter' && e.owner === 1 && e.homeOf === +id)[0]; out.push(`${nm}: ${n} Town Center${n === 1 ? '' : 's'}${h ? ` · you hold their home: ${Math.floor((G.CAPTURE.HOLD - (h.hold || 0)) / 60)}:${String(Math.floor((G.CAPTURE.HOLD - (h.hold || 0)) % 60)).padStart(2, '0')} to win` : ''}`); continue; }
       if (G.rules.mode === 'regicide') out.push(`${nm}: ` + ['king', 'queen'].map(t => (G.royal(+id, t) ? '✖ ' : '✔ ') + G.royalName(+id, t)).join(' · '));
       else if (G.rules.mode === 'tcrush') { const n = G.ents.filter(e => !e.dead && e.owner === +id && e.type === 'towncenter').length; out.push(`${nm}: ${n} Town Center${n === 1 ? '' : 's'} left`); }
       else { const b = G.ents.filter(e => !e.dead && e.owner === +id && e.kind === 'building').length, u = G.ents.filter(e => !e.dead && e.owner === +id && e.kind === 'unit').length; out.push(`${nm}: ${b} buildings, ${u} units left`); }
@@ -56,7 +62,7 @@
     const m = mode(), me = G.players[1];
     const foes = Object.keys(G.players).filter(id => G.enemies(1, +id)), allies = Object.keys(G.players).filter(id => +id !== 1 && !G.enemies(1, +id));
     $('brief-mode').textContent = m.name;
-    const who = id => `<span class="bchip"><img src="${crest(G.players[id].civ)}" alt=""><b style="color:${G.PLAYER_COLORS[id]}">${civName(G.players[id].civ)}</b></span>`;
+    const who = id => `<span class="bchip"><img src="${crest(G.players[id].civ)}" alt=""><b style="color:${G.PLAYER_COLORS[id]}">${pName(id)}</b></span>`;
     $('brief-body').innerHTML = `<div class="brief-goal">${m.icon} ${m.goal}</div>` +
       `<div class="brief-sides"><div><small>You lead</small>${who(1)}</div>${allies.length ? `<div><small>Allies</small>${allies.map(who).join('')}</div>` : ''}<div><small>Enemies</small>${foes.map(who).join('')}</div></div>` +
       `<p class="brief-meta">${mapName(G.rules.map)} · ${G.rules.size} map${G.rules.time ? ` · ⏳ ${G.rules.time} min limit` : ''}${G.rules.startAge > 1 ? ` · starting in the ${G.AGES[G.rules.startAge].name}` : ''}</p>` +
@@ -69,7 +75,7 @@
   // ---------- pause menu ----------
   const openPause = () => {
     const me = G.players[1]; if (!me) return;
-    const rows = Object.keys(G.players).map(id => `<span style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : civName(G.players[id].civ)} ${G.scoreOf(+id)}</span>`).join(' · ');
+    const rows = Object.keys(G.players).map(id => `<span style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : pName(id)} ${G.scoreOf(+id)}</span>`).join(' · ');
     $('pause-summary').innerHTML = `<div class="ps-top"><img src="${crest(me.civ)}" alt=""><div><b>${civName(me.civ)}</b><small>${mode().name} · ${mapName(G.rules.map)} · ${G.AGES[me.age].name} · ${clock(G.time)}</small></div></div><div class="ps-scores">${rows}</div>`;
     $('pause-objective').innerHTML = `${mode().icon} ${mode().goal}`;
     $('btn-resign').textContent = 'Resign'; delete $('btn-resign').dataset.armed;
@@ -144,7 +150,7 @@
     const ids = Object.keys(G.players);
     const winSide = id => (G.over === 'victory' ? !G.enemies(1, +id) : G.enemies(1, +id));
     return ids.map(id => { const p = G.players[id];
-      return `<tr><td class="rp"><img src="${crest(p.civ)}" alt=""><b style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : civName(p.civ)}</b>${winSide(id) ? ' 👑' : ''}</td>${fn(p, +id)}</tr>`; }).join('');
+      return `<tr><td class="rp"><img src="${crest(p.civ)}" alt=""><b style="color:${G.PLAYER_COLORS[id]}">${+id === 1 ? 'You' : pName(id)}</b>${winSide(id) ? ' 👑' : ''}</td>${fn(p, +id)}</tr>`; }).join('');
   }
   const st = p => p.stats || {};
   function resPage() {
@@ -152,8 +158,8 @@
     let html = '';
     if (resTab === 'summary') html = `<table class="rt"><tr><th></th><th>Total</th><th>Military</th><th>Economy</th><th>Technology</th><th>Society</th></tr>` +
       sideRows((p, id) => { const s = G.scoreParts(id); return `<td><b>${G.scoreOf(id)}</b></td><td>${s.military}</td><td>${s.economy}</td><td>${s.technology}</td><td>${s.society}</td>`; }) + '</table>';
-    if (resTab === 'military') html = `<table class="rt"><tr><th></th><th>Units killed</th><th>Units lost</th><th>Buildings razed</th><th>Buildings lost</th><th>Largest army</th></tr>` +
-      sideRows(p => `<td>${st(p).unitsKilled || 0}</td><td>${st(p).unitsLost || 0}</td><td>${st(p).razed || 0}</td><td>${st(p).bldLost || 0}</td><td>${st(p).peakArmy || 0}</td>`) + '</table>' +
+    if (resTab === 'military') html = `<table class="rt"><tr><th></th><th>Units killed</th><th>Units lost</th><th>Buildings razed</th><th>Buildings lost</th><th>Largest army</th>${G.rules.mode === 'capture' ? '<th>TCs captured</th><th>TCs lost</th>' : ''}</tr>` +
+      sideRows(p => `<td>${st(p).unitsKilled || 0}</td><td>${st(p).unitsLost || 0}</td><td>${st(p).razed || 0}</td><td>${st(p).bldLost || 0}</td><td>${st(p).peakArmy || 0}</td>${G.rules.mode === 'capture' ? `<td>${st(p).tcCaptured || 0}</td><td>${st(p).tcLost || 0}</td>` : ''}`) + '</table>' +
       (() => { const k = st(G.players[1]).killsBy || {}, top = Object.entries(k).sort((a, b) => b[1] - a[1]).slice(0, 6);
         return top.length ? `<p class="hint">Your kills by unit: ${top.map(([t, n]) => `${(G.UNITS[t] || { name: t }).name} ${n}`).join(' · ')}</p>` : ''; })();
     if (resTab === 'economy') html = `<table class="rt"><tr><th></th><th>Food</th><th>Wood</th><th>Gold</th><th>Stone</th><th>Spent</th><th>Peak villagers</th><th>Feudal</th><th>Castle</th><th>Imperial</th></tr>` +
@@ -161,7 +167,7 @@
     if (resTab === 'tech') html = `<table class="rt"><tr><th></th><th>Technologies</th><th>Unit upgrades</th><th>Final Age</th></tr>` +
       sideRows(p => `<td>${Object.keys(p.techs || {}).length}</td><td>${Object.values(p.up || {}).reduce((a, b) => a + b, 0)}</td><td>${G.AGES[p.age].name}</td>`) + '</table>';
     if (resTab === 'timeline') html = '<canvas id="res-chart" width="900" height="320"></canvas><div class="chart-key">' +
-      Object.keys(G.players).map(id => `<span><i style="background:${G.PLAYER_COLORS[id]}"></i>${+id === 1 ? 'You' : civName(G.players[id].civ)}</span>`).join('') + '</div>';
+      Object.keys(G.players).map(id => `<span><i style="background:${G.PLAYER_COLORS[id]}"></i>${+id === 1 ? 'You' : pName(id)}</span>`).join('') + '</div>';
     $('res-page').innerHTML = `<div class="rt-wrap">${html}</div>`;
     if (resTab === 'timeline') drawChart();
   }
@@ -182,8 +188,9 @@
   }
   document.querySelectorAll('.res-tabs button').forEach(b => b.onclick = () => { resTab = b.dataset.t; document.querySelectorAll('.res-tabs button').forEach(x => x.classList.toggle('on', x === b)); resPage(); });
   UI.results = function (res) {
-    const me = G.players[1], win = res === 'victory', why = G.overReason === 'time' ? "Time's up: highest score wins" : (win ? { conquest: 'All enemies destroyed', regicide: 'The enemy royals have fallen', tcrush: 'Every enemy Town Center is destroyed' } : { conquest: 'Your dynasty has been destroyed', regicide: 'Your King and Queen have fallen', tcrush: 'Your Town Centers have fallen' })[G.rules.mode] || '';
-    $('res-banner').innerHTML = `<div class="rb ${win ? 'win' : 'lose'}"><img src="${crest(me.civ)}" alt=""><h3 class="ribbon">${win ? 'Victory' : 'Defeat'}</h3><p>${why} · ${clock(G.time)} · ${mode().name} on ${mapName(G.rules.map)}</p></div>`;
+    const me = G.players[1], win = res === 'victory', SV = G.surv;
+    const why = SV ? `Your town held for ${SV.done} wave${SV.done === 1 ? '' : 's'}` : G.overReason === 'hold' ? (win ? 'You held an enemy home Town Center for 3 minutes' : 'The enemy held your home Town Center for 3 minutes') : G.overReason === 'alltc' ? (win ? 'Every Town Center on the map is yours' : 'The enemy took every Town Center') : G.overReason === 'time' ? "Time's up: highest score wins" : (win ? { empirewars: 'All enemies destroyed', capture: 'Every enemy has fallen', conquest: 'All enemies destroyed', regicide: 'The enemy royals have fallen', tcrush: 'Every enemy Town Center is destroyed' } : { conquest: 'Your dynasty has been destroyed', regicide: 'Your King and Queen have fallen', tcrush: 'Your Town Centers have fallen' })[G.rules.mode] || '';
+    $('res-banner').innerHTML = `<div class="rb ${win || SV ? 'win' : 'lose'}"><img src="${crest(me.civ)}" alt=""><h3 class="ribbon">${SV ? `Wave ${SV.done}` : win ? 'Victory' : 'Defeat'}</h3><p>${why} · ${clock(G.time)} · ${mode().name} on ${mapName(G.rules.map)}</p></div>`;
     // personal records on this device
     const r = loadRec(), news = [];
     r.games = (r.games || 0) + 1;
@@ -194,6 +201,7 @@
     }
     const army = st(me).peakArmy || 0; if (army > (r.bigArmy || 0)) { if (r.bigArmy) news.push('Largest army'); r.bigArmy = army; }
     const sc = G.scoreOf(1); if (sc > (r.best || 0)) { if (r.best) news.push('Highest score'); r.best = sc; }
+    if (SV) { r.bestWave = r.bestWave || {}; if (SV.done > (r.bestWave[SV.lvl] || 0)) { news.push(`Best Siege Survival (${SV.lvl}): wave ${SV.done}`); r.bestWave[SV.lvl] = SV.done; } }
     saveRec(r);
     $('res-records').innerHTML = (news.length ? `<div class="newrec">🏅 New record! ${news.join(' · ')}</div>` : '') +
       `<p class="hint">Your records: ${r.wins || 0} wins from ${r.games} games · best score ${r.best || 0} · largest army ${r.bigArmy || 0}${r.fastest ? ' · fastest win ' + clock(r.fastest) : ''}</p>`;

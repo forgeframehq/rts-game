@@ -15,7 +15,9 @@
     if (G.rules.mode === 'regicide') {
       const left = []; for (const id in G.players) if (G.enemies(1, +id) && G.players[id].alive) for (const t of ['king', 'queen']) if (G.royal(+id, t)) left.push(G.royalName(+id, t));
       progress = left.length ? 'Still standing: ' + left.join(', ') : '';
-    } else if (G.rules.mode === 'tcrush') {
+    } else if (G.rules.mode === 'survival' && G.surv) {
+      progress = `Wave ${G.surv.wave}, ${G.surv.done} survived`;
+    } else if (G.rules.mode === 'capture' || G.rules.mode === 'tcrush') {
       const n = G.ents.filter(e => !e.dead && e.type === 'towncenter' && G.enemies(1, e.owner)).length;
       progress = `${n} enemy Town Center${n === 1 ? '' : 's'} left`;
     } else {
@@ -34,7 +36,7 @@
     return {
       v: 1, savedAt: Date.now(), time: G.time, config: G.config, rules: G.rules, map: G.MAP, meta: G.matchMeta(),
       terrain: Array.from(G.terrain), explored: Array.from(G.explored),
-      players: G.players, ents, decals: G.decals,
+      players: G.players, ents, decals: G.decals, surv: G.surv || null,
       ais: (G.ais || []).map(a => ({ p: a.p, level: a.level, waveN: a.waveN, nextAttack: a.nextAttack, rb: a.rb || 0, lowT: a.lowT || 0, hideT: a.hideT || 0 })),
       cam: { x: G.camera.x, y: G.camera.y, zoom: G.camera.zoom }
     };
@@ -60,6 +62,7 @@
     }
     G.setNextId(maxId + 1);
     if (G.applyTerrainBlocks) G.applyTerrainBlocks();
+    G.surv = d.surv || null;
     G.time = d.time; G.over = null; if (G.resetTimeWarnings) G.resetTimeWarnings();
     G.revealAll = G.rules.reveal === 'all';
     G.ais = d.ais.map(x => { const a = G.makeAI(); a.level = x.level; a.init(x.p); a.waveN = x.waveN; a.nextAttack = x.nextAttack; a.rb = x.rb; a.lowT = x.lowT || 0; a.hideT = x.hideT || 0; return a; });
