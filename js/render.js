@@ -40,9 +40,10 @@
       }
       G.minZoom = 0.45;
       // clamp to map diamond bounds
-      const maxX = N * TW / 2, maxY = N * TH;
-      this.x = Math.max(-maxX, Math.min(maxX, this.x));
-      this.y = Math.max(0, Math.min(maxY, this.y));
+      // keep the screen centre on the map diamond itself, so the view can't drift off into the void
+      const a = this.x / (TW / 2), b = this.y / (TH / 2);
+      const m = 2, wx = Math.max(m, Math.min(N - m, (a + b) / 2)), wy = Math.max(m, Math.min(N - m, (b - a) / 2));
+      this.x = (wx - wy) * TW / 2; this.y = (wx + wy) * TH / 2;
     }
   };
   function iso(wx, wy) { return { x: (wx - wy) * TW / 2, y: (wx + wy) * TH / 2 }; }

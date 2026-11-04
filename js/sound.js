@@ -150,7 +150,7 @@
     if (amb && amb.dataset.src === want) return;
     if (amb) { amb.pause(); amb = null; }
     if (!want || !S.enabled) return;
-    amb = new Audio(want); amb.dataset.src = want; amb.loop = true; amb.volume = Math.min(1, 0.55 * S.volume);
+    amb = new Audio(want); amb.dataset.src = want; amb.loop = true; amb.volume = Math.min(1, 0.2 * S.volume);
     const p = amb.play(); if (p && p.catch) p.catch(() => {});
   };
   // ---- music ----------------------------------------------------------------
@@ -231,7 +231,7 @@
     }, 50);
   }
   // the town music sits furthest back: it plays for most of a match and must never crowd it
-  const MOOD_VOL = { menu: 1, peace: 0.55, battle: 0.85 };
+  const MOOD_VOL = { menu: 1, peace: 0.85, battle: 1 };
   function vol(m) { return S.musicEnabled ? S.musicVolume * (MOOD_VOL[m || mood] || 1) : 0; }
 
   // start a track of this mood on the free deck, handing over from whatever is playing
@@ -315,6 +315,7 @@
   S.setVolume = function (v) {
     S.volume = v;
     if (master) master.gain.value = v;
+    if (amb) amb.volume = Math.min(1, 0.2 * v);
   };
   S.setEnabled = function (on) {
     S.enabled = !!on;

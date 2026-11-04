@@ -775,8 +775,10 @@
   function faceTo(u, t) { const dx = t.x - u.x, dy = t.y - u.y; if (Math.abs(dx - dy) > 0.01) u.face = (dx - dy) > 0 ? 1 : -1; setDir(u, dx - dy, (dx + dy) / 2); }
 
   function findNewResource(u, rtype, lx, ly) {
-    const p = { x: lx, y: ly };
-    return nearest(p, e => e.kind === 'res' && e.type === rtype && e.amount > 0, 10);
+    // the next bush/tree/rock by the last one; skip ones others found unreachable, and look a
+    // little wider from where the villager stands before giving up and going idle
+    const ok = e => e.kind === 'res' && e.type === rtype && e.amount > 0 && !(e.unreach > 2);
+    return nearest({ x: lx, y: ly }, ok, 10) || nearest(u, ok, 14) || nearest({ x: lx, y: ly }, e => e.kind === 'res' && e.type === rtype && e.amount > 0, 10);
   }
 
   function updateUnit(u, dt) {
@@ -905,7 +907,7 @@
           if (moveAlong(u, dt) && G.edgeDist(u, r) > 0.75) {
             // reached the end of path but not adjacent: resource probably unreachable, try another
             u.stuck = (u.stuck || 0) + 1;
-            if (u.stuck > 3) { u.stuck = 0; r.unreach = (r.unreach || 0) + 1; const alt = nearest(u, e => e.kind === 'res' && e.type === r.type && e !== r && e.amount > 0, 10); if (alt) task.id = alt.id; }
+            if (u.stuck > 3) { u.stuck = 0; r.unreach = (r.unreach || 0) + 1; const alt = nearest(u, e => e.kind === 'res' && e.type === r.type && e !== r && e.amount > 0 && !(e.unreach > 2), 14); if (alt) { task.id = alt.id; u.path = []; u.pathFor = 0; } }
             u.repath = 0;
           }
         }
