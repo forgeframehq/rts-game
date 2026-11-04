@@ -1184,13 +1184,16 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const MIL = ['barracks', 'archeryrange', 'range', 'stable', 'blacksmith', 'siegeworkshop', 'castle', 'infirmary', 'monastery', 'university'];
         const page = buildMenu === 'mil' ? 'mil' : 'eco';
         const list = G.VIL_BUILDS.filter(t => (MIL.includes(t) ? 'mil' : 'eco') === page);
-        for (const [k, ic, name] of [['eco', 'i:house', 'Economy'], ['mil', 'i:barracks', 'Military']]) {
-          const tb = btn(ic, name, '', () => { buildMenu = k; panelKey = ''; refreshPanel(true); });
-          tb.classList.add('tab'); if (k === page) tb.classList.add('on');
+        // a slim two-part switch across the top, so it can't be mistaken for a building
+        const bar = document.createElement('div'); bar.className = 'buildtabs';
+        for (const [k, name] of [['eco', 'Economy'], ['mil', 'Military']]) {
+          const tb = document.createElement('button'); tb.textContent = name; if (k === page) tb.className = 'on';
           // the tutorial's glowing target may be on the other page: light that tab instead
           if (UI.tutGlow && k !== page && G.VIL_BUILDS.some(t => G.BUILDINGS[t].name === UI.tutGlow && (MIL.includes(t) ? 'mil' : 'eco') === k)) tb.classList.add('tut-glow');
-          cmds.appendChild(tb);
+          tb.onclick = e => { e.stopPropagation(); if (k === page) return; buildMenu = k; panelKey = ''; refreshPanel(true); if (G.sound) G.sound.play('toggle'); };
+          bar.appendChild(tb);
         }
+        cmds.innerHTML = ''; cmds.appendChild(bar);   // no Deselect inside the build menu: Back leaves it
         for (const t of list) {
           const c = G.buildCost(1, t), lim = G.buildLimit(1, t);
           const have = lim ? G.ents.filter(e => !e.dead && e.owner === 1 && e.type === t).length : 0;
