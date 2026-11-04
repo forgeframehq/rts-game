@@ -1180,12 +1180,24 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (units.length) {
       const vils = units.filter(u => u.type === 'villager');
       if (vils.length && buildMenu) {
-        for (const t of G.VIL_BUILDS) {
-          const c = G.buildCost(1, t);
-          if (G.atBuildLimit(1, t) && G.ageOf(1) >= (G.BUILD_AGE[t] || 1)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, `${G.buildLimit(1, t)}/${G.buildLimit(1, t)} built`, () => UI.alert(`You can only have ${G.buildLimit(1, t)} ${G.BUILDINGS[t].name}${G.buildLimit(1, t) > 1 ? 's' : ''}` + (G.buildLimit(1, t) < 2 ? ' (two in the Imperial Age)' : '')), true)); continue; }
+        // two pages, as in AoE2: Economy and Military, switched by tabs at the top
+        const MIL = ['barracks', 'archeryrange', 'range', 'stable', 'blacksmith', 'siegeworkshop', 'castle', 'infirmary', 'monastery', 'university'];
+        const page = buildMenu === 'mil' ? 'mil' : 'eco';
+        const list = G.VIL_BUILDS.filter(t => (MIL.includes(t) ? 'mil' : 'eco') === page);
+        for (const [k, ic, name] of [['eco', 'i:house', 'Economy'], ['mil', 'i:barracks', 'Military']]) {
+          const tb = btn(ic, name, '', () => { buildMenu = k; panelKey = ''; refreshPanel(true); });
+          tb.classList.add('tab'); if (k === page) tb.classList.add('on');
+          // the tutorial's glowing target may be on the other page: light that tab instead
+          if (UI.tutGlow && k !== page && G.VIL_BUILDS.some(t => G.BUILDINGS[t].name === UI.tutGlow && (MIL.includes(t) ? 'mil' : 'eco') === k)) tb.classList.add('tut-glow');
+          cmds.appendChild(tb);
+        }
+        for (const t of list) {
+          const c = G.buildCost(1, t), lim = G.buildLimit(1, t);
+          const have = lim ? G.ents.filter(e => !e.dead && e.owner === 1 && e.type === t).length : 0;
+          const badge = b => { if (lim) b.insertAdjacentHTML('beforeend', `<b class="cnt">${have}/${lim}</b>`); return b; };
+          if (G.atBuildLimit(1, t) && G.ageOf(1) >= (G.BUILD_AGE[t] || 1)) { cmds.appendChild(badge(btn('i:' + t + '|lock', G.BUILDINGS[t].name, 'Limit reached', () => UI.alert(`You can only have ${lim} ${G.BUILDINGS[t].name}${lim > 1 ? 's' : ''}` + (lim < 2 ? ' (two in the Imperial Age)' : '')), true))); continue; }
           if (!G.canBuildType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
-          const lim = G.buildLimit(1, t), cnt = lim ? ` · ${G.ents.filter(e => !e.dead && e.owner === 1 && e.type === t).length}/${lim} built` : '';
-          cmds.appendChild(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c) + cnt, () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c)));
+          cmds.appendChild(badge(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c))));
         }
         cmds.appendChild(btn('i:back', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
@@ -1195,14 +1207,16 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const R = G.players[1].res, need = ['food', 'wood', 'gold', 'stone'].sort((a, b) => R[a] - R[b])[0];
         const JOBS = { food: ['i:food', 'Food'], wood: ['i:wood', 'Wood'], gold: ['i:gold', 'Gold'], stone: ['i:stone', 'Stone'] };
         const site = G.ents.filter(b => !b.dead && b.owner === 1 && b.kind === 'building' && b.type !== 'farm' && (!b.built || b.hp < b.maxHp * 0.95)).sort((a, b) => G.dist(a, vils[0]) - G.dist(b, vils[0]))[0];
-        if (site) cmds.appendChild(btn('i:build', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }));
-        for (const k of [need, ...['food', 'wood', 'gold', 'stone'].filter(x => x !== need)]) {
+        // these go AFTER the everyday buttons (Build, Garrison, Stop keep their places for muscle
+        // memory), always in the same order; the needed one is only highlighted, never moved
+        if (site) { const b = btn('i:build', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }); b.classList.add('job'); cmds.appendChild(b); }
+        for (const k of ['food', 'wood', 'gold', 'stone']) {
           const b = btn(JOBS[k][0], JOBS[k][1], k === need ? '<b class="need">Needed</b>' : '', () => sendTo(vils, k));
-          if (k === need) b.classList.add('suggest');
+          b.classList.add('job'); if (k === need) b.classList.add('suggest');
           cmds.appendChild(b);
         }
       }
-      if (vils.length) cmds.appendChild(btn('i:build', 'Build', '', () => { buildMenu = true; panelKey = ''; refreshPanel(true); }));
+      if (vils.length) cmds.appendChild(btn('i:build', 'Build', '', () => { buildMenu = 'eco'; panelKey = ''; refreshPanel(true); }));
       // villagers shelter in a Town Center or Castle; soldiers only in a Castle
       const canHide = units.filter(u => G.ents.some(e => !e.dead && e.owner === 1 && G.canGarrison(u, e)));
       if (canHide.length) {
@@ -1262,6 +1276,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (units.length > 1) cmds.appendChild(btn('⛺', 'Keep only', vils.length && vils.length < units.length ? 'soldiers' : '', () => {
         const mil = units.filter(u => u.type !== 'villager'); select(mil.length && mil.length < units.length ? mil : [units[0]], false);
       }));
+      for (const j of [...cmds.querySelectorAll('.cmd.job')]) cmds.appendChild(j);   // job suggestions last
       return;
     }
     // a spent farm keeps its field — sow it again rather than building a new one
