@@ -1,0 +1,35 @@
+{
+ "out": "build/art/modes",
+ "jobs": [
+  [
+   "mode_conquest",
+   "repo:assets/ui/icons/attack.png",
+   "Two crossed steel swords in front of a burning enemy tower.",
+   "Square game UI icon in exactly the same painted style as the reference icon: rich hand-painted medieval fantasy look, gold and warm tones, dark background, bold readable silhouette at small size, no text, no letters, no frame."
+  ],
+  [
+   "mode_regicide",
+   "repo:assets/ui/icons/attack.png",
+   "A golden royal crown with red jewels lying beside a broken sceptre.",
+   "Square game UI icon in exactly the same painted style as the reference icon: rich hand-painted medieval fantasy look, gold and warm tones, dark background, bold readable silhouette at small size, no text, no letters, no frame."
+  ],
+  [
+   "mode_capture",
+   "repo:assets/ui/icons/attack.png",
+   "A stone castle keep with a white flag of surrender on its tower and a golden banner being raised beside it.",
+   "Square game UI icon in exactly the same painted style as the reference icon: rich hand-painted medieval fantasy look, gold and warm tones, dark background, bold readable silhouette at small size, no text, no letters, no frame."
+  ],
+  [
+   "mode_survival",
+   "repo:assets/ui/icons/attack.png",
+   "A battered round steel shield with arrows stuck in it, standing guard.",
+   "Square game UI icon in exactly the same painted style as the reference icon: rich hand-painted medieval fantasy look, gold and warm tones, dark background, bold readable silhouette at small size, no text, no letters, no frame."
+  ],
+  [
+   "mode_empirewars",
+   "repo:assets/ui/icons/attack.png",
+   "A war hammer crossed with a sword over a small bustling medieval town, a burst of golden light behind.",
+   "Square game UI icon in exactly the same painted style as the reference icon: rich hand-painted medieval fantasy look, gold and warm tones, dark background, bold readable silhouette at small size, no text, no letters, no frame."
+  ]
+ ]
+}
