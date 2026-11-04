@@ -78,6 +78,7 @@
     }
     load();
   }
+  S.loadedKeys = () => Object.keys(buffers).length;
   S.wake = function () {
     init();
     if (ctx && ctx.state === 'suspended') ctx.resume();
@@ -96,11 +97,15 @@
         if (!lists.menu.length) mood = 'peace';
         S.startMusic();
       }
+      // every short effect comes in one bundle (tools/pack_sfx.py); single files are the fallback
+      const packed = fetch('assets/sound/sfx_pack.json').then(r => r.ok ? r.json() : {}).catch(() => ({}));
+      const bytes = f => packed.then(P => P[f] ? Uint8Array.from(atob(P[f]), c => c.charCodeAt(0)).buffer
+        : fetch('assets/sound/' + f).then(r => r.ok ? r.arrayBuffer() : Promise.reject()));
       for (const key in m) {
         if (!SOUNDS[key]) continue;      // ignore anything the game has no use for
         const files = [].concat(m[key]);
         files.forEach((f, i) => {
-          fetch('assets/sound/' + f).then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+          bytes(f)
             .then(b => ctx.decodeAudioData(b))
             .then(buf => { (buffers[key] = buffers[key] || [])[i] = buf; ready = true; })
             .catch(() => {});            // a missing or broken file is simply never heard
