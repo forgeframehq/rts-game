@@ -1,0 +1,17 @@
+{
+ "out": "build/art/intro4p",
+ "jobs": [
+  [
+   "p2_bushes",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro4/p1_ref.jpg",
+   "The soldier is exactly the one in the reference image: a medieval foot soldier seen only from behind, dented steel kettle helmet, chainmail over a blue tunic, a blue-and-cream round wooden shield on his back, brown leather belt and boots, a sword at his hip. Keep him and the painting style identical to the reference. Strictly medieval: no modern clothing, no camouflage, no backpacks, no guns. Over-the-shoulder view from right behind him as he pushes through thick leafy bushes at the forest edge, his gloved arm parting the branches, bright daylight breaking through ahead, leaves flying. Tall vertical framing.",
+   "Same hand-painted storybook illustration style, palette and brushwork as the reference. No text, no letters, no logo."
+  ],
+  [
+   "p3_war",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro4/p1_ref.jpg",
+   "The soldier is exactly the one in the reference image: a medieval foot soldier seen only from behind, dented steel kettle helmet, chainmail over a blue tunic, a blue-and-cream round wooden shield on his back, brown leather belt and boots, a sword at his hip. Keep him and the painting style identical to the reference. Strictly medieval: no modern clothing, no camouflage, no backpacks, no guns. Over-the-shoulder view from behind him, seen only from the back, standing at the edge of the trees on a hilltop. Below him a vast valley filled with a huge medieval battle: two great armies clashing, red and blue banners, cavalry charges, smoke, a burning castle in the distance under a dramatic sky. He is small against the enormous scene. Tall vertical framing.",
+   "Same hand-painted storybook illustration style, palette and brushwork as the reference. No text, no letters, no logo."
+  ]
+ ]
+}

@@ -1,0 +1,24 @@
+{
+ "model": "kling-2.6/image-to-video",
+ "sound": false,
+ "jobs": [
+  [
+   "p1_forest",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro4/l/p1_forest.jpg",
+   "He sprints away from the camera along the forest path, ferns and low branches whipping past on both sides, his shield bouncing on his back; the camera chases right behind him. The camera follows right behind him, handheld and close, like a point-of-view chase. Keep his back, helmet and shield exactly as in the image; his face is never seen. Keep it a hand-painted storybook illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "p2_bushes",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro4/l/p2_bushes.jpg",
+   "He shoves through the thick bushes with his arm, leaves and twigs flying, and bursts out of the foliage into bright daylight; the camera pushes through right behind him. The camera follows right behind him, handheld and close, like a point-of-view chase. Keep his back, helmet and shield exactly as in the image; his face is never seen. Keep it a hand-painted storybook illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   5
+  ],
+  [
+   "p3_war",
+   "https://raw.githubusercontent.com/forgeframehq/rts-game/models/intro4/l/p3_war.jpg",
+   "He skids to a stop at the edge of the hill and stands still, looking down at the huge battle raging in the valley; his shoulders rise and fall in one heavy, tired sigh; then he draws his sword and runs down the slope toward the battle while the camera stays on the hilltop watching him go. Smoke drifts, banners wave, the armies clash below. The camera follows right behind him, handheld and close, like a point-of-view chase. Keep his back, helmet and shield exactly as in the image; his face is never seen. Keep it a hand-painted storybook illustration with soft brush texture, do not turn it photorealistic. No text on screen.",
+   10
+  ]
+ ]
+}
