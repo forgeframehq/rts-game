@@ -441,6 +441,7 @@
     if (G.ghost && G.ghost.tx != null) drawGhost(z);
 
     if (G.drawTutorial) G.drawTutorial(ctx);
+    drawSelArrow();
     // box selection
     if (G.boxSel) {
       const b = G.boxSel;
@@ -605,6 +606,32 @@
     ctx.globalAlpha = 1;
   }
 
+  // When what you have selected is off-screen, a small arrow at the screen edge points to it
+  // (with a count); tap it to jump back. Subtle on purpose: it only shows when you need it.
+  let panelTop = 0, panelT = 0;
+  function drawSelArrow() {
+    G.selArrow = null;
+    const sel = (G.selection || []).filter(e => !e.dead && e.owner === 1);
+    if (!sel.length || G.over) return;
+    let cx = 0, cy = 0; for (const e of sel) { cx += e.x; cy += e.y; } cx /= sel.length; cy /= sel.length;
+    const s = G.toScreen(cx, cy);
+    if (performance.now() - panelT > 500) { panelT = performance.now(); const p = document.getElementById('panel'); panelTop = p && !p.classList.contains('hidden') ? p.getBoundingClientRect().top : H; }
+    const L = 26, T = 70, R = W - 80, B = Math.min(H, panelTop) - 26;     // the open field of view, clear of the HUD
+    if (s.x > L && s.x < R && s.y > T && s.y < B) return;               // on screen: nothing to show
+    const ox = (L + R) / 2, oy = (T + B) / 2, dx = s.x - ox, dy = s.y - oy;
+    const k = Math.min(Math.abs((dx > 0 ? R - ox : L - ox) / (dx || 1e-6)), Math.abs((dy > 0 ? B - oy : T - oy) / (dy || 1e-6)));
+    const ax = ox + dx * k, ay = oy + dy * k, ang = Math.atan2(dy, dx), pulse = 0.75 + 0.15 * Math.sin(G.realTime() * 3);
+    ctx.save(); ctx.translate(ax, ay);
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = 'rgba(20,14,8,0.55)'; ctx.beginPath(); ctx.arc(0, 0, 15, 0, 7); ctx.fill();
+    ctx.rotate(ang);
+    ctx.fillStyle = G.ownerColor(1); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(11, 0); ctx.lineTo(-5, -8); ctx.lineTo(-2, 0); ctx.lineTo(-5, 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.rotate(-ang);
+    if (sel.length > 1) { ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(sel.length, -dx / Math.hypot(dx, dy) * 22, -dy / Math.hypot(dx, dy) * 22 + 4); }
+    ctx.restore();
+    G.selArrow = { x: ax, y: ay, wx: cx, wy: cy };
+  }
   // A soft outline around a sprite's own silhouette: selected buildings and the target an order
   // landed on glow, so it is always clear what was picked. Built once per sprite and colour.
   const glowCache = new Map();

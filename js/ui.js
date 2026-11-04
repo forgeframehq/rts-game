@@ -687,6 +687,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   let lastTap = { t: 0, x: 0, y: 0, id: 0 };
   function tap(sx, sy, opts) {
     opts = opts || {};
+    // the off-screen selection arrow: jump back to what you have selected
+    if (G.selArrow && Math.hypot(sx - G.selArrow.x, sy - G.selArrow.y) < 26 && mode !== 'place') { G.camera.focus(G.selArrow.wx, G.selArrow.wy); if (G.sound) G.sound.play('click'); return; }
     const w = G.toWorld(sx, sy);
     if (mode === 'place') { moveGhost(sx, sy); if (opts.mouse) { G.render(); confirmPlace(opts.add); } return; }
     const target = pick(sx, sy);
