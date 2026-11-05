@@ -30,16 +30,20 @@ MATCH = """async ([a, b, seed, mins, lvl]) => {
 }"""
 
 async def worker(q, out, br):
-    pg = await br.new_page()
-    await pg.add_init_script("localStorage.setItem('dod.prefs.v1', JSON.stringify({intro:'off',dynfilm:'off',tips:'off'}))")
-    await pg.goto('http://localhost:8123/index.html'); await pg.wait_for_timeout(2000)
+    # a fresh page for every match: one page playing many long matches runs out of memory
     while not q.empty():
         a, b, seed = await q.get()
-        try:
-            r = await pg.evaluate(MATCH, [a, b, seed, MIN, LVL])
-        except Exception as e:
-            r = {'a': a, 'b': b, 'error': str(e)[:200]}
-            await pg.reload(); await pg.wait_for_timeout(2000)
+        for attempt in range(2):
+            pg = await br.new_page()
+            try:
+                await pg.add_init_script("localStorage.setItem('dod.prefs.v1', JSON.stringify({intro:'off',dynfilm:'off',tips:'off'}))")
+                await pg.goto('http://localhost:8123/index.html'); await pg.wait_for_timeout(1500)
+                r = await pg.evaluate(MATCH, [a, b, seed, MIN, LVL]); break
+            except Exception as e:
+                r = {'a': a, 'b': b, 'error': str(e)[:160]}
+            finally:
+                try: await pg.close()
+                except Exception: pass
         out.append(r); print(json.dumps(r), flush=True)
 
 async def main():
@@ -49,6 +53,17 @@ async def main():
             seed = 1000 + s * 7919 + hash((a, b)) % 997
             await q.put((a, b, seed)); await q.put((b, a, seed))   # same map, swapped sides
     out = []
+    import os
+    done = set()
+    if os.environ.get('RESUME'):
+        for l in open(os.environ['RESUME']):
+            if l.startswith('{"a"') and '"win"' in l:
+                r = json.loads(l); out.append(r); done.add((r['a'], r['b']))
+    q2 = asyncio.Queue()
+    while not q.empty():
+        it = await q.get()
+        if (it[0], it[1]) not in done: await q2.put(it)
+    q = q2
     async with async_playwright() as p:
         br = await p.chromium.launch()
         await asyncio.gather(*[worker(q, out, br) for _ in range(int(sys.argv[5]) if len(sys.argv) > 5 and sys.argv[5].isdigit() else 2)])

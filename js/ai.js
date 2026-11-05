@@ -192,6 +192,9 @@ G.makeAI = function () {
     else if (vils.length >= 24 && age >= 3 && hasBuilt('stable') && !has('siegeworkshop')) build('siegeworkshop', home.x, home.y, 6, 2);
     else if (vils.length >= 26 && age >= 3 && hasBuilt('siegeworkshop') && !has('monastery')) build('monastery', home.x, home.y, 6, 2);
     else if (vils.length >= 28 && age >= 3 && hasBuilt('blacksmith') && !has('university') && R.wood > 250) build('university', home.x, home.y, 6, 2);
+    // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
+    else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
+             && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);
     // an Infirmary once the army is real (a second in the Imperial Age), set well back near home
     if (age >= 2 && hasBuilt('barracks') && vils.length >= Math.min(18, AI.cfg.maxVils) && army.length >= 4 && !G.atBuildLimit(p, 'infirmary')
         && R.wood >= 150 && R.gold >= 50 && !blds.some(b => b.type === 'infirmary' && !b.built)) build('infirmary', home.x, home.y, 5, 1);
@@ -205,9 +208,6 @@ G.makeAI = function () {
       }
       for (const b of infs) if (b.garrison && b.garrison.some(g => g.hp >= g.maxHp * 0.95)) G.ungarrison(b, g => g.hp >= g.maxHp * 0.95);   // the second argument picks who leaves
     }
-    // don't spend the quarry on towers while a Castle is the thing standing between us and the next Age
-    else if (vils.length >= 22 && hasBuilt('stable') && blds.filter(b => b.type === 'tower').length < 2
-             && R.stone > 200 && !(nxt && nxt.needs.includes('castle') && !has('castle'))) build('tower', home.x, home.y, 6, 1);
     // --- research: a plan, not whatever is affordable. Economy first once the town is
     // working, then the upgrades that help the army it actually fields ---
     if (!saving && vils.length >= 12 && Math.random() < AI.cfg.research) {
@@ -381,7 +381,8 @@ G.makeAI = function () {
       return opts[opts.length - 1];
     };
     if (army.length < cap2 && pop < cap && (!AI.cfg.armyPerVil || army.length < vils.length * AI.cfg.armyPerVil)) {
-      for (const b of blds) {
+      // the Castle (the dynasty's unique unit) gets first call on the resources, then the rest
+      for (const b of [...blds].sort((x, y) => (y.type === 'castle') - (x.type === 'castle'))) {
         if (!b.built || b.type === 'towncenter' || b.queue.length >= 2 || b.research) continue;
         // the Castle has no train list of its own: its only unit is the dynasty's unique one
         let opts = G.trainsFor(b).filter(t => G.canTrainType(p, t));
