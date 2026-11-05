@@ -18,7 +18,7 @@
   const STEP = 1 / 30, STEPS = 3, TURN = STEP * STEPS, DELAY = 3, HASH_EVERY = 50;
   const N = G.net = { on: false, role: null, me: 0, code: null, ws: null, peer: false };
   // the relay: the deployed Cloudflare Worker, or ws://localhost:8787 for testing (localStorage dod.relay)
-  N.RELAY = 'wss://dod-relay.forgeframe.workers.dev';
+  N.RELAY = 'wss://dod-relay.forgeframehq.workers.dev';
   const relayUrl = () => { try { return localStorage.getItem('dod.relay') || N.RELAY; } catch (e) { return N.RELAY; } };
 
   // ---------- orders ----------
