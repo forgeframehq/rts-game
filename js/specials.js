@@ -5,7 +5,7 @@
   // unit type -> its move
   const BY_TYPE = {
     spearman: 'brace', militia: 'rush', archer: 'volley', scout: 'charge', knight: 'charge',
-    longbowman: 'firearrows', axethrower: 'axestorm', cataphract: 'greekfire', repeater: 'rocket'
+    longbowman: 'firearrows', axethrower: 'axestorm', cataphract: 'greekfire', repeater: 'rocket', elephant: 'charge', kamayuk: 'brace', templeguard: 'rush'
   };
   G.SPECIALS = {
     brace:      { name: 'Brace',       icon: '🛡️', desc: 'Spearmen plant their spears and hold: tougher for 8 s, and cavalry that charge them get hurt.' },

@@ -95,7 +95,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('cine-skip').onclick = e => { e.stopPropagation(); cineDone && cineDone(); };
   $('cine').onclick = () => $('cine').classList.add('show-skip');
   UI.playDynFilm = (civ, done) => {
-    if (prefs.dynfilm === 'off' || !G.CIVS[civ]) return done();
+    if (prefs.dynfilm === 'off' || !G.CIVS[civ] || !['britons', 'franks', 'byzantines', 'chinese'].includes(civ)) return done();   // the newer dynasties have no film yet
     const c = G.CIVS[civ];
     playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
@@ -976,13 +976,13 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // ---------- Command panel ----------
   // ---- painted icons (assets/ui/icons) ----
   const ICONP = 'assets/ui/icons/';
-  const ICONS = new Set('back cancel gate guard heal infirmary palisade special stonewall research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
+  const ICONS = new Set('elephant kamayuk templeguard back cancel gate guard heal infirmary palisade special stonewall research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
   // per-dynasty portraits: each unit line shows its current rank (Militia -> Man-at-Arms -> ...)
   const LINES = { militia: ['militia', 'manatarms', 'longsword', 'champion'], spearman: ['spearman', 'pikeman', 'halberdier'], archer: ['archer', 'crossbow', 'arbalester'],
-    knight: ['knight', 'cavalier', 'paladin'], longbowman: ['longbowman', 'elitelongbowman'], axethrower: ['axethrower', 'eliteaxethrower'], cataphract: ['cataphract', 'elitecataphract'], repeater: ['repeater', 'eliterepeater'] };
+    knight: ['knight', 'cavalier', 'paladin'], longbowman: ['longbowman', 'elitelongbowman'], axethrower: ['axethrower', 'eliteaxethrower'], cataphract: ['cataphract', 'elitecataphract'], repeater: ['repeater', 'eliterepeater'], elephant: ['elephant', 'eliteelephant'], kamayuk: ['kamayuk', 'elitekamayuk'], templeguard: ['templeguard', 'elitetempleguard'] };
   const SOLO = new Set(['scout', 'monk', 'king', 'queen', 'villager', 'villager_f', 'villagers']);
-  const UPKEY = { elitelongbow: 'elitelongbowman', eliteaxe: 'eliteaxethrower', elitecata: 'elitecataphract' };
+  const UPKEY = { elitelongbow: 'elitelongbowman', eliteaxe: 'eliteaxethrower', elitecata: 'elitecataphract', eliteeleph: 'eliteelephant', elitekama: 'elitekamayuk', eliteguard: 'elitetempleguard' };
   const TECHIC = new Set('architecture arrowslits beardedaxe blastfurnace bodkin bowsaw bracer chainmail chivalry doublebit fletching forging fortwalls goldmining goldshaft greatwall greekfire handcart heavyplow horsecollar ironcasting logistica loom masonry platemail rocketry scalemail stonemining treadmill warwolf wheelbarrow yeomen'.split(' '));
   // portraits and tech icons come packed in a few atlas images; each is cut into its own small
   // image once loaded (until then the plain painted icon shows)
@@ -1183,7 +1183,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         // two pages, as in AoE2: Economy and Military, switched by tabs at the top
         const MIL = ['barracks', 'archeryrange', 'range', 'stable', 'blacksmith', 'siegeworkshop', 'castle', 'infirmary', 'monastery', 'university'];
         const page = buildMenu === 'mil' ? 'mil' : 'eco';
-        const list = G.VIL_BUILDS.filter(t => (MIL.includes(t) ? 'mil' : 'eco') === page);
+        const list = G.VIL_BUILDS.filter(t => (MIL.includes(t) ? 'mil' : 'eco') === page && !G.civBlocks(1, t));
         // a slim two-part switch across the top, so it can't be mistaken for a building
         const bar = document.createElement('div'); bar.className = 'buildtabs';
         for (const [k, name] of [['eco', 'Economy'], ['mil', 'Military']]) {

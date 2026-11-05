@@ -14,7 +14,10 @@ G.ROYALS = {
   britons:    { king: 'King', queen: 'Queen', names: [['Edward', 'Eleanor'], ['Alfred', 'Ealhswith'], ['Henry', 'Matilda'], ['Richard', 'Berengaria']] },
   franks:     { king: 'King', queen: 'Queen', names: [['Charles', 'Bertha'], ['Clovis', 'Clotilde'], ['Louis', 'Blanche'], ['Pepin', 'Bertrada']] },
   byzantines: { king: 'Emperor', queen: 'Empress', names: [['Basil', 'Theodora'], ['Justinian', 'Zoe'], ['Alexios', 'Irene'], ['Constantine', 'Helena']] },
-  chinese:    { king: 'Emperor', queen: 'Empress', names: [['Taizong', 'Zhangsun'], ['Taizu', 'Du'], ['Wendi', 'Dugu'], ['Renzong', 'Cao']] }
+  chinese:    { king: 'Emperor', queen: 'Empress', names: [['Taizong', 'Zhangsun'], ['Taizu', 'Du'], ['Wendi', 'Dugu'], ['Renzong', 'Cao']] },
+  persians:   { king: 'Shah', queen: 'Shahbanu', names: [['Khosrow', 'Shirin'], ['Ardashir', 'Borandukht'], ['Shapur', 'Azarmidokht'], ['Bahram', 'Gordiya']] },
+  incas:      { king: 'Sapa Inca', queen: 'Coya', names: [['Pachacuti', 'Mama Anawarkhi'], ['Tupac Yupanqui', 'Mama Ocllo'], ['Huayna Capac', 'Rahua Ocllo'], ['Manco Capac', 'Mama Huaco']] },
+  cholas:     { king: 'Raja', queen: 'Rani', names: [['Rajaraja', 'Lokamahadevi'], ['Rajendra', 'Vanavan Mahadevi'], ['Kulothunga', 'Madhurantaki'], ['Parantaka', 'Kokkizhan']] }
 };
 G.royalName = (p, type) => { const pl = G.players[p]; if (!pl) return type; const R = G.ROYALS[pl.civ] || G.ROYALS.britons, n = (pl.royals || {})[type]; return (R[type] || type) + (n ? ' ' + n : ''); };
 
@@ -54,6 +57,33 @@ G.CIVS = {
     desc: 'Economy civ. Start with +3 villagers but -150 food, -50 wood. Houses support 10 pop. Villagers 10% cheaper.',
     mods: { extraVils: 3, startFoodDelta: -150, startWoodDelta: -50, housePop: 10, vilCost: 0.9 },
     unique: { type: 'repeater', at: 'castle', text: 'Repeater Crossbowman — trained at the Castle. The chu-ko-nu: a magazine crossbow that looses bolt after bolt, each one light but twice as fast as any other bow. Deadly in numbers, which the Chinese always had.' }
+  },
+  persians: {
+    role: "Elephants & Economy",
+    history: "Heirs of the great Persian empires, from the Sasanian Shahs who rivalled Rome to the Persian kingdoms of the Islamic age. Their cities were famed for turquoise domes, gardens and scholars, and their armies for armoured horsemen and towering war elephants.",
+    bonuses: ["Start with +50 food and +50 wood", "Town Center +50% HP", "Knights +15% HP", "War Elephant: slow, huge and devastating"],
+    name: 'Persians', color: '#1f8a8a',
+    desc: 'Elephant and economy civ. Start with +50 food and wood. Town Center +50% HP. Knights +15% HP.',
+    mods: { startFoodDelta: 50, startWoodDelta: 50, tcHp: 1.5, knightHp: 1.15 },
+    unique: { type: 'elephant', at: 'castle', text: 'War Elephant — trained at the Castle. A towering armoured elephant that tramples everything in its path: enormous health and attack, and every blow also hurts enemies standing beside its target. Slow, costly, and weak against Monks and Spearmen.' }
+  },
+  incas: {
+    role: "Infantry",
+    history: "The Inca Empire, Tawantinsuyu, stretched four thousand kilometres along the Andes in the 1400s. Its rulers built roads, terraced mountains into farms and raised cities of stone so finely fitted that no blade fits between the blocks. With no horses in the Americas, its armies marched on foot.",
+    bonuses: ["Buildings +15% HP (fitted stonework)", "Spearmen 20% cheaper", "Farms give +20% food (terraces)", "No Stable: no horses in the Americas"],
+    name: 'Incas', color: '#c9a227',
+    desc: 'Infantry civ with no cavalry. Buildings +15% HP. Spearmen 20% cheaper. Farms +20% food.',
+    mods: { buildingHp: 1.15, spearCost: 0.8, farmFood: 1.2, noStable: true },
+    unique: { type: 'kamayuk', at: 'castle', text: 'Kamayuk — trained at the Castle. Elite Inca warriors with very long spears that strike from a step further away than any other foot soldier, and hit horsemen and elephants very hard.' }
+  },
+  cholas: {
+    role: "Economy & Infantry",
+    history: "The Chola dynasty of South India, at its height around 1000 to 1200, sent fleets across the Bay of Bengal and raised the great temples of Thanjavur. Rich from rice paddies, trade and temple towns, they fielded large disciplined armies of foot soldiers and archers.",
+    bonuses: ["Farms 20% cheaper", "Archers 15% cheaper", "Feudal Age 15% cheaper", "Temple Guard: tough elite infantry"],
+    name: 'Cholas', color: '#c0392b',
+    desc: 'Economy and infantry civ. Farms 20% cheaper. Archers 15% cheaper. Feudal Age 15% cheaper.',
+    mods: { farmCost: 0.8, archerCost: 0.85, ageDisc: { 2: 0.85 } },
+    unique: { type: 'templeguard', at: 'castle', text: 'Temple Guard — trained at the Castle. The Velaikkarar, sworn bodyguards of the Chola kings: heavily armoured foot soldiers with great health and armour against arrows, strong against other infantry.' }
   }
 };
 
@@ -68,6 +98,9 @@ G.UNITS = {
   knight:   { name: 'Knight', cost: { food: 60, gold: 75 }, time: 18, hp: 100, atk: 10, range: 0.7, rate: 1.8, armor: 2, pierce: 2, speed: 2.4, los: 5, icon: '🐎', cls: 'cav' },
   // ---- unique units (one per dynasty, trained at the Castle) ----
   axethrower: { name: 'Axe Thrower', cost: { food: 55, gold: 25 }, time: 15, hp: 50, atk: 7, range: 3, rate: 2, armor: 1, pierce: 1, speed: 1.5, los: 6, icon: '🪓', cls: 'inf', ranged: true, bonus: { bld: 4 } },
+  elephant:   { name: 'War Elephant', cost: { food: 140, gold: 80 }, time: 28, hp: 320, atk: 14, range: 0.9, rate: 2.2, armor: 1, pierce: 2, speed: 1.0, los: 5, icon: '🐘', cls: 'cav', splash: 0.5, bonus: { bld: 6 } },
+  kamayuk:    { name: 'Kamayuk', cost: { food: 60, gold: 30 }, time: 10, hp: 60, atk: 7, range: 1.3, rate: 2, armor: 0, pierce: 0, speed: 1.6, los: 5, icon: '🔱', cls: 'inf', bonus: { cav: 12 } },
+  templeguard:{ name: 'Temple Guard', cost: { food: 65, gold: 45 }, time: 14, hp: 90, atk: 8, range: 0.6, rate: 2, armor: 2, pierce: 4, speed: 1.4, los: 4, icon: '🛡️', cls: 'inf', bonus: { inf: 3 } },
   cataphract: { name: 'Cataphract', cost: { food: 70, gold: 75 }, time: 20, hp: 110, atk: 9, range: 0.7, rate: 1.8, armor: 2, pierce: 3, speed: 2.2, los: 5, icon: '🛡️', cls: 'cav', bonus: { inf: 9 } },
   repeater:   { name: 'Repeater Crossbowman', cost: { wood: 40, gold: 35 }, time: 16, hp: 35, atk: 3, range: 4, rate: 1, armor: 0, pierce: 0, speed: 1.4, los: 6, icon: '🎯', cls: 'arc', ranged: true, bonus: { inf: 1 } },
   // ---- siege: shared by every dynasty. siege:true means the full attack lands on
@@ -124,6 +157,9 @@ G.UPGRADES = {
   arbalester:   { name: 'Arbalester',      line: 'archer',     tier: 2, at: 'range',    age: 4, cost: { food: 350, gold: 300 },  time: 50, stats: { hp: 40, atk: 6, range: 5 } },
   elitelongbow: { name: 'Elite Longbowman',line: 'longbowman', tier: 1, at: 'castle',   age: 4, cost: { food: 850, gold: 850 },  time: 50, stats: { hp: 40, atk: 7, range: 6 } },
   eliteaxe:     { name: 'Elite Axe Thrower',line: 'axethrower',tier: 1, at: 'castle',   age: 4, cost: { food: 900, gold: 500 },  time: 50, stats: { hp: 60, atk: 8, range: 4, armor: 2 } },
+  eliteeleph:   { name: 'Elite War Elephant', line: 'elephant', tier: 1, at: 'castle', age: 4, cost: { food: 1600, gold: 1000 }, time: 60, stats: { hp: 450, atk: 18 } },
+  elitekama:    { name: 'Elite Kamayuk', line: 'kamayuk', tier: 1, at: 'castle', age: 4, cost: { food: 900, gold: 500 }, time: 45, stats: { hp: 80, atk: 8, armor: 1, bonus: { cav: 16 } } },
+  eliteguard:   { name: 'Elite Temple Guard', line: 'templeguard', tier: 1, at: 'castle', age: 4, cost: { food: 1000, gold: 600 }, time: 45, stats: { hp: 120, atk: 10, armor: 3, pierce: 6 } },
   elitecata:    { name: 'Elite Cataphract', line: 'cataphract',tier: 1, at: 'castle',   age: 4, cost: { food: 1200, gold: 600 }, time: 50, stats: { hp: 150, atk: 11, armor: 3, bonus: { inf: 13 } } },
   eliterepeater:{ name: 'Elite Repeater',   line: 'repeater',  tier: 1, at: 'castle',   age: 4, cost: { food: 760, gold: 760 },  time: 50, stats: { hp: 40, atk: 4, rate: 0.9 } },
   cavalier:     { name: 'Cavalier',        line: 'knight',     tier: 1, at: 'stable',   age: 4, cost: { food: 300, gold: 300 },  time: 50, stats: { hp: 120, atk: 12 } },
@@ -175,11 +211,14 @@ G.TECHS = {
   chivalry:    { name: 'Chivalry',      icon: 'knight',     at: 'castle', civ: 'franks', age: 3, cost: { food: 400, wood: 400 }, time: 45, eff: { trainSpeed_stable: 0.4 }, desc: 'Stables train 40% faster' },
   beardedaxe:  { name: 'Bearded Axe',   icon: 'axethrower', at: 'castle', civ: 'franks', age: 4, cost: { food: 400, gold: 400 }, time: 60, eff: { unitRange_axethrower: 1 }, desc: 'Axe Throwers +1 range' },
   logistica:   { name: 'Logistica',     icon: 'cataphract', at: 'castle', civ: 'byzantines', age: 3, cost: { food: 600, gold: 300 }, time: 45, eff: { unitAtk_cataphract: 3 }, desc: 'Cataphracts +3 attack' },
+  zoroastrian: { name: 'Mahouts',       icon: 'elephant',   at: 'castle', civ: 'persians', age: 3, cost: { food: 300, gold: 200 }, time: 40, eff: { unitSpd_elephant: 0.3 }, desc: 'War Elephants move 30% faster' },
+  andeanSling: { name: 'Andean Sling',  icon: 'kamayuk',    at: 'castle', civ: 'incas',    age: 3, cost: { food: 200, gold: 300 }, time: 40, eff: { unitAtk_kamayuk: 2 }, desc: 'Kamayuks +2 attack' },
+  rajaraja:    { name: 'Temple Endowment', icon: 'templeguard', at: 'castle', civ: 'cholas', age: 3, cost: { food: 400, gold: 200 }, time: 40, eff: { unitHp_templeguard: 20 }, desc: 'Temple Guards +20 HP' },
   greekfire:   { name: 'Greek Fire',    icon: 'tower',      at: 'castle', civ: 'byzantines', age: 4, cost: { food: 250, gold: 300 }, time: 60, eff: { towerAtk: 1, towerRange: 1 }, desc: 'Towers and Castles +1 attack, +1 range' },
   rocketry:    { name: 'Rocketry',      icon: 'repeater',   at: 'castle', civ: 'chinese', age: 3, cost: { wood: 750, gold: 450 }, time: 45, eff: { unitAtk_repeater: 2 }, desc: 'Repeater Crossbows +2 attack' },
   greatwall:   { name: 'Great Wall',    icon: 'stone',      at: 'castle', civ: 'chinese', age: 4, cost: { wood: 400, stone: 400 }, time: 60, eff: { wallHp: 0.3 }, desc: 'Walls and towers +30% HP' }
 };
-G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, ram: 3, trebuchet: 4, monk: 3 };
+G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, elephant: 3, kamayuk: 3, templeguard: 3, ram: 3, trebuchet: 4, monk: 3 };
 G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','infirmary','siegeworkshop','monastery','university','castle','tower','palisade','stonewall','gate','towncenter'];
 
 G.RES = {
@@ -188,7 +227,7 @@ G.RES = {
   gold:   { name: 'Gold Mine', res: 'gold', amount: 800, rate: 0.38 },
   stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
 };
-G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian' };
+G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian', persians: 'middleeast', incas: 'americas', cholas: 'indian' };
 // How each dynasty's villagers are dyed from the shared (Britons) sprites. Britons are the
 // painted original, so they have no entry; a dynasty with villager art of its own stops being
 // dyed automatically (see art.js). Each dynasty dresses in two colours — hue for the tunic or
@@ -204,6 +243,18 @@ G.CIV_LOOK = {
   byzantines: {  // deep crimson over gold, dark hair, cream-gold apron
     hue: 356, sat: 1.25, val: 1.05,  hue2: 42,  sat2: 1.10, val2: 1.25, apron: [44, 0.45, 0.95],
     hairH: -4, hairS: 0.95, hairV: 0.80, skinH: 5, skinS: 1.12, skinV: 0.85
+  },
+  persians: {  // turquoise over gold, black hair
+    hue: 180, sat: 1.05, val: 1.05,  hue2: 42,  sat2: 1.0, val2: 1.15, apron: [175, 0.35, 0.95],
+    hairH: 0, hairS: 0.6, hairV: 0.55, skinH: 2, skinS: 1.02, skinV: 0.95
+  },
+  incas: {     // saffron over red, black hair
+    hue: 40, sat: 1.15, val: 1.15,  hue2: 8,  sat2: 1.10, val2: 1.0, apron: [38, 0.45, 0.95],
+    hairH: 0, hairS: 0.5, hairV: 0.5, skinH: 4, skinS: 1.08, skinV: 0.9
+  },
+  cholas: {    // vermilion over gold, black hair
+    hue: 8, sat: 1.15, val: 1.05,  hue2: 45,  sat2: 1.1, val2: 1.2, apron: [10, 0.4, 0.95],
+    hairH: 0, hairS: 0.5, hairV: 0.5, skinH: 4, skinS: 1.1, skinV: 0.82
   },
   chinese: {   // indigo over slate, black hair, sky-blue apron
     hue: 215, sat: 1.05, val: 1.20,  hue2: 205, sat2: 0.55, val2: 0.80, apron: [205, 0.40, 0.92],

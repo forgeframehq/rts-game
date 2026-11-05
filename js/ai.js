@@ -20,6 +20,9 @@
     knight:     { arc: 2.0, sie: 1.8, inf: 0.6 },
     scout:      { arc: 0.8, sie: 1.2 },
     cataphract: { inf: 2.4, arc: 1.2, sie: 1.5 },
+    elephant:   { inf: 2.0, arc: 1.6, bld: 2.0, sie: 1.5 },
+    kamayuk:    { cav: 2.6, inf: 1.0 },
+    templeguard:{ inf: 2.0, arc: 1.4 },
     axethrower: { inf: 1.0, arc: 0.6, bld: 1.5 }
   };
 G.makeAI = function () {

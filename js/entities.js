@@ -28,7 +28,9 @@
   G.STANCES = ['aggressive', 'defensive', 'stand', 'passive'];
   G.stanceOf = u => u.stance || 'defensive';
   const LEASH = { aggressive: Infinity, defensive: 8, stand: 0, passive: 0 };
-  G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1) && !G.atBuildLimit(p, type);
+  G.canBuildType = (p, type) => G.ageOf(p) >= (G.BUILD_AGE[type] || 1) && !G.atBuildLimit(p, type) && !G.civBlocks(p, type);
+  // a dynasty that never had this building (the Incas had no horses, so no Stable)
+  G.civBlocks = (p, type) => type === 'stable' && !!(G.players[p] && mods(p).noStable);
   // some buildings are limited per player: one Infirmary (two in the Imperial Age)
   G.buildLimit = (p, type) => type === 'infirmary' ? (G.ageOf(p) >= 4 ? 2 : 1) : 0;
   G.atBuildLimit = (p, type) => { const n = G.buildLimit(p, type); return n > 0 && G.ents.filter(e => !e.dead && e.owner === p && e.type === type).length >= n; };
@@ -220,6 +222,7 @@
     e.tx = tx; e.ty = ty; e.size = def.size;
     e.x = tx + def.size / 2; e.y = ty + def.size / 2;
     let hp = def.hp; if (owner > 0 && mods(owner).buildingHp) hp = Math.round(hp * mods(owner).buildingHp);
+    if (owner > 0 && type === 'towncenter' && mods(owner).tcHp) hp = Math.round(hp * mods(owner).tcHp);
     if (owner > 0) hp = Math.round(hp * G.bldHpMult(owner, def));
     e.maxHp = hp; e.hp = built ? hp : 1; e.built = !!built; e.progress = built ? 1 : 0;
     e.queue = []; e.qt = 0; e.cool = 0; e.rally = null;
@@ -233,6 +236,7 @@
     const e = base('unit', type, owner, def);
     e.x = x; e.y = y;
     let hp = def.hp; if (type === 'knight' && mods(owner).knightHp) hp = Math.round(hp * mods(owner).knightHp);
+    if (owner > 0) hp += G.techEff(owner, 'unitHp_' + type) || 0;   // e.g. Cholas' Temple Endowment
     e.hp = e.maxHp = hp;
     if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
     if (type === 'queen') e.sex = 'f';
@@ -653,7 +657,7 @@
       }
     }
     const W = { militia: 'sword', king: 'sword', spearman: 'spear', knight: 'sword', scout: 'spear',
-      cataphract: 'sword', archer: 'bow', longbowman: 'bow', repeater: 'bolt', axethrower: 'axethrow',
+      cataphract: 'sword', elephant: 'ram', kamayuk: 'spear', templeguard: 'sword', archer: 'bow', longbowman: 'bow', repeater: 'bolt', axethrower: 'axethrow',
       ram: 'ram', trebuchet: 'stonehit' };
     let k = W[att.type] || (att.kind === 'building' ? 'bow' : 'sword');
     // melee blows vary with what they land on: armour clanks, cloth and leather slash
@@ -669,7 +673,13 @@
       const heavy = !!att.def.siege;
       if (att.type === 'trebuchet') snd('trebuchet', att.x, att.y);   // a trebuchet stone lobs slowly and high, not like an arrow
       G.projs.push({ x: att.x, y: att.y, z: att.kind === 'building' ? 1.6 : 0.6, tx: t.x, ty: t.y, tid: t.id, from: att, dmg, t: 0, heavy, dur: Math.max(0.25, G.dist(att, t) / (heavy ? 4 : 9)) });
-    } else hit(att, t, dmg);
+    } else {
+      hit(att, t, dmg);
+      if (att.def.splash && t.kind === 'unit') for (const o of G.ents) {
+        if (o === t || o.dead || o.kind !== 'unit' || !G.enemies(o.owner, att.owner) || Math.hypot(o.x - t.x, o.y - t.y) > 1) continue;
+        hit(att, o, Math.max(1, Math.round(dmg * att.def.splash)));
+      }
+    }
   }
 
   // ---------- Per-frame update ----------
@@ -787,7 +797,7 @@
     const wp = u.path[0];
     const dx = wp.x - u.x, dy = wp.y - u.y, d = Math.hypot(dx, dy);
     const step = (u.task.gs && u.task.t === 'move' ? Math.min(u.def.speed, u.task.gs) : u.def.speed) * dt * (G.terrainSpeed || 1)
-      * (u.type === 'villager' ? 1 + G.techEff(u.owner, 'vilSpeed') : 1) * (G.speedMul ? G.speedMul(u) : 1);
+      * (u.type === 'villager' ? 1 + G.techEff(u.owner, 'vilSpeed') : 1) * (1 + (G.techEff(u.owner, 'unitSpd_' + u.type) || 0)) * (G.speedMul ? G.speedMul(u) : 1);
     steer(u, dx / (d || 1), dy / (d || 1), dt);
     u.walk += dt;
     u.dist = (u.dist || 0) + Math.min(step, d);

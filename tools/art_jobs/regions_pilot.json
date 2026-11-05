@@ -1,0 +1,50 @@
+{
+ "out": "build/art/regions_pilot",
+ "jobs": [
+  [
+   "me_house",
+   "house",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a village house: a small single-storey home with a little courtyard or porch. "
+  ],
+  [
+   "me_town_center",
+   "town_center",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it the Town Center: the largest civic building of the town, with a grand entrance, a tall central element visible from far away, and a small courtyard. Give it a tall wind-catcher tower and a large dome."
+  ],
+  [
+   "me_barracks",
+   "barracks",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a barracks: a long training hall with a walled practice yard at the front corner, racks of spears and shields. "
+  ],
+  [
+   "am_house",
+   "house",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a village house: a small single-storey home with a little courtyard or porch. "
+  ],
+  [
+   "am_town_center",
+   "town_center",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it the Town Center: the largest civic building of the town, with a grand entrance, a tall central element visible from far away, and a small courtyard. Make it a great stone palace hall (kallanka) on a stepped stone platform with a wide staircase."
+  ],
+  [
+   "am_barracks",
+   "barracks",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a barracks: a long training hall with a walled practice yard at the front corner, racks of spears and shields. "
+  ],
+  [
+   "in_house",
+   "house",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a village house: a small single-storey home with a little courtyard or porch. "
+  ],
+  [
+   "in_town_center",
+   "town_center",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it the Town Center: the largest civic building of the town, with a grand entrance, a tall central element visible from far away, and a small courtyard. Give it a tall stepped pyramidal temple tower (vimana) rising over a pillared hall."
+  ],
+  [
+   "in_barracks",
+   "barracks",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a barracks: a long training hall with a walled practice yard at the front corner, racks of spears and shields. "
+  ]
+ ]
+}

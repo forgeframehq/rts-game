@@ -11,12 +11,15 @@ import json, os, subprocess, sys
 R = 'tools/render3d'
 D = sys.argv[1]
 only = set(sys.argv[2].split(',')) if len(sys.argv) > 2 and not sys.argv[2].startswith('--') else None
-UNIQUE = {'franks': ('axe', 'militia', 'axethrower'), 'byzantines': ('cata', 'knight', 'cataphract'), 'chinese': ('repeat', 'archer', 'repeater')}
+UNIQUE = {'franks': ('axe', 'militia', 'axethrower'), 'byzantines': ('cata', 'knight', 'cataphract'), 'chinese': ('repeat', 'archer', 'repeater'),
+          'persians': ('knight', 'elephantrider', 'elephant'), 'incas': ('spear', 'kamayuk', 'kamayuk'), 'cholas': ('sword', 'templeguard', 'templeguard')}
+NO_CAV = {'incas'}   # no horses in the Americas: no Knight or Scout to render
 plan = []   # (job file, rig, game type, sex, tier)
 for sex in 'mf':
     plan.append(('villager_jobs_f.json', f'{D}_villager_{sex}_rig.glb', 'villager', sex, 0))
 for job, rig, typ, tiers in [('sword', 'militia', 'militia', 4), ('spear', 'spearman', 'spearman', 3),
                              ('arch', 'archer', 'archer', 3), ('knight', 'knight', 'knight', 3), ('scout', 'knight', 'scout', 1)]:
+    if D in NO_CAV and typ in ('knight', 'scout'): continue
     for t in range(tiers):
         plan.append((f'j_{job}' + (f'_t{t}' if t else '') + '.json', f'{D}_{rig}_rig.glb', typ, 'm', t))
 plan.append(('j_king.json', f'{D}_king_rig.glb', 'king', 'm', 0))
@@ -33,6 +36,7 @@ for jf, rig, typ, sex, t in plan:
         print('have', stem0, flush=True); continue
     j = json.load(open(f'{R}/{jf}'))
     j['model'] = rig
+    if typ == 'elephant': j['horse'] = {**j.get('horse', {}), 'model': 'elephant_static.glb', 'scale': 1.9, 'elephant': True}; j['frame'] = 512
     if typ in ('king', 'queen'):
         for a in j['anims']:
             a['props'] = [p for p in a.get('props', []) if p.get('tool') not in ('crown', 'mantle', 'gown')]

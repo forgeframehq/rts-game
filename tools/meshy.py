@@ -12,15 +12,44 @@ import base64, json, os, sys, time, urllib.request
 KEY = os.environ["MESHY_KEY"]; API = "https://api.meshy.ai/openapi/v1"
 
 def call(method, path, body=None):
-    req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body else None,
+    req = urllib.request.Request(("https://api.meshy.ai/openapi" + path[1:]) if path.startswith("!") else API + path, method=method, data=json.dumps(body).encode() if body else None,
                                  headers={"Authorization": "Bearer " + KEY, "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=120) as r: return json.loads(r.read())
 
 def wait(kind, tid):
     while True:
-        t = call("GET", f"/{kind}/{tid}")
+        t = call("GET", f"!/{kind[1:]}/{tid}" if kind.startswith("!") else f"/{kind}/{tid}")
         if t["status"] in ("SUCCEEDED", "FAILED", "CANCELED", "EXPIRED"): return t
         time.sleep(15)
+
+def text_model(stem, prompt, out):
+    """Text -> 3D (preview, then textured refine) -> rig, for when a concept picture isn't wanted.
+    Same output as model(): <out>/<stem>_rig.glb on the shared humanoid skeleton."""
+    os.makedirs(out, exist_ok=True)
+    rec_p = os.path.join(out, stem + ".json")
+    rec = json.load(open(rec_p)) if os.path.exists(rec_p) else {}
+    V2 = "!/v2/text-to-3d"
+    if not rec.get("preview"):
+        rec["preview"] = call("POST", V2, {"mode": "preview", "prompt": prompt[:600], "art_style": "realistic", "should_remesh": True,
+                              "topology": "triangle", "target_polycount": 30000, "pose_mode": "a-pose", "ai_model": os.environ.get("MESHY_MODEL", "latest")})["result"]
+        json.dump(rec, open(rec_p, "w"))
+    t = wait("!v2/text-to-3d", rec["preview"])
+    if t["status"] != "SUCCEEDED": sys.exit(f"{stem}: preview {t['status']} {t.get('task_error')}")
+    if not rec.get("refine"):
+        rec["refine"] = call("POST", V2, {"mode": "refine", "preview_task_id": rec["preview"], "enable_pbr": False,
+                             "texture_prompt": prompt[:600]})["result"]
+        json.dump(rec, open(rec_p, "w"))
+    r = wait("!v2/text-to-3d", rec["refine"])
+    if r["status"] != "SUCCEEDED": sys.exit(f"{stem}: refine {r['status']} {r.get('task_error')}")
+    if not rec.get("rig"):
+        rec["rig"] = call("POST", "/rigging", {"model_url": r["model_urls"]["glb"], "height_meters": 1.75})["result"]
+        json.dump(rec, open(rec_p, "w"))
+    g = wait("rigging", rec["rig"])
+    if g["status"] != "SUCCEEDED": sys.exit(f"{stem}: rig {g['status']} {g.get('task_error')}")
+    urllib.request.urlretrieve(g["result"]["rigged_character_glb_url"], os.path.join(out, stem + "_rig.glb"))
+    urllib.request.urlretrieve(r["thumbnail_url"], os.path.join(out, stem + "_thumb.png"))
+    print(stem, "rigged", flush=True)
+
 
 def model(img, out):
     os.makedirs(out, exist_ok=True)
@@ -61,3 +90,12 @@ def model(img, out):
 
 if __name__ == "__main__":
     if sys.argv[1] == "model": model(sys.argv[2], sys.argv[3])
+    if sys.argv[1] == "static":   # image -> textured model only, no rig (animals animated in code)
+        img, out = sys.argv[2], sys.argv[3]; os.makedirs(out, exist_ok=True); stem = os.path.splitext(os.path.basename(img))[0]
+        uri = "data:image/png;base64," + base64.b64encode(open(img, "rb").read()).decode()
+        tid = call("POST", "/image-to-3d", {"image_url": uri, "ai_model": os.environ.get("MESHY_MODEL", "latest"), "should_texture": True, "enable_pbr": False,
+                   "should_remesh": True, "topology": "triangle", "target_polycount": 30000})["result"]
+        t = wait("image-to-3d", tid)
+        if t["status"] != "SUCCEEDED": sys.exit(f"{stem}: {t['status']}")
+        urllib.request.urlretrieve(t["model_urls"]["glb"], os.path.join(out, stem + ".glb")); print(stem, "done", flush=True)
+    if sys.argv[1] == "text": text_model(sys.argv[2], open(sys.argv[3]).read().strip(), sys.argv[4])   # stem prompt_file out_dir

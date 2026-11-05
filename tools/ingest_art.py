@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 
 # prefix in the generated name -> region (None = the shared western set, no prefix in the game)
-REGIONS = {"w": None, "med": "mediterranean", "ea": "eastasian"}
+REGIONS = {"w": None, "med": "mediterranean", "ea": "eastasian", "me": "middleeast", "am": "americas", "in": "indian"}
 
 # generated stem -> the source stem process_art.py knows
 STEMS = {

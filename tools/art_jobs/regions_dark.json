@@ -1,0 +1,95 @@
+{
+ "out": "build/art/regions_full",
+ "jobs": [
+  [
+   "me_town_center_dark",
+   "town_center_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it the Dark Age Town Center: a hall with a raised central block and a small lookout tower, a wide door, smoke from the roof, one tall pennant."
+  ],
+  [
+   "me_house_dark",
+   "house_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it a small one-room Dark Age house."
+  ],
+  [
+   "me_mill_dark",
+   "mill_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it a Dark Age granary with sacks and baskets at the door. No windmill sails."
+  ],
+  [
+   "me_barracks_dark",
+   "barracks_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it a Dark Age barracks: a long muster hall with a rack of spears and a small fenced practice yard at the front corner."
+  ],
+  [
+   "me_lumbercamp_dark",
+   "lumber_camp_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it a Dark Age lumber camp: an open-sided shed on posts with logs and an axe in a chopping block."
+  ],
+  [
+   "me_miningcamp_dark",
+   "mining_camp_dark.jpg",
+   "Dark Age version of the same Persian style: plain unglazed sun-dried mud brick and adobe, small simple flat-roofed buildings, a little plain plaster, only a touch of turquoise paint, palm-log beams sticking out of the walls. Compact and tidy, standing square on its plot, poorer than the later tiled town but not a ruin. Make it a Dark Age mining camp: an open-sided shed with an ore cart, stone and gold ore, picks and baskets."
+  ],
+  [
+   "am_town_center_dark",
+   "town_center_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it the Dark Age Town Center: a hall with a raised central block and a small lookout tower, a wide door, smoke from the roof, one tall pennant."
+  ],
+  [
+   "am_house_dark",
+   "house_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it a small one-room Dark Age house."
+  ],
+  [
+   "am_mill_dark",
+   "mill_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it a Dark Age granary with sacks and baskets at the door. No windmill sails."
+  ],
+  [
+   "am_barracks_dark",
+   "barracks_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it a Dark Age barracks: a long muster hall with a rack of spears and a small fenced practice yard at the front corner."
+  ],
+  [
+   "am_lumbercamp_dark",
+   "lumber_camp_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it a Dark Age lumber camp: an open-sided shed on posts with logs and an axe in a chopping block."
+  ],
+  [
+   "am_miningcamp_dark",
+   "mining_camp_dark.jpg",
+   "Dark Age version of the same Inca style: rough fieldstone walls set in mud mortar instead of fitted granite, thick golden ichu-grass thatch roofs, simple trapezoidal doors, a woven blanket over the door. Compact and tidy, standing square on its plot. Make it a Dark Age mining camp: an open-sided shed with an ore cart, stone and gold ore, picks and baskets."
+  ],
+  [
+   "in_town_center_dark",
+   "town_center_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it the Dark Age Town Center: a hall with a raised central block and a small lookout tower, a wide door, smoke from the roof, one tall pennant."
+  ],
+  [
+   "in_house_dark",
+   "house_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it a small one-room Dark Age house."
+  ],
+  [
+   "in_mill_dark",
+   "mill_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it a Dark Age granary with sacks and baskets at the door. No windmill sails."
+  ],
+  [
+   "in_barracks_dark",
+   "barracks_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it a Dark Age barracks: a long muster hall with a rack of spears and a small fenced practice yard at the front corner."
+  ],
+  [
+   "in_lumbercamp_dark",
+   "lumber_camp_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it a Dark Age lumber camp: an open-sided shed on posts with logs and an axe in a chopping block."
+  ],
+  [
+   "in_miningcamp_dark",
+   "mining_camp_dark.jpg",
+   "Dark Age version of the same South Indian style: walls of red mud and laterite blocks, roofs of palm-leaf thatch on wooden posts, simple carved wooden pillars, a small brass lamp. Compact and tidy, standing square on its plot. Make it a Dark Age mining camp: an open-sided shed with an ore cart, stone and gold ore, picks and baskets."
+  ]
+ ]
+}

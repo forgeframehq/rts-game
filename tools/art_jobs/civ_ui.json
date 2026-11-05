@@ -1,0 +1,41 @@
+{
+ "out": "build/art/civ_ui",
+ "jobs": [
+  [
+   "crest_persians",
+   "repo:assets/ui/crest_byzantines.png",
+   "Replace the emblem with a Persian royal crest: a golden winged sun disc (faravahar wings) over a turquoise field with a border of gold and lapis geometric tiles.",
+   "Keep everything else exactly as the reference: the same shield-crest shape, framing and scale, the same hand-painted heraldic style, the same lighting and the same plain background. No text, no border."
+  ],
+  [
+   "crest_incas",
+   "repo:assets/ui/crest_byzantines.png",
+   "Replace the emblem with an Inca royal crest: a radiant golden sun face (Inti) over a field of bold red, gold and black stepped Andean (tocapu) patterns.",
+   "Keep everything else exactly as the reference: the same shield-crest shape, framing and scale, the same hand-painted heraldic style, the same lighting and the same plain background. No text, no border."
+  ],
+  [
+   "crest_cholas",
+   "repo:assets/ui/crest_byzantines.png",
+   "Replace the emblem with a Chola royal crest: a golden tiger rampant, the Chola royal emblem, over a deep vermilion field with a border of golden temple ornament.",
+   "Keep everything else exactly as the reference: the same shield-crest shape, framing and scale, the same hand-painted heraldic style, the same lighting and the same plain background. No text, no border."
+  ],
+  [
+   "icon_elephant",
+   "repo:assets/ui/icons/cataphract.png",
+   "Replace the subject with an armoured war elephant seen from the front three-quarter view, iron-capped tusks, a quilted caparison and a small wooden howdah on its back.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One subject only, no text, no border, no frame."
+  ],
+  [
+   "icon_kamayuk",
+   "repo:assets/ui/icons/cataphract.png",
+   "Replace the subject with an Inca Kamayuk warrior holding a very long spear, a feathered crest helmet and a patterned quilted tunic.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One subject only, no text, no border, no frame."
+  ],
+  [
+   "icon_templeguard",
+   "repo:assets/ui/icons/cataphract.png",
+   "Replace the subject with a Chola temple guard: a heavily armoured South Indian soldier with a tall crested iron helmet, a studded quilted coat and a round shield.",
+   "Keep everything else exactly as the reference: the same framing and scale, the same hand-painted semi-realistic Age of Empires 2 icon style, the same lighting from the upper left and the same plain dark background. One subject only, no text, no border, no frame."
+  ]
+ ]
+}

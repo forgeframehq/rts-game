@@ -282,15 +282,16 @@ function buildMeshyHorse(H, colors = {}) {
   const Hh = bb.max.y, L = bb.max.z - bb.min.z, W = bb.max.x - bb.min.x, z0 = bb.min.z;
   const fz = z => (bb.max.z - z) / L;                      // 0 at the muzzle, 1 at the tail
   const P = g.attributes.position;
-  const belly = 0.42 * Hh, kneeY = 0.24 * Hh;
+  const EL = !!colors.elephant;   // an elephant: legs reach higher, the trunk must not be read as a leg or swung like a neck
+  const belly = (EL ? 0.5 : 0.42) * Hh, kneeY = (EL ? 0.27 : 0.24) * Hh;
   // which leg a vertex belongs to (or none)
   const legOf = (x, y, z) => {
     if (y > belly + 0.04 * Hh) return null;
     const f = fz(z);
     if (f > 0.84 && Math.abs(x) < 0.1 * W && y > 0.12 * Hh) return null;   // the tail hangs here
     const side = x < 0 ? 'L' : 'R';
-    if (f > 0.15 && f < 0.5) return side + 'F';
-    if (f > 0.55) return side + 'H';
+    if (f > (EL ? 0.24 : 0.15) && f < 0.5) return side + 'F';
+    if (f > (EL ? 0.58 : 0.55)) return side + 'H';
     return null;
   };
   // leg centres, measured at cannon height
@@ -322,7 +323,7 @@ function buildMeshyHorse(H, colors = {}) {
       const tb = sm(cl((y - (belly - 0.04 * Hh)) / (0.08 * Hh)));        // 1 up in the barrel
       si[o] = 0; sw[o] = tb; si[o + 1] = L0.bi; sw[o + 1] = (1 - tb) * (1 - tk); si[o + 2] = L0.bi + 1; sw[o + 2] = (1 - tb) * tk;
     } else {
-      const t = sm(cl((z - neckZ + 0.05 * L) / (0.12 * L))) * sm(cl((y - 0.5 * Hh) / (0.1 * Hh)));
+      const t = EL ? 0 : sm(cl((z - neckZ + 0.05 * L) / (0.12 * L))) * sm(cl((y - 0.5 * Hh) / (0.1 * Hh)));
       si[o] = 0; sw[o] = 1 - t; si[o + 1] = NI; sw[o + 1] = t;
     }
   }
@@ -332,6 +333,7 @@ function buildMeshyHorse(H, colors = {}) {
   root.updateMatrixWorld(true); const skel = new THREE.Skeleton(bones); mesh.bind(skel);
   // shells: copy of selected triangles pushed out along their normals, sharing the skin
   const shell = (keep, push, material) => {
+    if (EL) return;   // horse barding doesn't fit an elephant (it wears its own caparison)
     const idx = g.index.array, out = [];
     for (let t = 0; t < idx.length; t += 3) { const a = idx[t], b = idx[t + 1], c = idx[t + 2]; if (keep(a) && keep(b) && keep(c)) out.push(a, b, c); }
     if (!out.length) return;
@@ -591,7 +593,8 @@ window.renderAll = async function (cfg) {
   let horse = null, mount = null, seat = () => {};
   if (cfg.mount) {
     mount = new THREE.Group(); holder.remove(model); holder.add(mount);
-    if ((cfg.horse || {}).meshy !== false) { if (!HORSE_GLTF) HORSE_GLTF = await new GLTFLoader().loadAsync('horse_static.glb'); horse = buildMeshyHorse(h, cfg.horse || {}); } else horse = buildHorse(h, cfg.horse || {}); mount.add(horse); mount.add(model);
+    // the mount is the Meshy horse by default; cfg.horse.model swaps in another animal (the War Elephant), cfg.horse.scale sizes it
+    if ((cfg.horse || {}).meshy !== false) { const mf = (cfg.horse || {}).model || 'horse_static.glb'; if (!HORSE_GLTF || HORSE_GLTF.__file !== mf) { HORSE_GLTF = await new GLTFLoader().loadAsync(mf); HORSE_GLTF.__file = mf; } horse = buildMeshyHorse(h * ((cfg.horse || {}).scale || 1), cfg.horse || {}); } else horse = buildHorse(h, cfg.horse || {}); mount.add(horse); mount.add(model);
     const hips = []; model.traverse(o => { if (o.isBone && o.name === 'Hips') hips.push(o); });
     const base = model.position.clone();
     seat = () => {   // put the rider's hips on the saddle

@@ -1,0 +1,195 @@
+{
+ "out": "build/art/regions_full",
+ "jobs": [
+  [
+   "me_range",
+   "archery_range.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it an archery range: a shooting yard with straw targets on posts, a covered stand for the archers and a small storeroom. "
+  ],
+  [
+   "me_stable",
+   "stable.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a stable: a long stable block with horse stalls, hay racks, a water trough and a small paddock fence. "
+  ],
+  [
+   "me_mill",
+   "mill.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a mill and granary: a storehouse for grain with sacks and baskets, and a small grinding house. No windmill sails. "
+  ],
+  [
+   "me_lumbercamp",
+   "lumber_camp.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a lumber camp: an open-sided shed on posts with stacks of logs and planks, a chopping block with an axe. "
+  ],
+  [
+   "me_miningcamp",
+   "mining_camp.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a mining camp: an open-sided shed with an ore cart, piles of stone and glinting gold ore, picks and baskets. "
+  ],
+  [
+   "me_farm",
+   "farm.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a farm field: neat rows of crops in a square plot with a low border, a small scarecrow. Irrigation channels between the rows."
+  ],
+  [
+   "me_tower",
+   "watch_tower.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a watch tower: a tall narrow stone lookout tower with a covered top platform for archers. "
+  ],
+  [
+   "me_blacksmith",
+   "blacksmith.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a blacksmith's forge: a workshop with a glowing forge, an anvil, a chimney and racks of weapons. "
+  ],
+  [
+   "me_castle",
+   "castle.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a great castle: a massive fortress with thick walls, corner towers and a central keep, the strongest building of the town. Pointed arches, round corner towers and turquoise tiled domes."
+  ],
+  [
+   "me_siegeworkshop",
+   "siege_workshop.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a siege workshop: a large workshop with a tall wide gate, a battering ram half visible inside and stacked beams in a yard. It sits flat and square on its plot. "
+  ],
+  [
+   "me_monastery",
+   "monastery.jpg",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a temple: the town's main religious building, calm and grand, with a courtyard. A fire temple with a domed sanctuary and a courtyard with a pool."
+  ],
+  [
+   "me_university",
+   "university.jpg",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a university: a hall of learning with a courtyard, scholars' rooms and a small observatory. "
+  ],
+  [
+   "me_infirmary",
+   "infirmary.jpg",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it an infirmary, a house of healing: a calm hall with a covered porch where straw cots with white linen are visible, a walled herb garden at one front corner, drying herbs under the eaves, a small white banner with a red cross over the door. Not a temple. "
+  ],
+  [
+   "am_range",
+   "archery_range.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it an archery range: a shooting yard with straw targets on posts, a covered stand for the archers and a small storeroom. "
+  ],
+  [
+   "am_mill",
+   "mill.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a mill and granary: a storehouse for grain with sacks and baskets, and a small grinding house. No windmill sails. "
+  ],
+  [
+   "am_lumbercamp",
+   "lumber_camp.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a lumber camp: an open-sided shed on posts with stacks of logs and planks, a chopping block with an axe. "
+  ],
+  [
+   "am_miningcamp",
+   "mining_camp.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a mining camp: an open-sided shed with an ore cart, piles of stone and glinting gold ore, picks and baskets. "
+  ],
+  [
+   "am_farm",
+   "farm.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a farm field: neat rows of crops in a square plot with a low border, a small scarecrow. Stepped terraced fields of maize and potatoes."
+  ],
+  [
+   "am_tower",
+   "watch_tower.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a watch tower: a tall narrow stone lookout tower with a covered top platform for archers. Square fitted-stone tower with a thatched top."
+  ],
+  [
+   "am_blacksmith",
+   "blacksmith.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a blacksmith's forge: a workshop with a glowing forge, an anvil, a chimney and racks of weapons. "
+  ],
+  [
+   "am_castle",
+   "castle.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a great castle: a massive fortress with thick walls, corner towers and a central keep, the strongest building of the town. A mountain fortress of huge zigzag fitted stone walls like Sacsayhuam\u00e1n."
+  ],
+  [
+   "am_siegeworkshop",
+   "siege_workshop.png",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a siege workshop: a large workshop with a tall wide gate, a battering ram half visible inside and stacked beams in a yard. It sits flat and square on its plot. Instead of a battering ram, piles of sling stones and log rams on a timber frame."
+  ],
+  [
+   "am_monastery",
+   "monastery.jpg",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a temple: the town's main religious building, calm and grand, with a courtyard. A sun temple with a gold sun disc over the doorway, like the Coricancha."
+  ],
+  [
+   "am_university",
+   "university.jpg",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it a university: a hall of learning with a courtyard, scholars' rooms and a small observatory. "
+  ],
+  [
+   "am_infirmary",
+   "infirmary.jpg",
+   "Rebuild this in an Inca style from the Andes: walls of grey granite blocks fitted tightly without mortar, trapezoidal doorways and niches, buildings on stone terraces, steep roofs of thick golden ichu-grass thatch on timber, woven textile banners in bright stepped geometric patterns. No timber framing, no European stonework, no arches. Make it an infirmary, a house of healing: a calm hall with a covered porch where straw cots with white linen are visible, a walled herb garden at one front corner, drying herbs under the eaves, a small white banner with a red cross over the door. Not a temple. "
+  ],
+  [
+   "in_range",
+   "archery_range.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it an archery range: a shooting yard with straw targets on posts, a covered stand for the archers and a small storeroom. "
+  ],
+  [
+   "in_stable",
+   "stable.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a stable: a long stable block with horse stalls, hay racks, a water trough and a small paddock fence. "
+  ],
+  [
+   "in_mill",
+   "mill.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a mill and granary: a storehouse for grain with sacks and baskets, and a small grinding house. No windmill sails. "
+  ],
+  [
+   "in_lumbercamp",
+   "lumber_camp.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a lumber camp: an open-sided shed on posts with stacks of logs and planks, a chopping block with an axe. "
+  ],
+  [
+   "in_miningcamp",
+   "mining_camp.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a mining camp: an open-sided shed with an ore cart, piles of stone and glinting gold ore, picks and baskets. "
+  ],
+  [
+   "in_farm",
+   "farm.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a farm field: neat rows of crops in a square plot with a low border, a small scarecrow. Rows of rice paddy with water channels."
+  ],
+  [
+   "in_tower",
+   "watch_tower.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a watch tower: a tall narrow stone lookout tower with a covered top platform for archers. "
+  ],
+  [
+   "in_blacksmith",
+   "blacksmith.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a blacksmith's forge: a workshop with a glowing forge, an anvil, a chimney and racks of weapons. "
+  ],
+  [
+   "in_castle",
+   "castle.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a great castle: a massive fortress with thick walls, corner towers and a central keep, the strongest building of the town. A great granite fort with massive walls, bastions and carved gateways."
+  ],
+  [
+   "in_siegeworkshop",
+   "siege_workshop.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a siege workshop: a large workshop with a tall wide gate, a battering ram half visible inside and stacked beams in a yard. It sits flat and square on its plot. "
+  ],
+  [
+   "in_monastery",
+   "monastery.jpg",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a temple: the town's main religious building, calm and grand, with a courtyard. A Hindu temple with a tall carved gopuram gateway tower and a mandapa hall."
+  ],
+  [
+   "in_university",
+   "university.jpg",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it a university: a hall of learning with a courtyard, scholars' rooms and a small observatory. "
+  ],
+  [
+   "in_infirmary",
+   "infirmary.jpg",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it an infirmary, a house of healing: a calm hall with a covered porch where straw cots with white linen are visible, a walled herb garden at one front corner, drying herbs under the eaves, a small white banner with a red cross over the door. Not a temple. "
+  ]
+ ]
+}
