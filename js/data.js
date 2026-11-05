@@ -43,10 +43,10 @@ G.CIVS = {
   byzantines: {
     role: "Defense",
     history: "The Eastern Roman Empire, ruled from Constantinople for over a thousand years until 1453. Behind the great Theodosian Walls, the city outlasted wave after wave of sieges, defended by armoured cataphracts and disciplined spearmen.",
-    bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Castle and Imperial Ages 15% cheaper", "Units heal slowly near the Town Center"],
+    bonuses: ["Buildings +30% HP", "Spearmen 25% cheaper", "Castle and Imperial Ages 10% cheaper", "Units heal slowly near the Town Center"],
     name: 'Byzantines', color: '#8a3fb8',
-    desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Castle and Imperial Ages 15% cheaper. Units heal slowly near Town Center.',
-    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true, ageDisc: { 3: 0.85, 4: 0.85 } },
+    desc: 'Defensive civ. Buildings +30% HP. Spearmen 25% cheaper. Castle and Imperial Ages 10% cheaper. Units heal slowly near Town Center.',
+    mods: { buildingHp: 1.3, spearCost: 0.75, tcHeal: true, ageDisc: { 3: 0.9, 4: 0.9 } },
     unique: { type: 'cataphract', at: 'castle', text: 'Cataphract — trained at the Castle. A horseman armoured head to hoof, who rides straight over infantry: huge bonus damage against foot soldiers and little to fear from arrows. The heavy fist of the Eastern Roman army.' }
   },
   chinese: {
@@ -61,10 +61,10 @@ G.CIVS = {
   persians: {
     role: "Elephants & Economy",
     history: "Heirs of the great Persian empires, from the Sasanian Shahs who rivalled Rome to the Persian kingdoms of the Islamic age. Their cities were famed for turquoise domes, gardens and scholars, and their armies for armoured horsemen and towering war elephants.",
-    bonuses: ["Start with +50 food and +50 wood", "Town Center +50% HP", "Knights +15% HP", "War Elephant: slow, huge and devastating"],
+    bonuses: ["Town Center works 15% faster and has +50% HP", "Start with +50 food and +50 wood", "Cavalry and War Elephants 10% cheaper", "Knights +15% HP"],
     name: 'Persians', color: '#1f8a8a',
-    desc: 'Elephant and economy civ. Start with +50 food and wood. Town Center +50% HP. Knights +15% HP.',
-    mods: { startFoodDelta: 50, startWoodDelta: 50, tcHp: 1.5, knightHp: 1.15 },
+    desc: 'Elephant and economy civ. Town Center 15% faster and +50% HP. Cavalry 10% cheaper. Knights +15% HP. Start with +50 food and wood.',
+    mods: { startFoodDelta: 50, startWoodDelta: 50, tcHp: 1.5, knightHp: 1.15, tcSpeed: 1.15, cavCost: 0.9 },
     unique: { type: 'elephant', at: 'castle', text: 'War Elephant — trained at the Castle. A towering armoured elephant that tramples everything in its path: enormous health and attack, and every blow also hurts enemies standing beside its target. Slow, costly, and weak against Monks and Spearmen.' }
   },
   incas: {
