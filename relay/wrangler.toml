@@ -1,3 +1,4 @@
+# Dawn of Dynasties multiplayer relay (deployed by .github/workflows/relay.yml)
 # Dawn of Dynasties multiplayer relay: one Durable Object per room code, relaying messages
 # between the two players' phones. Deployed by .github/workflows/relay.yml.
 name = "dod-relay"
