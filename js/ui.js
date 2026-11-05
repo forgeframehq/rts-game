@@ -1055,6 +1055,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   const ICONP = 'assets/ui/icons/';
   const ICONS = new Set('elephant kamayuk templeguard back cancel gate guard heal infirmary palisade special stonewall research university blacksmith castle ageup archer army attack axethrower barracks bell box build cataphract clock delete dropoff farm food garrison gear gold home house idle king knight laurel longbowman lumbercamp menu militia mill miningcamp monastery monk pop queen rally ram range repeater scout siegeworkshop spearman stable stone stop tower towncenter trebuchet ungarrison villager villager_f wood'.split(' '));
   const EMOJI_ICON = { '🔨': 'build', '🛡️': 'garrison', '✋': 'stop', '📦': 'dropoff', '🚩': 'rally', '⬆️': 'ageup', '🔔': 'bell', '🚪': 'ungarrison', '🗑️': 'delete', '⛺': 'army', '⏹': 'stop', '↩': 'menu' };
+  // buildings painted per architecture region (tools/make_region_icons.py). Walls and gates
+  // are drawn in code from their neighbours, so they have no regional art and stay shared.
+  const REGION_ICON = new Set('towncenter house mill lumbercamp miningcamp farm barracks range stable blacksmith monastery siegeworkshop university infirmary castle tower'.split(' '));
   // per-dynasty portraits: each unit line shows its current rank (Militia -> Man-at-Arms -> ...)
   const LINES = { militia: ['militia', 'manatarms', 'longsword', 'champion'], spearman: ['spearman', 'pikeman', 'halberdier'], archer: ['archer', 'crossbow', 'arbalester'],
     knight: ['knight', 'cavalier', 'paladin'], longbowman: ['longbowman', 'elitelongbowman'], axethrower: ['axethrower', 'eliteaxethrower'], cataphract: ['cataphract', 'elitecataphract'], repeater: ['repeater', 'eliterepeater'], elephant: ['elephant', 'eliteelephant'], kamayuk: ['kamayuk', 'elitekamayuk'], templeguard: ['templeguard', 'elitetempleguard'] };
@@ -1098,7 +1101,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     }
     if (ic && ic.startsWith('i:')) {
       const [n, lock] = ic.slice(2).split('|');
-      if (ICONS.has(n)) return `<img class="ico${lock ? ' locked' : ''}" src="${ICONP}${n}.png" alt="" draggable="false">` + (lock ? '<span class="lock">🔒</span>' : '');
+      if (ICONS.has(n)) {
+        // a dynasty outside the western style shows its own building; if that region has no
+        // art for it (the Incas have no Stable) the browser falls back to the shared icon
+        const pl = G.players && G.players[owner || 1], rg = pl && G.REGION[pl.civ];
+        const fb = `${ICONP}${n}.png`;
+        const reg = (rg && rg !== 'western' && REGION_ICON.has(n)) ? `${ICONP}${rg}_${n}.png` : null;
+        return `<img class="ico${lock ? ' locked' : ''}" src="${reg || fb}" alt="" draggable="false"${reg ? ` onerror="this.onerror=null;this.src='${fb}'"` : ''}>` + (lock ? '<span class="lock">🔒</span>' : '');
+      }
       return `<span class="glyph">${(G.UNITS[n] || G.BUILDINGS[n] || {}).icon || '?'}</span>`;
     }
     const n = EMOJI_ICON[ic];
@@ -1108,7 +1118,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   function selIcon(e) {
     if (e.kind === 'res') return iconHTML('i:' + { tree: 'wood', berry: 'food', gold: 'gold', stone: 'stone' }[e.type]);
     if (e.kind === 'unit') return iconHTML('u:' + (e.type === 'villager' && e.sex === 'f' ? 'villager_f' : e.type), e.owner);
-    return iconHTML('i:' + e.type);
+    return iconHTML('i:' + e.type, e.owner);
   }
   function costTxt(c) { return Object.keys(c).map(k => `<img class="ci" src="${ICONP}${k}.png" alt="${k}">${c[k]}`).join(' '); }
   // ---- press and hold any command for an explanation ----
