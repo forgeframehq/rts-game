@@ -238,7 +238,7 @@
     let hp = def.hp; if (type === 'knight' && mods(owner).knightHp) hp = Math.round(hp * mods(owner).knightHp);
     if (owner > 0) hp += G.techEff(owner, 'unitHp_' + type) || 0;   // e.g. Cholas' Temple Endowment
     e.hp = e.maxHp = hp;
-    if (type === 'villager') e.sex = Math.random() < 0.5 ? 'f' : 'm';
+    if (type === 'villager') e.sex = G.rand() < 0.5 ? 'f' : 'm';
     if (type === 'queen') e.sex = 'f';
     e.task = { t: 'idle' }; e.path = []; e.cool = 0; e.carry = null; e.face = 1; e.walk = 0; e.repath = 0;
     e.range = G.rangeOf(owner, type, def);
@@ -282,7 +282,7 @@
     b.garrison = keep ? all.filter(u => !keep(u)) : [];
     for (const u of list) {
       const spot = G.nearestFree(b.x + 1.5, b.y + 1.5, 10) || { x: b.tx, y: b.ty };
-      u.x = spot.x + 0.5 + (Math.random() - 0.5) * 0.4; u.y = spot.y + 0.5 + (Math.random() - 0.5) * 0.4;
+      u.x = spot.x + 0.5 + (G.rand() - 0.5) * 0.4; u.y = spot.y + 0.5 + (G.rand() - 0.5) * 0.4;
       u.task = { t: 'idle' }; u.path = []; u.inside = 0;
       G.ents.push(u);
     }
@@ -334,7 +334,7 @@
 
   function pathTo(u, t, adjacent) {
     // budget: a big battle can't spend the whole frame on A*; units with a path keep it a moment longer
-    if (u.path && u.path.length && u.pathFor === t.id && (G.pathBudget | 0) <= 0) { u.repath = 0.15 + Math.random() * 0.2; return; }
+    if (u.path && u.path.length && u.pathFor === t.id && (G.pathBudget | 0) <= 0) { u.repath = 0.15 + G.rand() * 0.2; return; }
     G.pathBudget = (G.pathBudget | 0) - 1;
     if (t.kind === 'unit') {
       const tx = t.x | 0, ty = t.y | 0;
@@ -531,6 +531,13 @@
     if (!g) { const back = G.addBuilding(w.type, owner, tx, ty, true); back.hp = w.hp; return 'blocked'; }
     return g;
   };
+  G.cmdStop = units => { for (const u of units) if (u && !u.dead) { u.task = { t: 'idle' }; u.path = []; } };
+  G.setStance = (units, k) => { for (const u of units) if (u && !u.dead) u.stance = k; };
+  G.setRally = (b, r) => { if (b && !b.dead) b.rally = r; };
+  G.setForm = (units, k) => { for (const u of units) if (u && !u.dead) u.form = k; if (units[0] && G.players[units[0].owner]) G.players[units[0].owner].formation = k; };
+  G.setReseed = (p, on) => { if (G.players[p]) G.players[p].noReseed = !on; };
+  G.ungarrisonUnit = (b, u) => G.ungarrison(b, x => x === u);
+  G.deleteEnt = e => { if (e && !e.dead) { G.kill(e); G.onKilled(e); } };
   G.cmdGuard = function (units, t) {
     for (const u of units) if (u.kind === 'unit' && !u.dead && u !== t) { u.task = { t: 'guard', id: t.id }; u.path = []; u.pathFor = 0; u.repath = 0; }
   };
@@ -901,7 +908,7 @@
         if (task.scan <= 0) {
           task.scan = 0.4;
           const reach = g.kind === 'building' ? 4 + (g.size || 1) : 6;
-          const foe = nearest(g, e => (e.kind === 'unit' || (e.kind === 'building' && e.def.atk)) && !e.dead && G.enemies(e.owner, u.owner) && (G.revealAll || u.owner !== 1 || G.isVisible(e.x, e.y)), reach);
+          const foe = nearest(g, e => (e.kind === 'unit' || (e.kind === 'building' && e.def.atk)) && !e.dead && G.enemies(e.owner, u.owner) && (G.revealAll || u.owner !== 1 || (G.net && G.net.on) || G.isVisible(e.x, e.y)), reach);
           if (foe) { u.task = { t: 'attack', id: foe.id, guard: g.id }; u.path = []; u.pathFor = 0; break; }
         }
         const close = g.kind === 'building' ? G.edgeDist(u, g) <= 1.6 : G.dist(u, g) <= 1.8;
@@ -1036,7 +1043,7 @@
             // The field is spent, not destroyed. Sow it again for a fraction of a new farm
             // and keep working; with no wood it lies fallow until someone comes back to it.
             f.food = 0;
-            if ((u.owner === 1 && G.autoReseed === false) || !G.resowFarm(f, u.owner)) {
+            if ((G.players[u.owner] && G.players[u.owner].noReseed) || !G.resowFarm(f, u.owner)) {
               f.fallow = true;
               u.atFarm = false;
               if (u.carry && u.carry.amt > 0) goDrop(u); else u.task = { t: 'idle' };

@@ -42,15 +42,19 @@
     G.initMap(seed);
     const slots = (config.players && config.players.length ? config.players : [{ civ: 'britons' }, { civ: 'franks', ai: 'normal' }]);
     G.players = {};
-    slots.forEach((s, i) => { G.players[i + 1] = G.makePlayer(i + 1, s.civ, { team: s.team || 0, ai: i === 0 ? null : (s.ai || 'normal') }); });
+    // the local player is always player 1 on its own phone. In a network match the guest's slot
+    // is relabelled, but everything is still created in slot order so both phones agree on ids.
+    const me = config.me | 0, num = i => (i === me ? 1 : i < me ? i + 2 : i + 1);
+    G.slotNum = num;
+    slots.forEach((s, i) => { G.players[num(i)] = G.makePlayer(num(i), s.civ, { team: s.team || 0, ai: i === me ? null : (s.ai || (config.net ? null : 'normal')) }); });
     // colours: each player's pick, or with team colours on, one colour per team
     const used = new Set();
     slots.forEach((s, i) => {
       let c = config.teamColors && s.team > 0 ? s.team - 1 : (s.color != null ? s.color : i);
       if (!config.teamColors) { while (used.has(c)) c = (c + 1) % G.PALETTE.length; used.add(c); }
-      G.players[i + 1].color = c;
+      G.players[num(i)].color = c;
       const R = G.ROYALS[s.civ] || G.ROYALS.britons, pick = R.names[Math.floor(G.mapRng ? (i * 7 + seed) % R.names.length : 0)];
-      G.players[i + 1].royals = { king: s.kingName || pick[0], queen: s.queenName || pick[1] };
+      G.players[num(i)].royals = { king: s.kingName || pick[0], queen: s.queenName || pick[1] };
     });
     G.applyColors();
     // a later starting Age, as in AoE2's setup: everyone begins already advanced
@@ -69,7 +73,8 @@
       const m = Math.round(N * 0.18);
       spots = [{ x: m, y: N - m - 3 }, { x: N - m - 3, y: m }, { x: m, y: m }, { x: N - m - 3, y: N - m - 3 }];
     }
-    const starts = slots.map((s, i) => ({ p: i + 1, x: spots[i].x, y: spots[i].y }));
+    const starts = slots.map((s, i) => ({ p: num(i), x: spots[i].x, y: spots[i].y }));
+    if (G.seedRand) G.seedRand(seed);
     G.rules.map = G.pickMap ? G.pickMap(config.map || 'grasslands', r) : 'grasslands';
     if (G.mapPaint) G.mapPaint(G.rules.map, r, starts);
     // Town centers first (so resources avoid them)
@@ -113,7 +118,8 @@
     G.revealAll = G.rules.reveal === 'all';
     if (G.rules.reveal === 'explored') G.explored.fill(1);
     G.updateFog();
-    G.camera.focus(tcs[0].x, tcs[0].y + 2);
+    const myTc = tcs.find(t => t.owner === 1) || tcs[0];
+    G.camera.focus(myTc.x, myTc.y + 2);
     G.ais = [];
     for (const id in G.players) {
       const p = G.players[id];
@@ -186,7 +192,7 @@
           else if (lostTC) G.ui.alert(+id === 1 ? '🏚️ Your last Town Center has fallen.' : `🏚️ The ${G.CIVS[p.civ].name}' last Town Center has fallen!`);
           else if (+id !== 1) G.ui.alert(`${G.CIVS[p.civ].name} (${G.PLAYER_COLOR_NAMES[id]}) has been defeated!`);
         }
-        if ((lostCrown || lostTC) && +id !== 1) G.eliminate(+id);
+        if ((lostCrown || lostTC) && (+id !== 1 || (G.net && G.net.on))) G.eliminate(+id);
       }
     }
     // when an enemy is down to its last few pieces, show them on the minimap so the hunt doesn't drag
@@ -258,7 +264,8 @@
     if (gap < cap - 0.002) { requestAnimationFrame(frame); return; }
     const t0 = performance.now();
     const real = Math.min(0.05, gap || 0); last = t;
-    if (!G.paused && !G.over && G.ents.length) {
+    if (G.net && G.net.on) G.net.frame(real);
+    else if (!G.paused && !G.over && G.ents.length) {
       const dt = real * G.speed;
       // substeps keep movement stable at higher speeds
       const n = Math.ceil(dt / 0.034);
@@ -276,7 +283,7 @@
   }
   // leaving the app pauses the match (and with it all the work), and opens the pause menu on return
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden || !G.ents.length || G.over || G.paused) return;
+    if (!document.hidden || !G.ents.length || G.over || G.paused || (G.net && G.net.on)) return;   // a network match can't pause
     if (G.ui && G.ui.openPause) G.ui.openPause(); else G.paused = true;
   });
   G.start = function () { requestAnimationFrame(t => { last = t; frame(t); }); };

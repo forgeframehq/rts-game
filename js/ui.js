@@ -33,7 +33,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
   function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } }
   function applyPrefs() {
-    G.autoReseed = prefs.reseed !== 'off';
+    G.autoReseed = prefs.reseed !== 'off'; if (G.players && G.players[1] && !(G.net && G.net.on)) G.setReseed(1, G.autoReseed);
     G.speed = +prefs.speed || 1;
     if (G.sound) {
       const v = prefs.sound === undefined ? 'full' : prefs.sound;
@@ -119,11 +119,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }));
 
   // ---------- Screens ----------
-  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over', 'picker', 'saves', 'results', 'brief'];
+  const SCREENS = ['start', 'quick', 'skirmish', 'dynasties', 'options', 'help', 'menu', 'over', 'picker', 'saves', 'results', 'brief', 'mp'];
   function show(id) {
     for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id);
     if (G.sound && (id === 'start' || id === 'over')) G.sound.setScene('menu');
-    if (id === 'start') refreshContinue();
+    if (id === 'start') { refreshContinue(); if (G.net && G.net.ws && !G.net.on) G.net.close(); }
   }
   // Back goes to the main menu, or straight back to the pause menu when a sheet was opened mid-game
   document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { if (UI.backToSkirmish && !$('quick').classList.contains('hidden')) { UI.backToSkirmish = false; show('skirmish'); return; } if (UI.backToPause) { UI.backToPause = false; for (const id of SCREENS) $(id).classList.add('hidden'); $('menu').classList.remove('hidden'); } else show('start'); });
@@ -320,6 +320,76 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       + (G.rules.startAge > 1 ? `Starting in the ${G.AGES[G.rules.startAge].name}. ` : '')
       + `You lead the ${G.CIVS[G.players[1].civ].name}. Enemies: ${foes.join(', ')}`);
   }
+  // ---------- Multiplayer lobby ----------
+  // Create: you get a code to read out to a friend. Join: type their code. Both pick a dynasty;
+  // the host picks the map and mode and starts. G.net does the rest (js/net.js).
+  const MP = { civ: prefs.mpCiv || (setup.slots && setup.slots[0] && setup.slots[0].civ !== 'random' ? setup.slots[0].civ : 'britons'), map: 'grasslands', mode: 'conquest', size: 'small', them: null, busy: false };
+  const civOpts = sel => Object.keys(G.CIVS).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${G.CIVS[k].name}</option>`).join('');
+  function mpView(v, msg) {
+    const b = $('mp-body'), N = G.net;
+    if (v === 'home') b.innerHTML = `<nav class="mainmenu">
+        <button class="mbtn primary" id="mp-create"><span>Create game</span><small>Get a code to send to a friend</small></button>
+        <button class="mbtn" id="mp-join"><span>Join game</span><small>Type your friend's code</small></button></nav>
+        <p class="hint">Two players, one match, over Wi-Fi or mobile data.</p>${msg ? `<p class="mp-err">${msg}</p>` : ''}`;
+    if (v === 'join') b.innerHTML = `<p class="hint">Type the 4-letter code your friend sees on their screen.</p>
+        <input id="mp-code" class="mp-code" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD">
+        <button class="mbtn primary" id="mp-go"><span>Join</span></button>${msg ? `<p class="mp-err">${msg}</p>` : ''}`;
+    if (v === 'wait') b.innerHTML = `<p class="hint">${msg}</p>`;
+    if (v === 'lobby') {
+      const host = N.role === 'host';
+      b.innerHTML = `<div class="mp-codebox"><small>Game code</small><b>${N.code}</b><small>${host ? 'Send this code to your friend' : 'Joined'}</small></div>
+        <div class="mp-row"><span>You</span><select id="mp-civ">${civOpts(MP.civ)}</select></div>
+        <div class="mp-row"><span>Opponent</span><b id="mp-them">${N.peer ? (MP.them ? G.CIVS[MP.them].name : 'Choosing…') : 'Waiting for a player to join…'}</b></div>
+        <div class="mp-row"><span>Map</span>${host ? `<select id="mp-map">${['random', ...G.MAP_KEYS].map(k => `<option value="${k}"${k === MP.map ? ' selected' : ''}>${k === 'random' ? 'Random' : (G.MAPS[k] && G.MAPS[k].name) || k}</option>`).join('')}</select>` : `<b id="mp-mapname">${MP.map}</b>`}</div>
+        <div class="mp-row"><span>Mode</span>${host ? `<div class="seg" id="mp-mode"><button data-v="conquest">Conquest</button><button data-v="regicide">Regicide</button></div>` : `<b id="mp-modename">${MP.mode === 'regicide' ? 'Regicide' : 'Conquest'}</b>`}</div>
+        ${host ? `<button class="mbtn primary" id="mp-start"${N.peer && MP.them ? '' : ' disabled'}><span>Start match</span></button>` : '<p class="hint">The host will start the match.</p>'}`;
+      if (host) { for (const x of $('mp-mode').children) { x.classList.toggle('on', x.dataset.v === MP.mode); x.onclick = () => { MP.mode = x.dataset.v; mpSay(); mpView('lobby'); }; }
+        $('mp-map').onchange = e => { MP.map = e.target.value; mpSay(); };
+        $('mp-start').onclick = () => {
+          const cfg = { seed: (Math.random() * 1e9) | 0, map: MP.map === 'random' ? G.MAP_KEYS[Math.floor(Math.random() * G.MAP_KEYS.length)] : MP.map, size: MP.size, mode: MP.mode, res: 'standard', pop: 200, reveal: 'normal', players: [{ civ: MP.civ }, { civ: MP.them }] };
+          N.send({ t: 'start', cfg }); mpStart(cfg);
+        }; }
+      $('mp-civ').onchange = e => { MP.civ = e.target.value; prefs.mpCiv = MP.civ; savePrefs(); mpSay(); };
+    }
+    const q = id => $(id);
+    if (q('mp-create')) q('mp-create').onclick = () => mpOpen(N.newCode(), 'host', 3);
+    if (q('mp-join')) q('mp-join').onclick = () => { mpView('join'); setTimeout(() => $('mp-code').focus(), 50); };
+    if (q('mp-go')) { const go = () => { const c = $('mp-code').value.trim().toUpperCase(); if (!/^[A-Z2-9]{4}$/.test(c)) { mpView('join', 'A code is 4 letters or numbers.'); return; } mpOpen(c, 'guest', 1); }; q('mp-go').onclick = go; $('mp-code').onkeydown = e => { if (e.key === 'Enter') go(); }; }
+  }
+  // tell the other phone what we picked (the host also sends the map and mode)
+  const mpSay = () => G.net.send(Object.assign({ t: 'lobby', civ: MP.civ }, G.net.role === 'host' ? { map: MP.map, mode: MP.mode } : {}));
+  async function mpOpen(code, role, tries) {
+    if (MP.busy) return; MP.busy = true;
+    mpView('wait', role === 'host' ? 'Creating a game…' : 'Joining…');
+    let r = await G.net.connect(code, role);
+    // a freshly made code can clash with someone else's game: just make another
+    while (!r.ok && role === 'host' && --tries > 0 && /in use/.test(r.why || '')) r = await G.net.connect(G.net.newCode(), role);
+    MP.busy = false;
+    if (!r.ok) { mpView(role === 'host' ? 'home' : 'join', r.why); return; }
+    MP.them = null; mpView('lobby'); mpSay();
+  }
+  function mpStart(cfg) {
+    $('netwait').classList.add('hidden');
+    G.clearSave();
+    G.net.begin(cfg);
+    G.buildGround();
+    enterGame();
+    if (UI.onMatchStart) UI.onMatchStart();
+    const them = G.CIVS[G.players[2].civ].name;
+    UI.alert(`⚔️ Online match: you lead the ${G.CIVS[G.players[1].civ].name} against the ${them}.` + (G.rules.mode === 'regicide' ? ' 👑 Guard your King and Queen!' : ''));
+  }
+  G.net.listen(m => {
+    if ($('mp').classList.contains('hidden') && m.t !== 'start') return;
+    if (m.t === 'lobby') { MP.them = m.civ; if (m.map) MP.map = m.map; if (m.mode) MP.mode = m.mode; mpView('lobby'); }
+    if (m.t === 'peer') { if (m.on) { mpSay(); } else MP.them = null; mpView('lobby'); }
+    if (m.t === 'start' && G.net.role === 'guest' && !G.net.on) mpStart(m.cfg);
+    if (m.t === 'closed' && !G.net.on) mpView('home', 'Lost the connection to the game server.');
+  });
+  UI.openMp = () => { mpView(G.net.ws && G.net.ws.readyState === 1 ? 'lobby' : 'home'); show('mp'); };
+  $('m-multi').onclick = () => UI.openMp();
+  // the "waiting for your opponent" banner, shown by net.js when a turn is late
+  UI.netWait = txt => { const el = $('netwait'); if (!el) return; if (!txt) { el.classList.add('hidden'); return; } el.textContent = txt; el.classList.remove('hidden'); };
+
   $('btn-start').onclick = () => { prefs.setup = setup; savePrefs(); startSkirmish(JSON.parse(JSON.stringify(setup)), true); };
 
   // Quick Match: pick a difficulty and go. One opponent, high resources, so you are
@@ -420,17 +490,24 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   }
 
   // ---------- Pause & game over ----------
-  $('btn-again').onclick = () => { if (G.tutorial.last) { G.tutorial.start(); enterGame(); } else if (lastConfig) startSkirmish(lastConfig); else show('start'); };
-  $('btn-over-menu').onclick = () => { $('hud').classList.add('hidden'); G.demo = true; show('start'); };
-  $('btn-menu').onclick = () => { G.paused = true; G.saveGame(); $('menu').classList.remove('hidden'); };
+  $('btn-again').onclick = () => { if (G.net && G.net.on) { G.net.end(); $('hud').classList.add('hidden'); UI.openMp(); return; } if (G.tutorial.last) { G.tutorial.start(); enterGame(); } else if (lastConfig) startSkirmish(lastConfig); else show('start'); };
+  $('btn-over-menu').onclick = () => { if (G.net && G.net.on) G.net.end(); $('hud').classList.add('hidden'); G.demo = true; show('start'); };
+  $('btn-menu').onclick = () => {
+    const net = G.net && G.net.on;
+    if (!net) { G.paused = true; G.saveGame(); }
+    for (const id of ['speed', 'btn-psave', 'btn-restart']) { const el = $(id); if (el) el.classList.toggle('hidden', !!net); }
+    const ql = $('btn-quit'); if (ql) ql.querySelector('span').textContent = net ? 'Leave match' : 'Save & quit';
+    const qs = $('btn-quit'); if (qs) qs.querySelector('small').textContent = net ? 'Your opponent wins' : 'Back to the menu';
+    $('menu').classList.remove('hidden');
+  };
   // the game opens it itself when the player switches to another app (game.js)
   UI.openPause = () => { if (!$('hud').classList.contains('hidden') && $('menu').classList.contains('hidden')) $('btn-menu').onclick(); else G.paused = true; };
   $('btn-resume').onclick = () => { G.paused = false; $('menu').classList.add('hidden'); };
   $('btn-restart').onclick = () => { $('menu').classList.add('hidden'); if (lastConfig) startSkirmish(lastConfig); else if (G.config) { G.clearSave(); G.newGame({ ...G.config, seed: 0 }); G.buildGround(); enterGame(); } };
-  $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); toMenu(); };
+  $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); if (G.net && G.net.on) { G.net.end(); G.over = 'defeat'; } toMenu(); };
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
-  UI.reset = function () { if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
+  UI.reset = function () { if (G.players && G.players[1] && !(G.net && G.net.on)) G.setReseed(1, G.autoReseed !== false); if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
   UI.alert = function (msg) {
     if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
   UI.gameOver = function (res) {
@@ -518,7 +595,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const b = document.createElement('button'); b.className = 'fopt' + (k === cur ? ' on' : '');
       b.innerHTML = `<canvas width="150" height="110"></canvas><b>${FORM_NAMES[k]}</b><small>${FORM_TXT[k]}</small>`;
       drawFormPreview(b.querySelector('canvas'), units, k);
-      b.onclick = () => { for (const u of units) u.form = k; G.players[1].formation = k; card.classList.add('hidden'); UI.alert(`Formation: ${FORM_NAMES[k]}`); panelKey = ''; refreshPanel(true); };
+      b.onclick = () => { G.order('setForm', units, k); card.classList.add('hidden'); UI.alert(`Formation: ${FORM_NAMES[k]}`); panelKey = ''; refreshPanel(true); };
       grid.appendChild(b);
     }
     card.classList.remove('hidden');
@@ -543,11 +620,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // send villagers to the nearest source of a resource (food: a free farm first, then berries)
   function sendTo(vils, k) {
     const v = vils[0];
-    if (k === 'food') { const f = G.freeFarmNear(v.x, v.y, 1); if (f) { G.cmdSmart(vils.slice(0, 1), f.x, f.y, f); outline(f, '#7dff7a'); if (vils.length > 1) sendTo(vils.slice(1), 'food'); panelKey = ''; return; } }
+    if (k === 'food') { const f = G.freeFarmNear(v.x, v.y, 1); if (f) { G.order('cmdSmart', vils.slice(0, 1), f.x, f.y, f); outline(f, '#7dff7a'); if (vils.length > 1) sendTo(vils.slice(1), 'food'); panelKey = ''; return; } }
     const type = { food: 'berry', wood: 'tree', gold: 'gold', stone: 'stone' }[k];
     const r = G.nearest(v, e => e.kind === 'res' && e.type === type && e.amount > 0 && (G.revealAll || G.isExplored(e.tx, e.ty)), 999);
     if (!r) { UI.alert(`No ${k} found yet: explore with a scout`); return; }
-    G.cmdGather(vils, r); outline(r, '#7dff7a'); ping(r.x, r.y, '#7dff7a'); panelKey = '';
+    G.order('cmdGather', vils, r); outline(r, '#7dff7a'); ping(r.x, r.y, '#7dff7a'); panelKey = '';
     if (G.sound) G.sound.play('command');
   }
   // ---- Army buttons 1-3: hold to save the selection, tap to select it, double-tap to jump to it ----
@@ -703,14 +780,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const target = pick(sx, sy);
     if (mode === 'rally') {
       const b = G.selection[0];
-      if (b && b.kind === 'building') { b.rally = { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }; ping(w.x, w.y, '#fff'); }
+      if (b && b.kind === 'building') { G.order('setRally', b, { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }); ping(w.x, w.y, '#fff'); }
       setMode(null); return;
     }
     const units = ownUnits();
     if (mode === 'guard') {
       const sold = units.filter(u => u.type !== 'villager' && !u.def.heal && u !== target);
       if (target && target.owner === 1 && (target.kind === 'unit' || target.kind === 'building') && sold.length) {
-        G.cmdGuard(sold, target); outline(target, '#6fc3ff'); ping(target.x, target.y, '#6fc3ff');
+        G.order('cmdGuard', sold, target); outline(target, '#6fc3ff'); ping(target.x, target.y, '#6fc3ff');
         if (G.sound) G.sound.play('command'); UI.alert(`🛡 Guarding the ${target.def.name || 'unit'}`);
       } else UI.alert('Tap one of your own units or buildings');
       setMode(null); refreshPanel(true); return;
@@ -720,9 +797,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     lastTap = { t: now, x: sx, y: sy, id: target ? target.id : 0 };
 
     if (opts.command) { // right click
-      if (units.length) { const r = G.cmdSmart(units, w.x, w.y, target); cmdFx(r, w.x, w.y); }
+      if (units.length) { const r = G.order('cmdSmart', units, w.x, w.y, target); cmdFx(r, w.x, w.y); }
       else if (G.selection[0] && G.selection[0].kind === 'building' && G.selection[0].owner === 1 && G.trainsFor(G.selection[0]).length) {
-        G.selection[0].rally = { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }; ping(w.x, w.y, '#fff');
+        G.order('setRally', G.selection[0], { x: w.x, y: w.y, id: target && target.kind === 'res' ? target.id : 0 }); ping(w.x, w.y, '#fff');
       }
       return;
     }
@@ -731,7 +808,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       // villagers + own foundation/farm/damaged building => work on it
       const vils = units.filter(u => u.type === 'villager');
       if (target.kind === 'building' && vils.length && !G.selection.includes(target) && (!target.built || target.hp < target.maxHp || target.type === 'farm')) {
-        const r = G.cmdSmart(vils, target.x, target.y, target); cmdFx(r, target.x, target.y); return;
+        const r = G.order('cmdSmart', vils, target.x, target.y, target); cmdFx(r, target.x, target.y); return;
       }
       if (dbl && target.kind === 'unit') { // select all of this type on screen
         const same = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === target.type && onScreen(e));
@@ -740,7 +817,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       select([target], opts.add); return;
     }
     if (units.length) {   // tap anywhere = command (move, gather, attack); use the Deselect button to clear
-      const r = G.cmdSmart(units, w.x, w.y, target);
+      const r = G.order('cmdSmart', units, w.x, w.y, target);
       cmdFx(r, w.x, w.y);
       return;
     }
@@ -832,7 +909,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       let placed = 0, blocked = 0, poor = false;
       for (const t of gh.line) {
         if (!G.canAfford(1, G.buildCost(1, gh.type))) { poor = true; break; }
-        const b = G.placeBuilding(1, gh.type, t.tx, t.ty, placed === 0 ? vils : null);
+        const b = G.order('placeBuilding', 1, gh.type, t.tx, t.ty, placed === 0 ? vils : null);
         if (b) placed++; else blocked++;
       }
       if (!placed) { UI.alert(poor ? 'Not enough resources' : 'Something is in the way (red tiles)'); if (poor) flashCost(G.buildCost(1, gh.type)); return; }
@@ -854,7 +931,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
       UI.alert("No room here. Something is in the way (red tiles)"); return;
     }
-    const b = G.placeBuilding(1, gh.type, gh.tx, gh.ty, ownUnits().filter(u => u.type === 'villager'));
+    const b = G.order('placeBuilding', 1, gh.type, gh.tx, gh.ty, ownUnits().filter(u => u.type === 'villager'));
     if (!b) { UI.alert('Not enough resources'); flashCost(G.buildCost(1, gh.type)); setMode(null); return; }
     ping(b.x, b.y, '#8f8');
     if (keep && G.canAfford(1, G.buildCost(1, gh.type))) return; // shift-place multiple
@@ -1148,7 +1225,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         q.dataset.k = key + e.id; q.innerHTML = '';
         e.queue.forEach((it, i) => {
           const d = document.createElement('button'); d.className = 'qitem'; d.innerHTML = iconHTML((G.UNITS[it.type] ? 'u:' + (it.type === 'villager' ? 'villagers' : it.type) : 'i:' + it.type), 1) + (i === 0 ? '<span class="prog"></span>' : '');
-          d.onclick = () => { G.cancelTrain(e, i); panelKey = ''; };
+          d.onclick = () => { G.order('cancelTrain', e, i); panelKey = ''; };
           q.appendChild(d);
         });
       }
@@ -1162,7 +1239,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           const d = document.createElement('button'); d.className = 'qitem' + (u.def.cls === 'hero' ? ' royal' : '');
           d.title = 'Send out ' + u.def.name;
           d.innerHTML = iconHTML('u:' + (u.type === 'villager' && u.sex === 'f' ? 'villager_f' : u.type), u.owner) + (u.def.cls === 'hero' ? '<span class="crown">👑</span>' : '');
-          d.onclick = () => { G.ungarrison(e, x => x === u); panelKey = ''; q.dataset.k = ''; };
+          d.onclick = () => { G.order('ungarrisonUnit', e, u); panelKey = ''; q.dataset.k = ''; };
           q.appendChild(d);
         }
       }
@@ -1212,7 +1289,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const site = G.ents.filter(b => !b.dead && b.owner === 1 && b.kind === 'building' && b.type !== 'farm' && (!b.built || b.hp < b.maxHp * 0.95)).sort((a, b) => G.dist(a, vils[0]) - G.dist(b, vils[0]))[0];
         // these go AFTER the everyday buttons (Build, Garrison, Stop keep their places for muscle
         // memory), always in the same order; the needed one is only highlighted, never moved
-        if (site) { const b = btn('i:build', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.cmdBuild(vils, site); outline(site, '#ffd34a'); panelKey = ''; }); b.classList.add('job'); cmds.appendChild(b); }
+        if (site) { const b = btn('i:build', site.built ? 'Repair' : 'Help build', site.def.name, () => { G.order('cmdBuild', vils, site); outline(site, '#ffd34a'); panelKey = ''; }); b.classList.add('job'); cmds.appendChild(b); }
         for (const k of ['food', 'wood', 'gold', 'stone']) {
           const b = btn(JOBS[k][0], JOBS[k][1], k === need ? '<b class="need">Needed</b>' : '', () => sendTo(vils, k));
           b.classList.add('job'); if (k === need) b.classList.add('suggest');
@@ -1228,12 +1305,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           let full = 0;
           for (const u of canHide) {
             const b = G.nearest(u, e => (e.type === 'castle' || e.type === 'towncenter' || e.type === 'infirmary') && G.canGarrison(u, e));
-            if (b) G.garrisonTo(u, b); else full++;
+            if (b) G.order('garrisonTo', u, b); else full++;
           }
           if (full) UI.alert(hasCastle ? 'No room left inside' : 'No room in a Town Center');
         }));
       }
-      cmds.appendChild(btn('i:stop', 'Stop', '', () => { for (const u of units) { u.task = { t: 'idle' }; u.path = []; } }));
+      cmds.appendChild(btn('i:stop', 'Stop', '', () => G.order('cmdStop', units)));
       // 🛡 Guard: tap a unit or building of yours, and these soldiers stay by it and fight off anything that comes near
       const guards = units.filter(u => u.type !== 'villager' && !u.def.heal);
       if (guards.length) cmds.appendChild(btn('i:guard', 'Guard', '', () => setMode('guard')));
@@ -1243,7 +1320,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const cur = G.stanceOf(guards[0]), mixed = guards.some(u => G.stanceOf(u) !== cur);
         cmds.appendChild(btn(ST[cur][0], 'Stance', mixed ? 'mixed' : ST[cur][1], () => {
           const next = G.STANCES[(G.STANCES.indexOf(cur) + 1) % G.STANCES.length];
-          for (const u of guards) u.stance = next;
+          G.order('setStance', guards, next);
           UI.alert({ aggressive: '⚔ Aggressive: chases enemies anywhere', defensive: '🛡 Defensive: fights nearby enemies, then comes back', stand: '✋ Stand Ground: holds this spot, fights only what is in reach', passive: '🚫 No Attack: never fights back' }[next]);
           panelKey = ''; refreshPanel(true);
         }));
@@ -1252,7 +1329,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const hurt = guards.filter(u => u.hp < u.maxHp * 0.95 && !u.def.siege);
       if (hurt.length && G.ents.some(e => !e.dead && e.owner === 1 && e.type === 'infirmary' && e.built)) cmds.appendChild(btn('i:heal', 'Heal', 'Infirmary', () => {
         let full = 0;
-        for (const u of hurt) { const b = G.nearest(u, e => e.type === 'infirmary' && G.canGarrison(u, e)); if (b) G.garrisonTo(u, b); else full++; }
+        for (const u of hurt) { const b = G.nearest(u, e => e.type === 'infirmary' && G.canGarrison(u, e)); if (b) G.order('garrisonTo', u, b); else full++; }
         if (full) UI.alert('The Infirmary is full'); else if (G.sound) G.sound.play('command');
       }));
       // ⭐ Special: one button for every soldier's move
@@ -1260,7 +1337,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (sold.length) {
         const kinds = [...new Set(sold.map(G.specialOf))], names = kinds.map(k => G.SPECIALS[k].name);
         const b = btn('i:special', names.length > 2 ? 'Special ×' + names.length : names.join(' + '), '<span class="sp-cool"></span>', () => {
-          const n = G.useSpecial(sold);
+          const n = G.order('useSpecial', sold);
           if (!n) UI.alert(sold.some(G.specialReady) ? 'Nothing in range to use it on yet' : 'Still recharging');
           else { UI.buzz(25); if (G.sound) G.sound.play('command'); }
           spCool();
@@ -1274,7 +1351,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         cmds.appendChild(btn('i:army', 'Formation', FORM_NAMES[cur], () => openForm(units)));
       }
       if (vils.length && vils.some(v => v.carry)) cmds.appendChild(btn('i:dropoff', 'Drop off', '', () => {
-        for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.cmdDeposit([v], b); }
+        for (const v of vils) if (v.carry) { const b = G.nearest(v, x => x.kind === 'building' && x.owner === 1 && x.built && x.def.drop && x.def.drop.includes(v.carry.res)); if (b) G.order('cmdDeposit', [v], b); }
       }));
       if (units.length > 1) cmds.appendChild(btn('⛺', 'Keep only', vils.length && vils.length < units.length ? 'soldiers' : '', () => {
         const mil = units.filter(u => u.type !== 'villager'); select(mil.length && mil.length < units.length ? mil : [units[0]], false);
@@ -1312,7 +1389,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           if (!G.canTrainType(1, t)) { cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t) + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
           const trainOnce = () => {
             for (const b of sel) {
-              const r = G.train(b, t);
+              const r = G.order('train', b, t);
               if (r === 'pop') { UI.alert('Need more houses!'); return false; }
               if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); return false; }
               if (r === 'res') { UI.alert('Not enough resources'); flashCost(c); return false; }
@@ -1328,12 +1405,12 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (resPage) {
         if (e.research) {
           const rd = e.research.kind === 'up' ? G.UPGRADES[e.research.id] : G.TECHS[e.research.id];
-          cmds.appendChild(btn('i:cancel', 'Cancel', rd.name, () => { G.cancelResearch(e); panelKey = ''; }));
+          cmds.appendChild(btn('i:cancel', 'Cancel', rd.name, () => { G.order('cancelResearch', e); panelKey = ''; }));
         } else for (const r of res) {
           const ic = r.kind === 'up' ? 'u:' + r.def.line + '@' + r.def.tier + (r.why ? '|lock' : '') : 't:' + r.id + (r.why ? '|lock' : '');
           const b = btn(ic, r.def.name, r.why || costTxt(r.def.cost), () => {
             if (r.why) { UI.alert(`${r.def.name} needs the ${G.AGES[r.def.age].name}`); return; }
-            const ok = G.startResearch(e, r.id);
+            const ok = G.order('startResearch', e, r.id);
             if (ok === 'res') { UI.alert('Not enough resources'); flashCost(r.def.cost); }
             else if (!ok) UI.alert('Already researching');
             else if (r.def.desc) UI.alert(`Researching ${r.def.name}: ${r.def.desc}`);
@@ -1350,11 +1427,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
       if (e.type === 'towncenter' && e.owner === 1) {
         const nx = G.AGES[G.ageOf(1) + 1];
-        if (e.aging) cmds.appendChild(btn('i:cancel', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.cancelAge(e); panelKey = ''; }));
+        if (e.aging) cmds.appendChild(btn('i:cancel', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.order('cancelAge', e); panelKey = ''; }));
         else if (nx) {
           const why = G.ageBlock(1, e);
           cmds.appendChild(btn('i:ageup', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {
-            const r = G.advanceAge(e);
+            const r = G.order('advanceAge', e);
             if (r === 'res') { UI.alert('Not enough resources'); flashCost(G.ageCost(1, G.ageOf(1) + 1)); }
             else if (!r) UI.alert(G.ageBlock(1, e) || 'Cannot advance now');
             else UI.alert(`Advancing to the ${nx.name}…`);
@@ -1363,9 +1440,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         }
       }
       if (e.def.garrison && e.owner === 1) {
-        cmds.appendChild(btn('i:bell', 'Ring bell', 'all villagers in', () => { G.ringBell(1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
+        cmds.appendChild(btn('i:bell', 'Ring bell', 'all villagers in', () => { G.order('ringBell', 1); UI.alert('Villagers, take shelter!'); panelKey = ''; }));
         const n = (e.garrison || []).length;
-        if (n) cmds.appendChild(btn('i:ungarrison', 'Ungarrison', n + ' inside', () => { for (const b of sel) if (b.garrison) G.ungarrison(b); panelKey = ''; }));
+        if (n) cmds.appendChild(btn('i:ungarrison', 'Ungarrison', n + ' inside', () => { for (const b of sel) if (b.garrison) G.order('ungarrison', b); panelKey = ''; }));
       }
     }
     if (e.kind === 'building' && e.owner === 1) {
@@ -1374,7 +1451,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const gc = G.buildCost(1, 'gate');
         if (!G.canBuildType(1, 'gate')) cmds.appendChild(btn('i:gate|lock', 'Make gate', G.AGES[G.BUILD_AGE.gate].short + ' Age', () => UI.alert(`Gates need the ${G.AGES[G.BUILD_AGE.gate].name}`), true));
         else cmds.appendChild(btn('i:gate', 'Make gate', costTxt(gc), () => {
-          const r = G.wallToGate(e);
+          const r = G.order('wallToGate', e);
           if (r === 'cost') { UI.alert('Not enough resources'); flashCost(gc); return; }
           if (typeof r === 'string') { UI.alert("Can't make a gate here"); return; }
           select([r], false); UI.alert('Gate laid out: a villager is on the way to build it'); if (G.sound) G.sound.play('place');
@@ -1382,7 +1459,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       }
       const del = btn('i:delete', 'Delete', '', () => {
         const nope = G.deleteBlock && G.deleteBlock(e); if (nope) { UI.alert(nope); return; }
-        if (del.dataset.armed) { G.kill(e); G.onKilled(e); return; }
+        if (del.dataset.armed) { G.order('deleteEnt', e); return; }
         del.dataset.armed = '1'; del.querySelector('.lb').textContent = 'Tap again'; del.style.borderColor = 'var(--bad)';
         setTimeout(() => { if (del.isConnected) { delete del.dataset.armed; del.querySelector('.lb').textContent = 'Delete'; del.style.borderColor = ''; } }, 2500);
       });
@@ -1419,7 +1496,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const av = +prefs.autovil || 0;
       if (av && !G.over) for (const b of G.ents) if (!b.dead && b.owner === 1 && b.type === 'towncenter' && b.built && !b.queue.length && !b.aging && !b.research) {
         const nv = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager').length, pc = G.popOf(1);
-        if (nv < av && pc.pop < pc.cap && G.canAfford(1, G.unitCost(1, 'villager'))) G.train(b, 'villager');
+        if (nv < av && pc.pop < pc.cap && !(b.netQ > 0) && G.canAfford(1, G.unitCost(1, 'villager'))) G.order('train', b, 'villager');
       }
       const na = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager').length;
       const ac = $('army-count'); ac.textContent = na || ''; ac.classList.toggle('zero', !na);

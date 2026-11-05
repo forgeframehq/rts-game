@@ -685,3 +685,15 @@ body.bigbtn .grp{width:58px}
 #cmds .buildtabs button { flex: 1; border: 0; border-radius: 14px; background: transparent; color: #c8b48a; font: 700 13px var(--heading, serif); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
 #cmds .buildtabs button.on { background: linear-gradient(#f2d48a, #c99a3c); color: #2b1b0b; box-shadow: 0 1px 3px #0009; }
 #cmds .cmd .cnt { position: absolute; top: 3px; right: 4px; width: auto; height: auto; margin: 0; padding: 0 5px; border-radius: 8px; font: 700 10px/15px system-ui, sans-serif; color: #2b1b0b; background: linear-gradient(#f2d48a, #c99a3c); box-shadow: 0 1px 2px #0008; pointer-events: none; }
+/* multiplayer lobby */
+#mp .mp-codebox { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 4px auto 14px; padding: 10px 26px; border: 1.5px solid var(--gold); border-radius: 12px; background: rgba(0,0,0,0.3); width: max-content; }
+#mp .mp-codebox b { font: 800 44px/1.1 var(--heading, serif); letter-spacing: 0.22em; color: var(--gold); padding-left: 0.22em; }
+#mp .mp-codebox small { font-size: 11px; opacity: 0.75; letter-spacing: 0.08em; text-transform: uppercase; }
+#mp .mp-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 2px; border-bottom: 1px solid var(--line); }
+#mp .mp-row > span { opacity: 0.75; }
+#mp select { background: #1d140b; color: #f1e2bd; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: inherit; max-width: 60%; }
+#mp .mp-code { display: block; margin: 14px auto; width: 6.2em; text-align: center; font: 800 40px var(--heading, serif); letter-spacing: 0.2em; text-transform: uppercase; background: rgba(0,0,0,0.35); color: var(--gold); border: 1.5px solid var(--gold); border-radius: 12px; padding: 8px 0 8px 0.2em; }
+#mp .mp-err { color: #ff9a7a; text-align: center; }
+#mp .mbtn { margin-top: 10px; }
+#netwait { position: fixed; z-index: 32; top: calc(env(safe-area-inset-top, 0px) + 48px); left: 50%; transform: translateX(-50%); padding: 6px 14px; border-radius: 16px; background: rgba(20,12,6,0.9); border: 1px solid var(--gold); color: #f1e2bd; font: 600 13px system-ui, sans-serif; }
+#netwait.hidden { display: none; }

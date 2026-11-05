@@ -66,6 +66,7 @@
   <div id="toast"></div>
   <div id="objpanel" class="hidden"></div>
   <div id="tip" class="hidden"></div>
+  <div id="netwait" class="hidden"></div>
   <div id="popcard" class="hidden"></div>
 </div>
 
@@ -86,7 +87,7 @@
       <button id="m-skirmish" class="mbtn primary"><span>Play</span><small>Quick Match or a custom battle: 5 modes, 8 maps</small></button>
       <div class="mgrid">
         <button id="m-campaign" class="mbtn" disabled><span>Campaign</span><small>Coming soon</small></button>
-        <button id="m-multi" class="mbtn" disabled><span>Multiplayer</span><small>Coming soon</small></button>
+        <button id="m-multi" class="mbtn"><span>Multiplayer</span><small>Play a friend with a code</small></button>
         <button id="m-saves" class="mbtn"><span>Saved Games</span><small>Load a match</small></button>
         <button id="m-dynasties" class="mbtn"><span>Dynasties</span><small>History &amp; bonuses</small></button>
         <button id="m-learn" class="mbtn"><span>Learn to Play</span><small>Guided tutorial match</small></button>
@@ -152,6 +153,14 @@
       </section>
     </div>
     <footer class="sheet-foot"><button id="btn-start" class="play grand">Start Battle</button></footer>
+  </div>
+</div>
+
+<!-- Multiplayer: create a game and share its code, or join with a friend's code -->
+<div id="mp" class="screen title hidden">
+  <div class="sheet">
+    <header class="sheet-head"><button class="back" data-back aria-label="Back">‹</button><h2>Multiplayer</h2></header>
+    <div class="sheet-body" id="mp-body"></div>
   </div>
 </div>
 
@@ -338,6 +347,7 @@
   <script src="js/modes.js"></script>
   <script src="js/specials.js"></script>
 <script src="js/save.js"></script>
+<script src="js/net.js"></script>
 <script src="js/tutorial.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/screens.js"></script>

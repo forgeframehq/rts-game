@@ -1,0 +1,13 @@
+# Dawn of Dynasties multiplayer relay: one Durable Object per room code, relaying messages
+# between the two players' phones. Deployed by .github/workflows/relay.yml.
+name = "dod-relay"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]

@@ -89,7 +89,7 @@
   $('btn-resign').onclick = () => {
     const b = $('btn-resign');
     if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Tap again to resign'; return; }
-    $('menu').classList.add('hidden'); G.paused = false; G.resign(1);
+    $('menu').classList.add('hidden'); G.paused = false; G.order('resign', 1);
   };
 
   // ---------- saved games ----------
