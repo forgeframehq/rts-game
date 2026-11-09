@@ -19,7 +19,7 @@ import json, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAN = os.path.join(ROOT, 'assets', 'manifest.json')
 TW, TH = 64, 32
-LIMIT, TARGET = 1.3, 1.1
+LIMIT, TARGET = 1.12, 1.05
 SKIP = ('mill',)
 
 

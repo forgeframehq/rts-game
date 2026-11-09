@@ -512,15 +512,19 @@
         // the chimney mouth: where the art's own painted smoke rose from (tools/erase_smoke.py
         // records it in the manifest), or failing that the highest point of the roof
         const S = SMOKE[e.type], tp = sp.chim ? { x: sp.chim[0], y: sp.chim[1] } : roofTop(sp), busy = (e.queue && e.queue.length) || e.research;
-        const cx = g.x + (tp.x + S.dx * sp.w) * z, cy = g.y + (tp.y + S.dy * sp.h) * z, n = busy ? S.n + 3 : S.n;
-        const rate = (busy ? 0.55 : 0.4) * S.speed, ph = (e.id % 13) * 0.077, im = puff(S.col), sh = puff('70,66,62');
+        const cx = g.x + (tp.x + S.dx * sp.w) * z, cy = g.y + (tp.y + S.dy * sp.h) * z, n = (busy ? S.n + 3 : S.n) + 4;
+        const rate = (busy ? 0.5 : 0.36) * S.speed, ph = (e.id % 13) * 0.077, im = puff(S.col), sh = puff('70,66,62');
         for (let i = 0; i < n; i++) {
           const t = (G.time * rate + i / n + ph) % 1;            // 0 at the chimney, 1 gone
           const rise = t * t * 0.3 + t * 0.7;                       // leaves quickly, slows as it spreads
           const sway = Math.sin(G.time * 1.6 + i * 1.9 + e.id) * (2 + 6 * t);
-          const px = cx + (sway + rise * 34) * z * S.size, py = cy - (3 + rise * 92) * z * S.size;
-          const r = (4 + rise * 24) * z * S.size;
-          const a = Math.min(1, Math.sin(Math.PI * Math.min(1, t * 1.15)) * (0.25 + 0.75 * (1 - t)) * (busy ? 0.95 : 0.8) * S.alpha);
+          const px = cx + (sway + rise * 34) * z * S.size, py = cy - (3 + rise * 72) * z * S.size;
+          const r = (5 + rise * 22) * z * S.size;
+          let a = Math.min(1, Math.sin(Math.PI * Math.min(1, t * 1.15)) * (0.25 + 0.75 * (1 - t)) * (busy ? 0.95 : 0.8) * S.alpha);
+          // smoke that has drifted over unexplored ground is not seen: it would hang as pale
+          // blobs in the black. (The plume is drawn over the fog so the roof's own chimney, at
+          // the edge of what is explored, still smokes.)
+          if (!G.revealAll) { const w = G.toWorld(px, py + r * 0.6); if (!G.isExplored(w.x, w.y)) continue; }
           // a dim underside first, so the pale puff has body against light ground as well as grass
           ctx.globalAlpha = a * 0.35; ctx.drawImage(sh, px - r * 1.05 + r * 0.15, py - r * 0.85, r * 2.1, r * 2.1);
           ctx.globalAlpha = a; ctx.drawImage(im, px - r, py - r, r * 2, r * 2);
