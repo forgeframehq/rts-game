@@ -90,10 +90,15 @@ def ref_url(ref):
 
 
 def create(prompt, ref):
-    inp = {"prompt": prompt, "aspect_ratio": os.environ.get("KIE_ASPECT", "1:1"), "output_format": "png", "quality": "high"}
+    model = MODEL if ref else T2I
+    inp = {"prompt": prompt, "aspect_ratio": os.environ.get("KIE_ASPECT", "1:1")}
+    if model.startswith("gpt-image"):
+        inp.update({"output_format": "png", "quality": "high"})
+    elif model == "z-image":      # text-to-image only; PNG out; no quality field
+        inp["nsfw_checker"] = False
     if ref:
         inp["image_urls"] = [ref_url(ref)]
-    r = post("/createTask", {"model": MODEL if ref else T2I, "input": inp})
+    r = post("/createTask", {"model": model, "input": inp})
     if r.get("code") != 200:
         raise RuntimeError(r)
     return r["data"]["taskId"]
