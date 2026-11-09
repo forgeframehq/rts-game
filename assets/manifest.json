@@ -9190,7 +9190,11 @@
   "w": 278.57,
   "h": 264.32,
   "ax": 128.3,
-  "ay": 200.02
+  "ay": 200.02,
+  "chim": [
+   -17.8,
+   -111.5
+  ]
  },
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
@@ -9230,7 +9234,11 @@
   "sx": 0,
   "sy": 2698,
   "sw": 514,
-  "sh": 495
+  "sh": 495,
+  "chim": [
+   -17.5,
+   -138.9
+  ]
  },
  "mediterranean_barracks_dark": {
   "file": "assets/bpack_mediterranean_0.png",
@@ -9278,7 +9286,11 @@
   "sx": 0,
   "sy": 2809,
   "sw": 529,
-  "sh": 552
+  "sh": 552,
+  "chim": [
+   -16.7,
+   -137.0
+  ]
  },
  "eastasian_barracks_dark": {
   "file": "assets/bpack_eastasian_0.png",
@@ -26143,7 +26155,11 @@
   "sx": 0,
   "sy": 973,
   "sw": 385,
-  "sh": 339
+  "sh": 339,
+  "chim": [
+   -0.7,
+   -104.8
+  ]
  },
  "middleeast_monastery": {
   "file": "assets/bpack_middleeast_1.png",
@@ -26563,7 +26579,11 @@
   "sx": 0,
   "sy": 2148,
   "sw": 521,
-  "sh": 470
+  "sh": 470,
+  "chim": [
+   23.8,
+   -84.6
+  ]
  },
  "middleeast_barracks_dark": {
   "file": "assets/bpack_middleeast_0.png",
@@ -26635,7 +26655,11 @@
   "sx": 0,
   "sy": 2636,
   "sw": 515,
-  "sh": 476
+  "sh": 476,
+  "chim": [
+   -33.0,
+   -92.7
+  ]
  },
  "americas_barracks_dark": {
   "file": "assets/bpack_americas_0.png",
@@ -26707,7 +26731,11 @@
   "sx": 0,
   "sy": 2983,
   "sw": 535,
-  "sh": 490
+  "sh": 490,
+  "chim": [
+   36.5,
+   -80.9
+  ]
  },
  "indian_barracks_dark": {
   "file": "assets/bpack_indian_0.png",

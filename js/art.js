@@ -118,7 +118,7 @@
     const k = key + '|' + color + (look ? '|' + civ : '');
     let s = tinted.get(k);
     if (!s) {
-      s = { cv: recolor(a.img, color, look, a.def), w: a.def.w, h: a.def.h, ax: a.def.ax, ay: a.def.ay, art: true };
+      s = { cv: recolor(a.img, color, look, a.def), w: a.def.w, h: a.def.h, ax: a.def.ax, ay: a.def.ay, chim: a.def.chim || null, art: true };
       tinted.set(k, s);
     }
     return s;

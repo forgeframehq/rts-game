@@ -260,23 +260,32 @@
   function apron(size) {
     if (aprons[size]) return aprons[size];
     if (!TEX.dirt_img) return null;
-    const pad = 1.1, T = 24, S = Math.round((size + pad * 2) * T);
+    // The band of trodden earth reaches about a tile and a half out, fraying into the grass
+    // through two scales of noise (big tongues of worn ground, then a ragged edge), and
+    // the ground is darkest right against the walls, more so on the south and east sides
+    // the sun doesn't reach, so even a sprite with a hard straight base reads as standing
+    // on the land rather than set down on it.
+    const pad = 2.1, T = 24, S = Math.round((size + pad * 2) * T);
     const c = document.createElement('canvas'); c.width = c.height = S;
     const x = c.getContext('2d');
     x.fillStyle = x.createPattern(TEX.dirt_img, 'repeat'); x.fillRect(0, 0, S, S);
-    const m = x.getImageData(0, 0, S, S), d = m.data, r = G.rng(size * 97);
+    const m = x.getImageData(0, 0, S, S), d = m.data;
     if (!NZ1) { NZ1 = makeNoise(11, 8); NZ2 = makeNoise(23, 32); NZ3 = makeNoise(37, 64); }
-    const lo = pad * T, hi = S - pad * T;
+    const lo = pad * T, hi = S - pad * T, k = 256 / S;   // the noise is read once across the whole apron
     for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
       // distance outside the footprint square, in tiles
       const dx = Math.max(lo - px, 0, px - hi) / T, dy = Math.max(lo - py, 0, py - hi) / T;
       const out = Math.hypot(dx, dy);
-      const n = NZ1[((py * 2) & 255) * 256 + ((px * 2) & 255)];
-      let a = 1 - ss(0.15, 0.95, out + (n - 0.5) * 0.7);
+      const ni = ((py * k) & 255) * 256 + ((px * k) & 255);
+      const big = NZ3[ni] - 0.5, fine = NZ1[((py * 3) & 255) * 256 + ((px * 3) & 255)] - 0.5;
+      // worn earth, thinning into grass: solid under and beside the walls, patchy further out
+      let a = 1 - ss(0.55, 1.9, out + big * 0.8 + fine * 0.3);
+      a *= 0.8 + 0.2 * (1 - ss(0.6, 1.6, out)) + fine * 0.3 * ss(0.6, 1.4, out);
       const o = (py * S + px) * 4;
-      // the shadow: darkest right at the walls
-      const sh = 1 - 0.32 * (1 - ss(0, 0.45, out));
-      d[o] *= sh; d[o + 1] *= sh; d[o + 2] *= sh; d[o + 3] = a * 235;
+      // the shadow: darkest right at the walls, and heavier on the two sides away from the light
+      const dark = (px > hi || py > hi) ? 0.5 : 0.34;
+      const sh = (1 - dark * (1 - ss(0, 0.6, out))) * 0.95;
+      d[o] *= sh; d[o + 1] *= sh; d[o + 2] *= sh; d[o + 3] = Math.max(0, Math.min(1, a)) * 240;
     }
     x.putImageData(m, 0, 0);
     return (aprons[size] = { cv: c, pad });
@@ -477,24 +486,46 @@
   // Drawn after the fog, so unexplored sky behind a roof can't swallow it.
   // which buildings smoke, and how: a hearth in every house, the forge, the Town Center, the castle kitchens
   const SMOKE = {
-    towncenter: { n: 4, size: 1, alpha: 1, speed: 1, col: '228,224,216', dx: 0, dy: 0 },
-    house:      { n: 3, size: 0.6, alpha: 0.8, speed: 0.9, col: '226,222,214', dx: 0, dy: 0 },
-    blacksmith: { n: 5, size: 0.85, alpha: 1.1, speed: 1.3, col: '150,145,140', dx: 0, dy: 0 },
-    castle:     { n: 3, size: 0.7, alpha: 0.75, speed: 0.8, col: '222,218,210', dx: 0, dy: 0.05 }
+    towncenter: { n: 7, size: 1, alpha: 1.25, speed: 1, col: '232,229,224', dx: 0, dy: 0 },
+    house:      { n: 5, size: 0.6, alpha: 1, speed: 0.9, col: '232,229,224', dx: 0, dy: 0 },
+    blacksmith: { n: 8, size: 0.85, alpha: 1.3, speed: 1.3, col: '140,135,130', dx: 0, dy: 0 },
+    castle:     { n: 5, size: 0.7, alpha: 0.95, speed: 0.8, col: '212,208,200', dx: 0, dy: 0.05 }
   };
   let chimneys = [];
+  // Each puff lives about 2.5 s: it leaves the chimney small and dense, swells as it climbs
+  // some 90 px, drifts east with the wind, wobbles a little and thins to nothing. Puffs are
+  // spaced along that life, so there is always a column of them in the air, and one is
+  // always being born, which is what makes the plume read as moving at a glance.
+  // One soft disc per smoke colour, drawn once and stamped (a radial gradient per puff per
+  // frame is too slow once a town has twenty chimneys).
+  const puffs = {};
+  function puff(col) {
+    if (puffs[col]) return puffs[col];
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const x = c.getContext('2d'), grd = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, `rgba(${col},1)`); grd.addColorStop(0.5, `rgba(${col},0.5)`); grd.addColorStop(1, `rgba(${col},0)`);
+    x.fillStyle = grd; x.fillRect(0, 0, 64, 64);
+    return (puffs[col] = c);
+  }
   function drawChimneys() {
     for (const [e, g, z, sp] of chimneys) {
-        const S = SMOKE[e.type], tp = roofTop(sp), busy = (e.queue && e.queue.length) || e.research;
-        const cx = g.x + (tp.x + S.dx * sp.w) * z, cy = g.y + (tp.y + S.dy * sp.h) * z, n = busy ? S.n + 2 : S.n;
+        // the chimney mouth: where the art's own painted smoke rose from (tools/erase_smoke.py
+        // records it in the manifest), or failing that the highest point of the roof
+        const S = SMOKE[e.type], tp = sp.chim ? { x: sp.chim[0], y: sp.chim[1] } : roofTop(sp), busy = (e.queue && e.queue.length) || e.research;
+        const cx = g.x + (tp.x + S.dx * sp.w) * z, cy = g.y + (tp.y + S.dy * sp.h) * z, n = busy ? S.n + 3 : S.n;
+        const rate = (busy ? 0.55 : 0.4) * S.speed, ph = (e.id % 13) * 0.077, im = puff(S.col), sh = puff('70,66,62');
         for (let i = 0; i < n; i++) {
-          const t = (G.time * (busy ? 0.32 : 0.22) * S.speed + i / n + (e.id % 7) * 0.13) % 1;
-          const px = cx + (Math.sin(t * 5 + i * 1.7 + e.id) * 3 + t * 22) * z * S.size, py = cy - (4 + t * 60) * z * S.size;
-          const r = (5 + t * 18) * z * S.size, a = Math.sin(Math.PI * Math.min(1, t * 1.2)) * (busy ? 0.75 : 0.6) * S.alpha;
-          const grd = ctx.createRadialGradient(px, py, 0, px, py, r), c = S.col;
-          grd.addColorStop(0, `rgba(${c},${a.toFixed(3)})`); grd.addColorStop(0.55, `rgba(${c},${(a * 0.55).toFixed(3)})`); grd.addColorStop(1, `rgba(${c},0)`);
-          ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill();
+          const t = (G.time * rate + i / n + ph) % 1;            // 0 at the chimney, 1 gone
+          const rise = t * t * 0.3 + t * 0.7;                       // leaves quickly, slows as it spreads
+          const sway = Math.sin(G.time * 1.6 + i * 1.9 + e.id) * (2 + 6 * t);
+          const px = cx + (sway + rise * 34) * z * S.size, py = cy - (3 + rise * 92) * z * S.size;
+          const r = (4 + rise * 24) * z * S.size;
+          const a = Math.min(1, Math.sin(Math.PI * Math.min(1, t * 1.15)) * (0.25 + 0.75 * (1 - t)) * (busy ? 0.95 : 0.8) * S.alpha);
+          // a dim underside first, so the pale puff has body against light ground as well as grass
+          ctx.globalAlpha = a * 0.35; ctx.drawImage(sh, px - r * 1.05 + r * 0.15, py - r * 0.85, r * 2.1, r * 2.1);
+          ctx.globalAlpha = a; ctx.drawImage(im, px - r, py - r, r * 2, r * 2);
         }
+        ctx.globalAlpha = 1;
     }
     chimneys = [];
   }

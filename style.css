@@ -708,3 +708,32 @@ body.bigbtn .grp{width:58px}
 .studio-credit { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; opacity: .75; }
 .studio-credit img { width: 34px; height: auto; }
 .studio-credit span { font-family: Cinzel, Georgia, serif; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #d8bd88; }
+
+/* the Age card: what the next Age needs, what it costs and what it unlocks */
+#agecard { background: rgba(6,4,2,0.62); }
+#agecard .card { text-align: left; gap: 8px; padding: 16px 16px 14px; }
+#agecard .card::before, #agecard .card::after { content: ''; position: absolute; width: 30px; height: 30px; background: url(assets/ui/corner.png) center / contain no-repeat; pointer-events: none; }
+#agecard .card { position: relative; border-width: 2px; box-shadow: 0 10px 40px #000c; }
+#agecard .card::before { top: -2px; left: -2px; }
+#agecard .card::after { top: -2px; right: -2px; transform: scaleX(-1); }
+#agecard h2 { margin: 0; font: 700 22px var(--heading); color: var(--gold); letter-spacing: 0.04em; }
+#agecard .kicker { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #c9a24a; margin-top: -4px; }
+#agecard .lead { font-family: system-ui, sans-serif; font-size: 14px; color: #f1e2bd; margin-top: 4px; display: flex; justify-content: space-between; align-items: baseline; }
+#agecard .lead b { color: var(--gold); font-weight: 700; font-variant-numeric: tabular-nums; }
+#agecard .needs { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; }
+#agecard .need { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); text-align: left; height: auto; font-size: 13px; color: #f1e2bd; }
+#agecard .need img.ico { width: 40px; height: 40px; object-fit: contain; flex: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.7)); }
+#agecard .need.todo img.ico { filter: grayscale(0.6) brightness(0.8); }
+#agecard .need .nm { display: block; font-family: var(--heading); font-weight: 700; font-size: 13px; line-height: 1.15; }
+#agecard .need .st { display: block; font-family: system-ui, sans-serif; font-size: 11px; margin-top: 2px; color: var(--muted); }
+#agecard .need.done .st { color: #8fd37a; }
+#agecard .need.todo .st { color: var(--gold); }
+#agecard .need.done { border-color: rgba(143,211,122,0.45); }
+#agecard .row { font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); line-height: 1.4; }
+#agecard .row b { color: #f1e2bd; font-weight: 600; }
+#agecard .cost img.ci { width: 14px; height: 14px; vertical-align: -2px; margin: 0 2px 0 6px; }
+#agecard .cost .short { color: #ff8c6a; }
+#agecard .btns { display: flex; gap: 8px; margin-top: 4px; }
+#agecard .btns button { flex: 1; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); font-size: 15px; }
+#agecard .btns button.go { background: linear-gradient(180deg, #8a6a2a, #5a4524); color: #fff3d6; font-weight: 700; }
+#agecard .btns button.go:disabled { opacity: 0.45; }

@@ -507,7 +507,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); if (G.net && G.net.on) { G.net.end(); G.over = 'defeat'; } toMenu(); };
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
-  UI.reset = function () { if (G.players && G.players[1] && !(G.net && G.net.on)) G.setReseed(1, G.autoReseed !== false); if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); refreshPanel(true); };
+  UI.reset = function () { if (G.players && G.players[1] && !(G.net && G.net.on)) G.setReseed(1, G.autoReseed !== false); if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); if ($('agecard')) $('agecard').classList.add('hidden'); refreshPanel(true); };
   UI.alert = function (msg) {
     if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
   UI.gameOver = function (res) {
@@ -859,6 +859,34 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     if (G.BUILDINGS[type].wall && type !== 'gate') { G.ghost.wall = true; $('place-hint').textContent = `${G.BUILDINGS[type].name}: tap where the wall starts`; }
     lastWhy = '';
   }
+  // The Age card: what the next Age asks for (each building ticked or not), what it costs, what
+  // it unlocks. A missing building can be tapped to start placing it with a villager right away.
+  function showAgeCard(tc) {
+    const a = G.ageOf(1), nx = G.AGES[a + 1]; if (!nx) return;
+    const nd = G.ageNeeds(1), cost = G.ageCost(1, a + 1), res = G.players[1].res, why = G.ageBlock(1, tc);
+    const card = $('agecard').querySelector('.card');
+    const costHtml = Object.keys(cost).map(k => `<img class="ci" src="${ICONP}${k}.png" alt="${k}"><span class="${res[k] < cost[k] ? 'short' : ''}">${cost[k]}</span>`).join('');
+    const ask = nd.want === 1 ? `Build a <b>${G.BUILDINGS[nd.list[0].type].name}</b>` : `Build any <b>${nd.want}</b> of these`;
+    card.innerHTML = `<div class="kicker">Age ${['I', 'II', 'III', 'IV'][a] || a + 1} of IV</div><h2>${nx.name}</h2>
+      <div class="lead"><span>${ask}</span><b>${nd.got} / ${nd.want}</b></div>
+      <div class="needs">${nd.list.map(x => `<button class="need ${x.have ? 'done' : 'todo'}" data-t="${x.type}">${iconHTML('i:' + x.type)}<span><span class="nm">${G.BUILDINGS[x.type].name}</span><span class="st">${x.have ? '✓ Built' : 'Tap to build'}</span></span></button>`).join('')}</div>
+      <div class="row cost"><b>Cost</b>${costHtml}${why === 'Town Center busy' ? ' · <span class="short">Town Center must finish its queue first</span>' : ''}</div>
+      ${nx.bonus ? `<div class="row">${/^Unlocks/.test(nx.bonus) ? nx.bonus.replace(/^Unlocks/, '<b>Unlocks</b>') : nx.bonus}</div>` : ''}
+      <div class="btns"><button class="close">Close</button><button class="go" ${why || !G.canAfford(1, cost) ? 'disabled' : ''}>Advance</button></div>`;
+    const close = () => { $('agecard').classList.add('hidden'); };
+    card.querySelector('.close').onclick = close;
+    card.querySelector('.go').onclick = () => { close(); const r = G.order('advanceAge', tc); if (r && r !== 'res') UI.alert(`Advancing to the ${nx.name}…`); panelKey = ''; };
+    for (const b of card.querySelectorAll('.need.todo')) b.onclick = () => {
+      const t = b.dataset.t; close();
+      if (!G.canBuildType(1, t)) { UI.alert(`${G.BUILDINGS[t].name} can't be built yet`); return; }
+      const vils = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager' && !e.inside);
+      if (!vils.length) { UI.alert('You need a villager to build it'); return; }
+      const v = vils.find(x => x.task.t === 'idle') || vils[0];
+      select([v], false); startPlace(t);
+    };
+    $('agecard').onclick = ev => { if (ev.target === $('agecard')) close(); };
+    $('agecard').classList.remove('hidden');
+  }
   // a wall line from one tile to another, every piece touching the next by a side (no gaps at corners)
   // Walls run straight along the ground grid. If the end isn't on the same line, the wall goes
   // straight along the longer side first, then turns one corner to reach it (no zigzags).
@@ -1148,7 +1176,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const what = { house: 'Adds 5 population.', mill: 'Drop-off for food; researches farming upgrades.', lumbercamp: 'Drop-off for wood; build it by a forest.', miningcamp: 'Drop-off for gold and stone; build it by a mine.', farm: 'Endless food once berries run out.', barracks: 'Trains Swordsmen and Spearmen.', range: 'Trains Archers.', stable: 'Trains Scouts and Knights.', blacksmith: 'Researches attack and armour for your army.', monastery: 'Trains Monks, who heal.', infirmary: 'Wounded units sheltered inside heal fast. One per player (two in the Imperial Age). Can\'t be built with enemy soldiers nearby.', siegeworkshop: 'Builds Rams and Trebuchets.', university: 'Researches building and tower upgrades.', castle: 'Mighty fortress; trains your dynasty\'s unique unit.', tower: 'Shoots arrows at nearby enemies.', towncenter: 'Trains villagers and is a drop-off for everything.', palisade: 'Cheap wooden wall.', stonewall: 'Strong stone wall.', gate: 'A wall your own units can pass through.' }[k] || '';
       return { t: B.name, d: what, c: costLine(B.cost), a: G.BUILD_AGE[k] > 1 ? G.AGES[G.BUILD_AGE[k]].name : null }; } }
     const ag = G.AGES.find(a => a && (a.short + ' Age' === lb || a.name === lb));
-    if (ag) return { t: ag.name, d: (ag.bonus || '') + (ag.needs ? ` Needs 2 of: ${ag.needs.map(n => G.BUILDINGS[n].name).join(', ')}.` : ''), c: costLine(ag.cost) };
+    if (ag) return { t: ag.name, d: (ag.bonus || '') + (ag.needs ? (ag.needs.length === 1 ? ` Needs a ${G.BUILDINGS[ag.needs[0]].name}.` : ` Build any 2 of: ${ag.needs.map(n => G.BUILDINGS[n].name).join(', ')}.`) + ' Tap the button for details.' : ''), c: costLine(ag.cost) };
     return null;
   }
   let tipTimer = null, tipShown = false, tipAuto = null;
@@ -1439,8 +1467,14 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         const nx = G.AGES[G.ageOf(1) + 1];
         if (e.aging) cmds.appendChild(btn('i:cancel', 'Cancel', G.AGES[e.aging.to].short + ' Age', () => { G.order('cancelAge', e); panelKey = ''; }));
         else if (nx) {
-          const why = G.ageBlock(1, e);
-          cmds.appendChild(btn('i:ageup', nx.short + ' Age', why ? 'locked' : costTxt(G.ageCost(1, G.ageOf(1) + 1)), () => {
+          const why = G.ageBlock(1, e), nd = G.ageNeeds(1);
+          // the button says how far along the requirements are; tapping it while locked opens
+          // the Age card, which shows exactly which buildings are still missing
+          const sub = !why ? costTxt(G.ageCost(1, G.ageOf(1) + 1))
+            : why === 'Town Center busy' ? 'TC busy'
+            : nd && nd.got < nd.want ? (nd.want === 1 ? `needs ${G.BUILDINGS[nd.list[0].type].name}` : `${nd.got} of ${nd.want} built`) : 'locked';
+          cmds.appendChild(btn('i:ageup', nx.short + ' Age', sub, () => {
+            if (why) { showAgeCard(e); return; }
             const r = G.order('advanceAge', e);
             if (r === 'res') { UI.alert('Not enough resources'); flashCost(G.ageCost(1, G.ageOf(1) + 1)); }
             else if (!r) UI.alert(G.ageBlock(1, e) || 'Cannot advance now');

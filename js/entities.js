@@ -36,6 +36,14 @@
   G.atBuildLimit = (p, type) => { const n = G.buildLimit(p, type); return n > 0 && G.ents.filter(e => !e.dead && e.owner === p && e.type === type).length >= n; };
   G.enemySoldierNear = (p, x, y, r) => G.ents.some(e => !e.dead && e.kind === 'unit' && e.type !== 'villager' && !e.inside && G.enemies(e.owner, p) && Math.hypot(e.x - x, e.y - y) < r);
   G.canTrainType = (p, type) => G.ageOf(p) >= (G.UNIT_AGE[type] || 1);
+  // the buildings the next Age asks for, and which of them stand: { want, got, list: [{ type, have }] }
+  G.ageNeeds = function (p) {
+    const next = G.AGES[G.ageOf(p) + 1];
+    if (!next || !next.needs) return null;
+    const have = new Set(G.ents.filter(e => !e.dead && e.owner === p && e.kind === 'building' && e.built).map(e => e.type));
+    const list = next.needs.filter(t => !(G.civBlocks && G.civBlocks(p, t))).map(t => ({ type: t, have: have.has(t) }));
+    return { want: Math.min(2, next.needs.length), got: list.filter(x => x.have).length, list };
+  };
   // what still blocks advancing: returns null if ready, else a short reason
   G.ageBlock = function (p, tc) {
     const a = G.ageOf(p), next = G.AGES[a + 1];
@@ -47,7 +55,7 @@
     const got = next.needs.filter(t => have.has(t)).length;
     if (got < want) return next.needs.length === 1
       ? `Needs a ${G.BUILDINGS[next.needs[0]].name}`
-      : `Needs ${want} of: ${next.needs.map(t => G.BUILDINGS[t].name).join(', ')}`;
+      : `Build any ${want} of: ${next.needs.map(t => G.BUILDINGS[t].name).join(', ')}`;
     if (tc && tc.queue.length) return 'Town Center busy';
     return null;
   };
