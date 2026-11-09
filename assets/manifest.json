@@ -27,18 +27,20 @@
   "file": "assets/range.png",
   "size": 3,
   "w": 201.6,
-  "h": 185.2,
+  "h": 147.16,
   "ax": 100.57,
-  "ay": 137.2,
-  "_refit": 0.923
+  "ay": 99.16,
+  "_refit": 0.923,
+  "_squash": 0.795
  },
  "stable": {
   "file": "assets/stable.png",
   "size": 3,
   "w": 212.33,
-  "h": 179.37,
+  "h": 146.69,
   "ax": 106.06,
-  "ay": 130.94
+  "ay": 98.34,
+  "_squash": 0.818
  },
  "mill": {
   "file": "assets/mill.png",
@@ -6689,13 +6691,14 @@
   "file": "assets/bpack_mediterranean_1.png",
   "size": 4,
   "w": 260.68,
-  "h": 266.03,
+  "h": 212.23,
   "ax": 130.01,
-  "ay": 200.69,
+  "ay": 147.16,
   "sx": 0,
   "sy": 2300,
   "sw": 390,
-  "sh": 398
+  "sh": 398,
+  "_squash": 0.798
  },
  "mediterranean_barracks": {
   "file": "assets/bpack_mediterranean_0.png",
@@ -6714,27 +6717,29 @@
   "file": "assets/bpack_mediterranean_1.png",
   "size": 3,
   "w": 211.2,
-  "h": 176.82,
+  "h": 127.31,
   "ax": 105.49,
-  "ay": 128.82,
+  "ay": 79.31,
   "sx": 0,
   "sy": 378,
   "sw": 551,
   "sh": 462,
-  "_refit": 0.766
+  "_refit": 0.766,
+  "_squash": 0.72
  },
  "mediterranean_stable": {
   "file": "assets/bpack_mediterranean_1.png",
   "size": 3,
   "w": 211.2,
-  "h": 184.04,
+  "h": 132.51,
   "ax": 105.39,
-  "ay": 136.04,
+  "ay": 84.51,
   "sx": 0,
   "sy": 1457,
   "sw": 503,
   "sh": 438,
-  "_refit": 0.84
+  "_refit": 0.84,
+  "_squash": 0.72
  },
  "mediterranean_mill": {
   "file": "assets/bpack_mediterranean_0.png",
@@ -6776,14 +6781,15 @@
   "file": "assets/bpack_mediterranean_1.png",
   "size": 1,
   "w": 67.2,
-  "h": 180.24,
+  "h": 146.44,
   "ax": 33.38,
-  "ay": 164.24,
+  "ay": 130.44,
   "sx": 0,
   "sy": 1895,
   "sw": 151,
   "sh": 405,
-  "_refit": 0.89
+  "_refit": 0.89,
+  "_squash": 0.812
  },
  "mediterranean_blacksmith": {
   "file": "assets/bpack_mediterranean_0.png",
@@ -6826,27 +6832,29 @@
   "file": "assets/bpack_eastasian_0.png",
   "size": 3,
   "w": 211.2,
-  "h": 172.59,
+  "h": 125.74,
   "ax": 105.41,
-  "ay": 124.59,
+  "ay": 77.74,
   "sx": 0,
   "sy": 0,
   "sw": 536,
   "sh": 438,
-  "_refit": 0.65
+  "_refit": 0.65,
+  "_squash": 0.729
  },
  "eastasian_range": {
   "file": "assets/bpack_eastasian_1.png",
   "size": 3,
   "w": 211.2,
-  "h": 167.42,
+  "h": 120.54,
   "ax": 105.41,
-  "ay": 119.42,
+  "ay": 72.54,
   "sx": 0,
   "sy": 935,
   "sw": 550,
   "sh": 436,
-  "_refit": 0.629
+  "_refit": 0.629,
+  "_squash": 0.72
  },
  "eastasian_stable": {
   "file": "assets/bpack_eastasian_1.png",
@@ -6914,14 +6922,15 @@
   "file": "assets/bpack_eastasian_0.png",
   "size": 3,
   "w": 211.2,
-  "h": 203.66,
+  "h": 170.42,
   "ax": 119.13,
-  "ay": 155.66,
+  "ay": 122.42,
   "sx": 0,
   "sy": 876,
   "sw": 476,
   "sh": 459,
-  "_refit": 0.765
+  "_refit": 0.765,
+  "_squash": 0.837
  },
  "eastasian_castle": {
   "file": "assets/bpack_eastasian_0.png",
@@ -7624,10 +7633,11 @@
   "file": "assets/monastery.png",
   "size": 3,
   "w": 201.6,
-  "h": 182.75,
+  "h": 143.4,
   "ax": 101.48,
-  "ay": 134.75,
-  "_refit": 0.89
+  "ay": 95.4,
+  "_refit": 0.89,
+  "_squash": 0.785
  },
  "eastasian_monastery": {
   "file": "assets/bpack_eastasian_1.png",
@@ -25730,21 +25740,23 @@
   "file": "assets/university.png",
   "size": 3,
   "w": 192.22,
-  "h": 198.39,
+  "h": 165.0,
   "ax": 100.62,
-  "ay": 150.23
+  "ay": 116.86,
+  "_squash": 0.832
  },
  "mediterranean_university": {
   "file": "assets/bpack_mediterranean_1.png",
   "size": 3,
   "w": 198.56,
-  "h": 168.0,
+  "h": 143.71,
   "ax": 99.28,
-  "ay": 119.79,
+  "ay": 95.53,
   "sx": 0,
   "sy": 3193,
   "sw": 397,
-  "sh": 336
+  "sh": 336,
+  "_squash": 0.855
  },
  "eastasian_university": {
   "file": "assets/bpack_eastasian_1.png",
@@ -26074,14 +26086,15 @@
   "file": "assets/bpack_middleeast_0.png",
   "size": 3,
   "w": 211.2,
-  "h": 187.98,
+  "h": 147.54,
   "ax": 76.89,
-  "ay": 139.98,
+  "ay": 99.54,
   "sx": 0,
   "sy": 0,
   "sw": 530,
   "sh": 472,
-  "_refit": 0.796
+  "_refit": 0.796,
+  "_squash": 0.785
  },
  "middleeast_range": {
   "file": "assets/bpack_middleeast_1.png",
@@ -26257,14 +26270,15 @@
   "file": "assets/bpack_americas_1.png",
   "size": 3,
   "w": 201.6,
-  "h": 173.17,
+  "h": 131.45,
   "ax": 100.39,
-  "ay": 125.17,
+  "ay": 83.45,
   "sx": 0,
   "sy": 1182,
   "sw": 462,
   "sh": 396,
-  "_refit": 0.874
+  "_refit": 0.874,
+  "_squash": 0.759
  },
  "americas_mill": {
   "file": "assets/bpack_americas_0.png",
@@ -26331,13 +26345,14 @@
   "file": "assets/bpack_americas_1.png",
   "size": 3,
   "w": 194.89,
-  "h": 176.77,
+  "h": 148.84,
   "ax": 98.31,
-  "ay": 128.58,
+  "ay": 100.68,
   "sx": 0,
   "sy": 828,
   "sw": 390,
-  "sh": 354
+  "sh": 354,
+  "_squash": 0.842
  },
  "americas_infirmary": {
   "file": "assets/bpack_americas_0.png",
@@ -26624,14 +26639,15 @@
   "file": "assets/bpack_americas_0.png",
   "size": 2,
   "w": 134.4,
-  "h": 121.77,
+  "h": 101.31,
   "ax": 67.51,
-  "ay": 89.77,
+  "ay": 69.31,
   "sx": 0,
   "sy": 2631,
   "sw": 289,
   "sh": 262,
-  "_refit": 0.931
+  "_refit": 0.931,
+  "_squash": 0.832
  },
  "americas_towncenter_dark": {
   "file": "assets/bpack_americas_1.png",
