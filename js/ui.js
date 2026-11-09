@@ -74,7 +74,10 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // Videos load only when played, so the menu never waits on them.
   let cineDone = null;
   // tall screens get the portrait cut of each film, wide screens the landscape one
-  const film = name => `assets/video/${name}${innerHeight > innerWidth ? '_p' : ''}.mp4`;
+  // which dynasties have a pre-battle film, and in which cuts: 'both' (landscape and portrait)
+  // or 'p' (portrait only; the newer films are made for the phone and play pillarboxed on a wide screen)
+  const FILMS = { britons: 'both', franks: 'both', byzantines: 'both', chinese: 'both', persians: 'p' };
+  const film = (name, only) => `assets/video/${name}${only === 'p' || innerHeight > innerWidth ? '_p' : ''}.mp4`;
   function playFilm(src, title, done) {
     const v = $('cine-v'), box = $('cine');
     cineDone = () => { cineDone = null; done && done(); box.classList.add('out'); if (G.sound) G.sound.hush(false);
@@ -95,9 +98,10 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('cine-skip').onclick = e => { e.stopPropagation(); cineDone && cineDone(); };
   $('cine').onclick = () => $('cine').classList.add('show-skip');
   UI.playDynFilm = (civ, done) => {
-    if (prefs.dynfilm === 'off' || !G.CIVS[civ] || !['britons', 'franks', 'byzantines', 'chinese'].includes(civ)) return done();   // the newer dynasties have no film yet
+    if (prefs.dynfilm === 'off' || !G.CIVS[civ] || !FILMS[civ]) return done();   // no film for this dynasty yet
     const c = G.CIVS[civ];
-    playFilm(film('dyn_' + civ), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
+    $('cine-v').style.objectFit = FILMS[civ] === 'p' && innerWidth > innerHeight ? 'contain' : 'cover';
+    playFilm(film('dyn_' + civ, FILMS[civ]), { crest: `assets/ui/crest_${civ}.png`, name: 'The ' + c.name, role: c.role + ' · ' + c.bonuses[0] }, done);
   };
   let introSeen = false; try { introSeen = !!localStorage.getItem('dod.intro'); } catch (e) { /* ignore */ }
   const INTRO = false;   // no intro film for now: the game opens straight on the title screen
@@ -108,7 +112,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const show = () => $('start').classList.add('begun');
     if (INTRO && (prefs.intro === 'always' || (prefs.intro !== 'off' && !introSeen))) {
       introSeen = true; try { localStorage.setItem('dod.intro', '1'); } catch (e) { /* ignore */ }
-      playFilm(film('intro'), null, show);
+      $('cine-v').style.objectFit = 'cover'; playFilm(film('intro'), null, show);
     } else show();
   };
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, function wake() {

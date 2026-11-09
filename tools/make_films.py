@@ -1,6 +1,7 @@
 """Assemble the game's films from raw generated clips, with our own battle music underneath.
 
     python3 tools/make_films.py <landscape_clips_dir> <portrait_clips_dir>
+    python3 tools/make_films.py --one <civ> <clip.mp4>        one portrait dynasty film from a clip
 
 Writes assets/video/intro.mp4, dyn_<civ>.mp4 (16:9, 1280x720) and the same names with _p
 (9:16, 720x1280). The clips' own audio is dropped: only the music plays (no narration).
@@ -14,7 +15,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'assets/video')
 MUS = os.path.join(ROOT, 'assets/sound/music')
 INTRO_MUSIC = ('battle_1.mp3', 114)   # file, start second: its last 20 s, ending on the finale
-DYN_MUSIC = {'britons': 68, 'franks': 104, 'byzantines': 128, 'chinese': 152}   # starts in battle_2
+DYN_MUSIC = {'britons': 68, 'franks': 104, 'byzantines': 128, 'chinese': 152, 'persians': 138, 'incas': 114, 'cholas': 86}   # starts in battle_2
 ENC = ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '24', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart']
 
 
@@ -51,7 +52,18 @@ def dyn(src, civ, w, h, out):
         '-map', '[v]', '-map', '[a]', '-t', str(end)] + ENC + [out])
 
 
+def poster(video, out):
+    ff(['-ss', '0.6', '-i', video, '-frames:v', '1', '-q:v', '3', out])
+
+
 if __name__ == '__main__':
+    if sys.argv[1] == '--one':
+        # a single portrait dynasty film (the newer dynasties are made one at a time from Grok clips)
+        civ, clip = sys.argv[2], sys.argv[3]
+        import shutil, tempfile
+        tmp = tempfile.mkdtemp(); shutil.copy(clip, os.path.join(tmp, f'dyn_{civ}.mp4'))
+        out = os.path.join(OUT, f'dyn_{civ}_p.mp4'); dyn(tmp, civ, 720, 1280, out); poster(out, out[:-4] + '.jpg')
+        print('wrote', out, 'and its poster'); sys.exit()
     land, port = sys.argv[1], sys.argv[2]
     os.makedirs(OUT, exist_ok=True)
     for src, w, h, suf in ((land, 1280, 720, ''), (port, 720, 1280, '_p')):
