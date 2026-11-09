@@ -82,8 +82,19 @@ def main(apply, run):
         if m['tilt'] > TILT_MAX: why.append(f'{m["tilt"]:.0%} of the base off its two edges (L-shape or yard at another angle)')
         elif bw < WIDTH_MIN and m['slope'] < STEEP: why.append(f'base {bw:.2f}x of the plot (rectangular footprint)')
         if why: offenders.append((k, why))
+    # The measured shape list is noisy (porches and steps read as misfits). When a hand-picked
+    # list exists (tools/footprint_repaint.txt, chosen from the overlay sheets), the job is built
+    # from that instead; the measured list is still printed for comparison.
+    curated_p = os.path.join(ROOT, 'tools', 'footprint_repaint.txt')
+    curated = [l.split('#')[0].strip() for l in open(curated_p)] if os.path.exists(curated_p) else []
+    curated = [c for c in curated if c]
+    if curated:
+        print(f'repaint list: {len(curated)} buildings from tools/footprint_repaint.txt (hand-picked from the sheets)')
+        offenders_for_job = [(k, ['hand-picked']) for k in curated if k in man]
+    else:
+        offenders_for_job = offenders
     jobs = []
-    for k, why in offenders:
+    for k, why in offenders_for_job:
         base = fc.base_type(k); region = fc.region_of(k); dark = k.endswith('_dark')
         stem = f"{PREFIX[region]}_{STEM.get(base, base)}{'_dark' if dark else ''}"
         # the reference is the western source of the same building: a square footprint on the grid
@@ -95,8 +106,8 @@ def main(apply, run):
     print(f'{len(squashes)} sprites painted too steep' + (' — squashed in the manifest:' if apply else ' (run with --apply to squash):'))
     for k, sl, f in squashes: print(f'  {k:36s} slope {sl:.2f} -> x{f:.2f} vertically')
     if apply: json.dump(man, open(fc.MAN, 'w'), indent=1)
-    print(f'{len(offenders)} sprites need repainting (about {6 * len(offenders)} Kie credits):')
-    for k, why in offenders: print(f'  {k:36s} {"; ".join(why)}')
+    print(f'measured shape misfits: {len(offenders)} (noisy; see the sheets)')
+    print(f'repaint job: {len(jobs)} images, about {6 * len(jobs)} Kie credits')
     print(f'job file: {os.path.relpath(JOB, ROOT)}')
     if run:
         if not os.environ.get('KIE_KEY'): sys.exit('set KIE_KEY to generate')
