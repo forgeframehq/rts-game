@@ -1167,6 +1167,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     'Garrison': 'Send the selected units inside a building for protection. Garrisoned villagers make a Town Center shoot more arrows.',
     'Stop': 'Stop whatever the selected units are doing.', 'Stance': 'Tap to switch: Aggressive chases anywhere, Defensive (the default) fights nearby enemies then comes back, Stand Ground holds the spot, No Attack never fights.', 'Make gate': 'Turns this piece of wall into a gate on the same spot. A villager comes to build it.', 'Guard': 'Then tap a unit or building of yours: these soldiers stay by it and fight off anything that comes near.', 'Heal': 'Wounded soldiers go to the nearest Infirmary and heal inside. Ungarrison them when they are well.', 'Formation': 'Choose how this army lines up: Line, Box, Staggered or Wedge, with a preview of your own troops.',
     'Drop off': 'Carry what the villager holds to the nearest drop site.', 'Keep only': 'Keep just this kind of unit selected.',
+    'Keep training': 'This building keeps queuing the unit you last trained here, one after another, whenever it is idle and you can pay. Tap again to stop.',
     'Re-sow': 'Replant a harvested farm so it produces food again.', 'Rally point': 'Pick where newly trained units gather.',
     'Cancel': 'Cancel and get the resources back.', 'Ring bell': 'Send every villager into the nearest building to shelter from attack.',
     'Ungarrison': 'Send everyone back out of this building.', 'Delete': 'Destroy this. Tap twice to confirm.',
@@ -1444,6 +1445,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           if (!G.canTrainType(1, t)) { cmds.appendChild(btn('u:' + (t === 'villager' ? 'villagers' : t) + '|lock', G.UNITS[t].name, G.AGES[G.UNIT_AGE[t]].short + ' Age', () => UI.alert(`${G.UNITS[t].name} needs the ${G.AGES[G.UNIT_AGE[t]].name}`), true)); continue; }
           const trainOnce = () => {
             for (const b of sel) {
+              b.lastTrain = t;
               const r = G.order('train', b, t);
               if (r === 'pop') { UI.alert('Need more houses!'); return false; }
               if (r === 'busy') { UI.alert(b.research ? 'Busy researching' : 'Town Center is advancing to the next Age'); return false; }
@@ -1456,6 +1458,17 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           cmds.appendChild(tb);
         }
         cmds.appendChild(btn('i:rally', 'Rally point', '', () => setMode('rally')));
+        // Keep training: the building queues the unit you last trained here whenever it is idle
+        // and you can afford it, the way the Town Center can for villagers. The computer never
+        // forgets to queue; this lets you keep up without tapping every twenty seconds.
+        if (e.type !== 'towncenter') {
+          const on = !!e.auto, last = e.auto || e.lastTrain || trains.find(t => G.canTrainType(1, t));
+          cmds.appendChild(btn(on ? 'i:attack' : 'i:clock', 'Keep training', on ? G.unitDef(1, e.auto).name : 'off', () => {
+            for (const b of sel) { if (b.auto) delete b.auto; else if (last) b.auto = b.lastTrain || last; }
+            UI.alert(e.auto ? `${G.unitDef(1, e.auto).name}: trains one after another while you can pay` : 'Keep training off');
+            panelKey = ''; refreshPanel(true);
+          }));
+        }
       }
       if (resPage) {
         if (e.research) {
@@ -1558,6 +1571,25 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       if (av && !G.over) for (const b of G.ents) if (!b.dead && b.owner === 1 && b.type === 'towncenter' && b.built && !b.queue.length && !b.aging && !b.research) {
         const nv = G.ents.filter(e => !e.dead && e.owner === 1 && e.type === 'villager').length, pc = G.popOf(1);
         if (nv < av && pc.pop < pc.cap && !(b.netQ > 0) && G.canAfford(1, G.unitCost(1, 'villager'))) G.order('train', b, 'villager');
+      }
+      // Keep training: one at a time, so a building on auto never hoards resources
+      if (!G.over) for (const b of G.ents) if (!b.dead && b.owner === 1 && b.kind === 'building' && b.built && b.auto && !b.queue.length && !b.research && !(b.netQ > 0)) {
+        if (!G.trainsFor(b).includes(b.auto) || !G.canTrainType(1, b.auto)) { delete b.auto; continue; }
+        const pc = G.popOf(1);
+        if (pc.pop < pc.cap && G.canAfford(1, G.unitCost(1, b.auto))) G.order('train', b, b.auto);
+      }
+      // Idle production: a tappable note when a military building has nothing to do (once per
+      // building per idle spell, never more than one note every 20 s, and only after the first fight)
+      if (prefs.idlealert !== 'off' && G.time > 240 && !G.over) {
+        for (const b of G.ents) {
+          if (b.dead || b.owner !== 1 || b.kind !== 'building' || !b.built || !['barracks', 'range', 'stable', 'castle', 'siegeworkshop'].includes(b.type)) continue;
+          const idle = !b.queue.length && !b.research && !b.auto;
+          if (!idle) { b.idleTold = false; continue; }
+          if (b.idleTold || G.time - (UI.lastIdleBld || -99) < 20) continue;
+          b.idleTold = true; UI.lastIdleBld = G.time;
+          toastJump(`${b.def.name} has nothing to train`, b.x, b.y);
+          break;
+        }
       }
       const na = G.ents.filter(e => !e.dead && e.owner === 1 && e.kind === 'unit' && e.type !== 'villager').length;
       const ac = $('army-count'); ac.textContent = na || ''; ac.classList.toggle('zero', !na);
