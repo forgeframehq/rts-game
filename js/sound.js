@@ -248,6 +248,10 @@
     if (busy) fade(other, 0, fadeIn * 0.6, true);
     const start = () => {
       if (cur !== next || a.getAttribute('src') !== 'assets/sound/music/' + file) return;   // superseded
+      // only one piece of music at a time: whatever else is still sounding goes, even if a
+      // quick run of scene changes (Restart passes through the menu) left it behind
+      deck.forEach((d, j) => { if (j !== next && d && !d.paused && !fades[j]) fade(j, 0, 0.8, true); });
+      if (S.away) return;   // the app went to the background before this track began; coming back starts it
       const pr = a.play();
       if (pr && pr.catch) pr.catch(() => {});   // refused until a gesture; wake() retries
       fade(next, vol(m), fadeIn);
@@ -307,18 +311,33 @@
   };
   // a game in a hidden tab should not be playing music at someone
   // ...nor ambience or effects: everything goes quiet when the app is in the background
-  document.addEventListener('visibilitychange', () => {
-    const a = deck[cur];
-    if (document.hidden) {
-      if (a) a.pause();
+  // Both music decks are silenced, not just the current one: leaving mid-crossfade used to
+  // leave the outgoing track playing in the background.
+  S.away = false;
+  function setAway(away) {
+    if (away === S.away) return;
+    S.away = away;
+    if (away) {
+      deck.forEach((d, j) => { if (fades[j]) { clearInterval(fades[j]); fades[j] = null; } if (d) d.pause(); });
       if (amb) amb.pause();
       if (ctx && ctx.state === 'running') ctx.suspend();
     } else {
-      if (a && S.musicEnabled && a.src && !S.hushed) a.play().catch(() => {});
+      // only the current track comes back, rising from silence
+      deck.forEach((d, j) => { if (d && j !== cur) { d.volume = 0; d.pause(); } });
+      const a = deck[cur];
+      if (a && S.musicEnabled && a.getAttribute('src') && !S.hushed) { a.volume = 0; a.play().catch(() => {}); fade(cur, vol(), 1.5); }
       if (amb && S.enabled) amb.play().catch(() => {});
       if (ctx && ctx.state === 'suspended') ctx.resume();
     }
-  });
+  }
+  document.addEventListener('visibilitychange', () => setAway(document.hidden));
+  window.addEventListener('pagehide', () => setAway(true));
+  // In the Android app, Capacitor reports the app going to the background directly; the
+  // WebView's visibility event alone was not reliable there.
+  try {
+    const App = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+    if (App && App.addListener) App.addListener('appStateChange', st => setAway(!st.isActive));
+  } catch (e) { /* not in the app */ }
 
   S.setVolume = function (v) {
     S.volume = v;
