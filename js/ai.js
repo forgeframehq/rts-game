@@ -415,6 +415,7 @@ G.makeAI = function () {
     if (G.time > AI.nextAttack && !outnumbered && army.length >= Math.min(AI.cfg.wave + AI.waveN * AI.cfg.grow, Math.max(AI.cfg.wave, cap2))) {
       AI.waveN++;
       AI.nextAttack = G.time + 150;
+      AI.waveSize = army.length;   // a wave only turns back once it has really lost men
       const target = royalTarget() || G.nearest(home, e => G.enemies(e.owner, AI.p) && e.kind === 'building' && e.type !== 'farm') || G.nearest(home, e => G.enemies(e.owner, AI.p));
       if (target) {
         G.cmdAttack(army, target);
@@ -427,9 +428,16 @@ G.makeAI = function () {
       const out = army.filter(u => G.dist(u, home) > 16);
       if (out.length) {
         const cx = out.reduce((a, u) => a + u.x, 0) / out.length, cy = out.reduce((a, u) => a + u.y, 0) / out.length;
-        const str = us => us.reduce((a, u) => a + u.hp * (u.def.atk || 1), 0);
-        const foes = G.ents.filter(e => !e.dead && G.enemies(e.owner, p) && (e.kind === 'unit' && e.type !== 'villager' || e.type === 'tower' || e.type === 'castle') && Math.hypot(e.x - cx, e.y - cy) < 9);
-        if (foes.length && str(out) < str(foes) * 0.45) {
+        // Fighting strength: a soldier is what it can take times what it deals each second. A
+        // tower, castle or Town Center counts only for the arrows it fires: its thousand-odd hit
+        // points are how long it takes to knock down, not how dangerous it is to an army walking
+        // up to it. Scoring them by hit points made one Watch Tower outweigh a whole wave, and
+        // archer and scout waves turned round at the first arrow with every man still alive.
+        const dps = e => (e.def.atk || 1) / (e.def.rate || 2);
+        const str = us => us.reduce((a, e) => a + (e.kind === 'building' ? 150 : e.hp) * dps(e), 0);
+        const foes = G.ents.filter(e => !e.dead && G.enemies(e.owner, p) && (e.kind === 'unit' && e.type !== 'villager' || (e.built && (e.type === 'tower' || e.type === 'castle' || e.type === 'towncenter'))) && Math.hypot(e.x - cx, e.y - cy) < 9);
+        const bloodied = army.length <= (AI.waveSize || army.length) * 0.67;
+        if (foes.length && bloodied && str(out) < str(foes) * 0.45) {
           G.cmdMove(out, home.x + 3, home.y + 3); for (const u of out) u.task.forced = true;
           AI.nextAttack = G.time + 90; AI.waveN = Math.max(0, AI.waveN - 1);
         }

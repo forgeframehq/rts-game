@@ -221,11 +221,18 @@ G.TECHS = {
 G.UNIT_AGE = { spearman: 2, archer: 2, scout: 2, knight: 3, longbowman: 3, axethrower: 3, cataphract: 3, repeater: 3, elephant: 3, kamayuk: 3, templeguard: 3, ram: 3, trebuchet: 4, monk: 3 };
 G.VIL_BUILDS = ['house','mill','lumbercamp','miningcamp','farm','barracks','range','stable','blacksmith','infirmary','siegeworkshop','monastery','university','castle','tower','palisade','stonewall','gate','towncenter'];
 
+// Gather rates per second. Training and building times here follow AoE2 at its usual 1.7x
+// game speed, but these rates were once AoE2's at 1x, so income ran at about 60% of the pace
+// everything else assumed and a match felt like collecting, not fighting: two Normal AIs had
+// not fielded ten soldiers after fourteen minutes. GATHER_PACE brings income up to the same
+// clock (1.6 rather than 1.7, because villagers here walk a little faster than AoE2's, so less
+// of each trip is spent walking).
+G.GATHER_PACE = 1.6;
 G.RES = {
-  tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 },
-  berry:  { name: 'Berry Bush', res: 'food', amount: 125, rate: 0.35 },
-  gold:   { name: 'Gold Mine', res: 'gold', amount: 800, rate: 0.38 },
-  stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 }
+  tree:   { name: 'Tree',  res: 'wood',  amount: 100, rate: 0.45 * G.GATHER_PACE },
+  berry:  { name: 'Berry Bush', res: 'food', amount: 125, rate: 0.35 * G.GATHER_PACE },
+  gold:   { name: 'Gold Mine', res: 'gold', amount: 800, rate: 0.38 * G.GATHER_PACE },
+  stone:  { name: 'Stone Mine', res: 'stone', amount: 350, rate: 0.36 * G.GATHER_PACE }
 };
 G.REGION = { britons: 'western', franks: 'western', byzantines: 'mediterranean', chinese: 'eastasian', persians: 'middleeast', incas: 'americas', cholas: 'indian' };
 // How each dynasty's villagers are dyed from the shared (Britons) sprites. Britons are the
@@ -264,7 +271,7 @@ G.CIV_LOOK = {
 // mounted units: drawn taller, with a bigger shadow and selection ring
 G.mounted = e => ((e.def || G.UNITS[e.type] || {}).cls) === 'cav';
 G.CARRY = 10;
-G.FARM_RATE = 0.33;
+G.FARM_RATE = 0.33 * G.GATHER_PACE;
 
 G.START_RES = { food: 200, wood: 200, gold: 100, stone: 200 };
 G.RES_PRESETS = {

@@ -361,38 +361,68 @@
     const n = units.length, out = [];
     if (kind === 'wedge') {
       // a triangle pointing forward: one at the tip, two behind, three behind them...
-      let r = 0, i = 0;
-      while (i < n) { const inRow = Math.min(r + 1, n - i); for (let c = 0; c < inRow; c++, i++) out.push({ ox: (c - (inRow - 1) / 2) * 0.9, oy: -r * 0.85 }); r++; }
-      const mid = (r - 1) * 0.85 / 2; for (const o of out) o.oy += mid;
+      let r = 0, i = 0; const wg = units.some(u => u.def.cls === 'cav') ? 1.25 : 0.95;
+      while (i < n) { const inRow = Math.min(r + 1, n - i); for (let c = 0; c < inRow; c++, i++) out.push({ ox: (c - (inRow - 1) / 2) * wg, oy: -r * wg }); r++; }
+      const mid = (r - 1) * wg / 2; for (const o of out) o.oy += mid;
       return out;
     }
-    if (kind === 'box' && n >= 5) {
-      const outer = units.filter(u => u.def.cls === 'inf' || u.def.cls === 'cav'), inner = units.filter(u => !outer.includes(u));
-      const ring = [], gap = 0.9;
-      // the smallest square ring that holds the outer men
-      let k = 2; while ((k * 4 - 4) < outer.length) k++;
-      const h = (k - 1) / 2;
-      for (let i = 0; i < k; i++) ring.push([i - h, h]);
-      for (let j = k - 2; j >= 1; j--) ring.push([h, j - h]);
-      for (let i = k - 1; i >= 0; i--) ring.push([i - h, -h]);
-      for (let j = 1; j <= k - 2; j++) ring.push([-h, j - h]);
-      const step = ring.length / Math.max(1, outer.length);
-      const pos = new Map();
-      outer.forEach((u, i) => { const r = ring[Math.floor(i * step)]; pos.set(u, { ox: r[0] * gap, oy: r[1] * gap }); });
-      const ic = Math.max(1, Math.ceil(Math.sqrt(inner.length)));
-      inner.forEach((u, i) => { const c = i % ic, r = Math.floor(i / ic); pos.set(u, { ox: (c - (ic - 1) / 2) * gap * 0.8, oy: (r - (Math.ceil(inner.length / ic) - 1) / 2) * gap * 0.8 }); });
-      for (const u of units) out.push(pos.get(u));
+    if (kind === 'box' && n >= 4) {
+      // a filled square: melee and cavalry take the outside cells, archers, siege and the
+      // royals the middle. Cells run outermost first, so the walls of the square fill first.
+      const gap = units.some(u => u.def.cls === 'cav') ? 1.25 : 0.95, side = Math.ceil(Math.sqrt(n)), rows = Math.ceil(n / side), cells = [];
+      for (let i = 0; i < n; i++) {
+        const r = Math.floor(i / side), inRow = Math.min(side, n - r * side), c = i % side;
+        cells.push({ ox: (c - (inRow - 1) / 2) * gap, oy: ((rows - 1) / 2 - r) * gap });
+      }
+      cells.sort((a, b) => Math.max(Math.abs(b.ox), Math.abs(b.oy)) - Math.max(Math.abs(a.ox), Math.abs(a.oy)) || b.oy - a.oy || a.ox - b.ox);
+      const outerFirst = units.map((u, i) => i).sort((a, b) => isOuter(units[b]) - isOuter(units[a]) || a - b);
+      outerFirst.forEach((ui, k) => { out[ui] = cells[k]; });
       return out;
     }
-    const wide = kind === 'staggered';
-    const cols = n <= 3 ? n : Math.max(3, Math.ceil(Math.sqrt(n * (wide ? 3 : 2))));
-    const rows = Math.ceil(n / cols), gap = wide ? 1.5 : 0.85;
-    for (let i = 0; i < n; i++) {
-      const row = Math.floor(i / cols), inRow = Math.min(cols, n - row * cols), col = i % cols;
-      const shift = wide && row % 2 ? gap / 2 : 0;
-      out.push({ ox: (col - (inRow - 1) / 2) * gap + shift, oy: -(row - (rows - 1) / 2) * gap });
+    // line (and staggered): each kind of soldier in its own ranks, melee in front, archers
+    // behind, villagers last, every rank a clean straight front centred on the target
+    const wide = kind === 'staggered', gap = wide ? 1.45 : 0.95, maxRank = wide ? 8 : 12;
+    const groups = [];
+    units.forEach((u, i) => { const k = RANK[u.def.cls] || 0; if (!groups.length || groups[groups.length - 1].k !== k) groups.push({ k, idx: [] }); groups[groups.length - 1].idx.push(i); });
+    const ranks = [];
+    for (const g of groups) {
+      const m = g.idx.length, nr = Math.ceil(m / maxRank), per = Math.ceil(m / nr);
+      for (let r = 0; r < nr; r++) ranks.push(g.idx.slice(r * per, (r + 1) * per));
     }
+    // horses need more room than men on foot, across and between ranks
+    const rg = ranks.map(rk => gap * (rk.some(ui => units[ui].def.cls === 'cav') ? 1.4 : 1));
+    const depth = [0]; for (let r = 1; r < ranks.length; r++) depth.push(depth[r - 1] + (rg[r - 1] + rg[r]) / 2);
+    const mid = depth[depth.length - 1] / 2;
+    ranks.forEach((rk, r) => {
+      const shift = wide && r % 2 ? rg[r] / 2 : 0;
+      rk.forEach((ui, c) => { out[ui] = { ox: (c - (rk.length - 1) / 2) * rg[r] + shift, oy: mid - depth[r] }; });
+    });
     return out;
+  }
+  const isOuter = u => (u.def.cls === 'inf' || u.def.cls === 'cav') && !u.def.royal && !u.def.siege ? 1 : 0;
+  // Which slot each man takes. Slots only say the shape; giving them out in list order sent
+  // men across each other's paths. Within each kind of soldier, the men furthest forward take
+  // the front rank and each rank is filled left to right by where the men stand now, so
+  // nobody walks through the formation to reach his place. Ties break on id, so both phones
+  // in a network match agree.
+  function matchSlots(sorted, slots, kind, cx, cy, fx, fy, rx, ry) {
+    const keyOf = u => kind === 'box' ? isOuter(u) : (RANK[u.def.cls] || 0);
+    const fwd = u => (u.x - cx) * fx + (u.y - cy) * fy, lat = u => (u.x - cx) * rx + (u.y - cy) * ry;
+    const byKey = new Map();
+    sorted.forEach((u, i) => { const k = keyOf(u); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(i); });
+    const res = new Array(sorted.length);
+    for (const idx of byKey.values()) {
+      const sl = idx.map(i => slots[i]).sort((a, b) => b.oy - a.oy || a.ox - b.ox);
+      const men = idx.map(i => sorted[i]).sort((a, b) => fwd(b) - fwd(a) || a.id - b.id);
+      let p = 0;
+      while (p < sl.length) {
+        let q = p; while (q < sl.length && Math.abs(sl[q].oy - sl[p].oy) < 0.01) q++;
+        const row = sl.slice(p, q), crew = men.slice(p, q).sort((a, b) => lat(a) - lat(b) || a.id - b.id);
+        crew.forEach((u, k) => { res[sorted.indexOf(u)] = row[k]; });
+        p = q;
+      }
+    }
+    return res;
   }
   G.cmdMove = function (units, x, y) {
     units = units.filter(u => u.kind === 'unit');
@@ -406,16 +436,24 @@
     const sorted = G.formationOrder(units, kind);
     const military = units.some(u => u.type !== 'villager') && n > 1;
     const gs = military ? Math.min(...units.map(u => u.def.speed)) : 0;
-    const slots = formationSlots(sorted, kind);
-    const show = units[0].owner === 1 && military && G.effects;
+    const slots = n > 1 ? matchSlots(sorted, formationSlots(sorted, kind), kind, cx, cy, fx, fy, rx, ry) : [{ ox: 0, oy: 0 }];
+    const taken = new Set();   // tiles already given to a man whose own slot was blocked
     sorted.forEach((u, i) => {
       const { ox, oy } = slots[i];
       let tx = x + rx * ox + fx * oy, ty = y + ry * ox + fy * oy;
-      const f = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
-      if (!G.isFree(tx | 0, ty | 0)) { tx = f.x + 0.5; ty = f.y + 0.5; }
-      u.task = { t: 'move', x: tx, y: ty, gs };
-      // ghost dots: where each man will stand
-      if (show) G.effects.push({ t: 'formdot', x: tx, y: ty, col: u.def.ranged ? '#7fd1ff' : u.def.cls === 'cav' ? '#ffd76a' : '#ff8a7a', life: 1.2 });
+      if (!G.isFree(tx | 0, ty | 0)) {
+        // a slot on a tree or wall: the nearest open tile no one else was moved to,
+        // so blocked men don't all pile onto the same spot
+        let best = null;
+        for (let r = 1; r <= 6 && !best; r++) for (let dy = -r; dy <= r && !best; dy++) for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const ax = (tx | 0) + dx, ay = (ty | 0) + dy;
+          if (G.isFree(ax, ay) && !taken.has(ax + ',' + ay)) { best = { x: ax, y: ay }; break; }
+        }
+        if (!best) best = G.nearestFree(tx, ty, 6) || { x: x | 0, y: y | 0 };
+        taken.add(best.x + ',' + best.y); tx = best.x + 0.5; ty = best.y + 0.5;
+      }
+      u.task = { t: 'move', x: tx, y: ty, gs, fx: military ? fx : 0, fy: military ? fy : 0 };
       u.path = G.findPath(u.x, u.y, { x0: tx | 0, y0: ty | 0, x1: tx | 0, y1: ty | 0 }, false, 0, u.owner);
       if (u.path.length) u.path[u.path.length - 1] = { x: tx, y: ty };
     });
@@ -889,7 +927,10 @@
       }
       case 'move': {
         if (!u.path.length) {
-          if (Math.hypot(task.x - u.x, task.y - u.y) < 0.6 || task.tries > 2) { u.task = { t: 'idle' }; break; }
+          if (Math.hypot(task.x - u.x, task.y - u.y) < 0.6 || task.tries > 2) {
+            if (task.fx || task.fy) faceTo(u, { x: u.x + task.fx, y: u.y + task.fy });   // a formation turns to face the way it marched
+            u.task = { t: 'idle' }; break;
+          }
           if (u.repath <= 0) {
             task.tries = (task.tries || 0) + 1;
             u.path = G.findPath(u.x, u.y, { x0: task.x | 0, y0: task.y | 0, x1: task.x | 0, y1: task.y | 0 }, false, 0, u.owner);

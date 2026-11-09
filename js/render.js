@@ -355,8 +355,9 @@
     if (G.drawCorpses) G.drawCorpses(ctx, z);
     const sel = G.selection || [];
     // farms & ground-level marks first (already sorted low)
-    burning.length = 0;
-    for (const it of list) { if (it.deco) { const sp = G.resSprite('tree', it.deco.v); if (sp) drawSprite(sp, it.s.x, it.s.y, z); } else drawEntity(it.e, it.s, z, sel.includes(it.e)); }
+    burning.length = 0; drawnB.length = 0;
+    for (const it of list) { if (it.deco) { const sp = G.resSprite('tree', it.deco.v); if (sp) drawSprite(sp, it.s.x, it.s.y, z); } else { curDepth = it.depth; drawEntity(it.e, it.s, z, sel.includes(it.e)); } }
+    xray(list, z);
     // smoke and flame last, so a tree in front cannot wipe out a burning roof behind it
     for (const d of burning) damageOver(d[0], d[1], d[2], d[3]);
 
@@ -679,6 +680,63 @@
     ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath(); ctx.stroke();
   }
 
+  // ---------- Units behind buildings ----------
+  // A unit a building is painted over is shown again on top as a soft silhouette in its
+  // owner's colour, as in AoE2, so villagers working behind a Town Center are never lost.
+  // Coverage is tested against the building's real pixels (a quarter-size alpha mask cached
+  // per sprite), not its box, so a unit beside a tower's empty corner is not outlined.
+  const drawnB = [];   // buildings drawn this frame: { sp, x, y, z, d }
+  let curDepth = 0;
+  const maskCache = new WeakMap();
+  function alphaAt(sp, px, py) {   // px, py in the sprite's display units
+    let m = maskCache.get(sp.cv);
+    if (!m) {
+      const c = sp.cv, w = Math.max(1, Math.ceil(c.width / 4)), h = Math.max(1, Math.ceil(c.height / 4));
+      const t = document.createElement('canvas'); t.width = w; t.height = h;
+      const x = t.getContext('2d', { willReadFrequently: true }); x.drawImage(c, 0, 0, w, h);
+      let a;
+      try { const d = x.getImageData(0, 0, w, h).data; a = new Uint8Array(w * h); for (let i = 0; i < a.length; i++) a[i] = d[i * 4 + 3]; }
+      catch (e) { a = null; }   // an unreadable image: treat its box as solid
+      m = { a, w, h }; maskCache.set(sp.cv, m);
+    }
+    if (px < 0 || py < 0 || px >= sp.w || py >= sp.h) return 0;
+    if (!m.a) return 255;
+    return m.a[Math.floor(py / sp.h * m.h) * m.w + Math.floor(px / sp.w * m.w)];
+  }
+  const covers = (b, X, Y) => alphaAt(b.sp, (X - (b.x - b.sp.ax * b.z)) / b.z, (Y - (b.y - b.sp.ay * b.z)) / b.z) > 140;
+  const xrCv = document.createElement('canvas'), xrCtx = xrCv.getContext('2d');
+  function xray(list, z) {
+    if (!drawnB.length) return;
+    for (const it of list) {
+      const e = it.e;
+      if (!e || e.kind !== 'unit' || e.garrison) continue;
+      const s = it.s, tall = G.mounted(e) || (e.def && e.def.siege) ? 1.4 : 1;
+      const p1y = s.y - 12 * z * tall, p2y = s.y - 26 * z * tall;
+      let hid = false;
+      for (const b of drawnB) if (b.d > it.depth && (covers(b, s.x, p1y) || covers(b, s.x, p2y))) { hid = true; break; }
+      if (hid) drawXray(e, s, z, tall);
+    }
+  }
+  function drawXray(e, s, z, tall) {
+    const bw = 90 * z * tall, bh = 110 * z * tall, ox = bw / 2, oy = bh - 14 * z;
+    const W2 = Math.ceil(bw * DPR), H2 = Math.ceil(bh * DPR);
+    if (xrCv.width < W2 || xrCv.height < H2) { xrCv.width = Math.max(xrCv.width, W2); xrCv.height = Math.max(xrCv.height, H2); }
+    const x = xrCtx;
+    x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1;
+    x.clearRect(0, 0, W2, H2);
+    x.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // drawing a unit nudges its turn and swing state; a second draw this frame must not
+    const keep = { fv: e.fv, lastCool: e.lastCool, swingN: e.swingN };
+    if (!G.drawUnitArt || !G.drawUnitArt(x, e, ox, oy, z)) G.drawUnit(x, e, ox, oy, z * 1.6);
+    Object.assign(e, keep);
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.globalCompositeOperation = 'source-in';
+    x.fillStyle = G.ownerColor(e.owner); x.fillRect(0, 0, W2, H2);
+    ctx.globalAlpha = 0.62;
+    ctx.drawImage(xrCv, 0, 0, W2, H2, s.x - ox, s.y - oy, W2 / DPR, H2 / DPR);
+    ctx.globalAlpha = 1;
+  }
+
   function drawEntity(e, s, z, selected) {
     if (e.kind === 'res') {
       if (selected) selRingTile(e, '#fff');
@@ -714,6 +772,7 @@
         if (e.hitT) ctx.globalAlpha = 0.85;
         drawSprite(sp, g.x, g.y, z);
         ctx.globalAlpha = 1;
+        if (e.type !== 'farm' && sp && sp.cv) drawnB.push({ sp, x: g.x, y: g.y, z, d: curDepth });
         if (selected) drawGlow(sp, g.x, g.y, z, own ? '#ffffff' : '#ff6b5e', 0.7 + 0.2 * Math.sin(G.realTime() * 4));
         const fl = flashOf(e); if (fl) drawGlow(sp, g.x, g.y, z, fl.col, fl.a);
       } else {
