@@ -6708,26 +6708,28 @@
  "mediterranean_range": {
   "file": "assets/bpack_mediterranean_1.png",
   "size": 3,
-  "w": 275.69,
-  "h": 230.81,
-  "ax": 137.7,
-  "ay": 182.52,
+  "w": 211.2,
+  "h": 176.82,
+  "ax": 105.49,
+  "ay": 128.82,
   "sx": 0,
   "sy": 378,
   "sw": 551,
-  "sh": 462
+  "sh": 462,
+  "_refit": 0.766
  },
  "mediterranean_stable": {
   "file": "assets/bpack_mediterranean_1.png",
   "size": 3,
-  "w": 251.51,
-  "h": 219.17,
-  "ax": 125.5,
-  "ay": 170.65,
+  "w": 211.2,
+  "h": 184.04,
+  "ax": 105.39,
+  "ay": 136.04,
   "sx": 0,
   "sy": 1457,
   "sw": 503,
-  "sh": 438
+  "sh": 438,
+  "_refit": 0.84
  },
  "mediterranean_mill": {
   "file": "assets/bpack_mediterranean_0.png",
@@ -6816,26 +6818,28 @@
  "eastasian_barracks": {
   "file": "assets/bpack_eastasian_0.png",
   "size": 3,
-  "w": 325.16,
-  "h": 265.71,
-  "ax": 162.28,
-  "ay": 217.1,
+  "w": 211.2,
+  "h": 172.59,
+  "ax": 105.41,
+  "ay": 124.59,
   "sx": 0,
   "sy": 0,
   "sw": 536,
-  "sh": 438
+  "sh": 438,
+  "_refit": 0.65
  },
  "eastasian_range": {
   "file": "assets/bpack_eastasian_1.png",
   "size": 3,
-  "w": 335.84,
-  "h": 266.23,
-  "ax": 167.62,
-  "ay": 217.62,
+  "w": 211.2,
+  "h": 167.42,
+  "ax": 105.41,
+  "ay": 119.42,
   "sx": 0,
   "sy": 935,
   "sw": 550,
-  "sh": 436
+  "sh": 436,
+  "_refit": 0.629
  },
  "eastasian_stable": {
   "file": "assets/bpack_eastasian_1.png",
@@ -6900,14 +6904,15 @@
  "eastasian_blacksmith": {
   "file": "assets/bpack_eastasian_0.png",
   "size": 3,
-  "w": 276.17,
-  "h": 266.31,
-  "ax": 155.78,
-  "ay": 217.73,
+  "w": 211.2,
+  "h": 203.66,
+  "ax": 119.13,
+  "ay": 155.66,
   "sx": 0,
   "sy": 876,
   "sw": 476,
-  "sh": 459
+  "sh": 459,
+  "_refit": 0.765
  },
  "eastasian_castle": {
   "file": "assets/bpack_eastasian_0.png",
@@ -6956,14 +6961,15 @@
  "mediterranean_siegeworkshop": {
   "file": "assets/bpack_mediterranean_1.png",
   "size": 4,
-  "w": 385.16,
-  "h": 308.59,
-  "ax": 256.0,
-  "ay": 244.21,
+  "w": 281.6,
+  "h": 225.62,
+  "ax": 187.17,
+  "ay": 161.62,
   "sx": 0,
   "sy": 840,
   "sw": 770,
-  "sh": 617
+  "sh": 617,
+  "_refit": 0.731
  },
  "eastasian_siegeworkshop": {
   "file": "assets/bpack_eastasian_1.png",
@@ -7614,14 +7620,15 @@
  "eastasian_monastery": {
   "file": "assets/bpack_eastasian_1.png",
   "size": 3,
-  "w": 251.15,
-  "h": 216.56,
-  "ax": 129.08,
-  "ay": 168.06,
+  "w": 211.2,
+  "h": 182.11,
+  "ax": 108.55,
+  "ay": 134.11,
   "sx": 0,
   "sy": 503,
   "sw": 501,
-  "sh": 432
+  "sh": 432,
+  "_refit": 0.841
  },
  "unit3d_britons_king_m_attack": {
   "file": "assets/units/pack_unit3d_britons_king_m.png",
@@ -9199,10 +9206,11 @@
  "barracks_dark": {
   "file": "assets/barracks_dark.png",
   "size": 3,
-  "w": 251.48,
-  "h": 223.82,
-  "ax": 154.1,
-  "ay": 175.26
+  "w": 211.2,
+  "h": 187.97,
+  "ax": 129.42,
+  "ay": 139.97,
+  "_refit": 0.84
  },
  "mill_dark": {
   "file": "assets/mill_dark.png",
@@ -26052,14 +26060,15 @@
  "middleeast_barracks": {
   "file": "assets/bpack_middleeast_0.png",
   "size": 3,
-  "w": 265.18,
-  "h": 236.02,
-  "ax": 96.54,
-  "ay": 187.48,
+  "w": 211.2,
+  "h": 187.98,
+  "ax": 76.89,
+  "ay": 139.98,
   "sx": 0,
   "sy": 0,
   "sw": 530,
-  "sh": 472
+  "sh": 472,
+  "_refit": 0.796
  },
  "middleeast_range": {
   "file": "assets/bpack_middleeast_1.png",
@@ -26112,26 +26121,15 @@
  "middleeast_miningcamp": {
   "file": "assets/bpack_middleeast_0.png",
   "size": 2,
-  "w": 221.52,
-  "h": 160.9,
-  "ax": 147.15,
-  "ay": 128.68,
+  "w": 140.8,
+  "h": 102.27,
+  "ax": 93.53,
+  "ay": 70.27,
   "sx": 0,
   "sy": 3735,
   "sw": 443,
-  "sh": 322
- },
- "middleeast_farm": {
-  "file": "assets/bpack_middleeast_0.png",
-  "size": 3,
-  "w": 211.77,
-  "h": 188.05,
-  "ax": 112.92,
-  "ay": 139.61,
-  "sx": 0,
-  "sy": 1785,
-  "sw": 424,
-  "sh": 376
+  "sh": 322,
+  "_refit": 0.636
  },
  "middleeast_tower": {
   "file": "assets/bpack_middleeast_1.png",
@@ -26236,14 +26234,15 @@
  "americas_barracks": {
   "file": "assets/bpack_americas_0.png",
   "size": 3,
-  "w": 289.17,
-  "h": 256.49,
-  "ax": 107.38,
-  "ay": 207.9,
+  "w": 211.2,
+  "h": 187.33,
+  "ax": 78.43,
+  "ay": 139.33,
   "sx": 0,
   "sy": 0,
   "sw": 578,
-  "sh": 513
+  "sh": 513,
+  "_refit": 0.73
  },
  "americas_range": {
   "file": "assets/bpack_americas_1.png",
@@ -26292,18 +26291,6 @@
   "sy": 277,
   "sw": 328,
   "sh": 296
- },
- "americas_farm": {
-  "file": "assets/bpack_americas_0.png",
-  "size": 3,
-  "w": 253.37,
-  "h": 239.62,
-  "ax": 141.07,
-  "ay": 191.36,
-  "sx": 0,
-  "sy": 1939,
-  "sw": 507,
-  "sh": 479
  },
  "americas_tower": {
   "file": "assets/bpack_americas_1.png",
@@ -26404,14 +26391,15 @@
  "indian_barracks": {
   "file": "assets/bpack_indian_0.png",
   "size": 3,
-  "w": 323.37,
-  "h": 286.42,
-  "ax": 227.05,
-  "ay": 237.79,
+  "w": 211.2,
+  "h": 187.07,
+  "ax": 148.29,
+  "ay": 139.07,
   "sx": 0,
   "sy": 0,
   "sw": 647,
-  "sh": 573
+  "sh": 573,
+  "_refit": 0.653
  },
  "indian_range": {
   "file": "assets/bpack_indian_1.png",
@@ -26472,18 +26460,6 @@
   "sy": 251,
   "sw": 267,
   "sh": 225
- },
- "indian_farm": {
-  "file": "assets/bpack_indian_0.png",
-  "size": 3,
-  "w": 268.41,
-  "h": 232.57,
-  "ax": 131.01,
-  "ay": 184.01,
-  "sx": 0,
-  "sy": 1888,
-  "sw": 537,
-  "sh": 465
  },
  "indian_tower": {
   "file": "assets/bpack_indian_1.png",
@@ -26588,14 +26564,15 @@
  "middleeast_barracks_dark": {
   "file": "assets/bpack_middleeast_0.png",
   "size": 3,
-  "w": 314.89,
-  "h": 250.68,
-  "ax": 216.94,
-  "ay": 202.02,
+  "w": 211.2,
+  "h": 168.13,
+  "ax": 145.5,
+  "ay": 120.13,
   "sx": 0,
   "sy": 472,
   "sw": 630,
-  "sh": 501
+  "sh": 501,
+  "_refit": 0.671
  },
  "middleeast_mill_dark": {
   "file": "assets/bpack_middleeast_0.png",
@@ -26664,14 +26641,15 @@
  "americas_barracks_dark": {
   "file": "assets/bpack_americas_0.png",
   "size": 3,
-  "w": 302.12,
-  "h": 251.92,
-  "ax": 97.25,
-  "ay": 203.29,
+  "w": 211.2,
+  "h": 176.11,
+  "ax": 67.98,
+  "ay": 128.11,
   "sx": 0,
   "sy": 513,
   "sw": 604,
-  "sh": 504
+  "sh": 504,
+  "_refit": 0.699
  },
  "americas_mill_dark": {
   "file": "assets/bpack_americas_1.png",
@@ -26740,14 +26718,15 @@
  "indian_barracks_dark": {
   "file": "assets/bpack_indian_0.png",
   "size": 3,
-  "w": 272.44,
-  "h": 224.23,
-  "ax": 172.03,
-  "ay": 175.68,
+  "w": 211.2,
+  "h": 173.83,
+  "ax": 133.36,
+  "ay": 125.83,
   "sx": 0,
   "sy": 573,
   "sw": 545,
-  "sh": 448
+  "sh": 448,
+  "_refit": 0.775
  },
  "indian_mill_dark": {
   "file": "assets/bpack_indian_1.png",

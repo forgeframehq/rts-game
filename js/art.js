@@ -134,6 +134,8 @@
   // so new tier art can be dropped in one building at a time without touching this.
   const AGE_TIER = [null, 'dark', 'feudal', 'castle', 'imp'];
   const bldKey = (type, owner) => {
+    // farms are the same field everywhere: one shared look for every dynasty and every Age
+    if (type === 'farm' || type === 'farm_spent') return type;
     const r = regionOf(owner), west = r === 'western';
     const tier = AGE_TIER[(G.players[owner] && G.players[owner].age) || 1];
     const tries = [];
