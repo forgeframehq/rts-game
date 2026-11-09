@@ -743,3 +743,6 @@ body.bigbtn .grp{width:58px}
 #agecard .btns button { flex: 1; height: 44px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel2); font-size: 15px; }
 #agecard .btns button.go { background: linear-gradient(180deg, #8a6a2a, #5a4524); color: #fff3d6; font-weight: 700; }
 #agecard .btns button.go:disabled { opacity: 0.45; }
+
+/* blank cells that pad the shorter build page to the longer one's size */
+.cmd.filler { visibility: hidden; pointer-events: none; }

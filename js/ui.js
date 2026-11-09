@@ -1324,6 +1324,11 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
           if (!G.canBuildType(1, t)) { cmds.appendChild(btn('i:' + t + '|lock', G.BUILDINGS[t].name, G.AGES[G.BUILD_AGE[t]].short + ' Age', () => UI.alert(`${G.BUILDINGS[t].name} needs the ${G.AGES[G.BUILD_AGE[t]].name}`), true)); continue; }
           cmds.appendChild(badge(btn('i:' + t, G.BUILDINGS[t].name, costTxt(c), () => { buildMenu = false; startPlace(t); }, !G.canAfford(1, c))));
         }
+        // both pages get the same number of cells (blank fillers on the shorter one), so the
+        // panel keeps one height when the tabs switch and the map doesn't jump under the thumb;
+        // Back comes last, so it sits in the same place on both pages
+        const other = G.VIL_BUILDS.filter(t => (MIL.includes(t) ? 'mil' : 'eco') !== page && !G.civBlocks(1, t)).length;
+        for (let i = list.length; i < other; i++) { const f = document.createElement('div'); f.className = 'cmd filler'; cmds.appendChild(f); }
         cmds.appendChild(btn('i:back', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
       }
