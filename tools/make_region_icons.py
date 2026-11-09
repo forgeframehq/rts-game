@@ -7,7 +7,9 @@ into assets/bpack_<region>_<n>.png. An icon is just that sprite cropped out of i
 its magenta team-colour dyed to the menu blue, trimmed and scaled into a 160x160 box --
 the same size as the hand-painted western icons in assets/ui/icons/.
 
-Writes assets/ui/icons/<region>_<building>.png for every region but western, which keeps
+Packs the icons for every region but western into one sheet, assets/ui/icons/atlas_buildings.png
+(128 px cells, indexed in atlas.json as b/<region>_<building>), so the web build stays under its
+file limit; the western set keeps
 the painted originals. js/ui.js looks for the regional file first and falls back to the
 western one, so a missing file is never an error.
 """
@@ -58,10 +60,14 @@ def icon(entry):
     return out
 
 
+CELL = 128        # sheet cell, matching the portrait atlases the game already cuts up
+COLS = 10
+
+
 def main():
     man = json.load(open('assets/manifest.json'))
     os.makedirs('assets/ui/icons', exist_ok=True)
-    made = skipped = 0
+    icons, skipped = [], 0
     for region in REGIONS:
         for b in BUILDINGS:
             key = f'{region}_{b}'
@@ -72,9 +78,20 @@ def main():
             if im is None:
                 skipped += 1
                 continue
-            im.save(f'assets/ui/icons/{key}.png', optimize=True)
-            made += 1
-    print(f'{made} icons written, {skipped} skipped (no regional art)')
+            icons.append((key, im))
+    rows = (len(icons) + COLS - 1) // COLS
+    sheet = Image.new('RGBA', (COLS * CELL, rows * CELL), (0, 0, 0, 0))
+    atlas_path = 'assets/ui/icons/atlas.json'
+    idx = json.load(open(atlas_path)) if os.path.exists(atlas_path) else {}
+    idx = {k: v for k, v in idx.items() if not k.startswith('b/')}
+    for i, (key, im) in enumerate(icons):
+        cx, cy = i % COLS, i // COLS
+        sheet.paste(im.resize((CELL, CELL), Image.LANCZOS), (cx * CELL, cy * CELL))
+        idx[f'b/{key}'] = ['buildings', cx, cy]
+    idx['_png'] = sorted(set(idx.get('_png', [])) | {'buildings'})   # sheets that keep alpha
+    sheet.save('assets/ui/icons/atlas_buildings.png', optimize=True)
+    json.dump(idx, open(atlas_path, 'w'), separators=(',', ':'))
+    print(f'{len(icons)} icons packed into atlas_buildings.png ({sheet.size[0]}x{sheet.size[1]}), {skipped} skipped (no regional art)')
 
 
 if __name__ == '__main__':

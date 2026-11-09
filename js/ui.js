@@ -1095,16 +1095,19 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // portraits and tech icons come packed in a few atlas images; each is cut into its own small
   // image once loaded (until then the plain painted icon shows)
   const ATL = {};
+  // Sheets of 128 px cells, cut into data URLs on load: u/<civ>_<unit> portraits and t/<tech>
+  // (JPEG sheets), and b/<region>_<building> icons (a PNG sheet, listed in _png, keeping alpha).
   fetch('assets/ui/icons/atlas.json').then(r => r.json()).then(idx => {
-    const groups = {}; for (const k in idx) (groups[idx[k][0]] = groups[idx[k][0]] || []).push(k);
+    const png = new Set(idx._png || []);
+    const groups = {}; for (const k in idx) if (k[0] !== '_') (groups[idx[k][0]] = groups[idx[k][0]] || []).push(k);
     for (const g in groups) {
-      const im = new Image();
+      const im = new Image(), isPng = png.has(g);
       im.onload = () => {
         const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
-        for (const k of groups[g]) { const [, cx, cy] = idx[k]; x.drawImage(im, cx * 128, cy * 128, 128, 128, 0, 0, 128, 128); try { ATL[k] = c.toDataURL('image/jpeg', 0.9); } catch (e) { /* no pixel access */ } }
+        for (const k of groups[g]) { const [, cx, cy] = idx[k]; x.clearRect(0, 0, 128, 128); x.drawImage(im, cx * 128, cy * 128, 128, 128, 0, 0, 128, 128); try { ATL[k] = isPng ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', 0.9); } catch (e) { /* no pixel access */ } }
         panelKey = '';
       };
-      im.src = `assets/ui/icons/atlas_${g}.jpg`;
+      im.src = `assets/ui/icons/atlas_${g}.${isPng ? 'png' : 'jpg'}`;
     }
   }).catch(() => {});
   // portrait image for a unit of this owner; tier forces a rank (for upgrade buttons)
@@ -1134,8 +1137,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         // art for it (the Incas have no Stable) the browser falls back to the shared icon
         const pl = G.players && G.players[owner || 1], rg = pl && G.REGION[pl.civ];
         const fb = `${ICONP}${n}.png`;
-        const reg = (rg && rg !== 'western' && REGION_ICON.has(n)) ? `${ICONP}${rg}_${n}.png` : null;
-        return `<img class="ico${lock ? ' locked' : ''}" src="${reg || fb}" alt="" draggable="false"${reg ? ` onerror="this.onerror=null;this.src='${fb}'"` : ''}>` + (lock ? '<span class="lock">🔒</span>' : '');
+        const reg = (rg && rg !== 'western' && REGION_ICON.has(n)) ? ATL[`b/${rg}_${n}`] : null;
+        return `<img class="ico${lock ? ' locked' : ''}" src="${reg || fb}" alt="" draggable="false">` + (lock ? '<span class="lock">🔒</span>' : '');
       }
       return `<span class="glyph">${(G.UNITS[n] || G.BUILDINGS[n] || {}).icon || '?'}</span>`;
     }
