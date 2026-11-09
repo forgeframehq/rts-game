@@ -49,7 +49,14 @@ KEEP = (
     "architecture and materials, as described. Plain pure white background, no ground tile, "
     "no grass, no cast shadow on the background, no people, no text, no labels, no border. "
     "Any flag, banner, awning or cloth trim must be pure magenta #FF00FF, and nothing else "
-    "in the image may be magenta or pink."
+    "in the image may be magenta or pink. "
+    # The footprint rule (9 Nov): the one thing the model most often broke. Without it buildings
+    # came back as long halls with yards in front, or seen from a higher camera, and no scaling
+    # could put them on their tile square. tools/footprint_check.py measures the result.
+    "FOOTPRINT: the building and everything attached to it (yard, fence, steps, shed) fits inside "
+    "ONE square plot exactly the size and shape of the reference's, seen from the same corner-on "
+    "2:1 isometric camera (ground edges at a 2:1 slope, never steeper), so the painted ground edges "
+    "run along the reference's ground edges. No long halls, no L-shapes, no yard in front of the square."
 )
 
 

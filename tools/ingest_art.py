@@ -49,6 +49,11 @@ def main(src):
             print(f"{region or 'western'}{'/' + tier if tier else ''}: {n} file(s)")
             cmd = [sys.executable, os.path.join(HERE, "process_art.py"), d, region or "-"] + ([tier] if tier else [])
             subprocess.run(cmd, cwd=REPO, check=True)
+    # Every new sprite must sit on its tile square. The footprint tool squashes any that were
+    # painted too steep and names the ones whose base is the wrong shape, which must be
+    # regenerated (tools/art_jobs/footprint_fix.json holds the job) before they ship.
+    print("\nfootprint check:")
+    subprocess.run([sys.executable, os.path.join(HERE, "footprint_fix.py"), "--apply"], cwd=REPO, check=True)
 
 
 if __name__ == "__main__":
