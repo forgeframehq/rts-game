@@ -1,0 +1,7 @@
+{"out": "build/art/compact_fix",
+ "jobs": [
+  ["me_miningcamp", "mining_camp.png",
+   "Rebuild this in a medieval Persian style: warm sand-coloured fired brick and smooth plaster, pointed arches and a deep iwan portal framed in turquoise and cobalt glazed tilework with geometric patterns, flat roofs behind low crenellated parapets, small turquoise-tiled domes. No timber framing, no pitched northern roof. Make it a mining camp: an open-sided shed with an ore cart, piles of stone and glinting gold ore, picks and baskets. Keep it as compact as the reference: one small building, no yard, no outer wall, nothing spreading wider than the reference's footprint."],
+  ["in_range", "archery_range.png",
+   "Rebuild this in a South Indian Chola style: carved grey granite and warm sandstone, rows of carved pillars, stepped plinths, sloping roofs of red clay tiles with carved wooden brackets, temple-style ornament, garlands and brass lamps. No timber framing, no European stonework. Make it an archery range: a shooting yard with straw targets on posts, a covered stand for the archers and a small storeroom. Keep it as compact as the reference: the yard and the stand together are no wider than the reference's footprint, no extra courtyard, no outer wall beyond it."]
+ ]}

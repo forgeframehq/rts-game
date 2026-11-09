@@ -26119,17 +26119,12 @@
   "sh": 188
  },
  "middleeast_miningcamp": {
-  "file": "assets/bpack_middleeast_0.png",
+  "file": "assets/middleeast_miningcamp.png",
   "size": 2,
-  "w": 140.8,
-  "h": 102.27,
-  "ax": 93.53,
-  "ay": 70.27,
-  "sx": 0,
-  "sy": 3735,
-  "sw": 443,
-  "sh": 322,
-  "_refit": 0.636
+  "w": 128.36,
+  "h": 101.99,
+  "ax": 64.0,
+  "ay": 69.92
  },
  "middleeast_tower": {
   "file": "assets/bpack_middleeast_1.png",
@@ -26402,16 +26397,12 @@
   "_refit": 0.653
  },
  "indian_range": {
-  "file": "assets/bpack_indian_1.png",
+  "file": "assets/indian_range.png",
   "size": 3,
-  "w": 242.22,
-  "h": 172.3,
-  "ax": 98.4,
-  "ay": 123.81,
-  "sx": 0,
-  "sy": 1095,
-  "sw": 484,
-  "sh": 345
+  "w": 196.64,
+  "h": 161.75,
+  "ax": 98.82,
+  "ay": 113.55
  },
  "indian_stable": {
   "file": "assets/bpack_indian_1.png",
