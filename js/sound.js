@@ -283,7 +283,11 @@
     moodTimer = setInterval(() => {
       const now = (typeof G !== 'undefined' && G.time) || (performance.now() / 1000);
       if (scene === 'game' && mood === 'battle' && now - lastFight > CALM_AFTER) setMood('peace');
-    }, 1000);
+      // One voice only. Whatever path left a second deck sounding (a background switch in the
+      // middle of a hand-over, an event Android delivered late), it is faded out here unless it
+      // is already in a fade of its own, which is the crossfade doing its job.
+      deck.forEach((d, j) => { if (j !== cur && d && !d.paused && d.volume > 0.01 && !fades[j]) fade(j, 0, 0.8, true); });
+    }, 500);
   }
 
   // a film is playing: the music steps aside and comes back when it ends
@@ -322,8 +326,9 @@
       if (amb) amb.pause();
       if (ctx && ctx.state === 'running') ctx.suspend();
     } else {
-      // only the current track comes back, rising from silence
-      deck.forEach((d, j) => { if (d && j !== cur) { d.volume = 0; d.pause(); } });
+      // only the current track comes back, rising from silence; the other deck is emptied so
+      // nothing can restart it
+      deck.forEach((d, j) => { if (d && j !== cur) { d.volume = 0; d.pause(); if (fades[j]) { clearInterval(fades[j]); fades[j] = null; } d.removeAttribute('src'); d.load(); } });
       const a = deck[cur];
       if (a && S.musicEnabled && a.getAttribute('src') && !S.hushed) { a.volume = 0; a.play().catch(() => {}); fade(cur, vol(), 1.5); }
       if (amb && S.enabled) amb.play().catch(() => {});

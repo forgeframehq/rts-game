@@ -7,7 +7,12 @@
     // one the player has, so an easier opponent grows with the player rather than ahead of them.
     // retreat: pulls a wave back home from a fight it is clearly losing.
     easy:   { maxVils: 15, firstAttack: 720, wave: 3, grow: 1, armyCap: 8, think: 1.8, armyPerVil: 0.4, research: 0.25, match: 0.7, minArmy: 4, retreat: false, counter: 0.3, maxAge: 3, ageAt: [0, 0, 600, 1320] },
-    normal: { maxVils: 26, firstAttack: 420, wave: 6, grow: 3, armyCap: 24, think: 0.7, research: 0.7, match: 1.15, minArmy: 8, retreat: true, counter: 0.7, maxAge: 4, ageAt: [0, 0, 360, 840, 1500] },
+    // Normal is a fair fight for someone who has played a few matches, not an AoE2 veteran:
+    // a town of 20, a first attack after nine minutes, waves of five, an army that stays near
+    // the player's own size (match 1.0), and Castle Age around 16 minutes. (Until 9 Nov it ran
+    // 26 villagers, attacked at 7 min and had Man-at-Arms and Fletching by 12; a new player
+    // with 15 villagers at 11 min stood no chance.)
+    normal: { maxVils: 20, firstAttack: 540, wave: 5, grow: 2, armyCap: 16, think: 1.0, armyPerVil: 0.6, research: 0.5, match: 1.0, minArmy: 6, retreat: true, counter: 0.5, maxAge: 4, ageAt: [0, 0, 480, 960, 1620] },
     hard:   { maxVils: 34, firstAttack: 330, wave: 8, grow: 4, armyCap: 40, think: 0.4, research: 1, match: 0, retreat: true, counter: 1, maxAge: 4, ageAt: [0, 0, 0, 0, 0] }
   };
   // what each soldier is good against (AoE2's rock-paper-scissors): inf, arc, cav, sie

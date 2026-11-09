@@ -145,7 +145,17 @@
     return type;
   };
   // painted construction stage n (1 bare frame, 2 half built) of this owner's building, if any
-  G.stageSprite = (type, owner, n) => { const k = bldKey(type, owner) + '_s' + n; return art[k] ? sprite(k, G.ownerColor(owner)) : null; };
+  G.stageSprite = (type, owner, n) => {
+    const k = bldKey(type, owner) + '_s' + n;
+    if (art[k]) return sprite(k, G.ownerColor(owner));
+    // A region with no painted construction frames of its own (Middle East, Americas, India)
+    // borrows the western bare frame, which is fitted to the same plot: the scaffold and
+    // timber posts stay up through the whole build and the finished building rises out of
+    // them. The half-built western frame is not used, since its walls would be the wrong style.
+    const tier = (G.players[owner] && G.players[owner].age) === 1 && art[type + '_dark_s1'] ? '_dark' : '';
+    const w = type + tier + '_s1';
+    return art[w] ? sprite(w, G.ownerColor(owner)) : null;
+  };
   G.buildingSprite = function (type, owner, farmStage, mask) {
     // walls are drawn in code from their neighbours, so they never take painted art
     if (G.BUILDINGS[type] && G.BUILDINGS[type].wall) return baseBuilding(type, owner, farmStage, mask);

@@ -735,6 +735,13 @@
     return m.a[Math.floor(py / sp.h * m.h) * m.w + Math.floor(px / sp.w * m.w)];
   }
   const covers = (b, X, Y) => alphaAt(b.sp, (X - (b.x - b.sp.ax * b.z)) / b.z, (Y - (b.y - b.sp.ay * b.z)) / b.z) > 140;
+  // The building whose painted pixels lie under a screen point, front-most first: a tap on a
+  // roof that overhangs the plot still picks the building rather than the ground beside it.
+  G.buildingAt = function (X, Y) {
+    let best = null;
+    for (const b of drawnB) if (b.e && !b.e.dead && covers(b, X, Y) && (!best || b.d > best.d)) best = b;
+    return best ? best.e : null;
+  };
   const xrCv = document.createElement('canvas'), xrCtx = xrCv.getContext('2d');
   function xray(list, z) {
     if (!drawnB.length) return;
@@ -803,7 +810,7 @@
         if (e.hitT) ctx.globalAlpha = 0.85;
         drawSprite(sp, g.x, g.y, z);
         ctx.globalAlpha = 1;
-        if (e.type !== 'farm' && sp && sp.cv) drawnB.push({ sp, x: g.x, y: g.y, z, d: curDepth });
+        if (e.type !== 'farm' && sp && sp.cv) drawnB.push({ sp, x: g.x, y: g.y, z, d: curDepth, e });
         if (selected) drawGlow(sp, g.x, g.y, z, own ? '#ffffff' : '#ff6b5e', 0.7 + 0.2 * Math.sin(G.realTime() * 4));
         const fl = flashOf(e); if (fl) drawGlow(sp, g.x, g.y, z, fl.col, fl.a);
       } else {

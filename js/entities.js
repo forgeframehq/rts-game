@@ -472,6 +472,35 @@
   G.cmdGather = function (units, r) {
     for (const u of units) if (u.type === 'villager') { u.task = { t: 'gather', id: r.id, rtype: r.type, lx: r.x, ly: r.y }; u.path = []; u.pathFor = 0; }
   };
+  // How many villagers one patch of a resource can take before the next man is better off on
+  // the patch beside it (AoE2 lets more crowd on, but they only bump into each other).
+  const GATHER_CAP = { tree: 1, berry: 2, gold: 2, stone: 2 };
+  // Send a group to gather a kind of resource around a point, spreading them out: each man
+  // takes the nearest patch of that kind that still has room, so three villagers sent to a
+  // forest take three trees, not one. `r` is the patch that was tapped (or the nearest one);
+  // men who find no room within `radius` tiles of it share it anyway.
+  G.cmdGatherSpread = function (units, r, radius) {
+    const vils = units.filter(u => u.type === 'villager'); if (!vils.length || !r) return;
+    radius = radius || 6;
+    const load = new Map();   // resource id -> men already on it (counting the ones we assign here)
+    for (const u of G.ents) if (!u.dead && u.kind === 'unit' && u.task.t === 'gather' && !vils.includes(u)) load.set(u.task.id, (load.get(u.task.id) || 0) + 1);
+    const cap = GATHER_CAP[r.type] || 2;
+    const pool = G.ents.filter(e => !e.dead && e.kind === 'res' && e.type === r.type && e.amount > 0 && Math.hypot(e.x - r.x, e.y - r.y) <= radius);
+    // nearest men first, so the ones already there keep the tapped patch
+    vils.sort((a, b) => G.dist(a, r) - G.dist(b, r) || a.id - b.id);
+    for (const v of vils) {
+      let best = null, bd = Infinity;
+      for (const e of pool) {
+        if ((load.get(e.id) || 0) >= cap) continue;
+        // prefer the tapped patch and what is near it, then what is near the man
+        const d = Math.hypot(e.x - r.x, e.y - r.y) * 2 + G.dist(v, e);
+        if (d < bd) { bd = d; best = e; }
+      }
+      if (!best) best = r;
+      load.set(best.id, (load.get(best.id) || 0) + 1);
+      G.cmdGather([v], best);
+    }
+  };
   G.cmdBuild = function (units, b) {
     for (const u of units) if (u.type === 'villager') { u.task = { t: 'build', id: b.id }; u.path = []; u.pathFor = 0; }
   };
@@ -527,7 +556,8 @@
       if (G.enemies(t.owner, units[0].owner)) { G.cmdAttack(units, t); return 'attack'; }
       if (t.kind === 'res') {
         const vils = units.filter(u => u.type === 'villager');
-        G.cmdGather(vils, t); G.cmdMove(units.filter(u => u.type !== 'villager'), x, y);
+        if (vils.length > 1) G.cmdGatherSpread(vils, t); else G.cmdGather(vils, t);
+        G.cmdMove(units.filter(u => u.type !== 'villager'), x, y);
         return vils.length ? 'gather' : 'move';
       }
       if (t.kind === 'building' && t.owner === units[0].owner) {
@@ -702,7 +732,20 @@
       }
     }
     if (t.kind === 'unit' && t.task.t !== 'attack' && G.enemies(att.owner, t.owner)) {
-      if (t.type !== 'villager' && !t.def.heal && G.stanceOf(t) !== 'passive') t.task = { t: 'attack', id: att.id, home: { x: t.x, y: t.y } };
+      if (t.type !== 'villager' && !t.def.heal && G.stanceOf(t) !== 'passive') {
+        t.task = { t: 'attack', id: att.id, home: { x: t.x, y: t.y } };
+        // His comrades come too. Archers shoot from just beyond a swordsman's sight, so
+        // without this the men standing beside him never notice: he charges alone, dies in
+        // seconds, and the next man does the same. Idle soldiers within earshot (and those
+        // only wandering) turn on the attacker; stand-ground and passive men stay put.
+        if (att.kind === 'unit') for (const o of G.ents) {
+          if (o === t || o.dead || o.kind !== 'unit' || o.owner !== t.owner || o.inside || o.type === 'villager' || o.def.heal || o.def.siege || o.def.cls === 'hero') continue;
+          if (o.task.t !== 'idle' && !(o.task.t === 'move' && !o.task.forced)) continue;
+          const st = G.stanceOf(o); if (st === 'stand' || st === 'passive') continue;
+          if (G.dist(o, t) > 6) continue;
+          o.task = { t: 'attack', id: att.id, home: { x: o.x, y: o.y }, resume: o.task.t === 'move' ? { x: o.task.x, y: o.task.y, fx: o.task.fx, fy: o.task.fy } : undefined }; o.path = []; o.pathFor = 0;
+        }
+      }
       else if (att.kind === 'unit' && att.def.cls !== 'cav' && t.hp < t.maxHp * 0.4) {
         // flee toward town center
         const tc = nearest(t, e => e.type === 'towncenter' && e.owner === t.owner && e.built);
@@ -934,6 +977,20 @@
         break;
       }
       case 'move': {
+        // A soldier on the march fights what comes within reach instead of walking past it
+        // while it hits him. He turns on the nearest enemy in a short radius (his own range
+        // plus a little, so archers answer archers and a swordsman stops for a man beside
+        // him), keeps the destination as home so the leash and the formation still make
+        // sense, and carries on when the fight is done. Retreating waves (forced) march on.
+        if (u.type !== 'villager' && !u.def.heal && !u.def.siege && u.def.cls !== 'hero' && !task.forced && G.stanceOf(u) !== 'passive') {
+          u.scan = (u.scan || 0) - dt;
+          if (u.scan <= 0) {
+            u.scan = 0.4;
+            const reach = Math.max(2.5, (u.range || 1) + 1.5);
+            const t = nearest(u, e => e.kind === 'unit' && G.enemies(e.owner, u.owner) && !e.inside, reach);
+            if (t) { u.task = { t: 'attack', id: t.id, home: { x: task.x, y: task.y }, resume: { x: task.x, y: task.y, fx: task.fx, fy: task.fy } }; u.path = []; u.pathFor = 0; break; }
+          }
+        }
         if (!u.path.length) {
           if (Math.hypot(task.x - u.x, task.y - u.y) < 0.6 || task.tries > 2) {
             if (task.fx || task.fy) faceTo(u, { x: u.x + task.fx, y: u.y + task.fy });   // a formation turns to face the way it marched
@@ -973,10 +1030,13 @@
         if (t && t.inside) { const b = G.byId.get(t.inside); if (b && !b.dead && G.enemies(b.owner, u.owner)) { task.id = b.id; t = b; } else t = null; }
         if (!t || t.dead) {
           // look for another enemy nearby
-          const n = (u.type === 'villager' || u.def.heal) ? null : nearest(u, e => (e.kind === 'unit' || e.kind === 'building') && G.enemies(e.owner, u.owner), u.def.los);
+          // (a man who stopped on the march only takes on units, not buildings, before resuming)
+          const n = (u.type === 'villager' || u.def.heal) ? null : nearest(u, e => (e.kind === 'unit' || (e.kind === 'building' && !task.resume)) && G.enemies(e.owner, u.owner), u.def.los);
           const ward = task.guard && G.byId.get(task.guard);
           if (ward && !ward.dead) u.task = { t: 'guard', id: ward.id };   // back to guard duty
-          else if (n) u.task = { t: 'attack', id: n.id, home: task.home }; else u.task = { t: 'idle' };
+          else if (n) u.task = { t: 'attack', id: n.id, home: task.home, resume: task.resume };
+          else if (task.resume) { const r = task.resume; u.task = { t: 'move', x: r.x, y: r.y, fx: r.fx, fy: r.fy }; }   // back on the march
+          else u.task = { t: 'idle' };
           u.path = [];
           break;
         }

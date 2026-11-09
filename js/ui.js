@@ -511,6 +511,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   $('btn-quit').onclick = () => { $('menu').classList.add('hidden'); if (G.net && G.net.on) { G.net.end(); G.over = 'defeat'; } toMenu(); };
   $('speed').onclick = e => { const s = e.target.dataset.s; if (!s) return; prefs.speed = s; savePrefs(); applyPrefs(); };
 
+  UI.__tap = (x, y, o) => tap(x, y, o || {});   // for headless tests
   UI.reset = function () { if (G.players && G.players[1] && !(G.net && G.net.on)) G.setReseed(1, G.autoReseed !== false); if (UI.resetGroups) { UI.resetGroups(); UI.resetTips(); } if ($('wavebar')) $('wavebar').classList.add('hidden'); G.selection = []; mode = null; G.ghost = null; panelKey = ''; $('place-bar').classList.add('hidden'); $('btn-box').classList.remove('on'); if ($('agecard')) $('agecard').classList.add('hidden'); refreshPanel(true); };
   UI.alert = function (msg) {
     if (G.sound && /^[⚠️💀🚫]|Not enough|Need more|Busy|already/i.test(msg)) G.sound.play('error'); const t = $('toast'); t.textContent = msg; t.classList.add('show'); toastT = 2.5; };
@@ -628,7 +629,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
     const type = { food: 'berry', wood: 'tree', gold: 'gold', stone: 'stone' }[k];
     const r = G.nearest(v, e => e.kind === 'res' && e.type === type && e.amount > 0 && (G.revealAll || G.isExplored(e.tx, e.ty)), 999);
     if (!r) { UI.alert(`No ${k} found yet: explore with a scout`); return; }
-    G.order('cmdGather', vils, r); outline(r, '#7dff7a'); ping(r.x, r.y, '#7dff7a'); panelKey = '';
+    if (vils.length > 1) G.order('cmdGatherSpread', vils, r); else G.order('cmdGather', vils, r);
+    outline(r, '#7dff7a'); ping(r.x, r.y, '#7dff7a'); panelKey = '';
     if (G.sound) G.sound.play('command');
   }
   // ---- Army buttons 1-3: hold to save the selection, tap to select it, double-tap to jump to it ----
@@ -729,6 +731,8 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
       const w = G.toWorld(sx, sy), id = G.inMap(w.x | 0, w.y | 0) ? G.block[G.idx(w.x | 0, w.y | 0)] : 0, b = id && G.byId.get(id);
       if (!(b && b.kind === 'building')) return rb;
     }
+    // a building's painted pixels under the finger (roofs overhang their plots)
+    if (G.buildingAt) { const b = G.buildingAt(sx, sy); if (b && (G.revealAll || G.isExplored(b.tx + b.size / 2, b.ty + b.size / 2))) return b; }
     // buildings / resources: check tile under finger, and tiles "behind" it for tall sprites
     for (const off of [0, 16, 32, 48, 64]) {
       const w = G.toWorld(sx, sy + off * z);
@@ -1332,8 +1336,9 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
         cmds.appendChild(btn('i:back', 'Back', '', () => { buildMenu = false; panelKey = ''; refreshPanel(true); }));
         return;
       }
-      if (vils.length && vils.every(v => v.task.t === 'idle')) {
-        // idle villagers: suggest a job, one tap to send them
+      if (vils.length) {
+        // the villagers' jobs, always there (not only when idle): one tap sends them, and a
+        // group spreads over separate farms, trees or mines
         const R = G.players[1].res, need = ['food', 'wood', 'gold', 'stone'].sort((a, b) => R[a] - R[b])[0];
         const JOBS = { food: ['i:food', 'Food'], wood: ['i:wood', 'Wood'], gold: ['i:gold', 'Gold'], stone: ['i:stone', 'Stone'] };
         const site = G.ents.filter(b => !b.dead && b.owner === 1 && b.kind === 'building' && b.type !== 'farm' && (!b.built || b.hp < b.maxHp * 0.95)).sort((a, b) => G.dist(a, vils[0]) - G.dist(b, vils[0]))[0];
