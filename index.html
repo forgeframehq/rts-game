@@ -17,7 +17,7 @@
 <!-- Studio splash: shown once per launch, about two seconds, tap to skip. Inline so it
      appears before the game scripts finish loading. -->
 <div id="studio" onclick="this.classList.add('out')">
-  <img src="assets/ui/studio_logo.png" alt="Forge Frame">
+  <div class="glow"><img src="assets/ui/studio_logo.png" alt="Forge Frame" decoding="async"></div>
   <p>presents</p>
 </div>
 <script>
@@ -27,7 +27,9 @@
     s.addEventListener('transitionend', function (e) { if (e.target === s && s.classList.contains('out')) gone(); });
     // stay up while the game loads behind it: leave at whichever is later, two seconds or
     // the page finishing loading, and never longer than eight seconds
-    var t0 = Date.now(), out = function () { s.classList.add('out'); setTimeout(gone, 900); };
+    // start the fade only once the page has drawn two frames after loading, so the game's
+    // own start-up work is behind us and the fade runs smoothly
+    var t0 = Date.now(), out = function () { requestAnimationFrame(function () { requestAnimationFrame(function () { s.classList.add('out'); setTimeout(gone, 1200); }); }); };
     window.addEventListener('load', function () { setTimeout(out, Math.max(300, 2000 - (Date.now() - t0))); });
     setTimeout(out, 8000);
   })();

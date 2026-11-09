@@ -700,11 +700,17 @@ body.bigbtn .grp{width:58px}
 
 /* ---------- Forge Frame studio splash and credit ---------- */
 #studio { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at center, #2a1a0c 0%, #0c0805 70%); opacity: 1; transition: opacity .5s ease; cursor: pointer; }
-#studio img { width: min(72vw, 420px); height: auto; animation: studio-in .7s ease-out both; filter: drop-shadow(0 0 28px rgba(255,150,40,.35)); }
-#studio p { margin: 14px 0 0; font-family: Cinzel, Georgia, serif; letter-spacing: .4em; text-transform: uppercase; font-size: 13px; color: #c9a467; opacity: 0; animation: studio-in .6s .5s ease-out both; }
+  background: radial-gradient(ellipse at center, #2a1a0c 0%, #0c0805 70%); opacity: 1; transition: opacity .8s cubic-bezier(.4,0,.6,1); cursor: pointer;
+  will-change: opacity; }
+/* The logo and its glow animate with opacity and transform only, so the compositor keeps
+   them smooth even while the game scripts are parsing on the main thread; the glow is a
+   static gradient behind the logo rather than an animated blur filter, which stutters on phones. */
+#studio .glow { position: relative; display: grid; place-items: center; }
+#studio .glow::before { content: ''; position: absolute; width: 140%; height: 140%; border-radius: 50%; background: radial-gradient(circle, rgba(255,150,40,.28) 0%, rgba(255,150,40,0) 65%); animation: studio-in .9s ease-out both; }
+#studio img { position: relative; width: min(72vw, 420px); height: auto; animation: studio-in .9s cubic-bezier(.2,.7,.2,1) both; will-change: opacity, transform; transform: translateZ(0); }
+#studio p { margin: 14px 0 0; font-family: Cinzel, Georgia, serif; letter-spacing: .4em; text-transform: uppercase; font-size: 13px; color: #c9a467; opacity: 0; animation: studio-in .7s .55s ease-out both; will-change: opacity, transform; }
 #studio.out { opacity: 0; pointer-events: none; }
-@keyframes studio-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes studio-in { from { opacity: 0; transform: translateZ(0) scale(.94); } to { opacity: 1; transform: translateZ(0) scale(1); } }
 .studio-credit { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; opacity: .75; }
 .studio-credit img { width: 34px; height: auto; }
 .studio-credit span { font-family: Cinzel, Georgia, serif; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #d8bd88; }
