@@ -76,7 +76,7 @@ document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preven
   // tall screens get the portrait cut of each film, wide screens the landscape one
   // which dynasties have a pre-battle film, and in which cuts: 'both' (landscape and portrait)
   // or 'p' (portrait only; the newer films are made for the phone and play pillarboxed on a wide screen)
-  const FILMS = { britons: 'both', franks: 'both', byzantines: 'both', chinese: 'both', persians: 'p' };
+  const FILMS = { britons: 'both', franks: 'both', byzantines: 'both', chinese: 'both', persians: 'p', incas: 'p' };
   const film = (name, only) => `assets/video/${name}${only === 'p' || innerHeight > innerWidth ? '_p' : ''}.mp4`;
   function playFilm(src, title, done) {
     const v = $('cine-v'), box = $('cine');
