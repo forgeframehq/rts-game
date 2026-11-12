@@ -16,6 +16,7 @@ M="*res://sim/m.gd"
 G="*res://sim/g.gd"
 E="*res://sim/e.gd"
 Maps="*res://sim/maps.gd"
+Art="*res://view/art.gd"
 
 [display]
 
