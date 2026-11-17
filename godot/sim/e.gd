@@ -1614,6 +1614,7 @@ func _t_garrison(u: Dictionary, task: Dictionary, dt: float) -> void:
 		if u.pathFor != b.id or u.path.is_empty():
 			if u.repath <= 0 or u.pathFor != b.id: _path_to(u, b, true)
 		_move_along(u, dt)
+		_close_gap(u, b, dt)
 
 func _t_return(u: Dictionary, task: Dictionary, dt: float) -> void:
 	var b = G.by_id.get(task.id)
@@ -1636,6 +1637,7 @@ func _t_return(u: Dictionary, task: Dictionary, dt: float) -> void:
 		var px: float = u.x
 		var py: float = u.y
 		_move_along(u, dt)
+		_close_gap(u, b, dt)
 		task.still = task.get("still", 0.0) + dt if Vector2(u.x - px, u.y - py).length() < 0.002 else 0.0
 		if task.still > 3:
 			task.still = 0.0
@@ -1679,6 +1681,29 @@ func _t_build(u: Dictionary, task: Dictionary, dt: float) -> void:
 					u.path = M.find_path(u.x, u.y, rect_of(b), false, 0, u.owner); u.pathFor = b.id; u.repath = 1.0
 				else: _path_to(u, b, true)
 		_move_along(u, dt)
+		if b.type != "farm": _close_gap(u, b, dt)
+
+## Standing on the tile diagonal to a building's corner, the path is already at its end but the
+## wall is still a step away (up to 1.4 tiles). Walk straight at it. Without this a villager with a
+## full load beside the Town Center's corner stood still, gave up and went idle (the web edition
+## has the same gap), and builders on a corner tile never started work.
+func _close_gap(u: Dictionary, b: Dictionary, dt: float) -> void:
+	if u.path.size() > 0 or edge_dist(u, b) > 1.6: return
+	var cx := clampf(u.x, b.tx, b.tx + b.size)
+	var cy := clampf(u.y, b.ty, b.ty + b.size)
+	var d := Vector2(cx - u.x, cy - u.y)
+	var l := d.length()
+	if l < 0.001: return
+	var stp: float = u.def.speed * dt * speed_mul_of(u)
+	var nx: float = u.x + d.x / l * stp
+	var ny: float = u.y + d.y / l * stp
+	if M.free_for(int(nx), int(ny), u.owner):
+		u.x = nx; u.y = ny
+		u.walk += dt; u.dist += stp
+		_steer(u, d.x / l, d.y / l, dt)
+
+func speed_mul_of(u: Dictionary) -> float:
+	return G.speed_mul(u)
 
 func _go_drop(u: Dictionary) -> void:
 	var b = _drop_site_for(u, u.carry.res)

@@ -18,7 +18,16 @@ var look := Vector2(36, 36)   # the ground point at the middle of the screen (ti
 var _fog_t := 0.0
 var _sprite_basis: Basis
 var _ring_mesh: Mesh
+var _square_mesh: Mesh
 var _proj_nodes := []
+var hud = null             # the match interface, for the building being placed
+var _ghosts: Array = []
+var _ghost_sprite: Sprite3D
+var _ghost_key := ""
+var _pings: Array = []
+var _plot_mat_ok: StandardMaterial3D
+var _plot_mat_bad: StandardMaterial3D
+var _sel_mat: StandardMaterial3D
 
 func _ready() -> void:
 	cam = Camera3D.new()
@@ -72,6 +81,7 @@ func _on_new_game() -> void:
 	nodes = {}
 	for id in rings: rings[id].queue_free()
 	rings = {}
+	UnitView.reset()
 	_build_ground()
 
 func _build_ground() -> void:
@@ -129,7 +139,7 @@ func _update_fog() -> void:
 	fog_tex.update(fog_img)
 	ground_mat.set_shader_parameter("reveal", 1.0 if G.reveal_all else 0.0)
 
-func _seen(e: Dictionary) -> int:
+func seen(e: Dictionary) -> int:
 	# 2 = in sight, 1 = remembered, 0 = hidden
 	if G.reveal_all or E.allied(1, e.owner): return 2
 	if M.is_visible(e.x, e.y): return 2
@@ -177,12 +187,14 @@ func _dress_building(holder: Node3D, e: Dictionary) -> void:
 			f.position.y = 0.02
 			holder.add_child(f)
 		return
-	if not Art.has(look_key):
+	if not Art.has(look_key) or e.def.has("wall"):
 		# walls and gates are drawn in code in the web edition; a plain block stands in for now
 		var mi := MeshInstance3D.new()
-		var bm := BoxMesh.new(); bm.size = Vector3(e.size * 0.92, 0.7, e.size * 0.92)
-		mi.mesh = bm; mi.position.y = 0.35
-		var m := StandardMaterial3D.new(); m.albedo_color = Color(0.62, 0.6, 0.56) if e.type != "palisade" else Color(0.5, 0.36, 0.22)
+		var tall: float = (0.55 if e.type == "palisade" else 0.8) * (0.35 + 0.65 * e.progress)
+		var bm := BoxMesh.new(); bm.size = Vector3(e.size * (0.7 if e.type == "gate" else 1.0), tall, e.size * (0.7 if e.type == "gate" else 1.0))
+		mi.mesh = bm; mi.position.y = tall / 2
+		var m := StandardMaterial3D.new(); m.roughness = 1.0
+		m.albedo_color = Color(0.5, 0.36, 0.22) if e.type == "palisade" else (Color(0.42, 0.3, 0.2) if e.type == "gate" else Color(0.62, 0.6, 0.56))
 		mi.material_override = m
 		holder.add_child(mi)
 		return
@@ -199,7 +211,7 @@ func _process(dt: float) -> void:
 	var alive := {}
 	for e in G.ents:
 		if e.dead: continue
-		var seen := _seen(e)
+		var seen := seen(e)
 		var node = nodes.get(e.id)
 		if seen == 0:
 			if node != null: node.visible = false
@@ -216,11 +228,15 @@ func _process(dt: float) -> void:
 			nodes[id].queue_free(); nodes.erase(id)
 	_update_rings()
 	_update_projectiles()
+	_update_ghost()
+	_update_pings(dt)
 
 func _update_rings() -> void:
 	if _ring_mesh == null:
 		var tm := TorusMesh.new(); tm.inner_radius = 0.36; tm.outer_radius = 0.42; tm.rings = 24; tm.ring_segments = 3
 		_ring_mesh = tm
+		var sq := TorusMesh.new(); sq.inner_radius = 0.56; sq.outer_radius = 0.6; sq.rings = 4; sq.ring_segments = 3
+		_square_mesh = sq
 	for id in rings.keys():
 		if not G.selection.has(id) or not G.by_id.has(id):
 			rings[id].queue_free(); rings.erase(id)
@@ -229,12 +245,16 @@ func _update_rings() -> void:
 		if e == null: continue
 		var r = rings.get(id)
 		if r == null:
-			r = MeshInstance3D.new(); r.mesh = _ring_mesh
+			r = MeshInstance3D.new(); r.mesh = _ring_mesh if e.kind == "unit" else _square_mesh
 			var m := StandardMaterial3D.new(); m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED; m.albedo_color = Color(1, 1, 1)
 			r.material_override = m
 			add_child(r); rings[id] = r
-		var s: float = 1.0 if e.kind == "unit" else e.size * 1.75
-		r.scale = Vector3(s, 0.2, s)
+		if e.kind == "unit":
+			r.scale = Vector3(1, 0.2, 1); r.rotation.y = 0
+		else:
+			# a square ring turned to lie along the plot's edges
+			var s: float = e.size * 1.19
+			r.scale = Vector3(s, 0.12, s); r.rotation.y = PI / 4
 		r.position = Vector3(e.x, 0.03, e.y)
 
 func _update_projectiles() -> void:
@@ -259,3 +279,61 @@ func _update_projectiles() -> void:
 		var nxt := Vector3(lerpf(p.x, p.tx, k2), p.z * (1 - k2) + 0.4 * k2 + (2.6 if p.heavy else 0.9) * sin(k2 * PI), lerpf(p.y, p.ty, k2))
 		node.position = pos
 		if pos.distance_to(nxt) > 0.001: node.look_at(nxt, Vector3.UP)
+
+# ---------- the building being placed ----------
+func _plot_quad(mat: Material) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	var q := QuadMesh.new(); q.orientation = PlaneMesh.FACE_Y; q.size = Vector2(1, 1)
+	mi.mesh = q; mi.material_override = mat
+	add_child(mi)
+	return mi
+
+func _update_ghost() -> void:
+	if _plot_mat_ok == null:
+		_plot_mat_ok = StandardMaterial3D.new(); _plot_mat_bad = StandardMaterial3D.new()
+		for m in [_plot_mat_ok, _plot_mat_bad]:
+			m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED; m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA; m.no_depth_test = true
+		_plot_mat_ok.albedo_color = Color(0.3, 1.0, 0.35, 0.45); _plot_mat_bad.albedo_color = Color(1.0, 0.25, 0.2, 0.5)
+	var type: String = hud.placing if hud != null else ""
+	var tiles: Array = []
+	if type != "": tiles = hud.wall_line() if D.BUILDINGS[type].has("wall") else [hud.place_at]
+	while _ghosts.size() < tiles.size(): _ghosts.append(_plot_quad(_plot_mat_ok))
+	for i in _ghosts.size():
+		var gq: MeshInstance3D = _ghosts[i]
+		gq.visible = i < tiles.size()
+		if not gq.visible: continue
+		var s: int = D.BUILDINGS[type].size
+		gq.scale = Vector3(s, 1, s)
+		gq.position = Vector3(tiles[i].x + s / 2.0, 0.04, tiles[i].y + s / 2.0)
+		gq.material_override = _plot_mat_ok if hud.tile_ok(type, tiles[i]) else _plot_mat_bad
+	var key := Art.bld_key(type, 1) if (type != "" and not D.BUILDINGS[type].has("wall") and type != "farm") else ""
+	if key != "" and not Art.has(key): key = ""
+	if key != _ghost_key:
+		if _ghost_sprite != null: _ghost_sprite.queue_free()
+		_ghost_sprite = null; _ghost_key = key
+		if key != "":
+			_ghost_sprite = Art.make_sprite(key, G.color_of(1))
+			_ghost_sprite.basis = _sprite_basis
+			add_child(_ghost_sprite)
+	if _ghost_sprite != null:
+		var s: int = D.BUILDINGS[type].size
+		_ghost_sprite.position = Vector3(hud.place_at.x + s / 2.0, 0, hud.place_at.y + s / 2.0)
+
+# ---------- a ring where an order landed ----------
+func ping(x: float, y: float, col: Color) -> void:
+	var mi := MeshInstance3D.new(); mi.mesh = _ring_mesh
+	var m := StandardMaterial3D.new(); m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED; m.albedo_color = col
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mi.material_override = m
+	mi.position = Vector3(x, 0.04, y)
+	add_child(mi)
+	_pings.append([mi, 0.0])
+
+func _update_pings(dt: float) -> void:
+	for p in _pings:
+		p[1] += dt
+		var k: float = p[1] / 0.5
+		p[0].scale = Vector3(0.5 + k, 0.2, 0.5 + k)
+		p[0].material_override.albedo_color.a = 1.0 - k
+	while _pings.size() > 0 and _pings[0][1] >= 0.5:
+		_pings[0][0].queue_free(); _pings.pop_front()

@@ -10,6 +10,8 @@ signal killed(e: Dictionary)
 signal new_game_started
 
 const MOURN := 120.0
+const STEP := 1.0 / 30.0
+var _acc := 0.0
 
 var MAP := 72
 var ents: Array = []
@@ -40,6 +42,7 @@ var fast_train := 1.0
 var fast_gather := 1.0
 var fast_build := 1.0
 var terrain_speed := 1.0
+var pace := 1.0                # 1 = classic AoE2 timing; Quick matches run the economy faster
 
 var _rng := M.Rng.new(1)
 var _fog_t := 0.0
@@ -51,6 +54,42 @@ func rand() -> float:
 
 func seed_rand(v: int) -> void:
 	_rng = M.Rng.new(v if (v & 0xFFFFFFFF) != 0 else 1)
+
+func rng_state() -> int:
+	return _rng.s
+
+# ---------- saved games (see sim/save.gd) ----------
+func restore(d: Dictionary) -> void:
+	config = d.config; rules = d.rules; MAP = d.map; players = d.players; time = d.time
+	pace = 1.8 if rules.get("pace", "classic") == "quick" else 1.0
+	fast_train = pace; fast_gather = pace; fast_build = pace
+	net_on = false; over = null; over_reason = null; replay = []; _warned = 0; _fog_t = 0.0
+	projs = []; effects = []; corpses = []; decals = d.get("decals", []); kings = {}; selection = []
+	M.init_map(config.seed)
+	M.terrain = d.terrain; M.explored = d.explored
+	ents = d.ents; by_id = {}
+	E.next_id = d.next_id
+	_rng = M.Rng.new(1); _rng.s = d.rng
+
+func finish_restore(d: Dictionary) -> void:
+	Maps.apply_terrain_blocks()
+	for e in ents:
+		by_id[e.id] = e
+		if e.kind != "unit" and e.type != "farm": M.set_block(e, e.id)
+		if e.kind == "building":
+			for u in e.garrison: pass
+	reveal_all = rules.reveal == "all"
+	M.update_fog()
+	ais = []
+	for b in d.get("brains", []):
+		if not players.has(b.p) or not players[b.p].alive: continue
+		var a = AI.make(b.p, b.level)
+		a.wave_n = b.wave_n; a.next_attack = b.next_attack; a.wave_size = b.wave_size
+		ais.append(a)
+	if mode_node != null: mode_node.load_state(d.get("mode", {}))
+	new_game_started.emit()
+	var tc = E.nearest(0, 0, func(e): return e.owner == 1 and e.type == "towncenter")
+	if tc != null: focus.emit(tc.x, tc.y + 2)
 
 # ---------- messages to the interface ----------
 func alert(text: String) -> void:
@@ -137,6 +176,10 @@ func new_game(cfg: Dictionary = {}) -> void:
 		"time": float(cfg.get("time", 0)), "map": "grasslands", "wave": float(cfg.get("wave", 60)),
 		"neutral": cfg.get("neutral", false), "raidLvl": cfg.get("raidLvl", "normal"),
 		"startAge": clampi(cfg.get("startAge", 1), 1, 4)}
+	# Quick pace: gathering, building and training all run faster, so a match fits a phone session
+	rules.pace = cfg.get("pace", "classic")
+	pace = 1.8 if rules.pace == "quick" else 1.0
+	fast_train = pace; fast_gather = pace; fast_build = pace
 	MAP = D.MAP_SIZES.get(rules.size, 72)
 	var N := MAP
 	ents = []; by_id = {}; projs = []; effects = []; decals = []; corpses = []; kings = {}; selection = []
@@ -151,7 +194,8 @@ func new_game(cfg: Dictionary = {}) -> void:
 	net_on = cfg.get("net", false)
 	for i in slots.size():
 		var s: Dictionary = slots[i]
-		var ai = null if i == me else s.get("ai", null if net_on else "normal")
+		var ai = s.get("ai", null if net_on else "normal")
+		if i == me and not cfg.get("watch", false): ai = null
 		players[slot_num(i, me)] = E.make_player(slot_num(i, me), s.civ, {"team": s.get("team", 0), "ai": ai})
 	# colours: each player's pick, or with team colours on, one colour per team
 	var used := {}
@@ -220,8 +264,7 @@ func new_game(cfg: Dictionary = {}) -> void:
 	ais = []
 	for id in players:
 		var p: Dictionary = players[id]
-		if p.ai == null or not has_node("/root/AI"): continue
-		ais.append(get_node("/root/AI").make(id, p.ai))
+		if p.ai != null: ais.append(AI.make(id, p.ai))
 	new_game_started.emit()
 	focus.emit(my_tc.x, my_tc.y + 2)
 
@@ -386,6 +429,9 @@ func step(dt: float) -> void:
 ## Advance the match by a frame of real time (substeps keep movement stable at higher speeds).
 func advance(real: float) -> void:
 	if paused or over != null or ents.is_empty(): return
-	var dt := minf(0.05, real) * speed
-	var n := ceili(dt / 0.034)
-	for i in n: step(dt / n)
+	# the rules run at a fixed 30 steps a second whatever the frame rate, so a fast phone does no extra work
+	_acc += minf(0.1, real) * speed
+	var n := 0
+	while _acc >= STEP and n < 6:
+		step(STEP); _acc -= STEP; n += 1
+	if n == 6: _acc = 0.0

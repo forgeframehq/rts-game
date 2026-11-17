@@ -4,7 +4,8 @@ config_version=5
 [application]
 
 config/name="Dawn of Dynasties"
-config/version="0.1"
+config/version="0.2"
+config/icon="res://assets/ui/app_icon_512.png"
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.05, 0.04, 0.03, 1)
@@ -16,7 +17,10 @@ M="*res://sim/m.gd"
 G="*res://sim/g.gd"
 E="*res://sim/e.gd"
 Maps="*res://sim/maps.gd"
+AI="*res://sim/ai.gd"
 Art="*res://view/art.gd"
+Save="*res://sim/save.gd"
+Sfx="*res://view/audio.gd"
 
 [display]
 
@@ -25,6 +29,7 @@ window/size/viewport_height=1280
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
+window/energy_saving/keep_screen_on=true
 
 [input_devices]
 

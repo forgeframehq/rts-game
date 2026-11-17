@@ -1,0 +1,82 @@
+# Builds the Godot edition of Dawn of Dynasties as an Android APK when asked: a commit message with [godot], or a manual run.
+# The app is a separate install from the web edition (its own package name), so both can sit on a phone side by side.
+# It lives on the godot branch; the web edition's build (android.yml) is not touched.
+# It is always signed with godot/debug.keystore, the same key every time, so each new APK installs over the last one.
+name: Godot Android build
+on:
+  push:
+    branches: [godot]
+  workflow_dispatch:
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[godot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GODOT: 4.4.1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Version
+        run: echo "VERSION=$(grep -oP 'config/version="\K[^"]+' godot/project.godot)" >> "$GITHUB_ENV"
+      - uses: actions/cache@v4
+        with:
+          path: ~/godot-cache
+          key: godot-${{ env.GODOT }}-android
+      - name: Godot and its Android export templates
+        run: |
+          mkdir -p ~/godot-cache && cd ~/godot-cache
+          BASE=https://github.com/godotengine/godot/releases/download/${GODOT}-stable
+          [ -f godot.zip ] || curl -sSL --retry 3 -o godot.zip "$BASE/Godot_v${GODOT}-stable_linux.x86_64.zip"
+          [ -f templates.tpz ] || curl -sSL --retry 3 -o templates.tpz "$BASE/Godot_v${GODOT}-stable_export_templates.tpz"
+          unzip -oq godot.zip -d ~/godot && mv ~/godot/Godot_v* ~/godot/godot && chmod +x ~/godot/godot
+          T=~/.local/share/godot/export_templates/${GODOT}.stable && mkdir -p "$T"
+          unzip -oq templates.tpz 'templates/android_debug.apk' 'templates/android_release.apk' 'templates/android_source.zip' 'templates/version.txt' -d /tmp/tpl && mv /tmp/tpl/templates/* "$T/"
+          ls -la "$T"
+      - name: Editor settings (where the Android tools and the signing key are)
+        run: |
+          mkdir -p ~/.config/godot
+          cat > ~/.config/godot/editor_settings-4.4.tres <<SETTINGS
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/java_sdk_path = "$JAVA_HOME"
+          export/android/debug_keystore = "$GITHUB_WORKSPACE/godot/debug.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          SETTINGS
+          sed -i 's/^          //' ~/.config/godot/editor_settings-4.4.tres; cat ~/.config/godot/editor_settings-4.4.tres
+      - name: Copy the shared art and sound into the Godot project
+        run: bash tools/godot_sync_assets.sh && rm -rf godot/assets/sound/voice
+      - name: Import assets
+        run: set -o pipefail; ~/godot/godot --headless --path godot --import 2>&1 | tee $RUNNER_TEMP/build.log | tail -20
+      - name: Export APK
+        env:
+          GODOT_ANDROID_KEYSTORE_DEBUG_PATH: ${{ github.workspace }}/godot/debug.keystore
+          GODOT_ANDROID_KEYSTORE_DEBUG_USER: androiddebugkey
+          GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD: android
+        run: |
+          set -o pipefail; mkdir -p build
+          sed -i "s/^version\/name=.*/version\/name=\"$VERSION\"/; s/^version\/code=.*/version\/code=$GITHUB_RUN_NUMBER/" godot/export_presets.cfg
+          ~/godot/godot --headless --path godot --export-debug "Android" "$GITHUB_WORKSPACE/build/Dawn-of-Dynasties-Godot-$VERSION.apk" 2>&1 | tee -a $RUNNER_TEMP/build.log | tail -40
+          ls -la build/*.apk
+      - name: Share the build log on the ci-logs branch
+        if: failure()
+        run: |
+          cd $RUNNER_TEMP && rm -rf logs && mkdir logs && cd logs && git init -q && cp ../build.log . || true
+          git config user.name ci && git config user.email ci@users.noreply.github.com
+          git add -A && git commit -qm "godot build log ${{ github.run_number }}" && git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:ci-logs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dawn-of-dynasties-godot-apk
+          path: build/*.apk
+      - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[godot]')
+        with:
+          tag_name: godot-v${{ env.VERSION }}
+          name: Dawn of Dynasties (Godot) ${{ env.VERSION }}
+          body: The Godot edition. Installs as a separate app next to the web edition. Allow installs from this source when asked.
+          files: build/*.apk

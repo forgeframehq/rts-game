@@ -207,10 +207,13 @@ func _line_free(ax: float, ay: float, bx: float, by: float, ignore_id: int, owne
 	var steps := ceili(d * 3)
 	for s in range(1, steps + 1):
 		var t := float(s) / steps
-		for o in [-0.3, 0.3]:
-			var x := floori(ax + (bx - ax) * t + o)
-			var y := floori(ay + (by - ay) * t + o)
-			if not _pfree(x, y, ignore_id, owner_): return false
+		# All four corners of the walker are tested. The web edition tests two (one diagonal), which lets a
+		# smoothed path slip between two trees that touch corner to corner; A* never cuts corners, so a
+		# villager who went in that way could not path out again and stood idle with a full load.
+		var px := ax + (bx - ax) * t
+		var py := ay + (by - ay) * t
+		for o in [[-0.3, -0.3], [0.3, 0.3], [-0.3, 0.3], [0.3, -0.3]]:
+			if not _pfree(floori(px + o[0]), floori(py + o[1]), ignore_id, owner_): return false
 	return true
 
 func _smooth(sx: float, sy: float, path: Array, ignore_id: int, owner_: int) -> Array:
