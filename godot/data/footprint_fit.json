@@ -1,0 +1,152 @@
+{
+ "barracks_dark": {
+  "w": 146.92,
+  "h": 130.76,
+  "ax": 73.04,
+  "ay": 93.57
+ },
+ "stable": {
+  "w": 190.5,
+  "h": 131.61,
+  "ax": 94.65,
+  "ay": 83.66
+ },
+ "siegeworkshop": {
+  "w": 182.62,
+  "h": 138.91,
+  "ax": 90.89,
+  "ay": 92.77
+ },
+ "infirmary": {
+  "w": 129.25,
+  "h": 117.07,
+  "ax": 64.43,
+  "ay": 84.4
+ },
+ "mediterranean_barracks_dark": {
+  "w": 127.42,
+  "h": 100.62,
+  "ax": 63.45,
+  "ay": 68.22
+ },
+ "mediterranean_blacksmith": {
+  "w": 137.55,
+  "h": 109.22,
+  "ax": 68.43,
+  "ay": 74.04
+ },
+ "mediterranean_house": {
+  "w": 100.12,
+  "h": 90.78,
+  "ax": 49.86,
+  "ay": 65.12
+ },
+ "mediterranean_monastery": {
+  "w": 186.46,
+  "h": 174.46,
+  "ax": 92.77,
+  "ay": 127.15
+ },
+ "eastasian_towncenter": {
+  "w": 200.04,
+  "h": 166.31,
+  "ax": 99.72,
+  "ay": 115.35
+ },
+ "eastasian_stable": {
+  "w": 178.75,
+  "h": 149.41,
+  "ax": 88.84,
+  "ay": 103.79
+ },
+ "eastasian_monastery": {
+  "w": 163.51,
+  "h": 140.99,
+  "ax": 81.29,
+  "ay": 99.48
+ },
+ "eastasian_towncenter_dark": {
+  "w": 225.73,
+  "h": 235.36,
+  "ax": 112.64,
+  "ay": 178.35
+ },
+ "eastasian_house": {
+  "w": 118.22,
+  "h": 88.67,
+  "ax": 58.88,
+  "ay": 58.45
+ },
+ "eastasian_infirmary": {
+  "w": 130.77,
+  "h": 105.35,
+  "ax": 65.12,
+  "ay": 72.0
+ },
+ "middleeast_stable": {
+  "w": 143.67,
+  "h": 87.85,
+  "ax": 71.63,
+  "ay": 51.32
+ },
+ "middleeast_university": {
+  "w": 191.62,
+  "h": 145.6,
+  "ax": 95.52,
+  "ay": 96.71
+ },
+ "middleeast_barracks_dark": {
+  "w": 139.83,
+  "h": 111.31,
+  "ax": 69.52,
+  "ay": 75.81
+ },
+ "middleeast_siegeworkshop": {
+  "w": 246.63,
+  "h": 163.32,
+  "ax": 122.71,
+  "ay": 101.29
+ },
+ "americas_barracks": {
+  "w": 164.84,
+  "h": 146.21,
+  "ax": 81.95,
+  "ay": 104.2
+ },
+ "americas_lumbercamp": {
+  "w": 91.79,
+  "h": 81.84,
+  "ax": 45.71,
+  "ay": 58.02
+ },
+ "americas_miningcamp": {
+  "w": 121.15,
+  "h": 109.23,
+  "ax": 59.94,
+  "ay": 78.2
+ },
+ "americas_siegeworkshop": {
+  "w": 206.88,
+  "h": 151.03,
+  "ax": 103.01,
+  "ay": 98.46
+ },
+ "indian_barracks": {
+  "w": 144.82,
+  "h": 128.28,
+  "ax": 72.0,
+  "ay": 91.54
+ },
+ "indian_castle": {
+  "w": 226.21,
+  "h": 213.88,
+  "ax": 112.55,
+  "ay": 156.47
+ },
+ "indian_towncenter": {
+  "w": 215.2,
+  "h": 201.11,
+  "ax": 107.2,
+  "ay": 146.4
+ }
+}

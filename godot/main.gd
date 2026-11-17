@@ -12,7 +12,7 @@ var world: Node3D
 var hud: Control
 var layer: CanvasLayer
 var screen: Control        # the menu, setup, pause or results screen on top
-var prefs := {"civ": "britons", "foe": "random", "level": "normal", "map": "random", "mode": "conquest", "pace": "quick", "size": "small", "music": true, "sound": true}
+var prefs := {"civ": "britons", "foe": "random", "level": "normal", "map": "random", "mode": "conquest", "pace": "quick", "size": "small", "music": true, "sound": true, "films": true, "intro_seen": false}
 var _autosave_t := 0.0
 
 func _ready() -> void:
@@ -45,6 +45,9 @@ func _save_prefs() -> void:
 
 func _set_music(on: bool) -> void:
 	prefs.music = on; Sfx.set_music(on); _save_prefs()
+
+func _set_films(on: bool) -> void:
+	prefs.films = on; _save_prefs()
 
 func _set_sound(on: bool) -> void:
 	prefs.sound = on; Sfx.enabled = on; _save_prefs()
@@ -104,7 +107,37 @@ func _splash() -> void:
 	var tw := create_tween()
 	tw.tween_interval(1.6)
 	tw.tween_property(screen, "modulate:a", 0.0, 0.5)
-	tw.tween_callback(_menu)
+	tw.tween_callback(_after_splash)
+
+func _after_splash() -> void:
+	# the intro film plays the first time the game is opened; after that it is under Films on the menu
+	if not prefs.intro_seen and ResourceLoader.exists("res://video/intro.ogv"):
+		prefs.intro_seen = true; _save_prefs()
+		_play_film("res://video/intro.ogv", _menu)
+	else: _menu()
+
+## a film over the whole screen with a Skip button; `then` runs when it ends or is skipped
+func _play_film(path: String, then: Callable) -> void:
+	Sfx.set_scene("")
+	_backdrop(1.0)
+	var black := ColorRect.new(); black.color = Color.BLACK; black.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.add_child(black)
+	var v := VideoStreamPlayer.new()
+	v.stream = load(path)
+	v.expand = true
+	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.add_child(v)
+	var done := [false]
+	var finish := func():
+		if done[0]: return
+		done[0] = true
+		then.call()
+	v.finished.connect(finish)
+	var skip := Kit.button("Skip  ▸", finish, 22, Vector2(150, 60))
+	skip.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	skip.offset_left = -170; skip.offset_right = -20; skip.offset_top = -100; skip.offset_bottom = -40
+	screen.add_child(skip)
+	v.play()
 
 func _menu() -> void:
 	_end_match()
@@ -112,15 +145,19 @@ func _menu() -> void:
 	screen.modulate.a = 1.0
 	Sfx.set_scene("menu")
 	var v := _column()
-	v.add_child(_image("res://assets/ui/logo.png", 300))
+	v.add_child(_image("res://assets/ui/logo.png", 340))
 	if Save.has_save(0):
 		var i := Save.info(0)
 		if not i.is_empty():
 			v.add_child(Kit.button("Continue  ·  %s, %d min" % [D.CIVS[i.civ].name, int(i.time / 60)], _continue, 28, Vector2(0, 84)))
-	v.add_child(Kit.button("Play", _setup, 30, Vector2(0, 92)))
+	v.add_child(Kit.grand("Play", _setup))
 	v.add_child(Kit.cycler("Music", [[true, "On"], [false, "Off"]], prefs.music, _set_music))
 	v.add_child(Kit.cycler("Sound", [[true, "On"], [false, "Off"]], prefs.sound, _set_sound))
+	v.add_child(Kit.cycler("Films", [[true, "On"], [false, "Off"]], prefs.films, _set_films))
+	if ResourceLoader.exists("res://video/intro.ogv"): v.add_child(Kit.button("Watch the intro", func(): _play_film("res://video/intro.ogv", _menu), 24, Vector2(0, 64)))
 	v.add_child(Kit.button("Quit", func(): get_tree().quit(), 24, Vector2(0, 64)))
+	var mark := _image("res://assets/ui/studio_mark.png", 54)
+	v.add_child(mark)
 	var credit := Kit.label("A Forge Frame game  ·  Godot edition %s" % ProjectSettings.get_setting("application/config/version", ""), 18, Kit.DIM)
 	credit.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(credit)
@@ -128,8 +165,7 @@ func _menu() -> void:
 func _setup() -> void:
 	_backdrop(1.0)
 	var v := _column(620)
-	var title := Kit.label("Battle", 40, Kit.GOLD); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(title)
+	v.add_child(Kit.title("Battle", 44))
 	v.add_child(Kit.label("Your dynasty", 22, Kit.DIM))
 	var civs := GridContainer.new(); civs.columns = 4
 	civs.add_theme_constant_override("h_separation", 8); civs.add_theme_constant_override("v_separation", 8)
@@ -162,7 +198,7 @@ func _setup() -> void:
 	v.add_child(Kit.cycler("Map", maps, prefs.map, func(x): prefs.map = x))
 	v.add_child(Kit.cycler("Match", [["quick", "Quick  (about 10–15 min)"], ["classic", "Classic  (AoE2 pace)"]], prefs.pace, func(x): prefs.pace = x))
 	v.add_child(Kit.cycler("Map size", [["small", "Small"], ["medium", "Medium"], ["large", "Large"]], prefs.size, func(x): prefs.size = x))
-	v.add_child(Kit.button("Start Battle", _start, 32, Vector2(0, 96)))
+	v.add_child(Kit.grand("Start Battle", _start))
 	v.add_child(Kit.button("Back", _menu, 24, Vector2(0, 64)))
 
 func _start() -> void:
@@ -174,7 +210,11 @@ func _start() -> void:
 	var quick: bool = prefs.pace == "quick"
 	G.new_game({"players": [{"civ": prefs.civ}, {"civ": foe, "ai": prefs.level}], "mode": prefs.mode, "map": prefs.map,
 		"size": prefs.size, "pace": prefs.pace, "pop": 100 if quick else 200})
-	_begin_match()
+	G.paused = true
+	# each dynasty's pre-battle film, as in the web edition
+	var film := "res://assets/video/dyn_%s.ogv" % prefs.civ
+	if prefs.films and ResourceLoader.exists(film): _play_film(film, _begin_match)
+	else: _begin_match()
 
 func _continue() -> void:
 	if Save.load_game(0): _begin_match()
@@ -208,9 +248,8 @@ func _pause() -> void:
 	G.paused = true
 	_backdrop(0.6)
 	var v := _column(480)
-	var title := Kit.label("Paused", 38, Kit.GOLD); title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(title)
-	v.add_child(Kit.button("Resume", _resume, 30, Vector2(0, 88)))
+	v.add_child(Kit.title("Paused", 40))
+	v.add_child(Kit.grand("Resume", _resume, 88))
 	var save := func():
 		G.alert("Game saved" if Save.save_game(0) else "Could not save"); _resume()
 	v.add_child(Kit.button("Save game", save))
@@ -234,9 +273,7 @@ func _on_game_over(result: String) -> void:
 	if hud == null: return
 	_backdrop(0.72)
 	var v := _column(600)
-	var title := Kit.label("Victory!" if result == "victory" else "Defeat", 54, Kit.GOLD if result == "victory" else Kit.BAD)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(title)
+	v.add_child(Kit.title("Victory!" if result == "victory" else "Defeat", 58, Kit.GOLD if result == "victory" else Kit.BAD))
 	var why := "Time is up: highest score wins" if G.over_reason == "time" else ("%d:%02d played" % [int(G.time) / 60, int(G.time) % 60])
 	var sub := Kit.label(why, 22, Kit.DIM); sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(sub)
@@ -252,7 +289,7 @@ func _on_game_over(result: String) -> void:
 		table.add_child(Kit.label(str(p.killed), 22))
 		table.add_child(Kit.label(str(p.lost), 22))
 		table.add_child(Kit.label(D.AGES[p.age].short, 22))
-	v.add_child(Kit.button("Play again", _start, 30, Vector2(0, 88)))
+	v.add_child(Kit.grand("Play again", _start, 88))
 	v.add_child(Kit.button("Change setup", _setup))
 	v.add_child(Kit.button("Main menu", _menu))
 

@@ -1,13 +1,43 @@
 extends RefCounted
 ## Shared look for the interface: colours, buttons, panels, and icons cut from the web edition's atlases.
 
-const INK := Color("#f3e6c8")
-const DIM := Color("#b9a987")
-const GOLD := Color("#e2b34a")
-const BAD := Color("#e0604c")
-const GOOD := Color("#7fc66b")
-const PANEL := Color(0.10, 0.075, 0.05, 0.94)
-const EDGE := Color("#6b5230")
+# the web edition's palette (style.css): dark wood panels, gold bevels, parchment text, Cinzel headings
+const INK := Color("#f3ead7")
+const DIM := Color("#b8a888")
+const GOLD := Color("#e9c46a")
+const BAD := Color("#ff5a4a")
+const GOOD := Color("#4cd964")
+const PANEL := Color(0.11, 0.086, 0.059, 0.94)
+const EDGE := Color("#b8862f")
+const WOOD := Color("#3b2817")
+
+static var _heading: Font
+static var _heading_bold: Font
+
+static func heading(bold: bool = true) -> Font:
+	if _heading == null:
+		_heading = load("res://ui/cinzel-400.woff2"); _heading_bold = load("res://ui/cinzel-700.woff2")
+	return _heading_bold if bold else _heading
+
+## a heading in Cinzel, gold by default
+static func title(text: String, size: int = 40, col: Color = GOLD) -> Label:
+	var l := label(text, size, col)
+	l.add_theme_font_override("font", heading())
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	return l
+
+## the painted gold button from the web edition, for the one main action on a screen
+static func grand(text: String, on: Callable, height: float = 96.0) -> Button:
+	var b := button(text, on, 30, Vector2(0, height))
+	if ResourceLoader.exists("res://assets/ui/button.png"):
+		var tex: Texture2D = load("res://assets/ui/button.png")
+		for state in ["normal", "hover", "pressed"]:
+			var sb := StyleBoxTexture.new(); sb.texture = tex
+			sb.modulate_color = Color(1, 1, 1) if state != "pressed" else Color(0.82, 0.82, 0.82)
+			b.add_theme_stylebox_override(state, sb)
+		for c in ["font_color", "font_hover_color", "font_pressed_color"]: b.add_theme_color_override(c, Color("#fbeecb"))
+		b.add_theme_color_override("font_outline_color", Color(0.2, 0.02, 0.02, 0.9)); b.add_theme_constant_override("outline_size", 6)
+	return b
 const CELL := 128
 
 static var _atlas: Dictionary = {}
@@ -16,6 +46,7 @@ static var _icons := {}
 static func box(bg: Color, edge: Color = EDGE, radius: int = 10, border: int = 2) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = bg; s.border_color = edge
+	s.shadow_color = Color(0, 0, 0, 0.45); s.shadow_size = 3
 	s.set_border_width_all(border); s.set_corner_radius_all(radius)
 	s.content_margin_left = 8; s.content_margin_right = 8; s.content_margin_top = 6; s.content_margin_bottom = 6
 	return s
@@ -34,9 +65,10 @@ static func label(text: String, size: int = 24, col: Color = INK) -> Label:
 	l.add_theme_constant_override("outline_size", 4)
 	return l
 
-static func style_button(b: Button, size: int = 26, bg: Color = Color("#3a2a17")) -> void:
+static func style_button(b: Button, size: int = 26, bg: Color = Color("#3b2817")) -> void:
 	b.focus_mode = Control.FOCUS_NONE
 	b.add_theme_font_size_override("font_size", size)
+	b.add_theme_font_override("font", heading())
 	b.add_theme_color_override("font_color", INK)
 	b.add_theme_color_override("font_disabled_color", Color(0.6, 0.55, 0.45, 0.7))
 	b.add_theme_stylebox_override("normal", box(bg))

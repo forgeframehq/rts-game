@@ -13,6 +13,12 @@ var _flat_shader: Shader = preload("res://shaders/flat.gdshader")
 
 func _init() -> void:
 	man = JSON.parse_string(FileAccess.get_file_as_string("res://assets/manifest.json"))
+	# buildings whose painting is the wrong shape for a square plot are shrunk and re-centred so
+	# nothing spills over other tiles (tools/godot_footprint_fit.py), until they are repainted
+	var fit = JSON.parse_string(FileAccess.get_file_as_string("res://data/footprint_fit.json"))
+	if fit is Dictionary:
+		for k in fit:
+			if man.has(k): man[k].merge(fit[k], true)
 
 func has(k: String) -> bool:
 	return man.has(k)

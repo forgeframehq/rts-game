@@ -122,13 +122,18 @@ func _build() -> void:
 	head.add_child(info_icon)
 	var names := VBoxContainer.new(); names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(names)
-	info_name = Kit.label("", 24); names.add_child(info_name)
-	info_sub = Kit.label("", 19, Kit.DIM); names.add_child(info_sub)
-	info_bar = ProgressBar.new(); info_bar.custom_minimum_size = Vector2(150, 16); info_bar.show_percentage = false
+	info_name = Kit.label("", 24, Kit.GOLD); info_name.add_theme_font_override("font", Kit.heading()); info_name.clip_text = true
+	names.add_child(info_name)
+	info_sub = Kit.label("", 19, Kit.DIM); info_sub.clip_text = true; names.add_child(info_sub)
+	info_bar = ProgressBar.new(); info_bar.custom_minimum_size = Vector2(110, 16); info_bar.show_percentage = false
 	info_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	info_bar.add_theme_stylebox_override("background", Kit.box(Color(0.2, 0.05, 0.05), Kit.EDGE, 4, 1))
 	info_bar.add_theme_stylebox_override("fill", Kit.box(Kit.GOOD, Kit.GOOD, 4, 0))
 	head.add_child(info_bar)
+	# always in the same place: lets go of whatever is selected (a tap on the ground is a move order)
+	var desel := func():
+		G.selection = []; page = ""; placing = ""
+	head.add_child(Kit.button("✕ Deselect", desel, 20, Vector2(150, 56)))
 	grid = GridContainer.new(); grid.columns = COLS
 	grid.add_theme_constant_override("h_separation", 6); grid.add_theme_constant_override("v_separation", 6)
 	v.add_child(grid)
@@ -568,6 +573,13 @@ func _tap(screen: Vector2) -> void:
 			G.selection = ids
 		else: G.selection = [t.id]
 		_last_tap = now; _last_tap_id = t.id; page = ""
+		Sfx.ui("select")
+		return
+	if mine.size() > 0 and t != null and t.kind == "building" and t.owner == 1 and t.built and t.hp >= t.maxHp and t.type != "farm" \
+			and not (t.def.has("drop") and mine.any(func(u): return u.carry != null)) \
+			and not mine.any(func(u): return u.type != "villager"):
+		# villagers have no work at a finished building: the tap picks the building instead of walking them to it
+		G.selection = [t.id]; page = ""
 		Sfx.ui("select")
 		return
 	if mine.size() > 0:

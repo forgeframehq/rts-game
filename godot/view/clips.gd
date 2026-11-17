@@ -4,6 +4,7 @@ extends RefCounted
 ## those as plain node trees with numbers added to repeated names ("Armature6/Hips6/Spine026"). This turns each clip
 ## into one that drives a unit's Skeleton3D bones instead ("Armature/Skeleton3D:Spine02").
 
+const EXTRA := "res://anims/extra_anims.res"
 const FILES := ["res://anims/villager_m_anim.glb", "res://anims/villager_m_anim2.glb", "res://anims/combat_anim.glb", "res://anims/combat2_anim.glb"]
 ## Clips whose hips may travel (falls); in every other clip the hips are pinned over the feet, because the rules own position.
 const FREE_ROOT := ["Dead", "Shot_and_Fall_Backward", "Shot_and_Fall_Forward"]
@@ -23,6 +24,12 @@ static func library() -> AnimationLibrary:
 				if _library.has_animation(clip_name): continue
 				_library.add_animation(clip_name, _convert(player.get_animation(clip_name), clip_name))
 		scene.free()
+	# the clips fitted to this skeleton from the Mixamo sword-and-shield, great sword and axe packs
+	# (and Quaternius, Kevin Iglesias, MoCap Online): baked for The Duel, hips already pinned in place
+	if ResourceLoader.exists(EXTRA):
+		var extra: AnimationLibrary = load(EXTRA)
+		for clip_name in extra.get_animation_list():
+			if not _library.has_animation(clip_name): _library.add_animation(clip_name, extra.get_animation(clip_name))
 	return _library
 
 static func _convert(src: Animation, clip_name: String) -> Animation:

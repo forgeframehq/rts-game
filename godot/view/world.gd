@@ -20,6 +20,7 @@ var _sprite_basis: Basis
 var _ring_mesh: Mesh
 var _square_mesh: Mesh
 var _proj_nodes := []
+var _fallen: Array = []
 var hud = null             # the match interface, for the building being placed
 var _ghosts: Array = []
 var _ghost_sprite: Sprite3D
@@ -82,6 +83,8 @@ func _on_new_game() -> void:
 	for id in rings: rings[id].queue_free()
 	rings = {}
 	UnitView.reset()
+	for f in _fallen: f.queue_free()
+	_fallen = []
 	_build_ground()
 
 func _build_ground() -> void:
@@ -225,7 +228,14 @@ func _process(dt: float) -> void:
 		elif e.kind == "building": _dress_building(node, e)
 	for id in nodes.keys():
 		if not alive.has(id):
-			nodes[id].queue_free(); nodes.erase(id)
+			var gone: Node3D = nodes[id]
+			nodes.erase(id)
+			# a unit that died in sight falls where it stood; anything else just goes
+			if gone.visible and gone.has_method("die") and not G.by_id.has(id) and _fallen.size() < 60 and gone.die(): _fallen.append(gone)
+			else: gone.queue_free()
+	for i in range(_fallen.size() - 1, -1, -1):
+		if not _fallen[i].update_dead(dt):
+			_fallen[i].queue_free(); _fallen.remove_at(i)
 	_update_rings()
 	_update_projectiles()
 	_update_ghost()

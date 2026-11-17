@@ -10,6 +10,15 @@ const JOB := {"militia": "j_sword", "spearman": "j_spear", "archer": "j_arch", "
 	"repeater": "j_repeat", "ram": "j_ram", "trebuchet": "j_trebuchet"}
 const STAND_IN := {"scout": "knight", "cataphract": "knight", "monk": "villager_m", "axethrower": "militia", "repeater": "archer",
 	"kamayuk": "spearman", "templeguard": "militia"}
+## Soldiers fight with the Mixamo packs: sword and shield for the militia line, great sword for
+## knights and kings, axe for axe throwers. Anything not listed keeps its Meshy clip.
+const SS := {"idle": "ss_sword_and_shield_idle", "walk": "ss_sword_and_shield_walk", "attack": "ss_sword_and_shield_slash", "attack2": "ss_sword_and_shield_attack_2",
+	"ready": "ss_sword_and_shield_block_idle", "hit": "ss_sword_and_shield_impact", "block": "ss_sword_and_shield_block", "death": "ss_sword_and_shield_death"}
+const GS := {"idle": "gs_great_sword_idle", "walk": "gs_great_sword_walk", "attack": "gs_great_sword_slash", "attack2": "gs_great_sword_attack",
+	"ready": "gs_great_sword_idle", "hit": "gs_great_sword_impact", "block": "gs_great_sword_blocking_2", "death": "gs_two_handed_sword_death"}
+const AX := {"idle": "ax_standing_idle", "walk": "ax_standing_walk_forward", "attack": "ax_standing_melee_attack_downward", "attack2": "ax_standing_melee_attack_horizontal",
+	"ready": "ax_standing_block_idle", "hit": "ax_standing_react_large_gut", "death": "Death01"}
+const MIX := {"militia": SS, "templeguard": SS, "knight": GS, "scout": GS, "cataphract": GS, "king": GS, "axethrower": AX}
 const WORK := {"tree": "chop", "gold": "mine", "stone": "mine", "berry": "forage"}
 const CARRY_ANIM := {"wood": "carry_wood", "gold": "carry_ore", "stone": "carry_ore", "food": "carry_food"}
 const IMPACT := {"militia": {"attack": 0.5, "attack2": 0.4}, "spearman": {"attack": 0.55, "attack2": 0.35}, "archer": {"attack": 0.92},
@@ -85,7 +94,8 @@ func setup(u: Dictionary) -> void:
 	var tier: int = u.def.get("tier", 0)
 	var all := recipes()
 	while tier > 0 and not all.has("%s_t%d" % [job, tier]): tier -= 1
-	recipe = all.get(("%s_t%d" % [job, tier]) if tier > 0 else job, all.get(job, {})).get("anims", {})
+	recipe = (all.get(("%s_t%d" % [job, tier]) if tier > 0 else job, all.get(job, {})).get("anims", {}) as Dictionary).duplicate(true)
+	_use_mixamo(MIX.get(u.type, {"death": "Death01"}))
 	# a soft shadow under the feet
 	_shadow()
 
@@ -119,6 +129,25 @@ static func _blob() -> Texture2D:
 		_blob_tex = t
 	return _blob_tex
 
+func _use_mixamo(map: Dictionary) -> void:
+	var lib := Clips.library()
+	for anim in map:
+		var clip: String = map[anim]
+		if not lib.has_animation(clip): continue
+		var a := lib.get_animation(clip)
+		# the weapons a new animation shows are those of the stance it replaces
+		var like: Dictionary = recipe.get(anim, recipe.get("attack" if anim in ["attack2", "ready", "hit", "block"] else "idle", {}))
+		var e := {"clip": clip, "start": 0.0, "end": 1.0, "props": like.get("props")}
+		if a.has_meta("blade"): e.blade = a.get_meta("blade")
+		var travel: Vector3 = a.get_meta("travel", Vector3.ZERO)
+		if anim == "walk" and travel.length() > 0.3: e.stride = travel.length() * HEIGHT / 1.75    # metres a cycle covers, at the unit's size
+		elif like.has("stride"): e.stride = like.stride
+		var best := 0.0
+		for pk in a.get_meta("peaks", []):
+			if pk[1] > best:
+				best = pk[1]; e.impact = pk[0] / a.length     # the moment the weapon hand moves fastest is the hit
+		recipe[anim] = e
+
 ## which animations to try, best first (pick3d in js/art.js)
 func _pick(u: Dictionary) -> Array:
 	if u.path.size() > 0:
@@ -142,7 +171,7 @@ func _pose(anim: String, phase: float) -> void:
 	var length := player.get_animation(clip).length
 	var a: float = r.get("start", 0.0) if r.get("start") != null else 0.0
 	var b: float = r.get("end", 1.0) if r.get("end") != null else 1.0
-	_show_props(r.get("props"))
+	_show_props(r.get("props"), r.get("blade"))
 	if clip != _clip:
 		player.play(clip); player.speed_scale = 0.0; _clip = clip
 	player.seek((a + (b - a) * clampf(phase, 0.0, 0.999)) * length, true)
@@ -178,8 +207,8 @@ func update(u: Dictionary, dt: float) -> void:
 		if _last_cool >= 0 and cool > _last_cool + 0.01: _swing += 1
 		_last_cool = cool
 		var use := "attack2" if (_swing % 2 == 1 and recipe.has("attack2")) else "attack"
-		var imp: float = IMPACT.get(u.type, {}).get(use, 0.9 if u.def.get("ranged", false) else 0.55)
 		var rr: Dictionary = recipe[use]
+		var imp: float = rr.get("impact", IMPACT.get(u.type, {}).get(use, 0.9 if u.def.get("ranged", false) else 0.55))
 		var seg: float = _seg_len(rr)
 		var T := minf(rate * 0.95, seg)
 		var e := rate - cool
@@ -206,8 +235,8 @@ func _seg_len(r: Dictionary) -> float:
 	return maxf(0.2, (b - a) * player.get_animation(r.clip).length)
 
 # ---------- what the unit holds: built in code, as tools/render3d/render.html built them for the sprites ----------
-func _show_props(props) -> void:
-	var sig := JSON.stringify(props) if props != null else ""
+func _show_props(props, blade = null) -> void:
+	var sig := (JSON.stringify(props) + str(blade)) if props != null else ""
 	if sig == _prop_sig or _skeleton == null: return
 	for n in _props.get(_prop_sig, []): n.visible = false
 	_prop_sig = sig
@@ -225,6 +254,8 @@ func _show_props(props) -> void:
 				var rot: Array = pr.get("rot", [0, 0, 0])
 				var pos: Array = pr.get("pos", [0, 0, 0])
 				mesh.basis = Basis.from_euler(Vector3(rot[0], rot[1], rot[2]), EULER_ORDER_XYZ)
+				# Mixamo hands hold a grip differently: the clip says which way a blade leaves the fist
+				if blade != null and pr.bone == "RightHand": mesh.basis = Basis(Quaternion(Vector3.UP, (blade as Vector3).normalized()))
 				mesh.position = Vector3(pos[0], pos[1], pos[2])
 				holder.add_child(mesh)
 				made.append(hand)
@@ -298,3 +329,20 @@ func _tool(kind: String) -> Node3D:
 			root.free()
 			return null
 	return root
+
+# ---------- falling in battle ----------
+var dying := -1.0
+
+## the unit has been killed: play its death, lie a while, then sink into the ground. Returns false if it has no death to play.
+func die() -> bool:
+	if not has_model or not recipe.has("death") or not player.has_animation(recipe.death.clip): return false
+	dying = 0.0
+	return true
+
+## true while the body should stay
+func update_dead(dt: float) -> bool:
+	dying += dt
+	var length := player.get_animation(recipe.death.clip).length
+	_pose("death", minf(dying / length, 0.999))
+	if dying > length + 5.0: position.y -= dt * 0.12
+	return dying < length + 9.0
