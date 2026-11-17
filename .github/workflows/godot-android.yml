@@ -77,6 +77,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[godot]')
         with:
           tag_name: godot-v${{ env.VERSION }}
+          make_latest: false   # /releases/latest stays on the web edition's APK
           name: Dawn of Dynasties (Godot) ${{ env.VERSION }}
           body: The Godot edition. Installs as a separate app next to the web edition. Allow installs from this source when asked.
           files: build/*.apk
