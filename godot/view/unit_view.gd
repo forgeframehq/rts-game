@@ -9,7 +9,7 @@ const JOB := {"militia": "j_sword", "spearman": "j_spear", "archer": "j_arch", "
 	"scout": "j_scout", "king": "j_king", "queen": "j_queen", "monk": "j_monk", "axethrower": "j_axe", "cataphract": "j_cata",
 	"repeater": "j_repeat", "ram": "j_ram", "trebuchet": "j_trebuchet"}
 const STAND_IN := {"scout": "knight", "cataphract": "knight", "monk": "villager_m", "axethrower": "militia", "repeater": "archer",
-	"kamayuk": "spearman", "templeguard": "militia"}
+	"kamayuk": "spearman", "templeguard": "militia", "elephant": "archer"}
 ## Soldiers fight with the Mixamo packs: sword and shield for the militia line, great sword for
 ## knights and kings, axe for axe throwers. Anything not listed keeps its Meshy clip.
 const SS := {"idle": "ss_sword_and_shield_idle", "walk": "ss_sword_and_shield_walk", "attack": "ss_sword_and_shield_slash", "attack2": "ss_sword_and_shield_attack_2",
@@ -19,6 +19,11 @@ const GS := {"idle": "gs_great_sword_idle", "walk": "gs_great_sword_walk", "atta
 const AX := {"idle": "ax_standing_idle", "walk": "ax_standing_walk_forward", "attack": "ax_standing_melee_attack_downward", "attack2": "ax_standing_melee_attack_horizontal",
 	"ready": "ax_standing_block_idle", "hit": "ax_standing_react_large_gut", "death": "Death01"}
 const MIX := {"militia": SS, "templeguard": SS, "knight": GS, "scout": GS, "cataphract": GS, "king": GS, "axethrower": AX}
+const Mount := preload("res://view/mount.gd")
+## who rides what: the horse's coat and armour follow the old sprite jobs (j_knight, j_scout, j_cata)
+const HORSES := {"knight": {"barding": 1}, "scout": {"barding": 0, "coat": Color("#a9743c"), "mane": Color("#4a3520")},
+	"cataphract": {"barding": 2, "coat": Color("#3a3139"), "mane": Color("#17131a")}}
+const UPPER := ["Spine02", "Spine01", "Spine", "neck", "Head", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand"]
 const WORK := {"tree": "chop", "gold": "mine", "stone": "mine", "berry": "forage"}
 const CARRY_ANIM := {"wood": "carry_wood", "gold": "carry_ore", "stone": "carry_ore", "food": "carry_food"}
 const IMPACT := {"militia": {"attack": 0.5, "attack2": 0.4}, "spearman": {"attack": 0.55, "attack2": 0.35}, "archer": {"attack": 0.92},
@@ -41,6 +46,11 @@ var _skeleton: Skeleton3D
 var _props := {}          # prop set signature -> Array of nodes
 var _prop_sig := ""
 var _team := Color.WHITE
+var mount: Node3D            # horse, elephant, ram or trebuchet
+var _body: Node3D
+var _hips := -1
+var _upper := {}             # clip -> [[bone index, track], ...] for the rider's upper body
+var _moved := 0.0
 
 ## team colours change between matches
 static func reset() -> void:
@@ -63,6 +73,14 @@ static func model_path(u: Dictionary) -> String:
 
 func setup(u: Dictionary) -> void:
 	var team := G.color_of(u.owner)
+	_team = team
+	if u.type == "ram" or u.type == "trebuchet":
+		mount = Mount.new(); add_child(mount)
+		if u.type == "ram": mount.build_ram(team)
+		else: mount.build_trebuchet(team)
+		mount.scale = Vector3.ONE * 0.62
+		_shadow(1.5)
+		return
 	var path := model_path(u)
 	if path == "":
 		_placeholder(u, team)
@@ -86,7 +104,11 @@ func setup(u: Dictionary) -> void:
 		mi.material_override = _mats[key]
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	body.scale = Vector3.ONE * (HEIGHT / h) * (1.12 if u.def.cls == "hero" else 1.0)
+	_body = body
+	if _skeleton != null: _hips = _skeleton.find_bone("Hips")
 	player = AnimationPlayer.new()
+	# clips are held at an exact moment by seek(); nothing may advance or re-apply them in between
+	player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	body.add_child(player)
 	player.root_node = player.get_path_to(body)
 	player.add_animation_library("", Clips.library())
@@ -96,6 +118,14 @@ func setup(u: Dictionary) -> void:
 	while tier > 0 and not all.has("%s_t%d" % [job, tier]): tier -= 1
 	recipe = (all.get(("%s_t%d" % [job, tier]) if tier > 0 else job, all.get(job, {})).get("anims", {}) as Dictionary).duplicate(true)
 	_use_mixamo(MIX.get(u.type, {"death": "Death01"}))
+	if HORSES.has(u.type) or u.type == "elephant":
+		mount = Mount.new(); add_child(mount)
+		if u.type == "elephant": mount.build_elephant(HEIGHT, team)
+		else:
+			var o: Dictionary = HORSES[u.type].duplicate(); o.team = team
+			mount.build_horse(HEIGHT, o)
+		_shadow(1.7)
+		return
 	# a soft shadow under the feet
 	_shadow()
 
@@ -110,9 +140,9 @@ func _placeholder(u: Dictionary, team: Color) -> void:
 	add_child(mi)
 	_shadow()
 
-func _shadow() -> void:
+func _shadow(size: float = 1.0) -> void:
 	var mi := MeshInstance3D.new()
-	var q := QuadMesh.new(); q.size = Vector2(0.62, 0.62); q.orientation = PlaneMesh.FACE_Y
+	var q := QuadMesh.new(); q.size = Vector2(0.62, 0.62) * size; q.orientation = PlaneMesh.FACE_Y
 	mi.mesh = q; mi.position.y = 0.015
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED; m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -191,6 +221,9 @@ func update(u: Dictionary, dt: float) -> void:
 	if absf(hx) + absf(hy) > 0.001:
 		yaw = lerp_angle(yaw, atan2(hx, hy), minf(1.0, dt * 10.0))
 	rotation.y = yaw
+	if mount != null:
+		_update_mounted(u, dt)
+		return
 	if not has_model or recipe.is_empty(): return
 	var anim := ""
 	for n in _pick(u):
@@ -335,6 +368,9 @@ var dying := -1.0
 
 ## the unit has been killed: play its death, lie a while, then sink into the ground. Returns false if it has no death to play.
 func die() -> bool:
+	if mount != null:
+		dying = 0.0
+		return true
 	if not has_model or not recipe.has("death") or not player.has_animation(recipe.death.clip): return false
 	dying = 0.0
 	return true
@@ -342,7 +378,73 @@ func die() -> bool:
 ## true while the body should stay
 func update_dead(dt: float) -> bool:
 	dying += dt
+	if mount != null:
+		# horse and rider go over together
+		var k := minf(dying / 1.1, 1.0)
+		mount.pose("death", k * 0.714)
+		if _body != null:
+			_body.rotation.z = mount.rotation.z; _body.position.x = -k * 0.3; _body.position.y = lerpf(_body.position.y, 0.15, k * 0.2)
+		if dying > 6.0: position.y -= dt * 0.12
+		return dying < 10.0
 	var length := player.get_animation(recipe.death.clip).length
 	_pose("death", minf(dying / length, 0.999))
 	if dying > length + 5.0: position.y -= dt * 0.12
 	return dying < length + 9.0
+
+# ---------- riders and engines ----------
+## where the swing of an attack is, 0..1, or -1 between swings (the same timing foot soldiers use)
+func _swing_phase(u: Dictionary, imp: float, seg: float) -> float:
+	var rate: float = u.def.get("rate", 2)
+	var cool: float = maxf(0.0, u.cool)
+	var T := minf(rate * 0.95, seg)
+	var e := rate - cool
+	if e < (1 - imp) * T: return imp + e / T
+	if cool <= imp * T: return imp - cool / T
+	return -1.0
+
+func _overlay(clip: String, t: float) -> void:
+	var a := player.get_animation(clip)
+	if not _upper.has(clip):
+		var list := []
+		for tr in a.get_track_count():
+			if a.track_get_type(tr) != Animation.TYPE_ROTATION_3D: continue
+			var bone := str(a.track_get_path(tr)).get_slice(":", 1)
+			if bone in UPPER and _skeleton.find_bone(bone) >= 0: list.append([_skeleton.find_bone(bone), tr])
+		_upper[clip] = list
+	for p in _upper[clip]: _skeleton.set_bone_pose_rotation(p[0], a.rotation_track_interpolate(p[1], t))
+
+func _update_mounted(u: Dictionary, dt: float) -> void:
+	var moving: bool = u.path.size() > 0
+	var loop_t: float = G.time + (u.id % 7) * 0.37
+	var fighting: bool = u.working and u.task.t == "attack" and not moving
+	var gait := "gallop" if moving else "idle"
+	var ph := fposmod(u.dist / (1.5 * HEIGHT), 1.0) if moving else fposmod(loop_t / 3.0, 1.0)
+	var swing := -1.0
+	if fighting:
+		var seg := 1.2
+		var imp := 0.5
+		if has_model and recipe.has("attack"):
+			seg = _seg_len(recipe.attack); imp = recipe.attack.get("impact", 0.5)
+		swing = _swing_phase(u, imp, seg)
+		if swing >= 0 and (mount.kind != "horse"):
+			gait = "attack"; ph = swing
+	mount.pose(gait, ph, u.dist)
+	if not has_model: return
+	# the rider sits (legs and hips from the sitting clip) and fights from the waist up
+	var sit := "Chair_Sit_Idle_M"
+	if player.has_animation(sit):
+		if _clip != sit:
+			player.play(sit); player.speed_scale = 0.0; _clip = sit
+		player.seek(fposmod(loop_t * 0.2, 1.0) * player.get_animation(sit).length * 0.1, true)
+	var use := "attack" if recipe.has("attack") else "idle"
+	_show_props(recipe.get(use, {}).get("props"), recipe.get(use, {}).get("blade"))
+	if swing >= 0 and recipe.has("attack") and player.has_animation(recipe.attack.clip):
+		var r: Dictionary = recipe.attack
+		_overlay(r.clip, swing * player.get_animation(r.clip).length)
+	_seat()
+
+## put the rider's hips on the saddle
+func _seat() -> void:
+	if _hips < 0: return
+	var hips_y: float = (_skeleton.global_transform * _skeleton.get_bone_global_pose(_hips)).origin.y - global_position.y
+	_body.position.y += mount.seat_y() - hips_y

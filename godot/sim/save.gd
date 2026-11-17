@@ -34,7 +34,7 @@ func save_game(slot: int = 0) -> bool:
 		"info": {"civ": G.players[1].civ, "time": G.time, "mode": G.rules.mode, "map": G.rules.map, "when": Time.get_datetime_string_from_system()},
 		"ents": ents, "players": G.players, "rules": G.rules, "config": G.config, "time": G.time, "next_id": E.next_id,
 		"map": G.MAP, "terrain": M.terrain, "explored": M.explored, "decals": G.decals, "rng": G.rng_state(), "brains": brains,
-		"mode": G.mode_node.save_state() if G.mode_node != null else {}}
+		"mode": G.mode_node.save_state() if G.mode_node != null else {}, "specials": Specials.save_state()}
 	var f := FileAccess.open(PATH % slot, FileAccess.WRITE)
 	if f == null: return false
 	f.store_var(d)

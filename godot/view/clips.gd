@@ -5,7 +5,7 @@ extends RefCounted
 ## into one that drives a unit's Skeleton3D bones instead ("Armature/Skeleton3D:Spine02").
 
 const EXTRA := "res://anims/extra_anims.res"
-const FILES := ["res://anims/villager_m_anim.glb", "res://anims/villager_m_anim2.glb", "res://anims/combat_anim.glb", "res://anims/combat2_anim.glb"]
+const FILES := ["res://anims/villager_m_anim.glb", "res://anims/villager_m_anim2.glb", "res://anims/combat_anim.glb", "res://anims/combat2_anim.glb", "res://anims/sit_anim.glb"]
 ## Clips whose hips may travel (falls); in every other clip the hips are pinned over the feet, because the rules own position.
 const FREE_ROOT := ["Dead", "Shot_and_Fall_Backward", "Shot_and_Fall_Forward"]
 const BONES := ["Hips", "Spine02", "Spine01", "Spine", "neck", "Head", "head_end", "headfront", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand",

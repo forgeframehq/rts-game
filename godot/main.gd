@@ -4,6 +4,7 @@ extends Node
 const World := preload("res://view/world.gd")
 const Hud := preload("res://ui/hud.gd")
 const Kit := preload("res://ui/kit.gd")
+const Tutorial := preload("res://ui/tutorial.gd")
 
 const CIV_ORDER := ["britons", "franks", "byzantines", "chinese", "persians", "incas", "cholas"]
 const PREFS := "user://prefs.json"
@@ -11,6 +12,7 @@ const PREFS := "user://prefs.json"
 var world: Node3D
 var hud: Control
 var layer: CanvasLayer
+var tutorial: Control
 var screen: Control        # the menu, setup, pause or results screen on top
 var prefs := {"civ": "britons", "foe": "random", "level": "normal", "map": "random", "mode": "conquest", "pace": "quick", "size": "small", "music": true, "sound": true, "films": true, "intro_seen": false}
 var _autosave_t := 0.0
@@ -53,13 +55,13 @@ func _set_sound(on: bool) -> void:
 	prefs.sound = on; Sfx.enabled = on; _save_prefs()
 
 func _autosave() -> void:
-	if hud != null and G.over == null: Save.save_game(0)
+	if hud != null and G.over == null and tutorial == null: Save.save_game(0)
 
 func _process(dt: float) -> void:
 	if hud == null or G.paused or G.over != null: return
 	_autosave_t += dt
 	if _autosave_t > 60.0:
-		_autosave_t = 0.0; Save.save_game(0)
+		_autosave_t = 0.0; _autosave()
 
 # ---------------------------------------------------------------- screens
 func _clear_screen() -> void:
@@ -151,6 +153,7 @@ func _menu() -> void:
 		if not i.is_empty():
 			v.add_child(Kit.button("Continue  ·  %s, %d min" % [D.CIVS[i.civ].name, int(i.time / 60)], _continue, 28, Vector2(0, 84)))
 	v.add_child(Kit.grand("Play", _setup))
+	v.add_child(Kit.button("Learn to Play", _learn, 26, Vector2(0, 72)))
 	v.add_child(Kit.cycler("Music", [[true, "On"], [false, "Off"]], prefs.music, _set_music))
 	v.add_child(Kit.cycler("Sound", [[true, "On"], [false, "Off"]], prefs.sound, _set_sound))
 	v.add_child(Kit.cycler("Films", [[true, "On"], [false, "Off"]], prefs.films, _set_films))
@@ -192,7 +195,8 @@ func _setup() -> void:
 		if D.CIVS.has(civ): foes.append([civ, D.CIVS[civ].name])
 	v.add_child(Kit.cycler("Enemy", foes, prefs.foe, func(x): prefs.foe = x))
 	v.add_child(Kit.cycler("Difficulty", [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"]], prefs.level, func(x): prefs.level = x))
-	v.add_child(Kit.cycler("Mode", [["conquest", "Conquest  (destroy them)"], ["regicide", "Regicide  (kill King and Queen)"]], prefs.mode, func(x): prefs.mode = x))
+	v.add_child(Kit.cycler("Mode", [["conquest", "Conquest  (destroy them)"], ["regicide", "Regicide  (kill King and Queen)"],
+		["capture", "Capture  (take their Town Center)"], ["survival", "Siege Survival  (hold out)"], ["empirewars", "Empire Wars  (fast start)"]], prefs.mode, func(x): prefs.mode = x))
 	var maps := [["random", "Random"]]
 	for k in Maps.MAPS: maps.append([k, Maps.MAPS[k].name])
 	v.add_child(Kit.cycler("Map", maps, prefs.map, func(x): prefs.map = x))
@@ -208,13 +212,26 @@ func _start() -> void:
 		var pool := CIV_ORDER.filter(func(c): return D.CIVS.has(c) and c != prefs.civ)
 		foe = pool[randi() % pool.size()]
 	var quick: bool = prefs.pace == "quick"
-	G.new_game({"players": [{"civ": prefs.civ}, {"civ": foe, "ai": prefs.level}], "mode": prefs.mode, "map": prefs.map,
+	# Siege Survival is you against the raiders; the difficulty sets how hard the waves hit
+	var players := [{"civ": prefs.civ}] if prefs.mode == "survival" else [{"civ": prefs.civ}, {"civ": foe, "ai": prefs.level}]
+	G.new_game({"players": players, "mode": prefs.mode, "map": prefs.map, "raidLvl": prefs.level, "neutral": true,
 		"size": prefs.size, "pace": prefs.pace, "pop": 100 if quick else 200})
 	G.paused = true
 	# each dynasty's pre-battle film, as in the web edition
 	var film := "res://assets/video/dyn_%s.ogv" % prefs.civ
 	if prefs.films and ResourceLoader.exists(film): _play_film(film, _begin_match)
 	else: _begin_match()
+
+func _learn() -> void:
+	_clear_screen()
+	tutorial = Tutorial.new()
+	tutorial.world = world
+	layer.add_child(tutorial)      # in the tree first: its steps and labels are made in _ready
+	tutorial.begin()
+	_begin_match()
+	var done := func():
+		G.alert("You are ready, my lord. Start a battle from the menu.")
+	tutorial.finished.connect(done)
 
 func _continue() -> void:
 	if Save.load_game(0): _begin_match()
@@ -235,9 +252,13 @@ func _begin_match() -> void:
 	var foe_names := []
 	for id in G.players:
 		if id != 1: foe_names.append(D.CIVS[G.players[id].civ].name)
-	G.alert("%s  ·  %s" % [Maps.MAPS[G.rules.map].name, "Regicide: protect your King and Queen" if G.rules.mode == "regicide" else "Conquest: destroy the " + ", ".join(foe_names)])
+	var goal: String = {"regicide": "Regicide: protect your King and Queen", "capture": "Capture: take their Town Center and hold it",
+		"survival": "Siege Survival: hold out against the raiders", "empirewars": "Empire Wars: your town is ready, strike fast"}.get(G.rules.mode, "Conquest: destroy the " + ", ".join(foe_names))
+	if tutorial == null: G.alert("%s  ·  %s" % [Maps.MAPS[G.rules.map].name, goal])
 
 func _end_match() -> void:
+	if tutorial != null: tutorial.queue_free()
+	tutorial = null
 	if hud != null: hud.queue_free()
 	hud = null
 	world.hud = null
@@ -267,14 +288,16 @@ func _resume() -> void:
 	G.paused = false
 
 func _on_game_over(result: String) -> void:
-	Save.delete_save(0)
+	if tutorial == null: Save.delete_save(0)
 	Sfx.ui("victory" if result == "victory" else "defeat")
+	G.buzz(300)
 	await get_tree().create_timer(1.2).timeout
 	if hud == null: return
 	_backdrop(0.72)
 	var v := _column(600)
 	v.add_child(Kit.title("Victory!" if result == "victory" else "Defeat", 58, Kit.GOLD if result == "victory" else Kit.BAD))
-	var why := "Time is up: highest score wins" if G.over_reason == "time" else ("%d:%02d played" % [int(G.time) / 60, int(G.time) % 60])
+	var why: String = {"time": "Time is up: highest score wins", "hold": "An enemy home Town Center was held for 3 minutes", "alltc": "Every Town Center is held by one side",
+		"survival": "The town fell after %d waves" % (Modes.surv.done if Modes.surv != null else 0)}.get(G.over_reason, "%d:%02d played" % [int(G.time) / 60, int(G.time) % 60])
 	var sub := Kit.label(why, 22, Kit.DIM); sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v.add_child(sub)
 	var table := GridContainer.new(); table.columns = 5
@@ -302,9 +325,12 @@ func _test_shot() -> void:
 	if which == "menu": _menu()
 	elif which == "setup": _setup()
 	else:
-		G.new_game({"seed": int(env.call("DOD_SEED", "12345")), "players": [{"civ": env.call("DOD_CIV", "britons")}, {"civ": env.call("DOD_FOE", "franks"), "ai": "normal"}],
+		if which == "learn":
+			_learn()
+			for k in 30: await get_tree().process_frame
+		else: G.new_game({"seed": int(env.call("DOD_SEED", "12345")), "players": [{"civ": env.call("DOD_CIV", "britons")}, {"civ": env.call("DOD_FOE", "franks"), "ai": "normal"}],
 			"size": "small", "pace": env.call("DOD_PACE", "quick"), "reveal": env.call("DOD_REVEAL", "normal"), "mode": env.call("DOD_MODE", "conquest")})
-		_begin_match()
+		if which != "learn": _begin_match()
 		if OS.has_environment("DOD_DEMO"): _demo(env.call("DOD_DEMO", "1"))
 		for i in int(float(env.call("DOD_RUN", "1")) * 30): G.step(1 / 30.0)
 		world.zoom_i = int(env.call("DOD_ZOOM", "2"))
@@ -352,7 +378,8 @@ func _demo(kind: String) -> void:
 	E.place_building(1, "house", tc.tx + 6, tc.ty + 1, [vils[2]])
 	E.add_building("barracks", 1, tc.tx - 5, tc.ty + 5, true)
 	var k := 0
-	for t in ["militia", "militia", "spearman", "archer", "longbowman", "knight"]:
-		var u := E.add_unit(t, 1, tc.tx + 0.5 + k * 0.8, tc.ty + 5.6 + (k % 2) * 0.8)
+	var roster: Array = OS.get_environment("DOD_UNITS").split(",") if OS.has_environment("DOD_UNITS") else ["militia", "militia", "spearman", "archer", "longbowman", "knight"]
+	for t in roster:
+		var u := E.add_unit(t, 1, tc.tx + 0.5 + k * 1.1, tc.ty + 5.8 + (k % 2) * 1.3)
 		u.dir = k % 8
 		k += 1

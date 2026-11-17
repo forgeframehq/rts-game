@@ -48,6 +48,12 @@ var _last_tap := 0
 var _last_tap_id := 0
 var _idle_i := 0
 var _refresh_t := 0.0
+var status: Label
+var groups := [[], [], []]
+var group_btns: Array = []
+var _group_down := [0, 0, 0]
+var _group_last := -1
+var _attack_buzz := 0.0
 
 func _init() -> void:
 	# anchors are set before the node enters the tree; set in _ready they left the root zero-sized
@@ -95,6 +101,23 @@ func _build() -> void:
 	alerts.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	alerts.position = Vector2(12, 88); alerts.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(alerts)
+	# ---- what the mode is doing (waves, time left) ----
+	status = Kit.label("", 21, Kit.GOLD)
+	status.set_anchors_preset(Control.PRESET_TOP_LEFT); status.position = Vector2(12, 190); status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(status)
+	# ---- army groups: hold to save the selection, tap to select it, tap again to jump to it ----
+	var gr := VBoxContainer.new()
+	gr.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	gr.offset_left = 8; gr.offset_right = 76; gr.offset_top = -300 - 3 * 76; gr.offset_bottom = -300
+	gr.alignment = BoxContainer.ALIGNMENT_END; gr.add_theme_constant_override("separation", 8)
+	add_child(gr)
+	for n in 3:
+		var gb := Button.new(); gb.text = str(n + 1); gb.custom_minimum_size = Vector2(68, 68)
+		Kit.style_button(gb, 26)
+		gb.button_down.connect(func(): _group_down[n] = Time.get_ticks_msec())
+		gb.button_up.connect(_group_up.bind(n))
+		gr.add_child(gb); group_btns.append(gb)
+	G.buzzed.connect(func(ms): Input.vibrate_handheld(ms))
 	# ---- side buttons ----
 	var side := VBoxContainer.new()
 	side.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -160,7 +183,7 @@ func _alert(text: String) -> void:
 func _civ() -> String:
 	return G.players[1].civ
 
-func _cmd(text: String, icon_tex: Texture2D, on: Callable, sub: String = "", enabled: bool = true, tint = null) -> void:
+func _cmd(text: String, icon_tex: Texture2D, on: Callable, sub: String = "", enabled: bool = true, tint = null, hold = null) -> void:
 	var b := Button.new()
 	b.custom_minimum_size = Vector2(100, 98)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -184,9 +207,14 @@ func _cmd(text: String, icon_tex: Texture2D, on: Callable, sub: String = "", ena
 		var s := Kit.label(sub, 15, tint if tint != null else Kit.GOLD)
 		s.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; s.clip_text = true; s.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(s)
+	var down := [0]
+	b.button_down.connect(func(): down[0] = Time.get_ticks_msec())
 	var press := func():
 		Sfx.ui("click")
-		on.call()
+		# holding a button does its "many" version (train five)
+		if hold != null and Time.get_ticks_msec() - down[0] > 450:
+			hold.call(); G.buzz(40)
+		else: on.call()
 		_sig = ""
 	b.pressed.connect(press)
 	grid.add_child(b)
@@ -215,6 +243,15 @@ func _process(dt: float) -> void:
 			if not e.dead and e.owner == 1 and e.type == "villager" and e.task.t == "idle": idle += 1
 		idle_btn.text = str(idle)
 		idle_btn.modulate = Color(1, 1, 1) if idle > 0 else Color(1, 1, 1, 0.5)
+		for n in 3:
+			var live: int = groups[n].filter(func(id): return G.by_id.has(id) and not G.by_id[id].dead).size()
+			group_btns[n].modulate = Color(1, 1, 1) if live > 0 else Color(1, 1, 1, 0.45)
+		var st := ""
+		if Modes.surv != null:
+			var S: Dictionary = Modes.surv
+			st = ("⚔ Wave %d  ·  %d raiders left" % [S.wave, S.left]) if S.active else ("Wave %d in %d:%02d" % [S.wave + 1, int(maxf(0, S.next - G.time)) / 60, int(maxf(0, S.next - G.time)) % 60])
+		elif G.rules.mode == "capture": st = "Capture: beat a Town Center below 25%, then stand soldiers beside it"
+		status.text = st
 		_refresh_panel()
 	overlay.queue_redraw()
 
@@ -229,7 +266,12 @@ func _refresh_panel() -> void:
 	if first != null and first.kind == "building":
 		sig += "|%s|%d|%s|%s|%d|%d" % [first.built, first.queue.size(), first.research != null, first.aging != null, first.garrison.size(), G.players[1].techs.size()]
 		for k in G.players[1].up: sig += str(G.players[1].up[k])
-	if first != null and first.kind == "unit": sig += "|" + E.stance_of(first) + first.form
+	if first != null and first.kind == "unit":
+		sig += "|" + E.stance_of(first) + first.form
+		var rdy := 0
+		for x in sel:
+			if Specials.special_of(x) != "" and Specials.ready_in(x) <= 0: rdy += 1
+		sig += "|%d|%d" % [rdy, int(G.time / 5)]
 	var r: Dictionary = G.players[1].res
 	sig += "|%d%d%d%d" % [int(r.food) / 25, int(r.wood) / 25, int(r.gold) / 25, int(r.stone) / 25]
 	_update_info(sel)
@@ -333,6 +375,22 @@ func _soldier_cmds(sel: Array) -> void:
 			E.cmd_move(us, c.x + 0.01, c.y + 0.01)
 	_cmd(FORM_NAME[form], Kit.icon("box"), next_form, "formation")
 	_cmd("Stop", Kit.icon("stop"), func(): E.cmd_stop(my_units()))
+	# one Special button for the whole selection: every kind of soldier does its own move
+	var kinds := {}
+	var wait := 0.0
+	var any_ready := false
+	for x in sel:
+		var k := Specials.special_of(x)
+		if k == "": continue
+		kinds[Specials.SPECIALS[k].name] = true
+		if Specials.ready_in(x) <= 0: any_ready = true
+		else: wait = maxf(wait, Specials.ready_in(x))
+	if kinds.size() > 0:
+		var go := func():
+			var n := Specials.use_special(my_units())
+			if n == 0: G.alert("No enemy in reach, or still recharging")
+			else: G.buzz(60)
+		_cmd("⭐ " + ("Special" if kinds.size() > 1 else kinds.keys()[0]), Kit.icon("attack"), go, "ready" if any_ready else "in %d s" % int(ceil(wait)), any_ready, Kit.GOOD)
 	var heal := func():
 		for x in my_units():
 			var inf = E.nearest(x.x, x.y, func(e): return e.type == "infirmary" and E.can_garrison(x, e))
@@ -354,7 +412,9 @@ func _building_cmds(b: Dictionary) -> void:
 			continue
 		var cs := _cost_sub(E.unit_cost(1, type))
 		var n: int = b.queue.filter(func(q): return q.type == type).size()
-		_cmd(def.name + ("  ×%d" % n if n > 0 else ""), Kit.unit_icon(civ, type), _train.bind(b, type), cs[0], true, cs[1])
+		var five := func():
+			for k in 5: _train(b, type)
+		_cmd(def.name + ("  ×%d" % n if n > 0 else ""), Kit.unit_icon(civ, type), _train.bind(b, type), cs[0], true, cs[1], five)
 	if b.type == "towncenter":
 		var a := E.age_of(1)
 		if a + 1 < D.AGES.size():
@@ -432,6 +492,26 @@ func _send_to(rtype: String) -> void:
 	if r == null: G.alert("None found nearby. Explore to find more.")
 	else: E.cmd_gather_spread(vils, r)
 
+# ---------------------------------------------------------------- army groups
+func _group_up(n: int) -> void:
+	var held: int = Time.get_ticks_msec() - _group_down[n]
+	if held > 450:
+		var ids := my_units().map(func(u): return u.id)
+		if ids.is_empty():
+			G.alert("Select some units first, then hold %d to save them" % (n + 1)); return
+		groups[n] = ids
+		G.alert("Group %d saved: %d units" % [n + 1, ids.size()]); G.buzz(40)
+		return
+	var live: Array = groups[n].filter(func(id): return G.by_id.has(id) and not G.by_id[id].dead)
+	groups[n] = live
+	if live.is_empty():
+		G.alert("Group %d is empty. Select units and hold the button to save them." % (n + 1)); return
+	if _group_last == n and str(G.selection) == str(live):
+		var c := Vector2.ZERO
+		for id in live: c += Vector2(G.by_id[id].x, G.by_id[id].y)
+		world.look = c / live.size()
+	G.selection = live.duplicate(); page = ""; _group_last = n
+
 # ---------------------------------------------------------------- side buttons
 func _toggle_box() -> void:
 	box_mode = not box_mode
@@ -502,7 +582,9 @@ func _confirm_place() -> void:
 	else:
 		var b = E.place_building(1, placing, place_at.x, place_at.y, vils)
 		if b != null: placed = 1
-	if placed == 0: G.alert("Can't build there" if E.can_afford(1, E.build_cost(1, placing)) else "Not enough resources")
+	if placed == 0:
+		var why: String = Modes.rule_reason(1, placing, place_at.x, place_at.y)
+		G.alert(("Too close to " + why if why != "" else "Can't build there") if E.can_afford(1, E.build_cost(1, placing)) else "Not enough resources")
 	else: placing = ""
 
 # ---------------------------------------------------------------- touch input on the map
@@ -633,6 +715,14 @@ func _draw_overlay() -> void:
 		var col := Color(0.35, 0.85, 0.3) if f > 0.6 else (Color(0.95, 0.8, 0.2) if f > 0.3 else Color(0.9, 0.25, 0.2))
 		if building: col = Color(0.4, 0.7, 1.0)
 		overlay.draw_rect(Rect2(p.x - w / 2, p.y, w * (e.progress if building else f), 5), col)
+	for e in G.ents:
+		if e.dead or e.type != "towncenter" or e.get("cap") == null or world.seen(e) != 2: continue
+		var low: bool = e.hp < e.maxHp * 0.25
+		if not low and e.cap.v <= 0: continue
+		var p: Vector2 = world.screen_of(e.x, e.y, 3.4)
+		overlay.draw_rect(Rect2(p.x - 62, p.y - 1, 124, 12), Color(0, 0, 0, 0.8))
+		overlay.draw_rect(Rect2(p.x - 60, p.y + 1, 120 * e.cap.v, 8), Color(1.0, 0.85, 0.3) if not e.cap.contested else Color(1.0, 0.4, 0.3))
+		overlay.draw_string(ThemeDB.fallback_font, p + Vector2(-60, -8), "🏳 white flag" if e.cap.v <= 0 else ("contested" if e.cap.contested else "capturing"), HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
 	if _boxing and _moved >= 16.0:
 		var r := Rect2(_box_start, _box_now - _box_start).abs()
 		overlay.draw_rect(r, Color(1, 1, 1, 0.12))

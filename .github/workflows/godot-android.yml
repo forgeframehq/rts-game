@@ -50,7 +50,7 @@ jobs:
           SETTINGS
           sed -i 's/^          //' ~/.config/godot/editor_settings-4.4.tres; cat ~/.config/godot/editor_settings-4.4.tres
       - name: Copy the shared art and sound into the Godot project
-        run: (which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)) && bash tools/godot_sync_assets.sh && rm -rf godot/assets/sound/voice
+        run: (which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)) && bash tools/godot_sync_assets.sh
       - name: Import assets
         run: set -o pipefail; ~/godot/godot --headless --path godot --import 2>&1 | tee $RUNNER_TEMP/build.log | tail -20
       - name: Export APK

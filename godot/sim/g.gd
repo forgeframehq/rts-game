@@ -8,6 +8,8 @@ signal game_over(result: String)
 signal focus(x: float, y: float)
 signal killed(e: Dictionary)
 signal new_game_started
+signal flipped(building: Dictionary)
+signal buzzed(ms: int)
 
 const MOURN := 120.0
 const STEP := 1.0 / 30.0
@@ -87,6 +89,7 @@ func finish_restore(d: Dictionary) -> void:
 		a.wave_n = b.wave_n; a.next_attack = b.next_attack; a.wave_size = b.wave_size
 		ais.append(a)
 	if mode_node != null: mode_node.load_state(d.get("mode", {}))
+	Specials.fires = d.get("specials", {}).get("fires", []); Specials.later = d.get("specials", {}).get("later", [])
 	new_game_started.emit()
 	var tc = E.nearest(0, 0, func(e): return e.owner == 1 and e.type == "towncenter")
 	if tc != null: focus.emit(tc.x, tc.y + 2)
@@ -116,7 +119,12 @@ func rule_block(owner_: int, type: String, tx: int, ty: int) -> bool:
 	return mode_node.rule_block(owner_, type, tx, ty) if mode_node != null else false
 func on_hit(_att: Dictionary, _t: Dictionary) -> void: pass
 func on_built(_b: Dictionary) -> void: pass
-func on_building_placed(_b: Dictionary) -> void: pass
+func on_building_placed(b: Dictionary) -> void:
+	if mode_node != null: mode_node.on_building_placed(b)
+
+## a short vibration on a phone
+func buzz(ms: int) -> void:
+	buzzed.emit(ms)
 func on_spawn(_u: Dictionary, _b: Dictionary) -> void: pass
 func on_deposit(_u: Dictionary, _carry: Dictionary) -> void: pass
 func on_age_up(owner_: int, to: int) -> void:
@@ -175,7 +183,7 @@ func new_game(cfg: Dictionary = {}) -> void:
 		"reveal": cfg.get("reveal", "normal"), "shape": "diamond", "mode": cfg.get("mode", "conquest"),
 		"time": float(cfg.get("time", 0)), "map": "grasslands", "wave": float(cfg.get("wave", 60)),
 		"neutral": cfg.get("neutral", false), "raidLvl": cfg.get("raidLvl", "normal"),
-		"startAge": clampi(cfg.get("startAge", 1), 1, 4)}
+		"startAge": clampi(cfg.get("startAge", 2 if cfg.get("mode", "") == "empirewars" else 1), 1, 4)}
 	# Quick pace: gathering, building and training all run faster, so a match fits a phone session
 	rules.pace = cfg.get("pace", "classic")
 	pace = 1.8 if rules.pace == "quick" else 1.0

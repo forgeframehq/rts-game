@@ -932,8 +932,11 @@ func ungarrison_unit(b: Dictionary, u: Dictionary) -> void:
 	ungarrison(b, func(x): return x.id == u.id)
 
 func delete_ent(e) -> void:
-	if e != null and not e.dead:
-		kill(e); G.on_killed(e)
+	if e == null or e.dead: return
+	var why: String = G.mode_node.delete_block(e) if G.mode_node != null else ""
+	if why != "":
+		G.alert(why); return
+	kill(e)
 
 func cmd_guard(units: Array, t: Dictionary) -> void:
 	for u in units:
