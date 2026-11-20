@@ -13,6 +13,8 @@ const STANCE_NAME := {"aggressive": "Aggressive", "defensive": "Defensive", "sta
 const FORM_NAME := {"line": "Line", "box": "Box", "staggered": "Spread", "wedge": "Wedge"}
 const JOBS := [["food", "berry"], ["wood", "tree"], ["gold", "gold"], ["stone", "stone"]]
 const COLS := 5
+const DRAG := 24.0          # a finger wobbles: under this much travel a touch is a tap, not a drag
+const REACH := 60.0         # how near a unit a tap must land to pick it (a fingertip, not a mouse pointer)
 
 var world: Node3D
 var res_labels := {}
@@ -64,101 +66,125 @@ func _ready() -> void:
 	_build()
 	G.alerted.connect(_alert)
 
+## Laid out for thumbs on a phone held upright. Things you tap all the time sit low (command panel, select
+## buttons, army groups); things you mostly read sit high (resources, minimap, zoom). Every button is at least
+## Kit.TOUCH across, and nothing sits under the notch or the gesture bar.
+const PANEL_H := 346.0
+const CMD_H := 110.0
+
 func _build() -> void:
+	var safe := Kit.safe()
+	var top_y: float = safe.top + 6
+	var bot_y: float = -safe.bottom - 6
 	overlay = Control.new()
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT); overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.draw.connect(_draw_overlay)
 	add_child(overlay)
-	# ---- top bar ----
+	# ---- top bar: resources, population, Age and clock, pause ----
 	var top := Kit.panel()
 	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top.custom_minimum_size.y = 70
+	top.offset_top = top_y; top.offset_left = 6 + safe.left; top.offset_right = -6 - safe.right
 	add_child(top)
 	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", 6)
 	top.add_child(row)
 	for k in ["food", "wood", "gold", "stone"]:
-		var ic := TextureRect.new(); ic.texture = Kit.icon(k); ic.custom_minimum_size = Vector2(36, 36)
+		var ic := TextureRect.new(); ic.texture = Kit.icon(k); ic.custom_minimum_size = Vector2(38, 38)
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		row.add_child(ic)
-		var l := Kit.label("0", 24); l.custom_minimum_size.x = 60
+		var l := Kit.label("0", 26); l.custom_minimum_size.x = 62
 		row.add_child(l); res_labels[k] = l
-	pop_label = Kit.label("0/0", 24, Kit.GOLD); pop_label.custom_minimum_size.x = 80
-	row.add_child(pop_label)
-	age_label = Kit.label("", 20, Kit.DIM); age_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; age_label.clip_text = true
-	row.add_child(age_label)
-	clock_label = Kit.label("0:00", 22, Kit.DIM)
-	row.add_child(clock_label)
-	var pb := Kit.button("II", func(): pause_pressed.emit(), 24, Vector2(56, 52))
+	var pop_box := VBoxContainer.new(); pop_box.alignment = BoxContainer.ALIGNMENT_CENTER; pop_box.add_theme_constant_override("separation", -4)
+	pop_box.custom_minimum_size.x = 84
+	row.add_child(pop_box)
+	pop_box.add_child(Kit.label("PEOPLE", 14, Kit.DIM))
+	pop_label = Kit.label("0/0", 26, Kit.GOLD); pop_box.add_child(pop_label)
+	var when := VBoxContainer.new(); when.alignment = BoxContainer.ALIGNMENT_CENTER; when.add_theme_constant_override("separation", -4)
+	when.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(when)
+	age_label = Kit.label("", 18, Kit.DIM); age_label.clip_text = true; age_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	when.add_child(age_label)
+	clock_label = Kit.label("0:00", 22, Kit.INK); clock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	when.add_child(clock_label)
+	var pb := Kit.button("II", func(): pause_pressed.emit(), 30, Vector2(Kit.TOUCH, Kit.TOUCH))
 	row.add_child(pb)
-	# ---- minimap ----
+	var under: float = top_y + Kit.TOUCH + 12 + 10
+	# ---- minimap, with zoom under it ----
 	minimap = Minimap.new()
 	minimap.world = world
 	minimap.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	minimap.offset_left = -236; minimap.offset_right = -8; minimap.offset_top = 86; minimap.offset_bottom = 86 + 118
+	minimap.offset_left = -272 - safe.right; minimap.offset_right = -8 - safe.right; minimap.offset_top = under; minimap.offset_bottom = under + 136
 	add_child(minimap)
+	var zoom := HBoxContainer.new(); zoom.add_theme_constant_override("separation", Kit.GAP)
+	zoom.set_anchors_preset(Control.PRESET_TOP_RIGHT); zoom.alignment = BoxContainer.ALIGNMENT_END
+	zoom.offset_left = -8 - safe.right - 2 * Kit.TOUCH - Kit.GAP; zoom.offset_right = -8 - safe.right
+	zoom.offset_top = under + 136 + 10; zoom.offset_bottom = under + 136 + 10 + Kit.TOUCH
+	add_child(zoom)
+	zoom.add_child(Kit.button("−", func(): world.zoom(-1), 38, Vector2(Kit.TOUCH, Kit.TOUCH)))
+	zoom.add_child(Kit.button("+", func(): world.zoom(1), 38, Vector2(Kit.TOUCH, Kit.TOUCH)))
 	# ---- alerts ----
 	alerts = VBoxContainer.new()
 	alerts.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	alerts.position = Vector2(12, 88); alerts.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	alerts.position = Vector2(12 + safe.left, under); alerts.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(alerts)
 	# ---- what the mode is doing (waves, time left) ----
-	status = Kit.label("", 21, Kit.GOLD)
-	status.set_anchors_preset(Control.PRESET_TOP_LEFT); status.position = Vector2(12, 190); status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	status = Kit.label("", 22, Kit.GOLD)
+	status.set_anchors_preset(Control.PRESET_TOP_LEFT); status.position = Vector2(12 + safe.left, under + 150); status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; status.custom_minimum_size.x = 420
 	add_child(status)
+	var above: float = bot_y - PANEL_H - 10      # the line the thumb buttons stand on, just over the command panel
 	# ---- army groups: hold to save the selection, tap to select it, tap again to jump to it ----
 	var gr := VBoxContainer.new()
 	gr.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	gr.offset_left = 8; gr.offset_right = 76; gr.offset_top = -300 - 3 * 76; gr.offset_bottom = -300
-	gr.alignment = BoxContainer.ALIGNMENT_END; gr.add_theme_constant_override("separation", 8)
+	gr.offset_left = 8 + safe.left; gr.offset_right = 8 + safe.left + Kit.TOUCH; gr.offset_top = above - 3 * (Kit.TOUCH + Kit.GAP); gr.offset_bottom = above
+	gr.alignment = BoxContainer.ALIGNMENT_END; gr.add_theme_constant_override("separation", Kit.GAP)
 	add_child(gr)
 	for n in 3:
-		var gb := Button.new(); gb.text = str(n + 1); gb.custom_minimum_size = Vector2(68, 68)
-		Kit.style_button(gb, 26)
+		var gb := Button.new(); gb.text = str(n + 1); gb.custom_minimum_size = Vector2(Kit.TOUCH, Kit.TOUCH)
+		Kit.style_button(gb, 32)
 		gb.button_down.connect(func(): _group_down[n] = Time.get_ticks_msec())
 		gb.button_up.connect(_group_up.bind(n))
 		gr.add_child(gb); group_btns.append(gb)
 	G.buzzed.connect(func(ms): if G.get_meta("buzz", true): Input.vibrate_handheld(ms))
-	# ---- side buttons ----
+	# ---- select buttons: drag-select, all soldiers, next idle villager ----
 	var side := VBoxContainer.new()
 	side.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	side.offset_left = -92; side.offset_right = -8; side.offset_top = -292 - 5 * 84; side.offset_bottom = -300
+	side.offset_left = -8 - safe.right - Kit.TOUCH; side.offset_right = -8 - safe.right; side.offset_top = above - 3 * (Kit.TOUCH + Kit.GAP); side.offset_bottom = above
 	side.alignment = BoxContainer.ALIGNMENT_END
-	side.add_theme_constant_override("separation", 8)
+	side.add_theme_constant_override("separation", Kit.GAP)
 	add_child(side)
-	box_btn = Kit.button("▭", _toggle_box, 30, Vector2(84, 72)); side.add_child(box_btn)
-	army_btn = Kit.button("⚔", _select_army, 30, Vector2(84, 72)); side.add_child(army_btn)
-	idle_btn = Kit.button("0", _next_idle, 26, Vector2(84, 72)); idle_btn.icon = Kit.icon("idle"); idle_btn.expand_icon = true
+	box_btn = Kit.button("▭", _toggle_box, 36, Vector2(Kit.TOUCH, Kit.TOUCH)); side.add_child(box_btn)
+	army_btn = Kit.button("⚔", _select_army, 36, Vector2(Kit.TOUCH, Kit.TOUCH)); side.add_child(army_btn)
+	idle_btn = Kit.button("0", _next_idle, 28, Vector2(Kit.TOUCH, Kit.TOUCH)); idle_btn.icon = Kit.icon("idle"); idle_btn.expand_icon = true
 	side.add_child(idle_btn)
-	side.add_child(Kit.button("+", func(): world.zoom(1), 30, Vector2(84, 64)))
-	side.add_child(Kit.button("−", func(): world.zoom(-1), 30, Vector2(84, 64)))
 	# ---- command panel ----
 	panel = Kit.panel()
 	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	panel.offset_top = -292; panel.offset_left = 6; panel.offset_right = -6; panel.offset_bottom = -6
+	panel.offset_top = bot_y - PANEL_H; panel.offset_left = 6 + safe.left; panel.offset_right = -6 - safe.right; panel.offset_bottom = bot_y
+	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN      # a third row of buttons grows upward, never off the screen
 	add_child(panel)
 	var v := VBoxContainer.new(); v.add_theme_constant_override("separation", 6)
 	panel.add_child(v)
 	var head := HBoxContainer.new(); head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
-	info_icon = TextureRect.new(); info_icon.custom_minimum_size = Vector2(56, 56)
+	info_icon = TextureRect.new(); info_icon.custom_minimum_size = Vector2(72, 72)
 	info_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; info_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	head.add_child(info_icon)
-	var names := VBoxContainer.new(); names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var names := VBoxContainer.new(); names.size_flags_horizontal = Control.SIZE_EXPAND_FILL; names.alignment = BoxContainer.ALIGNMENT_CENTER
+	names.add_theme_constant_override("separation", 0)
 	head.add_child(names)
-	info_name = Kit.label("", 24, Kit.GOLD); info_name.add_theme_font_override("font", Kit.heading()); info_name.clip_text = true
+	info_name = Kit.label("", 26, Kit.GOLD); info_name.add_theme_font_override("font", Kit.heading()); info_name.clip_text = true
 	names.add_child(info_name)
-	info_sub = Kit.label("", 19, Kit.DIM); info_sub.clip_text = true; names.add_child(info_sub)
-	info_bar = ProgressBar.new(); info_bar.custom_minimum_size = Vector2(110, 16); info_bar.show_percentage = false
-	info_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	info_sub = Kit.label("", 21, Kit.DIM); info_sub.clip_text = true; names.add_child(info_sub)
+	info_bar = ProgressBar.new(); info_bar.custom_minimum_size = Vector2(0, 14); info_bar.show_percentage = false
 	info_bar.add_theme_stylebox_override("background", Kit.box(Color(0.2, 0.05, 0.05), Kit.EDGE, 4, 1))
 	info_bar.add_theme_stylebox_override("fill", Kit.box(Kit.GOOD, Kit.GOOD, 4, 0))
-	head.add_child(info_bar)
+	names.add_child(info_bar)
 	# always in the same place: lets go of whatever is selected (a tap on the ground is a move order)
 	var desel := func():
 		G.selection = []; page = ""; placing = ""
-	head.add_child(Kit.button("✕ Deselect", desel, 20, Vector2(150, 56)))
+	head.add_child(Kit.button("✕ Deselect", desel, 22, Vector2(184, Kit.TOUCH)))
 	grid = GridContainer.new(); grid.columns = COLS
-	grid.add_theme_constant_override("h_separation", 6); grid.add_theme_constant_override("v_separation", 6)
+	grid.add_theme_constant_override("h_separation", 8); grid.add_theme_constant_override("v_separation", 8)
 	v.add_child(grid)
 
 # ---------------------------------------------------------------- helpers
@@ -174,7 +200,7 @@ func my_units() -> Array:
 
 func _alert(text: String) -> void:
 	var l := Kit.label(text, 22)
-	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; l.custom_minimum_size.x = 440
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; l.custom_minimum_size.x = 420
 	alerts.add_child(l)
 	if alerts.get_child_count() > 4: alerts.get_child(0).queue_free()
 	var tw := l.create_tween()
@@ -185,26 +211,26 @@ func _civ() -> String:
 
 func _cmd(text: String, icon_tex: Texture2D, on: Callable, sub: String = "", enabled: bool = true, tint = null, hold = null) -> void:
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(100, 98)
+	b.custom_minimum_size = Vector2(Kit.TOUCH, CMD_H)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	Kit.style_button(b, 17)
+	Kit.style_button(b, 19)
 	b.disabled = not enabled
 	b.clip_text = true
 	var box := VBoxContainer.new()
 	box.set_anchors_preset(Control.PRESET_FULL_RECT); box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.alignment = BoxContainer.ALIGNMENT_CENTER; box.add_theme_constant_override("separation", 0)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER; box.add_theme_constant_override("separation", -5)
 	b.add_child(box)
 	if icon_tex != null:
-		var ic := TextureRect.new(); ic.texture = icon_tex; ic.custom_minimum_size = Vector2(46, 46)
+		var ic := TextureRect.new(); ic.texture = icon_tex; ic.custom_minimum_size = Vector2(54, 54)
 		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if not enabled: ic.modulate = Color(1, 1, 1, 0.4)
 		box.add_child(ic)
-	var l := Kit.label(text, 17 if icon_tex != null else 21, Kit.INK if enabled else Kit.DIM)
+	var l := Kit.label(text, 19 if icon_tex != null else 23, Kit.INK if enabled else Kit.DIM)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; l.clip_text = true; l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(l)
 	if sub != "":
-		var s := Kit.label(sub, 15, tint if tint != null else Kit.GOLD)
+		var s := Kit.label(sub, 17, tint if tint != null else Kit.GOLD)
 		s.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; s.clip_text = true; s.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		box.add_child(s)
 	var down := [0]
@@ -245,7 +271,7 @@ func _process(dt: float) -> void:
 		idle_btn.modulate = Color(1, 1, 1) if idle > 0 else Color(1, 1, 1, 0.5)
 		for n in 3:
 			var live: int = groups[n].filter(func(id): return G.by_id.has(id) and not G.by_id[id].dead).size()
-			group_btns[n].modulate = Color(1, 1, 1) if live > 0 else Color(1, 1, 1, 0.45)
+			group_btns[n].modulate = Color(1, 1, 1) if live > 0 else Color(1, 1, 1, 0.65)
 		var st := ""
 		if Modes.surv != null:
 			var S: Dictionary = Modes.surv
@@ -600,8 +626,8 @@ func _gui_input(ev: InputEvent) -> void:
 			var was_single := _touches.size() == 1
 			_touches.erase(ev.index)
 			if was_single:
-				if _boxing and _moved >= 16.0: _finish_box()
-				elif _moved < 16.0: _tap(ev.position)
+				if _boxing and _moved >= DRAG: _finish_box()
+				elif _moved < DRAG: _tap(ev.position)
 			_boxing = false
 		accept_event()
 	elif ev is InputEventScreenDrag:
@@ -612,12 +638,12 @@ func _gui_input(ev: InputEvent) -> void:
 		else:
 			_moved += ev.relative.length()
 			if _boxing: _box_now = ev.position
-			elif _moved >= 16.0: world.pan_pixels(ev.relative)
+			elif _moved >= DRAG: world.pan_pixels(ev.relative)
 		accept_event()
 
 func _pick(screen: Vector2):
 	var best = null
-	var bd := 40.0
+	var bd := REACH
 	for e in G.ents:
 		if e.dead or e.kind != "unit" or world.seen(e) == 0: continue
 		var d: float = world.screen_of(e.x, e.y, 0.45).distance_to(screen)
@@ -723,7 +749,7 @@ func _draw_overlay() -> void:
 		overlay.draw_rect(Rect2(p.x - 62, p.y - 1, 124, 12), Color(0, 0, 0, 0.8))
 		overlay.draw_rect(Rect2(p.x - 60, p.y + 1, 120 * e.cap.v, 8), Color(1.0, 0.85, 0.3) if not e.cap.contested else Color(1.0, 0.4, 0.3))
 		overlay.draw_string(ThemeDB.fallback_font, p + Vector2(-60, -8), "🏳 white flag" if e.cap.v <= 0 else ("contested" if e.cap.contested else "capturing"), HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
-	if _boxing and _moved >= 16.0:
+	if _boxing and _moved >= DRAG:
 		var r := Rect2(_box_start, _box_now - _box_start).abs()
 		overlay.draw_rect(r, Color(1, 1, 1, 0.12))
 		overlay.draw_rect(r, Color(1, 1, 1, 0.9), false, 2.0)

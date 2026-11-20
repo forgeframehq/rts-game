@@ -9,7 +9,9 @@ signal load_slot(slot: int)
 signal learn
 signal prefs_changed
 
-const CIV_ORDER := ["britons", "franks", "byzantines", "chinese", "persians", "incas", "cholas"]
+## The dynasties on offer. Persians, Incas and Cholas are set aside for now (20 Nov): their rules, crests and art
+## stay in the project, so putting them back is adding their names to this list.
+const CIV_ORDER := ["britons", "franks", "byzantines", "chinese"]
 const MODES := [["conquest", "Conquest", "Destroy everything"], ["regicide", "Regicide", "Kill the King and Queen"],
 	["capture", "Capture", "Take the Town Centers"], ["survival", "Siege Survival", "Hold off the waves"], ["empirewars", "Empire Wars", "Skip the slow start"]]
 const MODE_TXT := {"conquest": "Destroy every enemy building and unit.",
@@ -31,6 +33,8 @@ func _setup() -> Dictionary:
 		prefs.setup = {"mode": "conquest", "map": "random", "size": "small", "pace": "quick", "wave": 60, "neutral": false, "age": 1, "time": 0,
 			"teamColors": false, "res": "standard", "pop": 100, "reveal": "normal",
 			"players": [{"civ": "britons", "color": 0, "team": 0}, {"civ": "random", "color": 1, "team": 0, "ai": "normal"}]}
+	for p in prefs.setup.players:
+		if p.civ != "random" and not p.civ in CIV_ORDER: p.civ = "britons" if is_same(p, prefs.setup.players[0]) else "random"
 	return prefs.setup
 
 func serif() -> Font:
@@ -45,6 +49,12 @@ func _clear() -> void:
 	body = Control.new()
 	body.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(body)
+
+## where a screen's text and buttons go: clear of the notch and the gesture bar (the backdrop runs under both)
+func _safe() -> MarginContainer:
+	var m := Kit.safe_box()
+	body.add_child(m)
+	return m
 
 func _backdrop(dark: float) -> void:
 	var bg := TextureRect.new(); bg.texture = load("res://assets/ui/title_bg.jpg")
@@ -88,7 +98,7 @@ func _tile_style(bg_top: Color, edge: Color) -> StyleBoxFlat:
 	return s
 
 ## a menu tile: a Cinzel title with a line of small text under it
-func mbtn(title: String, small: String, on: Callable, enabled: bool = true, height: float = 84.0) -> Button:
+func mbtn(title: String, small: String, on: Callable, enabled: bool = true, height: float = 100.0) -> Button:
 	var b := Button.new(); b.custom_minimum_size = Vector2(0, height); b.focus_mode = Control.FOCUS_NONE
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	b.disabled = not enabled
@@ -99,10 +109,10 @@ func mbtn(title: String, small: String, on: Callable, enabled: bool = true, heig
 	var v := VBoxContainer.new(); v.set_anchors_preset(Control.PRESET_FULL_RECT); v.offset_left = 26; v.offset_right = -10
 	v.alignment = BoxContainer.ALIGNMENT_CENTER; v.mouse_filter = Control.MOUSE_FILTER_IGNORE; v.add_theme_constant_override("separation", 0)
 	b.add_child(v)
-	var t := Kit.label(title, 25, Color("#f3ead7") if enabled else Color("#7d735f")); t.add_theme_font_override("font", Kit.heading()); t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var t := Kit.label(title, 27, Color("#f3ead7") if enabled else Color("#7d735f")); t.add_theme_font_override("font", Kit.heading()); t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(t)
 	if small != "":
-		var s := Kit.label(small, 17, Color("#b8a888") if enabled else Color("#6a614f")); s.mouse_filter = Control.MOUSE_FILTER_IGNORE; s.clip_text = true
+		var s := Kit.label(small, 19, Color("#b8a888") if enabled else Color("#6a614f")); s.mouse_filter = Control.MOUSE_FILTER_IGNORE; s.clip_text = true
 		v.add_child(s)
 	var press := func():
 		Sfx.ui("click"); on.call()
@@ -136,12 +146,12 @@ func grand(title: String, small: String, on: Callable, height: float = 112.0) ->
 func _sheet(title: String, back: Callable, footer: Control = null) -> VBoxContainer:
 	_clear()
 	_backdrop(0.86)
-	var root := VBoxContainer.new(); root.set_anchors_preset(Control.PRESET_FULL_RECT); root.add_theme_constant_override("separation", 0)
-	body.add_child(root)
-	var head := HBoxContainer.new(); head.custom_minimum_size.y = 118; head.add_theme_constant_override("separation", 18)
-	var pad := MarginContainer.new(); pad.add_theme_constant_override("margin_left", 22); pad.add_theme_constant_override("margin_top", 34); pad.add_theme_constant_override("margin_bottom", 12)
+	var root := VBoxContainer.new(); root.add_theme_constant_override("separation", 0)
+	_safe().add_child(root)
+	var head := HBoxContainer.new(); head.custom_minimum_size.y = 96; head.add_theme_constant_override("separation", 18)
+	var pad := MarginContainer.new(); pad.add_theme_constant_override("margin_left", 22); pad.add_theme_constant_override("margin_top", 18); pad.add_theme_constant_override("margin_bottom", 12)
 	pad.add_child(head); root.add_child(pad)
-	var bb := Kit.button("‹", back, 34, Vector2(72, 72))
+	var bb := Kit.button("‹", back, 40, Vector2(Kit.TOUCH, Kit.TOUCH))
 	bb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	head.add_child(bb)
 	var t := Kit.label(title, 38, Kit.GOLD); t.add_theme_font_override("font", Kit.heading()); t.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -205,8 +215,8 @@ func _frame_node(v: VBoxContainer) -> Control:
 func seg(parent: Control, label: String, options: Array, value, on: Callable) -> void:
 	var box := VBoxContainer.new(); box.add_theme_constant_override("separation", 6)
 	parent.add_child(box)
-	box.add_child(Kit.label(label, 19, Color("#b8a888")))
-	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", 6)
+	box.add_child(Kit.label(label, 21, Color("#b8a888")))
+	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", Kit.GAP)
 	box.add_child(row)
 	var btns := []
 	var paint := func(v):
@@ -215,8 +225,9 @@ func seg(parent: Control, label: String, options: Array, value, on: Callable) ->
 			btns[i].add_theme_stylebox_override("normal", Kit.box(Color("#6e5220") if on_ else Color(0.16, 0.115, 0.07), Color("#e9c46a") if on_ else Color("#6b5230"), 10))
 			btns[i].add_theme_color_override("font_color", Color("#fff3d0") if on_ else Color("#cbbd9c"))
 	for o in options:
-		var b := Button.new(); b.text = o[1]; b.custom_minimum_size = Vector2(0, 58); b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		Kit.style_button(b, 19)
+		var b := Button.new(); b.text = o[1]; b.custom_minimum_size = Vector2(0, Kit.TOUCH); b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		Kit.style_button(b, 21)
 		b.add_theme_font_override("font", ThemeDB.fallback_font)
 		var press := func():
 			Sfx.ui("toggle"); paint.call(o[0]); on.call(o[0]); prefs_changed.emit()
@@ -229,9 +240,9 @@ func show_title() -> void:
 	_clear()
 	_backdrop(0.0)
 	_fade(0.42, 0.6)
-	var v := VBoxContainer.new(); v.set_anchors_preset(Control.PRESET_FULL_RECT); v.alignment = BoxContainer.ALIGNMENT_END
+	var v := VBoxContainer.new(); v.alignment = BoxContainer.ALIGNMENT_END
 	v.add_theme_constant_override("separation", 0); v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	body.add_child(v)
+	_safe().add_child(v)
 	v.add_child(_img("res://assets/ui/logo.png", Vector2(640, 380)))
 	var gap := Control.new(); gap.custom_minimum_size.y = 70; v.add_child(gap)
 	var row := HBoxContainer.new(); row.alignment = BoxContainer.ALIGNMENT_CENTER; row.add_theme_constant_override("separation", 22)
@@ -261,9 +272,9 @@ func show_menu() -> void:
 	_clear()
 	_backdrop(0.0)
 	_fade(0.1, 0.36)
-	var c := VBoxContainer.new(); c.set_anchors_preset(Control.PRESET_FULL_RECT); c.alignment = BoxContainer.ALIGNMENT_END
+	var c := VBoxContainer.new(); c.alignment = BoxContainer.ALIGNMENT_END
 	c.add_theme_constant_override("separation", 0)
-	body.add_child(c)
+	_safe().add_child(c)
 	c.add_child(_img("res://assets/ui/logo.png", Vector2(640, 372)))
 	var m := MarginContainer.new()
 	for side in ["left", "right"]: m.add_theme_constant_override("margin_" + side, 36)
@@ -335,7 +346,7 @@ func show_battle() -> void:
 		h.add_child(tv)
 		var n := Kit.label(mo[1], 23, Color("#f3ead7")); n.add_theme_font_override("font", serif()); n.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; n.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		tv.add_child(n)
-		var sm := Kit.label(mo[2], 18, Color("#b8a888")); sm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; sm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var sm := Kit.label(mo[2], 19, Color("#b8a888")); sm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; sm.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		tv.add_child(sm)
 		var pick := func():
 			Sfx.ui("toggle"); S.mode = mo[0]; prefs_changed.emit(); show_battle()
@@ -363,7 +374,7 @@ func show_battle() -> void:
 			var c := 0
 			while used.has(c): c += 1
 			players.append({"civ": "random", "color": c, "team": 0, "ai": "normal"}); prefs_changed.emit(); show_battle()
-		var ab := mbtn("+  Add computer player", "", add, true, 84)
+		var ab := mbtn("+  Add computer player", "", add, true, Kit.TOUCH)
 		fp.add_child(ab)
 	# ---- battle settings ----
 	var fs := frame("Battle settings")
@@ -380,14 +391,14 @@ func show_battle() -> void:
 		var im := _img("res://assets/ui/maps/%s.jpg" % k, Vector2(0, 0)); im.set_anchors_preset(Control.PRESET_FULL_RECT)
 		im.offset_left = 5; im.offset_top = 5; im.offset_right = -5; im.offset_bottom = -34; im.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		b.add_child(im)
-		var nl := Kit.label("Random" if k == "random" else Maps.MAPS[k].name, 17, Color("#fff3d0") if on_ else Color("#cbbd9c"))
+		var nl := Kit.label("Random" if k == "random" else Maps.MAPS[k].name, 19, Color("#fff3d0") if on_ else Color("#cbbd9c"))
 		nl.set_anchors_preset(Control.PRESET_BOTTOM_WIDE); nl.offset_top = -32; nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(nl)
 		var pickm := func():
 			Sfx.ui("toggle"); S.map = k; prefs_changed.emit(); show_battle()
 		b.pressed.connect(pickm)
 		mg.add_child(b)
-	seg(fs, "Match length", [["quick", "Quick (10–15 min)"], ["classic", "Classic (AoE2 pace)"]], S.pace, func(v): S.pace = v)
+	seg(fs, "Match length", [["quick", "Quick\n10–15 min"], ["classic", "Classic\nAoE2 pace"]], S.pace, func(v): S.pace = v)
 	if S.mode == "survival": seg(fs, "Break between waves", [[30, "30 s"], [60, "60 s"], [90, "90 s"]], S.wave, func(v): S.wave = v)
 	if S.mode == "capture": seg(fs, "Neutral Town Center in the middle", [[false, "Off"], [true, "On"]], S.neutral, func(v): S.neutral = v)
 	if S.mode != "empirewars": seg(fs, "Starting Age", [[1, "Dark"], [2, "Feudal"], [3, "Castle"], [4, "Imperial"]], S.age, func(v): S.age = v)
@@ -406,12 +417,14 @@ func _player_row(i: int) -> Control:
 	var me := i == 0
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", Kit.box(Color(0.2, 0.15, 0.09, 0.95) if me else Color(0.14, 0.105, 0.07, 0.95), Color("#f1d68a") if me else Color("#8a6c30"), 14))
-	var h := HBoxContainer.new(); h.add_theme_constant_override("separation", 12); h.custom_minimum_size.y = 108
+	var h := HBoxContainer.new(); h.add_theme_constant_override("separation", Kit.GAP); h.custom_minimum_size.y = 116
 	panel.add_child(h)
 	# colour: tap to change
-	var dot := Button.new(); dot.custom_minimum_size = Vector2(46, 46); dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER; dot.focus_mode = Control.FOCUS_NONE
+	# the colour dot is small to look at, but the button around it is a full fingertip
+	var dot := Button.new(); dot.custom_minimum_size = Vector2(76, Kit.TOUCH); dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER; dot.focus_mode = Control.FOCUS_NONE
 	var col := Color(D.PALETTE[p.color][1])
-	var ds := StyleBoxFlat.new(); ds.bg_color = col; ds.set_corner_radius_all(23); ds.border_color = Color("#c9a24a"); ds.set_border_width_all(3)
+	var ds := StyleBoxFlat.new(); ds.bg_color = col; ds.set_corner_radius_all(26); ds.border_color = Color("#c9a24a"); ds.set_border_width_all(3)
+	ds.expand_margin_left = -12; ds.expand_margin_right = -12; ds.expand_margin_top = -22; ds.expand_margin_bottom = -22
 	for st in ["normal", "hover", "pressed"]: dot.add_theme_stylebox_override(st, ds)
 	var recolor := func():
 		var used := {}
@@ -434,21 +447,21 @@ func _player_row(i: int) -> Control:
 	else: ph.add_child(_img("res://assets/ui/crest_%s.png" % p.civ, Vector2(76, 92)))
 	var tv := VBoxContainer.new(); tv.alignment = BoxContainer.ALIGNMENT_CENTER; tv.add_theme_constant_override("separation", -2); tv.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ph.add_child(tv)
-	var who := Kit.label("YOU" if me else "COMPUTER", 15, Color("#b8a888")); who.mouse_filter = Control.MOUSE_FILTER_IGNORE; tv.add_child(who)
+	var who := Kit.label("YOU" if me else "COMPUTER", 16, Color("#b8a888")); who.mouse_filter = Control.MOUSE_FILTER_IGNORE; tv.add_child(who)
 	var nm := Kit.label(_civ_name(p.civ).to_upper(), 26, Color("#f1d68a")); nm.add_theme_font_override("font", Kit.heading()); nm.mouse_filter = Control.MOUSE_FILTER_IGNORE; tv.add_child(nm)
 	var role := Kit.label("Any dynasty" if p.civ == "random" else D.CIVS[p.civ].get("role", ""), 18, Color("#cbbd9c")); role.add_theme_font_override("font", serif()); role.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tv.add_child(role)
 	pick.pressed.connect(_picker.bind(i))
 	h.add_child(pick)
 	# team: none, 1-4
-	var tb := Kit.button(("–" if p.team == 0 else str(p.team)) + "\nTEAM", func(): pass, 17, Vector2(76, 78))
+	var tb := Kit.button(("–" if p.team == 0 else str(p.team)) + "\nTEAM", func(): pass, 19, Vector2(Kit.TOUCH, Kit.TOUCH))
 	tb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var team := func():
 		p.team = (p.team + 1) % 5; prefs_changed.emit(); show_battle()
 	tb.pressed.connect(team)
 	h.add_child(tb)
 	if not me:
-		var lb := Kit.button(str(p.get("ai", "normal")).to_upper(), func(): pass, 17, Vector2(104, 78))
+		var lb := Kit.button(str(p.get("ai", "normal")).to_upper(), func(): pass, 19, Vector2(124, Kit.TOUCH))
 		lb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		var lvl := func():
 			var order := ["easy", "normal", "hard"]
@@ -456,7 +469,7 @@ func _player_row(i: int) -> Control:
 		lb.pressed.connect(lvl)
 		h.add_child(lb)
 		if i > 1:
-			var rm := Kit.button("✕", func(): pass, 20, Vector2(52, 78)); rm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			var rm := Kit.button("✕", func(): pass, 24, Vector2(Kit.TOUCH, Kit.TOUCH)); rm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			var drop := func():
 				S.players.remove_at(i); prefs_changed.emit(); show_battle()
 			rm.pressed.connect(drop)
@@ -526,9 +539,9 @@ func show_saves() -> void:
 		row.add_child(mbtn(("Autosave" if slot == 0 else "Save %d" % slot) + "  ·  " + D.CIVS[i.civ].name, "%s  ·  %s  ·  %d min  ·  %s" % [mode_name, Maps.MAPS.get(i.get("map", ""), {}).get("name", ""), int(i.time / 60), str(i.get("when", "")).replace("T", " ").left(16)], func(): load_slot.emit(slot)))
 		var del := func():
 			Save.delete_save(slot); show_saves()
-		row.add_child(Kit.button("✕", del, 22, Vector2(64, 84)))
+		row.add_child(Kit.button("✕", del, 26, Vector2(Kit.TOUCH, 100)))
 	if not any:
-		var l := Kit.label("No saved games yet. A match saves itself as you play, and you can save from the pause menu.", 21, Color("#cbbd9c"))
+		var l := Kit.label("No saved games yet. A match saves itself as you play, and you can save from the pause menu.", Kit.TEXT, Color("#cbbd9c"))
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		col.add_child(l)
 
@@ -537,11 +550,11 @@ func show_dynasties(civ: String) -> void:
 	if civ == "": civ = _setup().players[0].civ
 	if not D.CIVS.has(civ): civ = "britons"
 	var col := _sheet("Dynasties", show_menu)
-	var tabs := HBoxContainer.new(); tabs.add_theme_constant_override("separation", 6)
+	var tabs := HBoxContainer.new(); tabs.add_theme_constant_override("separation", Kit.GAP)
 	col.add_child(tabs)
 	for c in CIV_ORDER:
 		if not D.CIVS.has(c): continue
-		var b := Button.new(); b.custom_minimum_size = Vector2(0, 96); b.size_flags_horizontal = Control.SIZE_EXPAND_FILL; b.focus_mode = Control.FOCUS_NONE
+		var b := Button.new(); b.custom_minimum_size = Vector2(0, 132); b.size_flags_horizontal = Control.SIZE_EXPAND_FILL; b.focus_mode = Control.FOCUS_NONE
 		for st in ["normal", "hover", "pressed"]: b.add_theme_stylebox_override(st, Kit.box(Color(0.3, 0.22, 0.1) if c == civ else Color(0.13, 0.1, 0.06), Color("#f1d68a") if c == civ else Color("#5a4a2c"), 10))
 		var cr := _img("res://assets/ui/crest_%s.png" % c, Vector2.ZERO); cr.set_anchors_preset(Control.PRESET_FULL_RECT)
 		cr.offset_left = 6; cr.offset_top = 6; cr.offset_right = -6; cr.offset_bottom = -6
@@ -553,17 +566,17 @@ func show_dynasties(civ: String) -> void:
 	col.add_child(_frame_node(f))
 	var role := Kit.label(d.get("role", ""), 22, Kit.GOLD); role.add_theme_font_override("font", serif()); role.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	f.add_child(role)
-	var hist := Kit.label(d.get("history", d.get("desc", "")), 20, Color("#e6dcc4")); hist.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var hist := Kit.label(d.get("history", d.get("desc", "")), Kit.TEXT, Color("#e6dcc4")); hist.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	f.add_child(hist)
 	var fb := frame("Bonuses")
 	col.add_child(_frame_node(fb))
 	for bonus in d.get("bonuses", []):
-		var l := Kit.label("•  " + bonus, 20, Color("#e6dcc4")); l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var l := Kit.label("•  " + bonus, Kit.TEXT, Color("#e6dcc4")); l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		fb.add_child(l)
 	if d.has("unique"):
 		var fu := frame("Unique unit")
 		col.add_child(_frame_node(fu))
-		var l := Kit.label(d.unique.get("text", ""), 20, Color("#e6dcc4")); l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var l := Kit.label(d.unique.get("text", ""), Kit.TEXT, Color("#e6dcc4")); l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		fu.add_child(l)
 
 # ------------------------------------------------------------------ options
@@ -594,6 +607,6 @@ func show_multiplayer() -> void:
 	var col := _sheet("Multiplayer", show_menu)
 	var f := frame("Play a friend")
 	col.add_child(_frame_node(f))
-	var l := Kit.label("Online play with a room code is not in the Godot edition yet. It is in the web edition; this one will connect to the same rooms once it is ported.", 21, Color("#e6dcc4"))
+	var l := Kit.label("Online play with a room code is not in the Godot edition yet. It is in the web edition; this one will connect to the same rooms once it is ported.", Kit.TEXT, Color("#e6dcc4"))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	f.add_child(l)

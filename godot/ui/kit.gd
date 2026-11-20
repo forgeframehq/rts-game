@@ -11,6 +11,41 @@ const PANEL := Color(0.11, 0.086, 0.059, 0.94)
 const EDGE := Color("#b8862f")
 const WOOD := Color("#3b2817")
 
+## Touch rules for the whole interface. The design width is 720 units, which is 360 dp on a typical phone,
+## so 96 units is Android's 48 dp minimum for anything a finger must hit. Nothing tappable is smaller than TOUCH.
+const TOUCH := 96.0
+const GAP := 12          # the least space between two tappable things
+const TEXT := 22         # the smallest size for text the player has to read
+
+## How far the phone's notch, status bar and gesture bar reach into the screen, in design units.
+## Art may run under them; anything to read or tap stays inside. DOD_SAFE="top,bottom" fakes it for test renders.
+static func safe() -> Dictionary:
+	var out := {"top": 0.0, "bottom": 0.0, "left": 0.0, "right": 0.0}
+	var root: Window = (Engine.get_main_loop() as SceneTree).root
+	var view: Vector2 = root.get_visible_rect().size
+	if OS.has_environment("DOD_SAFE"):
+		var p := OS.get_environment("DOD_SAFE").split(",")
+		out.top = float(p[0]); out.bottom = float(p[1]) if p.size() > 1 else 0.0
+		return out
+	if not OS.has_feature("mobile"): return out
+	var win: Vector2i = DisplayServer.window_get_size()
+	var r: Rect2i = DisplayServer.get_display_safe_area()
+	if win.x <= 0 or win.y <= 0 or r.size.x <= 0 or r.size.y <= 0: return out
+	var k: float = view.y / win.y
+	out.top = clampf(r.position.y * k, 0.0, view.y * 0.1)
+	out.bottom = clampf((win.y - r.end.y) * k, 0.0, view.y * 0.1)
+	out.left = clampf(r.position.x * k, 0.0, view.x * 0.1)
+	out.right = clampf((win.x - r.end.x) * k, 0.0, view.x * 0.1)
+	return out
+
+## a full-screen box whose children stay clear of the notch and the gesture bar
+static func safe_box() -> MarginContainer:
+	var m := MarginContainer.new()
+	m.set_anchors_preset(Control.PRESET_FULL_RECT); m.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var s := safe()
+	for side in s: m.add_theme_constant_override("margin_" + side, int(s[side]))
+	return m
+
 static var _heading: Font
 static var _heading_bold: Font
 
@@ -27,7 +62,7 @@ static func title(text: String, size: int = 40, col: Color = GOLD) -> Label:
 	return l
 
 ## the painted gold button from the web edition, for the one main action on a screen
-static func grand(text: String, on: Callable, height: float = 96.0) -> Button:
+static func grand(text: String, on: Callable, height: float = 104.0) -> Button:
 	var b := button(text, on, 30, Vector2(0, height))
 	if ResourceLoader.exists("res://assets/ui/button.png"):
 		var tex: Texture2D = load("res://assets/ui/button.png")
@@ -76,10 +111,11 @@ static func style_button(b: Button, size: int = 26, bg: Color = Color("#3b2817")
 	b.add_theme_stylebox_override("pressed", box(bg.lightened(0.2), GOLD))
 	b.add_theme_stylebox_override("disabled", box(bg.darkened(0.35), EDGE.darkened(0.3)))
 
-static func button(text: String, on: Callable, size: int = 26, min_size: Vector2 = Vector2(0, 72)) -> Button:
+static func button(text: String, on: Callable, size: int = 26, min_size: Vector2 = Vector2(0, TOUCH)) -> Button:
 	var b := Button.new()
 	b.text = text
-	b.custom_minimum_size = min_size
+	# never smaller than a fingertip, whatever the caller asked for
+	b.custom_minimum_size = Vector2(maxf(min_size.x, TOUCH) if min_size.x > 0 else 0.0, maxf(min_size.y, TOUCH))
 	style_button(b, size)
 	var press := func():
 		Sfx.ui("click")
@@ -90,7 +126,7 @@ static func button(text: String, on: Callable, size: int = 26, min_size: Vector2
 ## A pick-one row: tapping cycles through the options. get_value() via meta "value".
 static func cycler(title: String, options: Array, start, on: Callable) -> Button:
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(0, 76)
+	b.custom_minimum_size = Vector2(0, TOUCH)
 	style_button(b, 26)
 	var idx := 0
 	for i in options.size():

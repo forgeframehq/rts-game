@@ -7,7 +7,6 @@ const Kit := preload("res://ui/kit.gd")
 const Tutorial := preload("res://ui/tutorial.gd")
 const Front := preload("res://ui/front.gd")
 
-const CIV_ORDER := ["britons", "franks", "byzantines", "chinese", "persians", "incas", "cholas"]
 const PREFS := "user://prefs.json"
 
 var world: Node3D
@@ -71,8 +70,9 @@ func _apply_prefs() -> void:
 	_save_prefs()
 
 func _column(width: float = 560.0) -> VBoxContainer:
-	var c := CenterContainer.new(); c.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(c)
+	var box := Kit.safe_box(); screen.add_child(box)
+	var c := CenterContainer.new()
+	box.add_child(c)
 	var v := VBoxContainer.new(); v.custom_minimum_size.x = width
 	v.add_theme_constant_override("separation", 12)
 	c.add_child(v)
@@ -168,9 +168,10 @@ func _play_film(path: String, then: Callable) -> void:
 		done[0] = true
 		then.call()
 	v.finished.connect(finish)
-	var skip := Kit.button("Skip  ▸", finish, 22, Vector2(150, 60))
+	var skip := Kit.button("Skip  ▸", finish, 24, Vector2(190, Kit.TOUCH))
 	skip.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	skip.offset_left = -170; skip.offset_right = -20; skip.offset_top = -100; skip.offset_bottom = -40
+	var sb: float = Kit.safe().bottom
+	skip.offset_left = -214; skip.offset_right = -24; skip.offset_top = -Kit.TOUCH - 32 - sb; skip.offset_bottom = -32 - sb
 	screen.add_child(skip)
 	v.play()
 
@@ -228,7 +229,7 @@ func _pause() -> void:
 	_backdrop(0.6)
 	var v := _column(480)
 	v.add_child(Kit.title("Paused", 40))
-	v.add_child(Kit.grand("Resume", _resume, 88))
+	v.add_child(Kit.grand("Resume", _resume, 104))
 	var save := func():
 		# the first empty slot of ten; when all are used, the oldest is replaced
 		var slot := 1
@@ -281,7 +282,7 @@ func _on_game_over(result: String) -> void:
 		table.add_child(Kit.label(str(p.killed), 22))
 		table.add_child(Kit.label(str(p.lost), 22))
 		table.add_child(Kit.label(D.AGES[p.age].short, 22))
-	v.add_child(Kit.grand("Play again", func(): _start({}), 88))
+	v.add_child(Kit.grand("Play again", func(): _start({}), 104))
 	var change := func():
 		_end_match(); _clear_screen(); front.visible = true; front.show_battle(); Sfx.set_scene("menu")
 	v.add_child(Kit.button("Change setup", change))
@@ -298,7 +299,7 @@ func _test_shot() -> void:
 	elif which == "setup":
 		_menu(); front.show_battle()
 	elif which == "dynasties":
-		_menu(); front.show_dynasties("persians")
+		_menu(); front.show_dynasties("franks")
 	else:
 		if which == "learn":
 			_learn()
