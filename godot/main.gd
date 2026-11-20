@@ -5,6 +5,7 @@ const World := preload("res://view/world.gd")
 const Hud := preload("res://ui/hud.gd")
 const Kit := preload("res://ui/kit.gd")
 const Tutorial := preload("res://ui/tutorial.gd")
+const Front := preload("res://ui/front.gd")
 
 const CIV_ORDER := ["britons", "franks", "byzantines", "chinese", "persians", "incas", "cholas"]
 const PREFS := "user://prefs.json"
@@ -13,8 +14,10 @@ var world: Node3D
 var hud: Control
 var layer: CanvasLayer
 var tutorial: Control
+var front: Control          # title, main menu, Battle and the other screens before a match
+var last_cfg: Dictionary = {}
 var screen: Control        # the menu, setup, pause or results screen on top
-var prefs := {"civ": "britons", "foe": "random", "level": "normal", "map": "random", "mode": "conquest", "pace": "quick", "size": "small", "music": true, "sound": true, "films": true, "intro_seen": false}
+var prefs := {"civ": "britons", "foe": "random", "level": "normal", "map": "random", "mode": "conquest", "pace": "quick", "size": "small", "music": true, "sound": true, "films": true, "speed": 1.0, "voice": true, "buzz": true}
 var _autosave_t := 0.0
 
 func _ready() -> void:
@@ -26,6 +29,14 @@ func _ready() -> void:
 	layer = CanvasLayer.new(); add_child(layer)
 	world = World.new(); add_child(world)
 	G.game_over.connect(_on_game_over)
+	front = Front.new()
+	front.prefs = prefs
+	layer.add_child(front)
+	front.start_battle.connect(_start)
+	front.load_slot.connect(_continue)
+	front.learn.connect(_learn)
+	front.prefs_changed.connect(_apply_prefs)
+	_apply_prefs()
 	if OS.has_environment("DOD_SHOT"):
 		_test_shot.call_deferred()
 		return
@@ -45,15 +56,6 @@ func _save_prefs() -> void:
 	var f := FileAccess.open(PREFS, FileAccess.WRITE)
 	if f != null: f.store_string(JSON.stringify(prefs))
 
-func _set_music(on: bool) -> void:
-	prefs.music = on; Sfx.set_music(on); _save_prefs()
-
-func _set_films(on: bool) -> void:
-	prefs.films = on; _save_prefs()
-
-func _set_sound(on: bool) -> void:
-	prefs.sound = on; Sfx.enabled = on; _save_prefs()
-
 func _autosave() -> void:
 	if hud != null and G.over == null and tutorial == null: Save.save_game(0)
 
@@ -64,6 +66,73 @@ func _process(dt: float) -> void:
 		_autosave_t = 0.0; _autosave()
 
 # ---------------------------------------------------------------- screens
+func _apply_prefs() -> void:
+	G.set_meta("buzz", prefs.get("buzz", true)); G.set_meta("voice", prefs.get("voice", true))
+	_save_prefs()
+
+func _column(width: float = 560.0) -> VBoxContainer:
+	var c := CenterContainer.new(); c.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.add_child(c)
+	var v := VBoxContainer.new(); v.custom_minimum_size.x = width
+	v.add_theme_constant_override("separation", 12)
+	c.add_child(v)
+	return v
+
+## The Forge Frame splash: about two seconds, a tap skips it. Then "Tap to begin".
+func _splash() -> void:
+	front.visible = false
+	_backdrop(1.0)
+	var black := ColorRect.new(); black.color = Color(0.02, 0.02, 0.02); black.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.add_child(black)
+	var v := _column(520)
+	var logo := TextureRect.new(); logo.texture = load("res://assets/ui/studio_logo.png"); logo.custom_minimum_size.y = 420
+	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	v.add_child(logo)
+	var l := Kit.label("presents", 24, Kit.DIM); l.add_theme_font_override("font", Kit.heading(false)); l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v.add_child(l)
+	screen.modulate.a = 0.0
+	var done := [false]
+	var go := func():
+		if done[0]: return
+		done[0] = true
+		_title()
+	var skip := Button.new(); skip.flat = true; skip.set_anchors_preset(Control.PRESET_FULL_RECT); skip.focus_mode = Control.FOCUS_NONE
+	skip.pressed.connect(go)
+	screen.add_child(skip)
+	var tw := create_tween()
+	tw.tween_property(screen, "modulate:a", 1.0, 0.5)
+	tw.tween_interval(1.7)
+	tw.tween_property(screen, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(go)
+
+func _title() -> void:
+	_clear_screen()
+	front.visible = true
+	front.show_title()
+	Sfx.set_scene("menu")
+
+func _menu() -> void:
+	_end_match()
+	_clear_screen()
+	front.visible = true
+	front.show_menu()
+	Sfx.set_scene("menu")
+
+func _start(cfg: Dictionary = {}) -> void:
+	if cfg.is_empty(): cfg = last_cfg
+	if cfg.is_empty():
+		_menu(); return
+	last_cfg = cfg.duplicate(true)
+	_save_prefs()
+	_end_match()
+	front.visible = false
+	G.new_game(cfg.duplicate(true))
+	G.paused = true
+	# each dynasty's pre-battle film, as in the web edition
+	var film := "res://assets/video/dyn_%s.ogv" % G.players[1].civ
+	if prefs.films and ResourceLoader.exists(film): _play_film(film, _begin_match)
+	else: _begin_match()
+
 func _clear_screen() -> void:
 	if screen != null: screen.queue_free()
 	screen = null
@@ -83,42 +152,6 @@ func _backdrop(dim: float = 1.0) -> Control:
 	screen.add_child(shade)
 	return screen
 
-func _column(width: float = 560.0) -> VBoxContainer:
-	var c := CenterContainer.new(); c.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(c)
-	var v := VBoxContainer.new(); v.custom_minimum_size.x = width
-	v.add_theme_constant_override("separation", 12)
-	c.add_child(v)
-	return v
-
-func _image(path: String, height: float) -> TextureRect:
-	var t := TextureRect.new()
-	if ResourceLoader.exists(path): t.texture = load(path)
-	t.custom_minimum_size.y = height
-	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	return t
-
-func _splash() -> void:
-	_backdrop(1.0)
-	var black := ColorRect.new(); black.color = Color(0.02, 0.02, 0.02); black.set_anchors_preset(Control.PRESET_FULL_RECT)
-	screen.add_child(black)
-	var v := _column(520)
-	v.add_child(_image("res://assets/ui/studio_logo.png", 300))
-	var l := Kit.label("presents", 24, Kit.DIM); l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(l)
-	var tw := create_tween()
-	tw.tween_interval(1.6)
-	tw.tween_property(screen, "modulate:a", 0.0, 0.5)
-	tw.tween_callback(_after_splash)
-
-func _after_splash() -> void:
-	# the intro film plays the first time the game is opened; after that it is under Films on the menu
-	if not prefs.intro_seen and ResourceLoader.exists("res://video/intro.ogv"):
-		prefs.intro_seen = true; _save_prefs()
-		_play_film("res://video/intro.ogv", _menu)
-	else: _menu()
-
-## a film over the whole screen with a Skip button; `then` runs when it ends or is skipped
 func _play_film(path: String, then: Callable) -> void:
 	Sfx.set_scene("")
 	_backdrop(1.0)
@@ -141,89 +174,10 @@ func _play_film(path: String, then: Callable) -> void:
 	screen.add_child(skip)
 	v.play()
 
-func _menu() -> void:
-	_end_match()
-	_backdrop(1.0)
-	screen.modulate.a = 1.0
-	Sfx.set_scene("menu")
-	var v := _column()
-	v.add_child(_image("res://assets/ui/logo.png", 340))
-	if Save.has_save(0):
-		var i := Save.info(0)
-		if not i.is_empty():
-			v.add_child(Kit.button("Continue  ·  %s, %d min" % [D.CIVS[i.civ].name, int(i.time / 60)], _continue, 28, Vector2(0, 84)))
-	v.add_child(Kit.grand("Play", _setup))
-	v.add_child(Kit.button("Learn to Play", _learn, 26, Vector2(0, 72)))
-	v.add_child(Kit.cycler("Music", [[true, "On"], [false, "Off"]], prefs.music, _set_music))
-	v.add_child(Kit.cycler("Sound", [[true, "On"], [false, "Off"]], prefs.sound, _set_sound))
-	v.add_child(Kit.cycler("Films", [[true, "On"], [false, "Off"]], prefs.films, _set_films))
-	if ResourceLoader.exists("res://video/intro.ogv"): v.add_child(Kit.button("Watch the intro", func(): _play_film("res://video/intro.ogv", _menu), 24, Vector2(0, 64)))
-	v.add_child(Kit.button("Quit", func(): get_tree().quit(), 24, Vector2(0, 64)))
-	var mark := _image("res://assets/ui/studio_mark.png", 54)
-	v.add_child(mark)
-	var credit := Kit.label("A Forge Frame game  ·  Godot edition %s" % ProjectSettings.get_setting("application/config/version", ""), 18, Kit.DIM)
-	credit.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(credit)
-
-func _setup() -> void:
-	_backdrop(1.0)
-	var v := _column(620)
-	v.add_child(Kit.title("Battle", 44))
-	v.add_child(Kit.label("Your dynasty", 22, Kit.DIM))
-	var civs := GridContainer.new(); civs.columns = 4
-	civs.add_theme_constant_override("h_separation", 8); civs.add_theme_constant_override("v_separation", 8)
-	v.add_child(civs)
-	var blurb := Kit.label("", 20); blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; blurb.custom_minimum_size.y = 84
-	var buttons := {}
-	var pick := func(civ: String):
-		prefs.civ = civ
-		for k in buttons: buttons[k].add_theme_stylebox_override("normal", Kit.box(Color("#6b4a1c") if k == civ else Color("#3a2a17"), Kit.GOLD if k == civ else Kit.EDGE))
-		blurb.text = "%s: %s" % [D.CIVS[civ].name, D.CIVS[civ].get("bonus", D.CIVS[civ].get("desc", ""))]
-	for civ in CIV_ORDER:
-		if not D.CIVS.has(civ): continue
-		var b := Button.new(); b.custom_minimum_size = Vector2(146, 132)
-		Kit.style_button(b, 19)
-		b.text = D.CIVS[civ].name
-		b.icon = load("res://assets/ui/crest_%s.png" % civ) if ResourceLoader.exists("res://assets/ui/crest_%s.png" % civ) else null
-		b.expand_icon = true; b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER; b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-		b.pressed.connect(pick.bind(civ))
-		civs.add_child(b); buttons[civ] = b
-	v.add_child(blurb)
-	pick.call(prefs.civ if D.CIVS.has(prefs.civ) else "britons")
-	var foes := [["random", "Random"]]
-	for civ in CIV_ORDER:
-		if D.CIVS.has(civ): foes.append([civ, D.CIVS[civ].name])
-	v.add_child(Kit.cycler("Enemy", foes, prefs.foe, func(x): prefs.foe = x))
-	v.add_child(Kit.cycler("Difficulty", [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"]], prefs.level, func(x): prefs.level = x))
-	v.add_child(Kit.cycler("Mode", [["conquest", "Conquest  (destroy them)"], ["regicide", "Regicide  (kill King and Queen)"],
-		["capture", "Capture  (take their Town Center)"], ["survival", "Siege Survival  (hold out)"], ["empirewars", "Empire Wars  (fast start)"]], prefs.mode, func(x): prefs.mode = x))
-	var maps := [["random", "Random"]]
-	for k in Maps.MAPS: maps.append([k, Maps.MAPS[k].name])
-	v.add_child(Kit.cycler("Map", maps, prefs.map, func(x): prefs.map = x))
-	v.add_child(Kit.cycler("Match", [["quick", "Quick  (about 10–15 min)"], ["classic", "Classic  (AoE2 pace)"]], prefs.pace, func(x): prefs.pace = x))
-	v.add_child(Kit.cycler("Map size", [["small", "Small"], ["medium", "Medium"], ["large", "Large"]], prefs.size, func(x): prefs.size = x))
-	v.add_child(Kit.grand("Start Battle", _start))
-	v.add_child(Kit.button("Back", _menu, 24, Vector2(0, 64)))
-
-func _start() -> void:
-	_save_prefs()
-	var foe: String = prefs.foe
-	if foe == "random":
-		var pool := CIV_ORDER.filter(func(c): return D.CIVS.has(c) and c != prefs.civ)
-		foe = pool[randi() % pool.size()]
-	var quick: bool = prefs.pace == "quick"
-	# Siege Survival is you against the raiders; the difficulty sets how hard the waves hit
-	var players := [{"civ": prefs.civ}] if prefs.mode == "survival" else [{"civ": prefs.civ}, {"civ": foe, "ai": prefs.level}]
-	G.new_game({"players": players, "mode": prefs.mode, "map": prefs.map, "raidLvl": prefs.level, "neutral": true,
-		"size": prefs.size, "pace": prefs.pace, "pop": 100 if quick else 200})
-	G.paused = true
-	# each dynasty's pre-battle film, as in the web edition
-	var film := "res://assets/video/dyn_%s.ogv" % prefs.civ
-	if prefs.films and ResourceLoader.exists(film): _play_film(film, _begin_match)
-	else: _begin_match()
-
 func _learn() -> void:
+	_end_match()
 	_clear_screen()
+	front.visible = false
 	tutorial = Tutorial.new()
 	tutorial.world = world
 	layer.add_child(tutorial)      # in the tree first: its steps and labels are made in _ready
@@ -233,10 +187,13 @@ func _learn() -> void:
 		G.alert("You are ready, my lord. Start a battle from the menu.")
 	tutorial.finished.connect(done)
 
-func _continue() -> void:
-	if Save.load_game(0): _begin_match()
+func _continue(slot: int = 0) -> void:
+	_end_match()
+	if Save.load_game(slot):
+		front.visible = false
+		_begin_match()
 	else:
-		Save.delete_save(0); _menu()
+		Save.delete_save(slot); _menu()
 
 func _begin_match() -> void:
 	_clear_screen()
@@ -247,6 +204,7 @@ func _begin_match() -> void:
 	hud.pause_pressed.connect(_pause)
 	world.hud = hud
 	G.paused = false
+	G.speed = prefs.get("speed", 1.0)
 	_autosave_t = 0.0
 	Sfx.set_scene("match", G.players[1].civ)
 	var foe_names := []
@@ -272,10 +230,21 @@ func _pause() -> void:
 	v.add_child(Kit.title("Paused", 40))
 	v.add_child(Kit.grand("Resume", _resume, 88))
 	var save := func():
-		G.alert("Game saved" if Save.save_game(0) else "Could not save"); _resume()
+		# the first empty slot of ten; when all are used, the oldest is replaced
+		var slot := 1
+		var oldest := ""
+		for k in range(1, 11):
+			if not Save.has_save(k):
+				slot = k; oldest = ""; break
+			var w: String = str(Save.info(k).get("when", ""))
+			if oldest == "" or w < oldest:
+				oldest = w; slot = k
+		G.alert(("Game saved (Save %d)" % slot) if Save.save_game(slot) else "Could not save"); _resume()
 	v.add_child(Kit.button("Save game", save))
 	v.add_child(Kit.cycler("Speed", [[1.0, "Normal"], [1.5, "Fast"], [2.0, "Faster"]], G.speed, func(x): G.speed = x))
-	v.add_child(Kit.cycler("Music", [[true, "On"], [false, "Off"]], prefs.music, _set_music))
+	var music := func(on):
+		prefs.music = on; Sfx.set_music(on); _save_prefs()
+	v.add_child(Kit.cycler("Music", [[true, "On"], [false, "Off"]], prefs.music, music))
 	var resign := func():
 		_resume(); G.resign(1)
 	v.add_child(Kit.button("Resign", resign))
@@ -312,8 +281,10 @@ func _on_game_over(result: String) -> void:
 		table.add_child(Kit.label(str(p.killed), 22))
 		table.add_child(Kit.label(str(p.lost), 22))
 		table.add_child(Kit.label(D.AGES[p.age].short, 22))
-	v.add_child(Kit.grand("Play again", _start, 88))
-	v.add_child(Kit.button("Change setup", _setup))
+	v.add_child(Kit.grand("Play again", func(): _start({}), 88))
+	var change := func():
+		_end_match(); _clear_screen(); front.visible = true; front.show_battle(); Sfx.set_scene("menu")
+	v.add_child(Kit.button("Change setup", change))
 	v.add_child(Kit.button("Main menu", _menu))
 
 # ---------------------------------------------------------------- test aid
@@ -322,8 +293,12 @@ func _on_game_over(result: String) -> void:
 func _test_shot() -> void:
 	var env := func(k: String, d: String) -> String: return OS.get_environment(k) if OS.has_environment(k) else d
 	var which: String = env.call("DOD_SCREEN", "match")
-	if which == "menu": _menu()
-	elif which == "setup": _setup()
+	if which == "title": _title()
+	elif which == "menu": _menu()
+	elif which == "setup":
+		_menu(); front.show_battle()
+	elif which == "dynasties":
+		_menu(); front.show_dynasties("persians")
 	else:
 		if which == "learn":
 			_learn()

@@ -139,7 +139,7 @@ func _go(n: int) -> void:
 	hint.text = ""
 	if s.has("enter"): s.enter.call()
 	var f := "res://assets/sound/voice/tut_%d.mp3" % (i + 1)
-	if Sfx.enabled and ResourceLoader.exists(f):
+	if Sfx.enabled and G.get_meta("voice", true) and ResourceLoader.exists(f):
 		voice.stream = load(f); voice.play()
 
 func _process(dt: float) -> void:

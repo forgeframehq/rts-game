@@ -117,7 +117,7 @@ func _build() -> void:
 		gb.button_down.connect(func(): _group_down[n] = Time.get_ticks_msec())
 		gb.button_up.connect(_group_up.bind(n))
 		gr.add_child(gb); group_btns.append(gb)
-	G.buzzed.connect(func(ms): Input.vibrate_handheld(ms))
+	G.buzzed.connect(func(ms): if G.get_meta("buzz", true): Input.vibrate_handheld(ms))
 	# ---- side buttons ----
 	var side := VBoxContainer.new()
 	side.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
