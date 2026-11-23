@@ -47,9 +47,13 @@ func _notification(what: int) -> void:
 		elif hud != null and screen != null and G.over == null: _resume()
 		else:
 			_autosave(); get_tree().quit()
-	elif what == NOTIFICATION_APPLICATION_PAUSED:
-		_autosave()
-		G.paused = hud != null
+	elif what == NOTIFICATION_APPLICATION_PAUSED or (what == NOTIFICATION_APPLICATION_FOCUS_OUT and OS.has_feature("mobile")):
+		# leaving the app saves and opens the pause menu, as the web edition does, so coming back
+		# shows Resume instead of a frozen match
+		if hud != null and G.over == null and not G.paused:
+			_autosave()
+			if screen == null: _pause()
+			else: G.paused = true
 
 func _save_prefs() -> void:
 	var f := FileAccess.open(PREFS, FileAccess.WRITE)
@@ -212,7 +216,8 @@ func _begin_match() -> void:
 	for id in G.players:
 		if id != 1: foe_names.append(D.CIVS[G.players[id].civ].name)
 	var goal: String = {"regicide": "Regicide: protect your King and Queen", "capture": "Capture: take their Town Center and hold it",
-		"survival": "Siege Survival: hold out against the raiders", "empirewars": "Empire Wars: your town is ready, strike fast"}.get(G.rules.mode, "Conquest: destroy the " + ", ".join(foe_names))
+		"survival": "Siege Survival: hold out against the raiders", "empirewars": "Empire Wars: your town is ready, strike fast",
+		"testing": "Testing: 200 a side, the whole map in view"}.get(G.rules.mode, "Conquest: destroy the " + ", ".join(foe_names))
 	if tutorial == null: G.alert("%s  ·  %s" % [Maps.MAPS[G.rules.map].name, goal])
 
 func _end_match() -> void:

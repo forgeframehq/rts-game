@@ -13,12 +13,14 @@ signal prefs_changed
 ## stay in the project, so putting them back is adding their names to this list.
 const CIV_ORDER := ["britons", "franks", "byzantines", "chinese"]
 const MODES := [["conquest", "Conquest", "Destroy everything"], ["regicide", "Regicide", "Kill the King and Queen"],
-	["capture", "Capture", "Take the Town Centers"], ["survival", "Siege Survival", "Hold off the waves"], ["empirewars", "Empire Wars", "Skip the slow start"]]
+	["capture", "Capture", "Take the Town Centers"], ["survival", "Siege Survival", "Hold off the waves"], ["empirewars", "Empire Wars", "Skip the slow start"],
+	["testing", "Testing", "Full armies, open map"]]
 const MODE_TXT := {"conquest": "Destroy every enemy building and unit.",
 	"regicide": "Each dynasty has a King and a Queen. Kill both and it falls; lose yours and so do you.",
 	"capture": "Beat a Town Center below a quarter health, then stand soldiers beside it to take it. Hold an enemy's home Town Center for 3 minutes to win.",
 	"survival": "No enemy town: raiders come in growing waves from the map's edge. Every fifth wave brings siege. How long can you hold?",
-	"empirewars": "Everyone starts in the Feudal Age with a working town and twenty villagers, so the fighting starts within minutes."}
+	"empirewars": "Everyone starts in the Feudal Age with a working town and twenty villagers, so the fighting starts within minutes.",
+	"testing": "For trying out battles. The whole map is visible and every side starts at the full 200: thirty villagers and 170 soldiers."}
 const LEVELS := [["easy", "Easy"], ["normal", "Normal"], ["hard", "Hard"]]
 
 var prefs: Dictionary          # main.gd's prefs; "setup" holds the Battle screen's choices
@@ -340,7 +342,7 @@ func show_battle() -> void:
 		var h := HBoxContainer.new(); h.set_anchors_preset(Control.PRESET_FULL_RECT); h.offset_left = 16; h.offset_right = -8
 		h.add_theme_constant_override("separation", 16); h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(h)
-		var ic := _img("res://assets/ui/icons/mode_%s.jpg" % mo[0], Vector2(86, 86)); ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var ic := _img("res://assets/ui/icons/army.png" if mo[0] == "testing" else "res://assets/ui/icons/mode_%s.jpg" % mo[0], Vector2(86, 86)); ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		h.add_child(ic)
 		var tv := VBoxContainer.new(); tv.alignment = BoxContainer.ALIGNMENT_CENTER; tv.size_flags_horizontal = Control.SIZE_EXPAND_FILL; tv.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(tv)

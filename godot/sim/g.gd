@@ -70,7 +70,7 @@ func restore(d: Dictionary) -> void:
 	M.init_map(config.seed)
 	M.terrain = d.terrain; M.explored = d.explored
 	ents = d.ents; by_id = {}
-	E.next_id = d.next_id
+	E.next_id = d.next_id; E._grid_time = -1.0
 	_rng = M.Rng.new(1); _rng.s = d.rng
 
 func finish_restore(d: Dictionary) -> void:
@@ -184,6 +184,8 @@ func new_game(cfg: Dictionary = {}) -> void:
 		"time": float(cfg.get("time", 0)), "map": "grasslands", "wave": float(cfg.get("wave", 60)),
 		"neutral": cfg.get("neutral", false), "raidLvl": cfg.get("raidLvl", "normal"),
 		"startAge": clampi(cfg.get("startAge", 2 if cfg.get("mode", "") == "empirewars" else 1), 1, 4)}
+	if rules.mode == "testing":
+		rules.reveal = "all"; rules.pop = 200
 	# Quick pace: gathering, building and training all run faster, so a match fits a phone session
 	rules.pace = cfg.get("pace", "classic")
 	pace = 1.8 if rules.pace == "quick" else 1.0
@@ -191,7 +193,7 @@ func new_game(cfg: Dictionary = {}) -> void:
 	MAP = D.MAP_SIZES.get(rules.size, 72)
 	var N := MAP
 	ents = []; by_id = {}; projs = []; effects = []; decals = []; corpses = []; kings = {}; selection = []
-	E.next_id = 1
+	E.next_id = 1; E._grid_time = -1.0
 	M.init_map(seed_)
 	var slots: Array = cfg.get("players", [])
 	if slots.is_empty(): slots = [{"civ": "britons"}, {"civ": "franks", "ai": "normal"}]

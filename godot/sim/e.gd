@@ -22,8 +22,9 @@ func mods(p: int) -> Dictionary:
 	return D.CIVS[G.players[p].civ].mods
 
 func _work_snd(u: Dictionary, k: String) -> void:
-	# work sounds follow the player's attention: only villagers they have selected chop, mine and hammer audibly
-	if u.owner == 1 and G.selection.has(u.id): G.snd(k, u.x, u.y)
+	# the player's own villagers are heard wherever the screen is looking at them (the sound
+	# fades with distance from the middle of the screen), selected or not
+	if u.owner == 1: G.snd(k, u.x, u.y)
 
 ## Insertion sort: stable, like JavaScript's sort. cmp(a, b) returns a number, negative when a goes first.
 func ssort(a: Array, cmp: Callable) -> void:
@@ -335,6 +336,7 @@ func pop_of(p: int) -> Vector2i:
 			pop += e.queue.size() + e.garrison.size()
 			if e.built and e.def.has("pop"):
 				cap += mods(p).housePop if (e.type == "house" and mods(p).has("housePop")) else e.def.pop
+	if G.rules.mode == "testing": cap = 200      # the test armies need no houses
 	return Vector2i(pop, mini(G.rules.get("pop", 200), cap))
 
 # ---------- Creation ----------
@@ -342,7 +344,7 @@ func _base(kind: String, type: String, owner_: int, def: Dictionary) -> Dictiona
 	var e := {"id": next_id, "kind": kind, "type": type, "owner": owner_, "def": def, "dead": false,
 		"x": 0.0, "y": 0.0, "tx": 0, "ty": 0, "size": 1, "hp": 0.0, "maxHp": 0.0, "hitT": 0.0, "inside": 0}
 	next_id += 1
-	G.ents.append(e); G.by_id[e.id] = e
+	G.ents.append(e); G.by_id[e.id] = e; _fresh.append(e)
 	return e
 
 func add_resource(rtype: String, tx: int, ty: int):
@@ -445,7 +447,7 @@ func ungarrison(b: Dictionary, keep = null) -> void:
 		if spot == null: spot = Vector2i(b.tx, b.ty)
 		u.x = spot.x + 0.5 + (G.rand() - 0.5) * 0.4; u.y = spot.y + 0.5 + (G.rand() - 0.5) * 0.4
 		u.task = {"t": "idle"}; u.path = []; u.inside = 0
-		G.ents.append(u)
+		G.ents.append(u); _fresh.append(u)
 
 func kill(e: Dictionary) -> void:
 	if e.dead: return
@@ -496,9 +498,52 @@ func enemies(a: int, b: int) -> bool:
 	return a > 0 and b > 0 and not allied(a, b)
 
 ## The nearest living entity to a point that pred accepts, within max_d (measured to its edge).
+## Short searches (a soldier looking for an enemy in sight) read a grid of 4-tile cells that is
+## rebuilt once a step, instead of walking every entity on the map: with two full armies that
+## was most of the work in a step. The answer is the same one the full walk gives.
+const CELL := 4
+var _grid: Dictionary = {}
+var _grid_time := -1.0
+var _fresh: Array = []        # entities made since the grid was built
+
+func _build_grid() -> void:
+	_grid = {}
+	_fresh = []
+	_grid_time = G.time
+	for e in G.ents:
+		if e.dead: continue
+		if e.kind == "unit":
+			var k := (int(e.x) / CELL) * 256 + int(e.y) / CELL
+			if _grid.has(k): _grid[k].append(e)
+			else: _grid[k] = [e]
+		else:
+			var s: int = e.size
+			for cy in range(e.ty / CELL, (e.ty + s - 1) / CELL + 1):
+				for cx in range(e.tx / CELL, (e.tx + s - 1) / CELL + 1):
+					var k2 := cx * 256 + cy
+					if _grid.has(k2): _grid[k2].append(e)
+					else: _grid[k2] = [e]
+
 func nearest(x: float, y: float, pred: Callable, max_d: float = 1e9):
 	var best = null
 	var bd := max_d
+	if max_d <= 20.0 and _grid_time == G.time:
+		var m := max_d + 1.5      # units have moved a little since the grid was built
+		for cy in range(maxi(0, floori((y - m) / CELL)), floori((y + m) / CELL) + 1):
+			for cx in range(maxi(0, floori((x - m) / CELL)), floori((x + m) / CELL) + 1):
+				var a = _grid.get(cx * 256 + cy)
+				if a == null: continue
+				for e in a:
+					if e.dead or not pred.call(e): continue
+					var d := edge_dist_xy(x, y, e)
+					if d < bd or (d == bd and best != null and e.id < best.id):
+						bd = d; best = e
+		for e in _fresh:
+			if e.dead or not pred.call(e): continue
+			var d2 := edge_dist_xy(x, y, e)
+			if d2 < bd:
+				bd = d2; best = e
+		return best
 	for e in G.ents:
 		if e.dead or not pred.call(e): continue
 		var d := edge_dist_xy(x, y, e)
@@ -1130,6 +1175,7 @@ func update_entities(dt: float) -> void:
 	G.kings = {}
 	for e in G.ents:
 		if not e.dead and e.type == "king": G.kings[e.owner] = e
+	_build_grid()
 	# Buildings
 	for b in G.ents:
 		if b.dead or b.kind != "building": continue

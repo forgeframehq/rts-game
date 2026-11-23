@@ -340,6 +340,51 @@ func setup(starts: Array, r: Callable) -> void:
 	else: surv = null
 	if m == "empirewars":
 		for s in starts: _empire_town(s.p)
+	if m == "testing":
+		for s in starts: _test_army(s.p)
+
+# Testing: every side starts at the full 200, thirty villagers at work and the rest soldiers,
+# so a fight between two towns can be watched from the first minute
+func _test_army(owner_: int) -> void:
+	var tc = null
+	for e in G.ents:
+		if e.type == "towncenter" and e.owner == owner_: tc = e
+	if tc == null: return
+	var cx: float = tc.x
+	var cy: float = tc.y
+	# free tiles in widening rings round the Town Center, nearest first; each takes one unit
+	var tiles: Array = []
+	for rr in range(3, 26):
+		for j in range(-rr, rr + 1):
+			for i in range(-rr, rr + 1):
+				if maxi(absi(i), absi(j)) != rr: continue
+				var x := roundi(cx) + i
+				var y := roundi(cy) + j
+				if M.is_free(x, y): tiles.append(Vector2i(x, y))
+	var at := 0
+	var vils := []
+	var pop := 0
+	for e in G.ents:
+		if e.dead or e.owner != owner_ or e.kind != "unit" or e.def.cls == "hero": continue
+		pop += 1
+		if e.type == "villager": vils.append(e)
+	while vils.size() < 30 and at < tiles.size():
+		vils.append(E.add_unit("villager", owner_, tiles[at].x + 0.5, tiles[at].y + 0.5)); at += 1; pop += 1
+	var jobs := ["tree", "berry", "tree", "gold", "tree", "stone"]
+	for i in vils.size():
+		var t = _nearest_res(jobs[i % jobs.size()], cx, cy)
+		if t == null: t = _nearest_res("tree", cx, cy)
+		if t != null: E.cmd_gather_spread([vils[i]], t)
+	# the army: foot, pikes, bows and horse in fixed shares, with the dynasty's own unit among them
+	var mix := [["militia", 4], ["spearman", 3], ["archer", 4], [D.CIVS[G.players[owner_].civ].unique.type, 2]]
+	if not E.civ_blocks(owner_, "stable"): mix.append_array([["knight", 3], ["scout", 1]])
+	var order := []
+	for m in mix:
+		for k in m[1]: order.append(m[0])
+	var n := 0
+	while pop < 200 and at < tiles.size():
+		E.add_unit(order[n % order.size()], owner_, tiles[at].x + 0.5, tiles[at].y + 0.5)
+		n += 1; at += 1; pop += 1
 
 # Empire Wars: a working Feudal town for everyone
 func _spot(type: String, cx: float, cy: float, rmin: int, rmax: int):
